@@ -18,10 +18,10 @@ from discord.ext import commands
 ###################################################################
 
 #localtoken
-token = "OTE2OTU2ODQyNDQwMTUxMDcw.Yaxsmw.6riWNmW8UD5zpfV3KB3N1AlYb2E"
+#token = "OTE2OTU2ODQyNDQwMTUxMDcw.Yaxsmw.6riWNmW8UD5zpfV3KB3N1AlYb2E"
 
 #onlinetoken
-#token = os.environ['DISCORD_BOT_TOKEN']
+token = os.environ['DISCORD_BOT_TOKEN']
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!",intents=intents)
