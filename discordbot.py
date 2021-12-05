@@ -51,6 +51,11 @@ async def on_message(message):
     await dispand(message)
     await bot.process_commands(message)
 
+'''
+デフォルトで提供されている on_message をオーバーライドすると、コマンドが実行されなくなります。
+これを修正するには on_message の最後に bot.process_commands(message) を追加してみてください。
+'''
+
 #VC入退室ログ
 @bot.event
 async def on_voice_state_update(member,before,after) :
