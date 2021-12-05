@@ -49,6 +49,7 @@ async def on_message(message):
     if message.author.bot:
         return
     await dispand(message)
+    await bot.process_commands(message)
 
 #VC入退室ログ
 @bot.event
