@@ -4,7 +4,7 @@ import traceback
 from datetime import datetime, timedelta
 import sys
 import requests
-from dispander import dispand, delete_dispand
+from dispander import dispand
 
 ### イベントハンドラ一覧 #################################################
 # async def の後を変えるだけで実行されるイベンドが変わる
