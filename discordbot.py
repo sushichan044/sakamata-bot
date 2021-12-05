@@ -25,11 +25,15 @@ bot = commands.Bot(
     intents=intents
 )
 
+#IDなど
+guildid = 916965252896260117
+logchannel = 916971090042060830
+
+
 #Bootmsg-console
-channel_id = 916971090042060830
 
 async def greet():
-    channel = bot.get_channel(channel_id)
+    channel = bot.get_channel(logchannel)
     await channel.send('起動完了')
 
 @bot.event
@@ -48,5 +52,22 @@ async def on_message(message):
 @bot.command(name='ping')
 async def _ping(ctx):
     await ctx.send('peeeeeeee')
+
+#VC入退室
+@bot.event
+async def on_voice_state_update(member,before,after) :
+    if member.guild.id == guildid and (before.channel != after.channel):
+        now = datetime.utcnow() + timedelta(hours=9)
+        alert_channel = bot.get_channel(logchannel)
+        if before.channel is None:
+            msg = f'{now:%m/%d-%H:%M:%S} に {member.name} が "{after.channel.name}" に参加しました。'
+            await alert_channel.send(msg)
+        elif after.channel is None:
+            msg = f'{now:%m/%d-%H:%M:%S} に {member.name} が "{before.channel.name}" から退出しました。'
+            await alert_channel.send(msg)
+        else:
+            msg = f'{now:%m/%d-%H:%M:%S} に {member.name} が "{before.channel.name}" から "{after.channel.name}" に移動しました。'
+            await alert_channel.send(msg)
+
 
 bot.run(token)
