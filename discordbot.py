@@ -59,14 +59,15 @@ async def on_voice_state_update(member,before,after) :
     if member.guild.id == guildid and (before.channel != after.channel):
         now = datetime.utcnow() + timedelta(hours=9)
         alert_channel = bot.get_channel(logchannel)
+        vclogmention = "<#" + member.id + ">"
         if before.channel is None:
-            msg = f'{now:%m/%d-%H:%M:%S} に {member.name} が "{after.channel.name}" に参加しました。'
+            msg = f'{now:%m/%d-%H:%M:%S} に {vclogmention} が "{after.channel.name}" に参加しました。'
             await alert_channel.send(msg)
         elif after.channel is None:
-            msg = f'{now:%m/%d-%H:%M:%S} に {member.name} が "{before.channel.name}" から退出しました。'
+            msg = f'{now:%m/%d-%H:%M:%S} に {vclogmention} が "{before.channel.name}" から退出しました。'
             await alert_channel.send(msg)
         else:
-            msg = f'{now:%m/%d-%H:%M:%S} に {member.name} が "{before.channel.name}" から "{after.channel.name}" に移動しました。'
+            msg = f'{now:%m/%d-%H:%M:%S} に {vclogmention} が "{before.channel.name}" から "{after.channel.name}" に移動しました。'
             await alert_channel.send(msg)
 
 
