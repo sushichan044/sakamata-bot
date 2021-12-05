@@ -51,7 +51,7 @@ async def on_message(message):
 
 #/ping
 @bot.command(name='ping')
-async def _ping(ctx):
+async def ping(ctx):
     await ctx.send('peeeeeeee')
 
 #VC入退室ログ
@@ -70,6 +70,12 @@ async def on_voice_state_update(member,before,after) :
         else:
             msg = f'{now:%m/%d-%H:%M:%S} に {vclogmention} が "{before.channel.name}" から "{after.channel.name}" に移動しました。'
             await alert_channel.send(msg)
+
+
+#ユーザー情報取得
+@bot.command(name='test')
+async def test(self,ctx,member:discord.Member):
+    await ctx.send(embed=discord.Embed(title=f'{member}の詳細',description='説明文')
 
 
 bot.run(token)
