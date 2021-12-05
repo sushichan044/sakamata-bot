@@ -24,9 +24,9 @@ intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="/",intents=intents)
 
 #IDなど
-guildid = 916965252896260117
-logchannel = 916971090042060830
-vclogchannel = 916988601902989373
+guildid = 915910043461890078
+logchannel = 917009541433016370
+vclogchannel = 917009562383556678
 
 
 #Bootmsg-serverlogchannel/console
@@ -38,7 +38,6 @@ async def greet():
 async def on_ready():
     print('logged in as {0.user}'.format(bot))
     await greet()
-
 
 
 #Dispander
