@@ -77,7 +77,7 @@ async def on_voice_state_update(member,before,after) :
             await alert_channel.send(msg)
 
 #変更前形式
-# {now:%m/%d-%H:%M:%S} に {}...
+# {now:%m/%d-%H:%M:%S} に {}...aaa
 
 
 bot.run(token)
