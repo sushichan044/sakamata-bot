@@ -46,7 +46,7 @@ async def on_message(message):
 
 #/ping
 @bot.command(name='ping')
-async def _ping(ctx, arg):
+async def _ping(ctx):
     await ctx.send('peeeeeeee')
 
 bot.run(token)
