@@ -6,7 +6,6 @@ import sys
 import requests
 from dispander import dispand
 from discord.ext import commands
-from discord_slash import SlashCommand
 
 
 ### イベントハンドラ一覧(client) #################################################
@@ -23,15 +22,11 @@ token = os.environ['DISCORD_BOT_TOKEN']
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="/",intents=intents)
-slash = SlashCommand(bot, sync_commands=True)
 
 #IDなど
 guildid = 916965252896260117
 logchannel = 916971090042060830
 vclogchannel = 916988601902989373
-
-#discord-interaction用
-guild_ids = [789032594456576001]
 
 
 #Bootmsg-serverlogchannel/console
@@ -81,12 +76,6 @@ async def on_voice_state_update(member,before,after) :
 @bot.command()
 async def test(ctx):
     await ctx.send('hello')
-
-
-#slash-test
-@slash.slash(name="ping", guild_ids=guild_ids)
-async def _ping(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({bot.latency*1000}ms)")
 
 
 bot.run(token)
