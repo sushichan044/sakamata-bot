@@ -85,8 +85,8 @@ async def test(ctx):
 
 #slash-test
 @slash.slash(name="ping", guild_ids=guild_ids)
-    async def _ping(ctx): # Defines a new "context" (ctx) command called "ping."
-        await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _ping(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({bot.latency*1000}ms)")
 
 
 bot.run(token)
