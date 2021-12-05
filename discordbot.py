@@ -5,6 +5,10 @@ from datetime import datetime, timedelta
 import sys
 import requests
 from dispander import dispand
+from discord.ext import commands
+import cogs.DmCog as DmCog
+bot = commands.Bot(command_prefix='/')
+
 
 ### イベントハンドラ一覧 #################################################
 # async def の後を変えるだけで実行されるイベンドが変わる
@@ -24,6 +28,9 @@ client = discord.Client(intents=intents)
 @client.event
 async def on_ready():
     print('logged in as {0.user}'.format(client))
+    GameCog.setup(bot)
+    channel = bot.get_channel(916971090042060830)
+    await channel.send('start success')
 
 #Dispander
 @client.event
