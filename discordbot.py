@@ -11,9 +11,6 @@ from discord.ext import commands
 https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=543816019030&scope=bot
 '''
 
-
-
-
 ### イベントハンドラ一覧(client) #################################################
 # async def の後を変えるだけで実行されるイベンドが変わる
 # メッセージ受信時に実行：   on_message(message)
