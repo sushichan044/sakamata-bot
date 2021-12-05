@@ -20,10 +20,7 @@ from discord.ext import commands
 token = os.environ['DISCORD_BOT_TOKEN']
 
 intents = discord.Intents.all()
-bot = commands.Bot(
-    command_prefix="/",
-    intents=intents
-)
+bot = commands.Bot(command_prefix="/",intents=intents)
 
 #IDなど
 guildid = 916965252896260117
@@ -49,11 +46,6 @@ async def on_message(message):
         return
     await dispand(message)
 
-#/ping
-@bot.command()
-async def ping(ctx):
-    await ctx.reply('peeeeeeee')
-
 #VC入退室ログ
 @bot.event
 async def on_voice_state_update(member,before,after) :
@@ -74,8 +66,10 @@ async def on_voice_state_update(member,before,after) :
 
 #oumu
 @bot.command()
-async def test(ctx, arg):
-    await ctx.send(arg)
+async def test(ctx):
+    if ctx.author == bot.user:
+        return
+    await ctx.reply("ongyaa")
 
 
 bot.run(token)
