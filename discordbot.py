@@ -66,10 +66,8 @@ async def on_voice_state_update(member,before,after) :
 
 #oumu
 @bot.command()
-async def test(ctx):
-    if ctx.author == bot.user:
-        return
-    await ctx.send("ongyaa")
+async def test(ctx,arg):
+    await ctx.send(arg)
 
 
 bot.run(token)
