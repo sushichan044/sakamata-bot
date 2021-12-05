@@ -50,9 +50,9 @@ async def on_message(message):
     await dispand(message)
 
 #/ping
-@bot.command(name='ping')
+@bot.command()
 async def ping(ctx):
-    await ctx.send('peeeeeeee')
+    await ctx.reply('peeeeeeee')
 
 #VC入退室ログ
 @bot.event
@@ -72,11 +72,6 @@ async def on_voice_state_update(member,before,after) :
             await alert_channel.send(msg)
 
 
-#ユーザー情報取得
-@bot.command()
-async def test(ctx,user_id):
-    user = bot.get_user(user_id)
-    await ctx.send(user)
 
 
 bot.run(token)
