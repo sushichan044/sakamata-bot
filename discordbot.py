@@ -44,23 +44,9 @@ async def on_message(message):
         return
     await dispand(message)
 
-
-#fetchuser
-class FetchUser(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot # commands.Botインスタンスを代入
-
-    @commands.command()
-    async def fetch_user(self, target_id: int):
-        try:
-            target = await self.bot.fetch_user(target_id)
-        except discord.NotFound:
-            # ユーザーが見つからなかった場合の処理（以下は一例）
-            await ctx.send("ユーザーが見つかりませんでした。")
-            return
-
-        await ctx.send(str(target)) # Username#0000
-
-
+#/ping
+@bot.command(name='ping')
+async def _sen_ping_dm(ctx, arg):
+    await ctx.send('peeeeeeee')
 
 bot.run(token)
