@@ -5,9 +5,6 @@ from datetime import datetime, timedelta
 import sys
 import requests
 from dispander import dispand
-from discord.ext import commands
-import cogs.DmCog as DmCog
-bot = commands.Bot(command_prefix='/')
 
 
 ### イベントハンドラ一覧 #################################################
@@ -25,12 +22,16 @@ intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
 #Bootmsg-console
+channel_id = 916971090042060830
+
+async def greet():
+    channel = client.get_channel(channel_id)
+    await channel.send('起動完了')
+
 @client.event
 async def on_ready():
     print('logged in as {0.user}'.format(client))
-    GameCog.setup(bot)
-    channel = bot.get_channel(916971090042060830)
-    await channel.send('start success')
+    await greet()
 
 #Dispander
 @client.event
