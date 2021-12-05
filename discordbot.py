@@ -69,7 +69,7 @@ async def on_voice_state_update(member,before,after) :
 async def test(ctx):
     if ctx.author == bot.user:
         return
-    await ctx.reply("ongyaa")
+    await ctx.send("ongyaa")
 
 
 bot.run(token)
