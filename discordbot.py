@@ -73,9 +73,10 @@ async def on_voice_state_update(member,before,after) :
 
 
 #ユーザー情報取得
-@bot.command(name='test')
-async def test(self,ctx,member:discord.Member):
-    await ctx.send(embed=discord.Embed(title=f'{member}の詳細',description='説明文'))
+@bot.command()
+async def test(ctx,user_id):
+    user = bot.get_user(user_id)
+    await ctx.send(user)
 
 
 bot.run(token)
