@@ -17,7 +17,11 @@ from discord.ext import commands
 # ボイスチャンネル出入に実行： on_voice_state_update(member, before, after)
 ###################################################################
 
-token = os.environ['DISCORD_BOT_TOKEN']
+#localtoken
+token = "OTE2OTU2ODQyNDQwMTUxMDcw.Yaxsmw.6riWNmW8UD5zpfV3KB3N1AlYb2E"
+
+#onlinetoken
+#token = os.environ['DISCORD_BOT_TOKEN']
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!",intents=intents)
