@@ -70,8 +70,8 @@ async def on_voice_state_update(member,before,after) :
 
 #oumu
 @bot.command()
-async def test(ctx,arg):
-    await ctx.send(arg)
+async def test(ctx):
+    await ctx.send('hello')
 
 
 bot.run(token)
