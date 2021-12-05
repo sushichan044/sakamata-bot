@@ -28,6 +28,7 @@ bot = commands.Bot(
 #IDなど
 guildid = 916965252896260117
 logchannel = 916971090042060830
+vclogchannel = 916988601902989373
 
 
 #Bootmsg-console
@@ -53,12 +54,12 @@ async def on_message(message):
 async def _ping(ctx):
     await ctx.send('peeeeeeee')
 
-#VC入退室
+#VC入退室ログ
 @bot.event
 async def on_voice_state_update(member,before,after) :
     if member.guild.id == guildid and (before.channel != after.channel):
         now = datetime.utcnow() + timedelta(hours=9)
-        alert_channel = bot.get_channel(logchannel)
+        alert_channel = bot.get_channel(vclogchannel)
         vclogmention = f'<@{member.id}>'
         if before.channel is None:
             msg = f'{now:%m/%d-%H:%M:%S} に {vclogmention} が "{after.channel.name}" に参加しました。'
