@@ -6,6 +6,7 @@ cffi==1.15.0
 chardet==4.0.0
 charset-normalizer==2.0.9
 discord.py==1.7.3
+dispander==0.5.0
 idna==3.3
 multidict==5.2.0
 oauthlib==3.1.1

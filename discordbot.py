@@ -4,6 +4,7 @@ import traceback
 from datetime import datetime, timedelta
 import sys
 import requests
+from dispander import dispand, delete_dispand
 
 ### イベントハンドラ一覧 #################################################
 # async def の後を変えるだけで実行されるイベンドが変わる
@@ -23,5 +24,12 @@ client = discord.Client(intents=intents)
 @client.event
 async def on_ready():
     print('logged in as {0.user}'.format(client))
+
+#Dispander
+@client.event
+async def on_message(message):
+    if message.author.bot:
+        return
+    await dispand(message)
 
 client.run(token)
