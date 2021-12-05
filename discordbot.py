@@ -8,7 +8,7 @@ from dispander import dispand
 from discord.ext import commands
 
 
-### イベントハンドラ一覧 #################################################
+### イベントハンドラ一覧(client) #################################################
 # async def の後を変えるだけで実行されるイベンドが変わる
 # メッセージ受信時に実行：   on_message(message)
 # Bot起動時に実行：      on_ready(message)
@@ -17,14 +17,11 @@ from discord.ext import commands
 # ボイスチャンネル出入に実行： on_voice_state_update(member, before, after)
 ###################################################################
 
-#localtoken
-#token = "OTE2OTU2ODQyNDQwMTUxMDcw.Yaxsmw.6riWNmW8UD5zpfV3KB3N1AlYb2E"
-
-#onlinetoken
+#onlinetoken@heroku
 token = os.environ['DISCORD_BOT_TOKEN']
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix="!",intents=intents)
+bot = commands.Bot(command_prefix="/",intents=intents)
 
 #IDなど
 guildid = 916965252896260117
@@ -32,8 +29,7 @@ logchannel = 916971090042060830
 vclogchannel = 916988601902989373
 
 
-#Bootmsg-console
-
+#Bootmsg-serverlogchannel/console
 async def greet():
     channel = bot.get_channel(logchannel)
     await channel.send('起動完了')
@@ -42,6 +38,8 @@ async def greet():
 async def on_ready():
     print('logged in as {0.user}'.format(bot))
     await greet()
+
+
 
 #Dispander
 @bot.event
