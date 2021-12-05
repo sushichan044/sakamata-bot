@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import sys
 import requests
 from dispander import dispand
+from discord.ext import commands
 
 
 ### イベントハンドラ一覧 #################################################
@@ -19,25 +20,30 @@ from dispander import dispand
 token = os.environ['DISCORD_BOT_TOKEN']
 
 intents = discord.Intents.all()
-client = discord.Client(intents=intents)
+bot = commands.Bot(
+    command_prefix="/",
+    intents=intents
+)
 
 #Bootmsg-console
 channel_id = 916971090042060830
 
 async def greet():
-    channel = client.get_channel(channel_id)
+    channel = bot.get_channel(channel_id)
     await channel.send('起動完了')
 
-@client.event
+@bot.event
 async def on_ready():
-    print('logged in as {0.user}'.format(client))
+    print('logged in as {0.user}'.format(bot))
     await greet()
 
 #Dispander
-@client.event
+@bot.event
 async def on_message(message):
     if message.author.bot:
         return
     await dispand(message)
 
-client.run(token)
+
+
+bot.run(token)
