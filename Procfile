@@ -1,1 +1,1 @@
-web: gunicorn gettingstarted.wsgi --log-file -
+discordbot: python discordbot.py
