@@ -72,6 +72,10 @@ async def on_voice_state_update(member,before,after) :
             await alert_channel.send(msg)
 
 
+#oumu
+@bot.command()
+async def test(ctx, arg):
+    await ctx.send(arg)
 
 
 bot.run(token)
