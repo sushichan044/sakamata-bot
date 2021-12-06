@@ -76,4 +76,7 @@ async def on_voice_state_update(member,before,after) :
 async def test(ctx):
     await ctx.send('hello')
 
+
+
+
 bot.run(token)
