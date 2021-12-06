@@ -39,13 +39,19 @@ async def on_ready():
     print('logged in as {0.user}'.format(bot))
     await greet()
 
-
-
-#Dispander
+'''
+#Dispander-botreject-ugokanai
 @bot.event
 async def on_message(message):
     if message.author.bot:
         return
+    await dispand(message)
+    await bot.process_commands(message)
+'''
+
+#Dispander-All
+@bot.event
+async def on_message(message):
     await dispand(message)
     await bot.process_commands(message)
 
