@@ -4,7 +4,7 @@ import traceback
 from datetime import datetime, timedelta
 import sys
 import requests
-from dispander import dispand
+from dispanderfixed import dispand
 from discord.ext import commands
 
 
