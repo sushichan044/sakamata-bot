@@ -26,10 +26,20 @@ token = os.environ['DISCORD_BOT_TOKEN']
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="/",intents=intents)
 
-#IDなど
+#本番鯖IDなど
+
 guildid = 915910043461890078
 logchannel = 917009541433016370
-vclogchannel = 917009562383556678
+vclog = 917009562383556678
+commandchannel = 917788634655109200
+
+'''
+#実験鯖IDなど
+guildid = 916965252896260117
+logchannel = 916971090042060830
+vclogchannel = 916988601902989373
+commandchannel = 917788514903539794
+'''
 
 
 #Bootmsg-serverlogchannel/console
@@ -46,10 +56,19 @@ async def on_ready():
 
 
 #Dispander
+'''
+#Dispander-botreject-ugokanai
 @bot.event
 async def on_message(message):
     if message.author.bot:
         return
+    await dispand(message)
+    await bot.process_commands(message)
+'''
+
+#Dispander-All
+@bot.event
+async def on_message(message):
     await dispand(message)
     await bot.process_commands(message)
 
@@ -65,17 +84,44 @@ async def on_voice_state_update(member,before,after) :
         alert_channel = bot.get_channel(vclogchannel)
         vclogmention = f'<@{member.id}>'
         if before.channel is None:
-            msg = f'({now:%m/%d %H:%M:%S}):{vclogmention} が "{after.channel.name}" に参加しました。'
+            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が "{after.channel.name}" に参加しました。'
             await alert_channel.send(msg)
         elif after.channel is None:
-            msg = f'({now:%m/%d %H:%M:%S}):{vclogmention} が "{before.channel.name}" から退出しました。'
+            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が "{before.channel.name}" から退出しました。'
             await alert_channel.send(msg)
         else:
-            msg = f'({now:%m/%d %H:%M:%S}):{vclogmention} が "{before.channel.name}" から "{after.channel.name}" に移動しました。'
+            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が "{before.channel.name}" から "{after.channel.name}" に移動しました。'
             await alert_channel.send(msg)
 
-#変更前形式
-# {now:%m/%d-%H:%M:%S} に {}...aaa
+#oumu
+@bot.command()
+async def test(ctx):
+    await ctx.send('hello')
+
+#user-info-command
+@bot.command()
+async def user(ctx,id: int):
+    user = bot.get_user(id)
+    guild = bot.get_guild(guildid)
+    member = guild.get_member(id)
+    channel = bot.get_channel(commandchannel)
+    #この先表示する用
+    memberifbot = member.bot
+    memberregdate = member.created_at
+    #NickNameあるか？
+    membername = member.name
+    membernickname = member.display_name
+    if membernickname == membername :
+        memberifnickname = "None"
+    else:
+        memberifnickname = membernickname
+    memberid = member.id
+    memberjoindate = member.joined_at
+    membermention = member.mention
+    memberroles = member.roles
+    #Message成形-途中
+    userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{memberroles}```'
+    await channel.send(userinfomsg)
 
 
 bot.run(token)
