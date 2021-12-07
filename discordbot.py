@@ -114,8 +114,8 @@ async def user(ctx,id: int):
     membermention = member.mention
     memberroles = member.roles
     #Message成形
-    userinfomsg = f'Bot?:{memberifbot},ユーザー名:{member},ニックネーム:{memberifnickname},アカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S},ID:{memberid},参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S},メンション:{membermention},所持ロール:{memberroles}'
-    await channel.send(f'```{userinfomsg}```')
+    userinfomsg = f'```Bot?:{memberifbot},ユーザー名:{member},ニックネーム:{memberifnickname},アカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S},ID:{memberid},参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S},メンション:{membermention},所持ロール:{memberroles}```'
+    await channel.send(userinfomsg)
 
 
 bot.run(token)
