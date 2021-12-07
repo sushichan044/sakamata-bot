@@ -88,7 +88,7 @@ async def test(ctx):
 async def user(ctx,id: int):
     user = bot.get_user(id)
     guild = guildid
-    member = await guild.fetch_member(id)
+    member = bot.guild.fetch_member(id)
     userregdate = user.created_at
     channel = bot.get_channel(logchannel)
     await channel.send(f'ユーザー名:{member},アカウント作成日時:{userregdate:%Y/%m/%d %H:%M:%S}')
