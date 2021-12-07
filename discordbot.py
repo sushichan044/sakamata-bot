@@ -87,10 +87,16 @@ async def test(ctx):
 @bot.command()
 async def user(ctx,id: int):
     user = bot.get_user(id)
-    userregdate= user.created_at
-
+    member = bot.get_member(id)
+    memberavatar = member.avatar
+    memberavatarurl = member.avatar_url
+    memberifbot = member.bot
+    memberregdate = member.created_at
+    memberdisplayname = user.display_name
+    memberid = member.id
+    membermention = member.mention
     channel = bot.get_channel(logchannel)
-    await channel.send(f'ユーザー名:{user},アカウント作成日時:{userregdate:%Y/%m/%d %H:%M:%S}')
+    await channel.send(f'ユーザー名:{member},アカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S},{memberavatarurl},{memberifbot},{memberdisplayname},{memberid},{membermention}')
 
 
 
