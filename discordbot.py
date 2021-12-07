@@ -33,9 +33,11 @@ vclogchannel = 917009562383556678
 
 
 #Bootmsg-serverlogchannel/console
+now = datetime.utcnow() + timedelta(hours=9)
+
 async def greet():
     channel = bot.get_channel(logchannel)
-    await channel.send('起動完了')
+    await channel.send(f'起動完了。({now:%m/%d-%H:%M:%S})')
 
 @bot.event
 async def on_ready():
@@ -60,7 +62,6 @@ async def on_message(message):
 @bot.event
 async def on_voice_state_update(member,before,after) :
     if member.guild.id == guildid and (before.channel != after.channel):
-        now = datetime.utcnow() + timedelta(hours=9)
         alert_channel = bot.get_channel(vclogchannel)
         vclogmention = f'<@{member.id}>'
         if before.channel is None:
