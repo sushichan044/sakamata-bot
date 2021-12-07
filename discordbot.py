@@ -87,11 +87,25 @@ async def test(ctx):
 @bot.command()
 async def user(ctx,id: int):
     user = bot.get_user(id)
-    userregdate = user.created_at
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
     channel = bot.get_channel(logchannel)
-    await channel.send(f'ユーザー名:{member},アカウント作成日時:{userregdate:%Y/%m/%d %H:%M:%S}')
+    #この先表示する用
+    memberifbot = member.bot
+    memberregdate = member.created_at
+    #NickNameあるか？
+    membernickname = member.display_name
+    if membernickname == member
+        memberifnickname = "None"
+    else:
+        memberifnickname = membernickname
+    memberid = member.id
+    memberjoindate = member.joined_at
+    membermention = member.mention
+    memberroles = member.roles
+    #Message成形
+    userinfomsg = f'Bot?:{memberifbot},ユーザー名:{member},ニックネーム:{memberifnickname},アカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S},ID:{memberid},参加日時:{memberjoindate},メンション:{membermention},所持ロール:{memberroles}'
+    await channel.send(userinfomsg)
 
 
 
