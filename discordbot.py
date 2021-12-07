@@ -118,6 +118,4 @@ async def user(ctx,id: int):
     await channel.send(userinfomsg)
 
 
-
-
 bot.run(token)
