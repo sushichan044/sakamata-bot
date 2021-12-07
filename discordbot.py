@@ -88,7 +88,7 @@ async def test(ctx):
 async def user(ctx,id: int):
     user = bot.get_user(id)
     guild = guildid
-    member = bot.guild.get_member(id)
+    member = bot.guild.fetch_member(id)
     userregdate = user.created_at
     memberavatar = member.avatar
     memberavatarurl = member.avatar_url
