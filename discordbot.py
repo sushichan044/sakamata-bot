@@ -37,7 +37,7 @@ now = datetime.utcnow() + timedelta(hours=9)
 
 async def greet():
     channel = bot.get_channel(logchannel)
-    await channel.send(f'起動完了。({now:%m/%d-%H:%M:%S})')
+    await channel.send(f'起動完了({now:%m/%d-%H:%M:%S})')
 
 @bot.event
 async def on_ready():
