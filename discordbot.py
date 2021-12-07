@@ -6,6 +6,7 @@ import sys
 import requests
 from dispanderfixed import dispand
 from discord.ext import commands
+import math
 
 
 ### イベントハンドラ一覧(client) #################################################
@@ -120,7 +121,9 @@ async def user(ctx,id: int):
 #ping-test
 @bot.command()
 async def ping(ctx):
-    await ctx.send(f'Ping is {bot.latency}')
+    ping = str(bot.latency) * 1000
+    sendping = math.floor(ping)
+    await ctx.send(f'Ping is {sendping}ms')
 
 
 
