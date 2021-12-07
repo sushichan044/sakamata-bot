@@ -89,7 +89,7 @@ async def user(ctx,id: int):
     user = bot.get_user(id)
     userregdate= user.created_at
     channel = bot.get_channel(logchannel)
-    await channel.send(user,userregdate)
+    await channel.send(f'ユーザー名:{user},アカウント作成日時:{userregdate}')
 
 
 
