@@ -123,6 +123,7 @@ async def user(ctx,id: int):
 async def ping(ctx):
     ping = int(bot.latency)*1000
     sendping = math.floor(ping)
+    print(sendping)
     await ctx.send(f'Ping is {sendping}ms')
 
 
