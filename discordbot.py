@@ -86,7 +86,7 @@ async def test(ctx):
 #user-info-command
 @bot.command()
 async def user(ctx,id: int):
-    user = await bot.get_user(id)
+    user = bot.get_user(id)
     channel = bot.get_channel(logchannel)
     await channel.send(user)
 
