@@ -121,8 +121,7 @@ async def user(ctx,id: int):
 #ping-test??
 @bot.command()
 async def ping(ctx):
-    ping = str(bot.latency) * 1000
-    sendping = math.floor(ping)
+    sendping = math.floor(bot.latency * 1000)
     await ctx.send(f'Ping is {sendping}ms')
 
 
