@@ -44,7 +44,9 @@ now = datetime.utcnow() + timedelta(hours=9)
 
 async def greet():
     channel = bot.get_channel(logchannel)
-    await channel.send(f'起動完了({now:%m/%d-%H:%M:%S},{bot.latency})')
+    rawping = bot.latency
+    ping = round(rawping * 1000)
+    await channel.send(f'起動完了({now:%m/%d-%H:%M:%S},{ping}ms)')
 
 @bot.event
 async def on_ready():
@@ -118,14 +120,11 @@ async def user(ctx,id: int):
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{memberroles}```'
     await channel.send(userinfomsg)
 
-#ping-test???
+#ping-test
 @bot.command()
 async def ping(ctx):
     rawping = bot.latency
     ping = round(rawping * 1000)
     await ctx.send(f'Ping is {ping}ms')
-
-
-
 
 bot.run(token)
