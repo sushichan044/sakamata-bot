@@ -87,7 +87,7 @@ async def test(ctx):
 @bot.command()
 async def user(ctx,id: int):
     user = bot.get_user(id)
-    member = bot.fetch_member(id)
+    member = bot.guild.fetch_member(id)
     memberavatar = member.avatar
     memberavatarurl = member.avatar_url
     memberifbot = member.bot
