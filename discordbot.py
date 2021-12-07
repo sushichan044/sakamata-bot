@@ -86,10 +86,10 @@ async def test(ctx):
 #user-info-command
 @bot.command()
 async def user(ctx,id: int):
-    userid = bot.get_user(id)
-    userregdate = bot.get_user.created_at(id)
+    user = bot.get_user(id)
+    userregdate= user.created_at
     channel = bot.get_channel(logchannel)
-    await channel.send(userid,userregdate)
+    await channel.send(user,userregdate)
 
 
 
