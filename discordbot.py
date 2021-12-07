@@ -118,7 +118,7 @@ async def user(ctx,id: int):
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{memberroles}```'
     await channel.send(userinfomsg)
 
-#ping-test??
+#ping-test???
 @bot.command()
 async def ping(ctx):
     sendping = math.floor(int(bot.latency) * 1000)
