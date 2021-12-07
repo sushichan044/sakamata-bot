@@ -103,6 +103,7 @@ async def user(ctx,id: int):
     memberifbot = member.bot
     memberregdate = member.created_at
     #NickNameあるか？
+    membername = member.name
     membernickname = member.display_name
     if membernickname == member :
         memberifnickname = "None"
