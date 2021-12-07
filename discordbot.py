@@ -65,13 +65,13 @@ async def on_voice_state_update(member,before,after) :
         alert_channel = bot.get_channel(vclogchannel)
         vclogmention = f'<@{member.id}>'
         if before.channel is None:
-            msg = f'({now:%m/%d-%H:%M:%S}):{vclogmention} が "{after.channel.name}" に参加しました。'
+            msg = f'({now:%m/%d %H:%M:%S}):{vclogmention} が "{after.channel.name}" に参加しました。'
             await alert_channel.send(msg)
         elif after.channel is None:
-            msg = f'({now:%m/%d-%H:%M:%S}):{vclogmention} が "{before.channel.name}" から退出しました。'
+            msg = f'({now:%m/%d %H:%M:%S}):{vclogmention} が "{before.channel.name}" から退出しました。'
             await alert_channel.send(msg)
         else:
-            msg = f'({now:%m/%d-%H:%M:%S}):{vclogmention} が "{before.channel.name}" から "{after.channel.name}" に移動しました。'
+            msg = f'({now:%m/%d %H:%M:%S}):{vclogmention} が "{before.channel.name}" から "{after.channel.name}" に移動しました。'
             await alert_channel.send(msg)
 
 #変更前形式
