@@ -105,7 +105,7 @@ async def user(ctx,id: int):
     #NickNameあるか？
     membername = member.name
     membernickname = member.display_name
-    if membernickname == member :
+    if membernickname == membername :
         memberifnickname = "None"
     else:
         memberifnickname = membernickname
