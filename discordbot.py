@@ -55,7 +55,6 @@ async def on_ready():
     await greet()
 
 
-#Dispander
 '''
 #Dispander-botreject-ugokanai
 @bot.event
