@@ -6,7 +6,6 @@ import sys
 import requests
 from dispanderfixed import dispand
 from discord.ext import commands
-import math
 
 
 ### イベントハンドラ一覧(client) #################################################
