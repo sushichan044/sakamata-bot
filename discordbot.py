@@ -30,7 +30,7 @@ bot = commands.Bot(command_prefix="/",intents=intents)
 
 guildid = 915910043461890078
 logchannel = 917009541433016370
-vclog = 917009562383556678
+vclogchannel = 917009562383556678
 commandchannel = 917788634655109200
 
 '''
