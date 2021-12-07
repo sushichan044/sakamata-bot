@@ -23,10 +23,19 @@ token = os.environ['DISCORD_BOT_TOKEN']
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="/",intents=intents)
 
-#IDなど
+#本番鯖IDなど
+'''
+guildid = 915910043461890078
+logchannel = 917009541433016370
+vclog = 917009562383556678
+commandchannel = 917788634655109200
+'''
+
+#実験鯖IDなど
 guildid = 916965252896260117
 logchannel = 916971090042060830
 vclogchannel = 916988601902989373
+commandchannel = 917788514903539794
 
 
 #Bootmsg-serverlogchannel/console
@@ -89,13 +98,13 @@ async def user(ctx,id: int):
     user = bot.get_user(id)
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
-    channel = bot.get_channel(logchannel)
+    channel = bot.get_channel(commandchannel)
     #この先表示する用
     memberifbot = member.bot
     memberregdate = member.created_at
     #NickNameあるか？
     membernickname = member.display_name
-    if membernickname == member
+    if membernickname == member :
         memberifnickname = "None"
     else:
         memberifnickname = membernickname
@@ -106,8 +115,6 @@ async def user(ctx,id: int):
     #Message成形
     userinfomsg = f'Bot?:{memberifbot},ユーザー名:{member},ニックネーム:{memberifnickname},アカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S},ID:{memberid},参加日時:{memberjoindate},メンション:{membermention},所持ロール:{memberroles}'
     await channel.send(userinfomsg)
-
-
 
 
 bot.run(token)
