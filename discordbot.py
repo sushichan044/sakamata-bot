@@ -98,7 +98,7 @@ async def user(ctx,id: int):
     memberid = member.id
     membermention = member.mention
     channel = bot.get_channel(logchannel)
-    await channel.send(f'ユーザー名:{member},アカウント作成日時:{userregdate:%Y/%m/%d %H:%M:%S},{memberavatarurl},{memberifbot},{memberdisplayname},{memberid},{membermention}')
+    await channel.send(f'ユーザー名:{member},アカウント作成日時:{userregdate:%Y/%m/%d %H:%M:%S}')
 
 
 
