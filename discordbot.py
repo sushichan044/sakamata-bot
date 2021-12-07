@@ -92,7 +92,7 @@ async def on_voice_state_update(member,before,after) :
             msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が "{before.channel.name}" から "{after.channel.name}" に移動しました。'
             await alert_channel.send(msg)
 
-#hello?
+#hello?>>
 @bot.command()
 async def test(ctx):
     await ctx.send('hello')
