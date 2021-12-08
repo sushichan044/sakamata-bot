@@ -43,10 +43,11 @@ commandchannel = 917788514903539794
 
 
 #Bootmsg-serverlogchannel/console
-now = datetime.utcnow() + timedelta(hours=9)
+
 
 async def greet():
     channel = bot.get_channel(logchannel)
+    now = datetime.utcnow() + timedelta(hours=9)
     await channel.send(f'起動完了({now:%m/%d-%H:%M:%S})')
 
 @bot.event
@@ -81,15 +82,16 @@ async def on_message(message):
 async def on_voice_state_update(member,before,after) :
     if member.guild.id == guildid and (before.channel != after.channel):
         alert_channel = bot.get_channel(vclogchannel)
+        nowvclog = datetime.utcnow() + timedelta(hours=9)
         vclogmention = f'<@{member.id}>'
         if before.channel is None:
-            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が "{after.channel.name}" に参加しました。'
+            msg = f'{nowvclog:%m/%d %H:%M:%S} : {vclogmention} が "{after.channel.name}" に参加しました。'
             await alert_channel.send(msg)
         elif after.channel is None:
-            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が "{before.channel.name}" から退出しました。'
+            msg = f'{nowvclog:%m/%d %H:%M:%S} : {vclogmention} が "{before.channel.name}" から退出しました。'
             await alert_channel.send(msg)
         else:
-            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が "{before.channel.name}" から "{after.channel.name}" に移動しました。'
+            msg = f'{nowvclog:%m/%d %H:%M:%S} : {vclogmention} が "{before.channel.name}" から "{after.channel.name}" に移動しました。'
             await alert_channel.send(msg)
 
 #hello?>>
