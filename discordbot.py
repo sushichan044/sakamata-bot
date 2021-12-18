@@ -73,8 +73,11 @@ async def on_message(message):
 #Dispander-All
 @bot.event
 async def on_message(message):
-    await dispand(message)
-    await bot.process_commands(message)
+    if type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
+        return
+    else:
+        await dispand(message)
+        await bot.process_commands(message)
 
 '''
 デフォルトで提供されている on_message をオーバーライドすると、コマンドが実行されなくなります。
