@@ -148,7 +148,9 @@ async def dmsend(ctx,id:int,*,arg):
 #recieve-dm
 @bot.listen()
 async def on_message(message):
-    if type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
+    if message.author.bot:
+        return
+    elif type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
         embed = discord.Embed(
         color=3447003,
