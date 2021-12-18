@@ -1,3 +1,4 @@
+from logging import debug
 import discord
 import os
 import traceback
@@ -136,7 +137,7 @@ async def ping(ctx):
 
 #send-dm
 @bot.command(name='send-dm')
-async def dmsend(ctx,id:int,arg):
+async def dmsend(ctx,id:int,*,arg):
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
     await member.send(arg)
