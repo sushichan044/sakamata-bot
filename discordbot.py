@@ -145,8 +145,8 @@ async def on_message(message):
     if message.author.bot:
         return
     elif type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
-    channel = bot.get_channel(logchannel)
-    channel.send(message.content)
-    bot.process_commands(message)
+        channel = bot.get_channel(logchannel)
+        channel.send(message.content)
+        bot.process_commands(message)
 
 bot.run(token)
