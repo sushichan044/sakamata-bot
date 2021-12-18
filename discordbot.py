@@ -150,7 +150,7 @@ async def dmsend(ctx,id:int,*,arg):
 async def on_message(message):
     if message.author.bot:
         return
-    elif type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
+    else type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
         embed = discord.Embed(
         color=3447003,
