@@ -139,6 +139,4 @@ async def _dmsend(ctx,id:int,arg):
     senddmmsg = f'{arg}'
     await user.send(senddmmsg)
 
-
-
 bot.run(token)
