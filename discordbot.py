@@ -47,7 +47,6 @@ commandchannel = 917788514903539794
 dmboxchannel = 918101377958436954
 
 
-
 #Bootmsg-serverlogchannel/console
 async def greet():
     channel = bot.get_channel(logchannel)
@@ -165,8 +164,6 @@ async def on_message(message):
         )
         await channel.send(embed=embed)
     await bot.process_commands(message)
-
-#dm-embed
 
 
 bot.run(token)
