@@ -3,6 +3,8 @@ import os
 import traceback
 from datetime import datetime, timedelta
 import sys
+from discord.channel import DMChannel
+from discord.ext.commands.core import dm_only
 import requests
 from dispanderfixed import dispand
 from discord.ext import commands
@@ -33,6 +35,7 @@ guildid = 915910043461890078
 logchannel = 917009541433016370
 vclogchannel = 917009562383556678
 commandchannel = 917788634655109200
+dmboxchannel = 921781301101613076
 
 '''
 #実験鯖IDなど
@@ -40,12 +43,11 @@ guildid = 916965252896260117
 logchannel = 916971090042060830
 vclogchannel = 916988601902989373
 commandchannel = 917788514903539794
+dmboxchannel = 918101377958436954
 
 
 
 #Bootmsg-serverlogchannel/console
-
-
 async def greet():
     channel = bot.get_channel(logchannel)
     now = datetime.utcnow() + timedelta(hours=9)
@@ -145,7 +147,7 @@ async def on_message(message):
     if message.author.bot:
         return
     elif type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
-        channel = bot.get_channel(logchannel)
+        channel = bot.get_channel(dmboxchannel)
         embed = discord.Embed(
         color=3447003,
         description=message.content,
