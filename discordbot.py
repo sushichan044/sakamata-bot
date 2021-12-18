@@ -71,10 +71,12 @@ async def on_message(message):
 '''
 
 #Dispander-All
-@bot.event
+@bot.listen()
 async def on_message(message):
-    await dispand(message)
-    await bot.process_commands(message)
+    if type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
+        return
+    else:
+        await dispand(message)
 
 '''
 デフォルトで提供されている on_message をオーバーライドすると、コマンドが実行されなくなります。
@@ -142,13 +144,11 @@ async def dmsend(ctx,id:int,*,arg):
     member = guild.get_member(id)
     await member.send(arg)
 
-'''
+
 #recieve-dm
-@bot.event
+@bot.listen()
 async def on_message(message):
-    if message.author.bot:
-        return
-    elif type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
+    if type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
         embed = discord.Embed(
         color=3447003,
@@ -165,8 +165,8 @@ async def on_message(message):
             value=f'<@{message.author.id}>'
         )
         await channel.send(embed=embed)
-    await bot.process_commands(message)
-'''
+    else:
+        return
 
 
 bot.run(token)
