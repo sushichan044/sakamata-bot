@@ -26,7 +26,7 @@ https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permission
 token = os.environ['DISCORD_BOT_TOKEN']
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix="/",intents=intents)
+bot = commands.Bot(command_prefix='/',intents=intents)
 
 
 '''
