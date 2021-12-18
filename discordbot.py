@@ -140,7 +140,7 @@ async def _dmsend(ctx,id:int,arg):
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
     senddmmsg = f'{arg}'
-    await member.send(senddmmsg)
+    await user.send(senddmmsg)
 
 #recieve-dm
 @bot.event
