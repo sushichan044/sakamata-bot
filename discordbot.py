@@ -164,7 +164,7 @@ async def on_message(message):
             value=f'<@{message.author.id}>'
         )
         await channel.send(embed=embed)
-        await bot.process_commands(message)
+    await bot.process_commands(message)
 
 #dm-embed
 
