@@ -71,7 +71,7 @@ async def on_message(message):
 '''
 
 #Dispander-All
-@bot.event
+@bot.listen()
 async def on_message(message):
     if type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
         return
@@ -146,7 +146,7 @@ async def dmsend(ctx,id:int,*,arg):
     await member.send(arg)
 
 #recieve-dm
-@bot.event
+@bot.listen()
 async def on_message(message):
     if type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
