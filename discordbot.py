@@ -132,4 +132,13 @@ async def ping(ctx):
     ping = round(rawping * 1000)
     await ctx.send(f'Ping is {ping}ms')
 
+#send-dm
+@bot.command(name='send-dm')
+async def _dmsend(ctx,id:int,arg):
+    user = bot.get_user(id)
+    senddmmsg = f'{arg}'
+    await user.send(senddmmsg)
+
+
+
 bot.run(token)
