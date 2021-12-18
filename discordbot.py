@@ -28,7 +28,7 @@ token = os.environ['DISCORD_BOT_TOKEN']
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="/",intents=intents)
 
-'''
+
 #本番鯖IDなど
 
 guildid = 915910043461890078
@@ -44,7 +44,7 @@ logchannel = 916971090042060830
 vclogchannel = 916988601902989373
 commandchannel = 917788514903539794
 dmboxchannel = 918101377958436954
-
+'''
 
 
 #Bootmsg-serverlogchannel/console
