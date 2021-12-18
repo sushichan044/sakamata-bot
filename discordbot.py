@@ -77,7 +77,7 @@ async def on_message(message):
         return
     else:
         await dispand(message)
-        await bot.process_commands(message)
+    await bot.process_commands(message)
 
 '''
 デフォルトで提供されている on_message をオーバーライドすると、コマンドが実行されなくなります。
