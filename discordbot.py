@@ -1,3 +1,4 @@
+from logging import debug
 import discord
 import os
 import traceback
@@ -26,7 +27,8 @@ https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permission
 token = os.environ['DISCORD_BOT_TOKEN']
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix="/",intents=intents)
+bot = commands.Bot(command_prefix='/',intents=intents)
+
 
 
 #本番鯖IDなど
@@ -45,7 +47,6 @@ vclogchannel = 916988601902989373
 commandchannel = 917788514903539794
 dmboxchannel = 918101377958436954
 '''
-
 
 #Bootmsg-serverlogchannel/console
 async def greet():
@@ -136,10 +137,10 @@ async def ping(ctx):
 
 #send-dm
 @bot.command(name='send-dm')
-async def _dmsend(ctx,id:int,arg):
-    user = bot.get_user(id)
-    senddmmsg = f'{arg}'
-    await user.send(senddmmsg)
+async def dmsend(ctx,id:int,*,arg):
+    guild = bot.get_guild(guildid)
+    member = guild.get_member(id)
+    await member.send(arg)
 
 #recieve-dm
 @bot.event
@@ -163,9 +164,7 @@ async def on_message(message):
             value=f'<@{message.author.id}>'
         )
         await channel.send(embed=embed)
-        await bot.process_commands(message)
-
-#dm-embed
+    await bot.process_commands(message)
 
 
 bot.run(token)
