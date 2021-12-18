@@ -77,7 +77,6 @@ async def on_message(message):
         return
     else:
         await dispand(message)
-    await bot.process_commands(message)
 
 '''
 デフォルトで提供されている on_message をオーバーライドすると、コマンドが実行されなくなります。
@@ -167,7 +166,6 @@ async def on_message(message):
         await channel.send(embed=embed)
     else:
         return
-    await bot.process_commands(message)
 
 
 bot.run(token)
