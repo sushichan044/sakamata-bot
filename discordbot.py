@@ -140,10 +140,12 @@ async def _dmsend(ctx,id:int,arg):
     await user.send(senddmmsg)
 
 #recieve-dm
+@bot.event
 async def on_message(message):
     if message.author.bot:
         return
     elif type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
         logchannel.send(message.content)
+    await bot.process_commands(message)
 
 bot.run(token)
