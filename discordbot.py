@@ -140,9 +140,8 @@ async def ping(ctx):
 #send-dm
 @bot.command(name='send-dm')
 async def dmsend(ctx,id:int,*,arg):
-    guild = bot.get_guild(guildid)
-    member = guild.get_member(id)
-    await member.send(arg)
+    user = bot.get_user(id)
+    await user.send(arg)
 
 
 #recieve-dm
