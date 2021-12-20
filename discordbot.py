@@ -26,8 +26,20 @@ https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permission
 #onlinetoken@heroku
 token = os.environ['DISCORD_BOT_TOKEN']
 
+#help-command-localize-test
+class JapaneseHelpCommand(commands.DefaultHelpCommand):
+    def __init__(self):
+        super().__init__()
+        self.commands_heading = "コマンド:"
+        self.no_category = "利用可能なコマンド"
+        self.command_attrs["help"] = "コマンド一覧と簡単な説明を表示"
+
+    def get_ending_note(self):
+        return (f"各コマンドの説明: /help <コマンド名>\n"
+                f"各カテゴリの説明: /help <カテゴリ名>\n")
+
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix='/',intents=intents)
+bot = commands.Bot(command_prefix='/',intents=intents,help_command=JapaneseHelpCommand())
 
 
 
@@ -103,11 +115,13 @@ async def on_voice_state_update(member,before,after) :
 #hello?>>
 @bot.command()
 async def test(ctx):
+    """生存確認用"""
     await ctx.send('hello')
 
 #user-info-command
 @bot.command()
 async def user(ctx,id: int):
+    """ユーザー情報取得"""
     user = bot.get_user(id)
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
@@ -133,6 +147,7 @@ async def user(ctx,id: int):
 #ping-test
 @bot.command()
 async def ping(ctx):
+    """生存確認用"""
     rawping = bot.latency
     ping = round(rawping * 1000)
     await ctx.send(f'Ping is {ping}ms')
@@ -140,6 +155,7 @@ async def ping(ctx):
 #send-dm
 @bot.command(name='send-dm')
 async def dmsend(ctx,id:int,*,arg):
+    """DM送信用"""
     user = bot.get_user(id)
     await user.send(arg)
 
