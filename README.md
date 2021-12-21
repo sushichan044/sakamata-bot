@@ -9,6 +9,7 @@ dispanderfixed 0.1.2
 
 Mainブランチ:クロヱ水族館の本番環境
 experimentalブランチ:開発サーバーでの動作確認用
+experimental-alphaブランチ:大規模改修を行うときに最初に書くブランチ
 
 
 機能追加履歴
