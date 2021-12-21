@@ -85,7 +85,7 @@ async def on_message(message):
 #Dispander-All
 @bot.listen()
 async def on_message(message):
-    if type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
+    if type(message.channel) == discord.DMChannel:
         return
     else:
         await dispand(message)
@@ -96,7 +96,7 @@ async def on_message(message):
 '''
 
 #VC入退室ログ
-@bot.event
+@bot.listen()
 async def on_voice_state_update(member,before,after) :
     if member.guild.id == guildid and (before.channel != after.channel):
         alert_channel = bot.get_channel(vclogchannel)
@@ -125,7 +125,6 @@ async def user(ctx,id: int):
     user = bot.get_user(id)
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
-    channel = bot.get_channel(commandchannel)
     #この先表示する用
     memberifbot = member.bot
     memberregdate = member.created_at
@@ -142,7 +141,7 @@ async def user(ctx,id: int):
     memberroles = member.roles
     #Message成形-途中
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{memberroles}```'
-    await channel.send(userinfomsg)
+    await ctx.send(userinfomsg)
 
 #ping-test
 @bot.command()
