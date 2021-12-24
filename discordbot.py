@@ -170,7 +170,7 @@ async def on_message(message):
         embed = discord.Embed(
         color=3447003,
         description=message.content,
-        timestamp=datetime.utcnow() + timedelta(hours=9)
+        timestamp=message.created_at,
         )
         embed.set_author(
         name=message.author.display_name,
@@ -199,7 +199,7 @@ async def justconfirm(ctx,channelid:int,arg):
     embed = discord.Embed(
     color=3447003,
     description=arg,
-    timestamp=arg.created_at
+    timestamp=datetime.utcnow() + timedelta(hours=9)
     )
     embed.add_field(
         name='確認',
