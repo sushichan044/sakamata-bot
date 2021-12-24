@@ -197,8 +197,8 @@ async def _messagesend(ctx,channelid:int,*,arg):
 async def justconfirm(ctx,channelid:int,arg):
     channel=bot.get_channel(ctx)
     embed = discord.Embed(
-        color=3447003
-        description=arg
+        color=3447003,
+        description=arg,
         timestamp=arg.created_at
         )
         embed.add_field(
