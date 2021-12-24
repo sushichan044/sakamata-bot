@@ -203,6 +203,8 @@ async def _messagesend(ctx,channelid:int,*,arg):
     role = ctx.guild.get_role(siikuinrole)
     if role.mention in arg:
         await ctx.send(embed=await confirmmessage(ctx,channelid,arg))
+    else:
+        await ctx.send(arg)
 
 #confirm-message
 async def confirmmessage(ctx,channelid:int,arg):
