@@ -1,15 +1,16 @@
-from logging import debug
-import discord
 import os
+import sys
 import traceback
 from datetime import datetime, timedelta
-import sys
+from logging import debug
+
+import discord
+import requests
 from discord import channel
 from discord.channel import DMChannel
-from discord.ext.commands.core import dm_only
-import requests
-from dispanderfixed import dispand
 from discord.ext import commands
+from discord.ext.commands.core import dm_only
+from dispanderfixed import dispand
 
 '''bot招待リンク
 https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=543816019030&scope=bot
@@ -84,6 +85,13 @@ async def on_command_error(ctx,error):
 @bot.command()
 async def errortest(ctx):
     prin()
+
+#download-img
+def download_img(url, file_name):
+    r = requests.get(url, stream=True)
+    if r.status_code == 200:
+        with open(file_name, 'wb') as f:
+            f.write(r.content)
 
 '''
 #Dispander-botreject-ugokanai
