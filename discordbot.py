@@ -98,8 +98,8 @@ async def on_message(message):
 '''
 
 #Dispander-All
-@bot.listen()
-async def on_message(message):
+@bot.listen('on_message')
+async def on_message_dispand(message):
     if type(message.channel) == discord.DMChannel:
         return
     else:
@@ -174,8 +174,8 @@ async def _dmsend(ctx,id:int,*,arg):
     await user.send(arg)
 
 #recieve-dm
-@bot.listen()
-async def on_message(message):
+@bot.listen('on_message')
+async def on_message_dm(message):
     if message.author.bot:
         return
     elif type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
@@ -222,6 +222,13 @@ async def confirmmessage(ctx,channelid:int,arg):
         value=f'以上のメッセージを<#{channelid}>へ送信しますか?'
         )
     return embed
+
+#message-edit
+@bot.command(name='edit-message')
+async def editmessage(ctx,channelid:int,messageid:int,*,arg):
+    channel=bot.get_channel(channelid)
+    msg=await channel.fetch_message(messageid)
+    await msg.edit(content=arg)
 
 #reaction_check
 #async def reactioncheck():
