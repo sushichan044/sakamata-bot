@@ -170,7 +170,7 @@ async def on_message(message):
         embed = discord.Embed(
         color=3447003,
         description=message.content,
-        timestamp=message.created_at,
+        timestamp=datetime.utcnow() + timedelta(hours=9)
         )
         embed.set_author(
         name=message.author.display_name,
