@@ -4,6 +4,7 @@ import os
 import traceback
 from datetime import datetime, timedelta
 import sys
+from discord import channel
 from discord.channel import DMChannel
 from discord.ext.commands.core import dm_only
 import requests
@@ -71,6 +72,16 @@ async def on_ready():
     print('logged in as {0.user}'.format(bot))
     await greet()
 
+#error-log
+@bot.event
+async def on_command_error(ctx,error):
+    channel = bot.get_channel(logchannel)
+    await channel.send(f'エラーが発生しました。\n{str(error)}')
+
+#error-logtest
+@bot.command()
+async def errortest(ctx):
+    prin()
 
 '''
 #Dispander-botreject-ugokanai
@@ -85,7 +96,7 @@ async def on_message(message):
 #Dispander-All
 @bot.listen()
 async def on_message(message):
-    if type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
+    if type(message.channel) == discord.DMChannel:
         return
     else:
         await dispand(message)
@@ -96,7 +107,7 @@ async def on_message(message):
 '''
 
 #VC入退室ログ
-@bot.event
+@bot.listen()
 async def on_voice_state_update(member,before,after) :
     if member.guild.id == guildid and (before.channel != after.channel):
         alert_channel = bot.get_channel(vclogchannel)
@@ -125,7 +136,6 @@ async def user(ctx,id: int):
     user = bot.get_user(id)
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
-    channel = bot.get_channel(commandchannel)
     #この先表示する用
     memberifbot = member.bot
     memberregdate = member.created_at
@@ -142,7 +152,7 @@ async def user(ctx,id: int):
     memberroles = member.roles
     #Message成形-途中
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{memberroles}```'
-    await channel.send(userinfomsg)
+    await ctx.send(userinfomsg)
 
 #ping-test
 @bot.command()
@@ -154,11 +164,10 @@ async def ping(ctx):
 
 #send-dm
 @bot.command(name='send-dm')
-async def dmsend(ctx,id:int,*,arg):
+async def _dmsend(ctx,id:int,*,arg):
     """DM送信用"""
     user = bot.get_user(id)
     await user.send(arg)
-
 
 #recieve-dm
 @bot.listen()
@@ -185,5 +194,29 @@ async def on_message(message):
     else:
         return
 
+#send-message
+@bot.command(name='send-message')
+async def _messagesend(ctx,channelid:int,*,arg):
+    """メッセージ送信用"""
+    role = ctx.guild.get_role(923719282360188990)
+    if role.mention in arg:
+        await ctx.send(embed=await confirmmessage(ctx,channelid,arg))
+
+#confirm-message
+async def confirmmessage(ctx,channelid:int,arg):
+    channel=bot.get_channel(ctx)
+    embed = discord.Embed(
+    color=3447003,
+    description=arg,
+    timestamp=datetime.utcnow()
+    )
+    embed.add_field(
+        name='確認',
+        value=f'以上のメッセージを<#{channelid}>へ送信しますか?'
+        )
+    return embed
+
+#reaction_check
+#async def reactioncheck():
 
 bot.run(token)
