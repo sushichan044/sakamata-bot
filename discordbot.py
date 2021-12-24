@@ -4,6 +4,7 @@ import os
 import traceback
 from datetime import datetime, timedelta
 import sys
+from discord import channel
 from discord.channel import DMChannel
 from discord.ext.commands.core import dm_only
 import requests
@@ -153,7 +154,7 @@ async def ping(ctx):
 
 #send-dm
 @bot.command(name='send-dm')
-async def dmsend(ctx,id:int,*,arg):
+async def _dmsend(ctx,id:int,*,arg):
     """DM送信用"""
     user = bot.get_user(id)
     await user.send(arg)
@@ -184,5 +185,28 @@ async def on_message(message):
     else:
         return
 
+#send-message
+@bot.command(name='send-message')
+async def _messagesend(ctx,channelid:int,*,arg)
+    """メッセージ送信用"""
+    role = ctx.guild.get_role(923719282360188990)
+    if role.mention in arg:
+        ctx.send(justconfirm(ctx,channelid:int,arg))
+
+#confirm
+async def justconfirm(ctx,channelid:int,arg):
+    channel=bot.get_channel(ctx)
+    embed = discord.Embed(
+        colour=3447003
+        description=arg
+        timestamp=arg.created_at
+        )
+        embed.add_field(
+            name='確認',
+            value=f'以上のメッセージを<#{channelid}>へ送信しますか?'
+        )
+
+#reaction_check
+async def reactioncheck()
 
 bot.run(token)
