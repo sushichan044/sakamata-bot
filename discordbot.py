@@ -187,7 +187,7 @@ async def on_message(message):
 
 #send-message
 @bot.command(name='send-message')
-async def _messagesend(ctx,channelid:int,*,arg)
+async def _messagesend(ctx,channelid:int,*,arg):
     """メッセージ送信用"""
     role = ctx.guild.get_role(923719282360188990)
     if role.mention in arg:
