@@ -197,15 +197,15 @@ async def _messagesend(ctx,channelid:int,*,arg):
 async def justconfirm(ctx,channelid:int,arg):
     channel=bot.get_channel(ctx)
     embed = discord.Embed(
-        color=3447003,
-        description=arg,
-        timestamp=arg.created_at
+    color=3447003,
+    description=arg,
+    timestamp=arg.created_at
+    )
+    embed.add_field(
+        name='確認',
+        value=f'以上のメッセージを<#{channelid}>へ送信しますか?'
         )
-        embed.add_field(
-            name='確認',
-            value=f'以上のメッセージを<#{channelid}>へ送信しますか?'
-        )
-        return embed
+    return embed
 
 #reaction_check
 async def reactioncheck()
