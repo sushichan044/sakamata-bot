@@ -51,6 +51,7 @@ logchannel = 917009541433016370
 vclogchannel = 917009562383556678
 commandchannel = 917788634655109200
 dmboxchannel = 921781301101613076
+siikuinrole = 915915792275632139
 
 '''
 #実験鯖IDなど
@@ -59,7 +60,9 @@ logchannel = 916971090042060830
 vclogchannel = 916988601902989373
 commandchannel = 917788514903539794
 dmboxchannel = 918101377958436954
+siikuinrole = 923719282360188990
 '''
+
 
 #Bootmsg-serverlogchannel/console
 async def greet():
@@ -198,9 +201,12 @@ async def on_message(message):
 @bot.command(name='send-message')
 async def _messagesend(ctx,channelid:int,*,arg):
     """メッセージ送信用"""
-    role = ctx.guild.get_role(923719282360188990)
+    channel=bot.get_channel(channelid)
+    role = ctx.guild.get_role(siikuinrole)
     if role.mention in arg:
         await ctx.send(embed=await confirmmessage(ctx,channelid,arg))
+    else:
+        await channel.send(arg)
 
 #confirm-message
 async def confirmmessage(ctx,channelid:int,arg):
