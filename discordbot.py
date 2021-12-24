@@ -78,6 +78,11 @@ async def on_ready():
 async def on_command_error(ctx,error):
     webhookerror.error_log("エラーが発生しました:" +str(error)+"\nServername:"+str(ctx.guild.name)+"\nName:"+str(ctx.author))
 
+#error-logtest
+@bot.command()
+async def errortest(ctx):
+    prin()
+
 
 '''
 #Dispander-botreject-ugokanai
