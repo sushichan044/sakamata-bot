@@ -208,6 +208,6 @@ async def justconfirm(ctx,channelid:int,arg):
     return embed
 
 #reaction_check
-async def reactioncheck()
+#async def reactioncheck():
 
 bot.run(token)
