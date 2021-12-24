@@ -10,6 +10,7 @@ from discord.ext.commands.core import dm_only
 import requests
 from dispanderfixed import dispand
 from discord.ext import commands
+import webhookerror
 
 '''bot招待リンク
 https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=543816019030&scope=bot
@@ -71,6 +72,11 @@ async def greet():
 async def on_ready():
     print('logged in as {0.user}'.format(bot))
     await greet()
+
+#error-log
+@bot.event
+async def on_command_error(ctx,error):
+    webhookerror.error_log("エラーが発生しました:" +str(error)+"\nServername:"+str(ctx.guild.name)+"\nName:"+str(ctx.author))
 
 
 '''
