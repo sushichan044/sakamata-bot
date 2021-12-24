@@ -225,7 +225,8 @@ async def confirmmessage(ctx,channelid:int,arg):
 
 #message-edit
 @bot.command(name='edit-message')
-async def editmessage(ctx,channelid:int,messageid:int,*,arg):
+async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
+    """メッセージ編集用"""
     channel=bot.get_channel(channelid)
     msg=await channel.fetch_message(messageid)
     await msg.edit(content=arg)
