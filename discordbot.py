@@ -86,13 +86,6 @@ async def on_command_error(ctx,error):
 async def errortest(ctx):
     prin()
 
-#download-img
-def download_img(url, file_name):
-    r = requests.get(url, stream=True)
-    if r.status_code == 200:
-        with open(file_name, 'wb') as f:
-            f.write(r.content)
-
 '''
 #Dispander-botreject-ugokanai
 @bot.event
