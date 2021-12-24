@@ -205,6 +205,7 @@ async def justconfirm(ctx,channelid:int,arg):
             name='確認',
             value=f'以上のメッセージを<#{channelid}>へ送信しますか?'
         )
+        return embed
 
 #reaction_check
 async def reactioncheck()
