@@ -223,6 +223,13 @@ async def confirmmessage(ctx,channelid:int,arg):
         )
     return embed
 
+#message-edit
+@bot.command(name='edit-message')
+async def editmessage(ctx,channelid:int,messageid:int,*,arg)
+    editchannel=bot.get_channel(channelid)
+    editmsg=await editchannel.fetch_message(messageid)
+    await editmsg.edit(content=arg)
+
 #reaction_check
 #async def reactioncheck():
 
