@@ -191,21 +191,23 @@ async def _messagesend(ctx,channelid:int,*,arg):
     """メッセージ送信用"""
     role = ctx.guild.get_role(923719282360188990)
     if role.mention in arg:
-        await ctx.send(embed=await justconfirm(ctx,channelid,arg))
+        await ctx.send(embed=await confirmmessage(ctx,channelid,arg))
 
-#confirm
-async def justconfirm(ctx,channelid:int,arg):
+#confirm-message
+async def confirmmessage(ctx,channelid:int,arg):
     channel=bot.get_channel(ctx)
     embed = discord.Embed(
     color=3447003,
     description=arg,
-    timestamp=datetime.utcnow() + timedelta(hours=9)
+    timestamp=datetime.utcnow()
     )
     embed.add_field(
         name='確認',
         value=f'以上のメッセージを<#{channelid}>へ送信しますか?'
         )
     return embed
+
+
 
 #reaction_check
 #async def reactioncheck():
