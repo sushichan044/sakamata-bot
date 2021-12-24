@@ -191,7 +191,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
     """メッセージ送信用"""
     role = ctx.guild.get_role(923719282360188990)
     if role.mention in arg:
-        ctx.send(justconfirm(ctx,channelid,arg))
+        await ctx.send(await justconfirm(ctx,channelid,arg))
 
 #confirm
 async def justconfirm(ctx,channelid:int,arg):
