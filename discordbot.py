@@ -200,11 +200,12 @@ async def on_message(message):
 @bot.command(name='send-message')
 async def _messagesend(ctx,channelid:int,*,arg):
     """メッセージ送信用"""
+    channel=bot.get_channel(channelid)
     role = ctx.guild.get_role(siikuinrole)
     if role.mention in arg:
         await ctx.send(embed=await confirmmessage(ctx,channelid,arg))
     else:
-        await ctx.send(arg)
+        await channel.send(arg)
 
 #confirm-message
 async def confirmmessage(ctx,channelid:int,arg):
