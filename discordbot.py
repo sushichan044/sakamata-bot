@@ -10,6 +10,7 @@ from discord.ext.commands.core import dm_only
 import requests
 from dispanderfixed import dispand
 from discord.ext import commands
+import logsend
 
 '''bot招待リンク
 https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=543816019030&scope=bot
@@ -63,9 +64,8 @@ dmboxchannel = 918101377958436954
 
 #Bootmsg-serverlogchannel/console
 async def greet():
-    channel = bot.get_channel(logchannel)
     now = datetime.utcnow() + timedelta(hours=9)
-    await channel.send(f'起動完了({now:%m/%d-%H:%M:%S})')
+    await logsend.log_send(f'起動完了({now:%m/%d-%H:%M:%S})')
 
 @bot.event
 async def on_ready():
