@@ -83,7 +83,6 @@ async def on_command_error(ctx,error):
 async def errortest(ctx):
     prin()
 
-
 '''
 #Dispander-botreject-ugokanai
 @bot.event
@@ -170,7 +169,6 @@ async def _dmsend(ctx,id:int,*,arg):
     user = bot.get_user(id)
     await user.send(arg)
 
-
 #recieve-dm
 @bot.listen()
 async def on_message(message):
@@ -217,8 +215,6 @@ async def confirmmessage(ctx,channelid:int,arg):
         value=f'以上のメッセージを<#{channelid}>へ送信しますか?'
         )
     return embed
-
-
 
 #reaction_check
 #async def reactioncheck():
