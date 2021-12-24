@@ -75,7 +75,8 @@ async def on_ready():
 #error-log
 @bot.event
 async def on_command_error(ctx,error):
-    await ctx.send(f'エラーが発生しました:{str(error)}')
+    channel = bot.get_channel(logchannel)
+    await channel.send(f'エラーが発生しました:{str(error)}')
 
 #error-logtest
 @bot.command()
