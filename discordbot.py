@@ -116,18 +116,18 @@ async def on_message_dispand(message):
 @bot.listen()
 async def on_voice_state_update(member,before,after) :
     if member.guild.id == guildid and (before.channel != after.channel):
-        alert_channel = bot.get_channel(vclogchannel)
-        nowvclog = datetime.utcnow() + timedelta(hours=9)
-        vclogmention = f'<@{member.id}>'
+        channel = bot.get_channel(vclogchannel)
+        now = datetime.utcnow() + timedelta(hours=9)
+        vclogmention = member.mention
         if before.channel is None:
-            msg = f'{nowvclog:%m/%d %H:%M:%S} : {vclogmention} が "{after.channel.name}" に参加しました。'
-            await alert_channel.send(msg)
+            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {after.channel.mention} に参加しました。'
+            await channel.send(msg)
         elif after.channel is None:
-            msg = f'{nowvclog:%m/%d %H:%M:%S} : {vclogmention} が "{before.channel.name}" から退出しました。'
-            await alert_channel.send(msg)
+            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から退出しました。'
+            await channel.send(msg)
         else:
-            msg = f'{nowvclog:%m/%d %H:%M:%S} : {vclogmention} が "{before.channel.name}" から "{after.channel.name}" に移動しました。'
-            await alert_channel.send(msg)
+            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から "{after.channel.mention} に移動しました。'
+            await channel.send(msg)
 
 #hello?>>
 @bot.command()
@@ -203,7 +203,7 @@ async def on_message_dm(message):
         )
         embed.add_field(
             name='送信者',
-            value=f'<@{message.author.id}>'
+            value=f'{message.author.mention}'
         )
         await channel.send(embed=embed)
     else:
