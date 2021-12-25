@@ -173,11 +173,11 @@ async def sendlog(ctx,msg,descurl):
     channel = bot.get_channel(logchannel)
     now = datetime.utcnow()
     embed = discord.Embed(
+    title = '実行ログ',
     color = 3447003,
     description = msg,
     url = f'{descurl}',
     timestamp=now
-    title = '実行ログ'
     )
     embed.set_author(
     name=bot.user,
