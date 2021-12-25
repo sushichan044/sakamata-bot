@@ -64,6 +64,7 @@ commandchannel = 917788514903539794
 dmboxchannel = 918101377958436954
 siikuinrole = 923719282360188990
 errorlogchannel = 924141910321426452
+adminroleid = 917332284582031390
 
 
 #Bootmsg-serverlogchannel/console
@@ -130,23 +131,27 @@ async def test(ctx):
 @bot.command()
 async def user(ctx,id:int):
     """ユーザー情報取得"""
-    guild = bot.get_guild(guildid)
-    member = guild.get_member(id)
-    #この先表示する用
-    memberifbot = member.bot
-    memberregdate = member.created_at
-    #NickNameあるか？
-    if member.display_name == member.name :
-        memberifnickname = 'None'
+    if adminroleid not in ctx.author.role:
+        ctx.send('あなたはこのコマンドを実行する権限がありません。')
+        return
     else:
-        memberifnickname = member.display_name
-    memberid = member.id
-    memberjoindate = member.joined_at
-    membermention = member.mention
-    memberroles = member.roles
-    #Message成形-途中
-    userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{memberroles}```'
-    await ctx.send(userinfomsg)
+        guild = bot.get_guild(guildid)
+        member = guild.get_member(id)
+        #この先表示する用
+        memberifbot = member.bot
+        memberregdate = member.created_at
+        #NickNameあるか？
+        if member.display_name == member.name :
+            memberifnickname = 'None'
+        else:
+            memberifnickname = member.display_name
+        memberid = member.id
+        memberjoindate = member.joined_at
+        membermention = member.mention
+        memberroles = member.roles
+        #Message成形-途中
+        userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{memberroles}```'
+        await ctx.send(userinfomsg)
 
 #ping-test
 @bot.command()
