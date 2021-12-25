@@ -175,6 +175,10 @@ async def sendexelog(ctx,msg,descurl):
         name='実行者',
         value=f'{ctx.author.mention}'
     )
+    embed.add_field(
+        name='実行コマンド',
+        value=f'[コマンドリンク]({ctx.message.jump_url})'
+    )
     await channel.send(embed=embed)
 
 #send-dm
