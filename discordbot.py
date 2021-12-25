@@ -172,6 +172,7 @@ async def ping(ctx):
 async def sendlog(ctx,msg,descurl):
     channel = bot.get_channel(logchannel)
     now = datetime.utcnow()
+    selfuser = bot.get_user(bot.user)
     embed = discord.Embed(
     color = 3447003,
     description = msg,
@@ -180,7 +181,7 @@ async def sendlog(ctx,msg,descurl):
     )
     embed.set_author(
     name='実行ログ',
-    icon_url=message.author.avatar_url,
+    icon_url=selfuser.avatar_url,
     )
     embed.add_field(
         name='実行者',
