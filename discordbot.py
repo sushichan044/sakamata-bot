@@ -177,10 +177,12 @@ async def sendlog(ctx,msg,descurl):
     description = msg,
     url = f'{descurl}',
     timestamp=now
+    title = '実行ログ'
     )
     embed.set_author(
-    name='実行ログ',
-#    icon_url=selfuser.avatar_url,
+    name=bot.user,
+    icon_url=bot.user.avatar_url,
+    url=message.jump_url
     )
     embed.add_field(
         name='実行者',
