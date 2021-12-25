@@ -169,10 +169,25 @@ async def ping(ctx):
     await ctx.send(f'Ping is {ping}ms')
 
 #send-log
-async def sendlog(ctx,msg):
+async def sendlog(ctx,msg,descurl):
     channel = bot.get_channel(logchannel)
     now = datetime.utcnow() + timedelta(hours=9)
-    await channel.send(f'実行ログ({now:%m/%d %H:%M:%S})\n{msg}\n実行者:{ctx.author.mention}')
+    embed = discord.Embed(
+    color = 3447003,
+    description = msg,
+    url = descurl
+    timestamp=now:%m/%d %H:%M:%S
+    )
+    embed.set_author(
+    name='実行ログ',
+    icon_url=message.author.avatar_url,
+    )
+    embed.add_field(
+        name='実行者',
+        value=f'{ctx.author.mention}'
+    )
+    await channel.send(embed=embed)
+#    await channel.send(f'実行ログ({now:%m/%d %H:%M:%S})\n{msg}\n実行者:{ctx.author.mention}')
 
 #send-dm
 @bot.command(name='send-dm')
@@ -191,10 +206,11 @@ async def on_message_dm(message):
         return
     elif type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
+        now = datetime.utcnow()
         embed = discord.Embed(
         color=3447003,
         description=message.content,
-        timestamp=datetime.utcnow(),
+        timestamp=now:%m/%d %H:%M:%S
         )
         embed.set_author(
         name=message.author.display_name,
@@ -243,10 +259,11 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     """メッセージ編集用"""
     channel=bot.get_channel(channelid)
     msgid = await channel.fetch_message(messageid)
-    msg = f'https://discord.com/channels/{guildid}/{channelid}/{messageid} のメッセージを編集しました。'
+    msg =f'{channel.mention}のメッセージを編集しました。'
+    descurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
     await msgid.edit(content=arg)
     await ctx.send('Edited!')
-    await sendlog(ctx,msg)
+    await sendlog(ctx,msg,descurl)
 
 #reaction_check
 #async def reactioncheck():
