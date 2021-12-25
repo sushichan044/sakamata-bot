@@ -211,14 +211,15 @@ async def on_message_dm(message):
     elif type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
         embed = discord.Embed(
+        title='DMを受信しました。',
+        url=message.jump_url,
         color=3447003,
         description=message.content,
         timestamp=message.created_at
         )
         embed.set_author(
         name=message.author.display_name,
-        icon_url=message.author.avatar_url,
-        url=message.jump_url
+        icon_url=message.author.avatar_url
         )
         embed.add_field(
             name='送信者',
