@@ -175,7 +175,7 @@ async def sendlog(ctx,msg,descurl):
     embed = discord.Embed(
     color = 3447003,
     description = msg,
-    url = descurl
+    url = descurl,
     timestamp=now:%m/%d %H:%M:%S
     )
     embed.set_author(
@@ -195,9 +195,10 @@ async def _dmsend(ctx,id:int,*,arg):
     """DM送信用"""
     user = bot.get_user(id)
     msg = f'DMを{user.mention}に送信しました。'
+    descurl = ''
     await user.send(arg)
     await ctx.send('Sended!')
-    await sendlog(ctx,msg)
+    await sendlog(ctx,msg,descurl)
 
 #recieve-dm
 @bot.listen('on_message')
@@ -235,9 +236,10 @@ async def _messagesend(ctx,channelid:int,*,arg):
         await ctx.send(embed=await confirmmessage(ctx,channelid,arg))
     else:
         msg=f'{channel.mention}にメッセージを送信しました。'
-        await channel.send(arg)
+        m = await channel.send(arg)
+        descurl = m.jump_url
         await ctx.send('Sended!')
-        await sendlog(ctx,msg)
+        await sendlog(ctx,msg,descurl)
 
 #confirm-message
 async def confirmmessage(ctx,channelid:int,arg):
@@ -260,8 +262,9 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     channel=bot.get_channel(channelid)
     msgid = await channel.fetch_message(messageid)
     msg =f'{channel.mention}のメッセージを編集しました。'
-    descurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
-    await msgid.edit(content=arg)
+#    descurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
+    m = await msgid.edit(content=arg)
+    descurl = m.jump_url
     await ctx.send('Edited!')
     await sendlog(ctx,msg,descurl)
 
