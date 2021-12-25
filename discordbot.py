@@ -128,20 +128,19 @@ async def test(ctx):
 
 #user-info-command
 @bot.command()
-async def user(ctx,id: int):
+async def user(ctx,id:int):
     """ユーザー情報取得"""
+    user = bot.get_user(id)
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
     #この先表示する用
     memberifbot = member.bot
     memberregdate = member.created_at
     #NickNameあるか？
-    membername = member.name
-    membernickname = member.display_name
-    if membernickname == membername :
+    if member.display_name == member.name :
         memberifnickname = 'None'
     else:
-        memberifnickname = membernickname
+        memberifnickname = member.display_name
     memberid = member.id
     memberjoindate = member.joined_at
     membermention = member.mention
