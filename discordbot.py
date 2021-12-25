@@ -53,6 +53,7 @@ vclogchannel = 917009562383556678
 commandchannel = 917788634655109200
 dmboxchannel = 921781301101613076
 siikuinrole = 915915792275632139
+errorlogchannel = 924142068484440084
 
 '''
 #実験鯖IDなど
@@ -62,6 +63,7 @@ vclogchannel = 916988601902989373
 commandchannel = 917788514903539794
 dmboxchannel = 918101377958436954
 siikuinrole = 923719282360188990
+errorlogchannel = 924141910321426452
 
 
 #Bootmsg-serverlogchannel/console
@@ -166,12 +168,21 @@ async def ping(ctx):
     ping = round(rawping * 1000)
     await ctx.send(f'Ping is {ping}ms')
 
+#send-log
+async def sendlog(ctx,msg)
+    channel = bot.get_channel(logchannel)
+    now = datetime.utcnow() + timedelta(hours=9)
+    await channel.send(f'実行ログ({now:%m/%d %H:%M:%S})\n{msg}')
+
 #send-dm
 @bot.command(name='send-dm')
 async def _dmsend(ctx,id:int,*,arg):
     """DM送信用"""
     user = bot.get_user(id)
+    msg=f'DMを{user.mention}に送信しました。'
     await user.send(arg)
+    await ctx.send('Sended!')
+    await sendlog(ctx,msg)
 
 #recieve-dm
 @bot.listen('on_message')
@@ -183,7 +194,7 @@ async def on_message_dm(message):
         embed = discord.Embed(
         color=3447003,
         description=message.content,
-        timestamp=message.created_at,
+        timestamp=datetime.utcnow(),
         )
         embed.set_author(
         name=message.author.display_name,
