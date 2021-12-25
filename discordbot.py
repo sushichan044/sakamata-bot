@@ -169,7 +169,7 @@ async def ping(ctx):
     await ctx.send(f'Ping is {ping}ms')
 
 #send-log
-async def sendlog(ctx,msg)
+async def sendlog(ctx,msg):
     channel = bot.get_channel(logchannel)
     now = datetime.utcnow() + timedelta(hours=9)
     await channel.send(f'実行ログ({now:%m/%d %H:%M:%S})\n{msg}')
