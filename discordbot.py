@@ -185,8 +185,8 @@ async def _dmsend(ctx,id:int,*,arg):
     """DM送信用"""
     user = bot.get_user(id)
     msg = f'DMを{user.mention}に送信しました。'
-    descurl = ''
-    await user.send(arg)
+    m = await user.send(arg)
+    descurl = m.jump_url
     await ctx.send('Sended!')
     await sendexelog(ctx,msg,descurl)
 
