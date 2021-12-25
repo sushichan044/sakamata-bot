@@ -130,7 +130,6 @@ async def test(ctx):
 @bot.command()
 async def user(ctx,id:int):
     """ユーザー情報取得"""
-    user = bot.get_user(id)
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
     #この先表示する用
