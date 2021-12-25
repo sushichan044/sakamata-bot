@@ -222,7 +222,7 @@ async def on_message_dm(message):
         )
         embed.add_field(
             name='受信日時',
-            value=f'{message.created_at}'
+            value=f'{message.created_at:%Y/%m/%d %H:%M:%S}'
         )
         await channel.send(embed=embed)
     else:
