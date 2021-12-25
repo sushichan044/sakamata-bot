@@ -167,13 +167,12 @@ async def ping(ctx):
 #send-exe-log
 async def sendexelog(ctx,msg,descurl):
     channel = bot.get_channel(logchannel)
-    now = datetime.utcnow()
     embed = discord.Embed(
     title = '実行ログ',
     color = 3447003,
     description = msg,
     url = f'{descurl}',
-    timestamp=now
+    timestamp=datetime.utcnow()
     )
     embed.set_author(
     name=bot.user,
@@ -186,6 +185,10 @@ async def sendexelog(ctx,msg,descurl):
     embed.add_field(
         name='実行コマンド',
         value=f'[コマンドリンク]({ctx.message.jump_url})'
+    )
+    embed.add_field(
+        name='実行日時',
+        value=f'{datetime.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
     )
     await channel.send(embed=embed)
 
@@ -208,20 +211,24 @@ async def on_message_dm(message):
         return
     elif type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
-        now = datetime.utcnow()
         embed = discord.Embed(
+        title='DMを受信しました。',
+        url=message.jump_url,
         color=3447003,
         description=message.content,
-        timestamp=now
+        timestamp=message.created_at
         )
         embed.set_author(
         name=message.author.display_name,
-        icon_url=message.author.avatar_url,
-        url=message.jump_url
+        icon_url=message.author.avatar_url
         )
         embed.add_field(
             name='送信者',
             value=f'{message.author.mention}'
+        )
+        embed.add_field(
+            name='受信日時',
+            value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
         )
         await channel.send(embed=embed)
     else:
