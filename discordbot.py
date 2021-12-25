@@ -171,12 +171,12 @@ async def ping(ctx):
 #send-log
 async def sendlog(ctx,msg,descurl):
     channel = bot.get_channel(logchannel)
-    now = datetime.utcnow() + timedelta(hours=9)
+    now = datetime.utcnow()
     embed = discord.Embed(
     color = 3447003,
     description = msg,
     url = descurl,
-    timestamp=now:%m/%d %H:%M:%S
+    timestamp=now
     )
     embed.set_author(
     name='実行ログ',
@@ -211,7 +211,7 @@ async def on_message_dm(message):
         embed = discord.Embed(
         color=3447003,
         description=message.content,
-        timestamp=now:%m/%d %H:%M:%S
+        timestamp=now
         )
         embed.set_author(
         name=message.author.display_name,
