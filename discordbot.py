@@ -175,7 +175,7 @@ async def sendlog(ctx,msg,descurl):
     embed = discord.Embed(
     color = 3447003,
     description = msg,
-    url = descurl,
+    url = f'{descurl}',
     timestamp=now
     )
     embed.set_author(
@@ -239,7 +239,6 @@ async def _messagesend(ctx,channelid:int,*,arg):
         m = await channel.send(arg)
         descurl = m.jump_url
         await ctx.send('Sended!')
-        await ctx.send(descurl)
         await sendlog(ctx,msg,descurl)
 
 #confirm-message
