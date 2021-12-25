@@ -166,13 +166,12 @@ async def ping(ctx):
 #send-exe-log
 async def sendexelog(ctx,msg,descurl):
     channel = bot.get_channel(logchannel)
-#    now = datetime.utcnow()
     embed = discord.Embed(
     title = '実行ログ',
     color = 3447003,
     description = msg,
     url = f'{descurl}',
-    timestamp=ctx.created_at
+    timestamp=datetime.utcnow()
     )
     embed.set_author(
     name=bot.user,
@@ -207,7 +206,6 @@ async def on_message_dm(message):
         return
     elif type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
-#        now = datetime.utcnow()
         embed = discord.Embed(
         color=3447003,
         description=message.content,
