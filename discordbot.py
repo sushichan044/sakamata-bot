@@ -181,8 +181,7 @@ async def sendlog(ctx,msg,descurl):
     )
     embed.set_author(
     name=bot.user,
-    icon_url=bot.user.avatar_url,
-    url=message.jump_url
+    icon_url=bot.user.avatar_url
     )
     embed.add_field(
         name='実行者',
