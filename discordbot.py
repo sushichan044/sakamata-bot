@@ -220,6 +220,10 @@ async def on_message_dm(message):
             name='送信者',
             value=f'{message.author.mention}'
         )
+        embed.add_field(
+            name='受信日時',
+            value=f'{message.created_at}'
+        )
         await channel.send(embed=embed)
     else:
         return
