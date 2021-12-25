@@ -100,6 +100,7 @@ async def on_message_dispand(message):
 '''
 デフォルトで提供されている on_message をオーバーライドすると、コマンドが実行されなくなります。
 これを修正するには on_message の最後に bot.process_commands(message) を追加してみてください。
+https://discordbot.jp/blog/17/
 '''
 
 #VC入退室ログ
@@ -129,7 +130,6 @@ async def test(ctx):
 @bot.command()
 async def user(ctx,id: int):
     """ユーザー情報取得"""
-    user = bot.get_user(id)
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
     #この先表示する用
@@ -139,7 +139,7 @@ async def user(ctx,id: int):
     membername = member.name
     membernickname = member.display_name
     if membernickname == membername :
-        memberifnickname = "None"
+        memberifnickname = 'None'
     else:
         memberifnickname = membernickname
     memberid = member.id
@@ -234,6 +234,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
 #confirm-message
 async def confirmmessage(ctx,channelid:int,arg):
     channel=bot.get_channel(ctx)
+    sendchannel = bot.get_channel(channelid)
     embed = discord.Embed(
     color=3447003,
     description=arg,
@@ -241,7 +242,7 @@ async def confirmmessage(ctx,channelid:int,arg):
     )
     embed.add_field(
         name='確認',
-        value=f'以上のメッセージを<#{channelid}>へ送信しますか?'
+        value=f'以上のメッセージを{sendchannel.mention}へ送信しますか?'
         )
     return embed
 
