@@ -80,7 +80,7 @@ async def on_ready():
 #error-log
 @bot.event
 async def on_command_error(ctx,error):
-    channel = bot.get_channel(logchannel)
+    channel = bot.get_channel(errorlogchannel)
     now = datetime.utcnow() + timedelta(hours=9)
     await channel.send(f'エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}')
 
@@ -218,7 +218,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
     if role.mention in arg:
         await ctx.send(embed=await confirmmessage(ctx,channelid,arg))
     else:
-        msg=f'<#{channel}にメッセージを送信しました。>'
+        msg=f'<#{channel}>にメッセージを送信しました。'
         await channel.send(arg)
         await ctx.send('Sended!')
         await sendlog(ctx,msg)
