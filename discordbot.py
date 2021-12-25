@@ -126,7 +126,7 @@ async def on_voice_state_update(member,before,after) :
 
 #hello?
 @bot.command()
-@commands.has_role(adminrole)
+@commands.has_role(modrole)
 async def test(ctx):
     """生存確認用"""
     await ctx.send('hello')
