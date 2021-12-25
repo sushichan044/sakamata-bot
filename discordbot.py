@@ -185,6 +185,10 @@ async def sendexelog(ctx,msg,descurl):
         name='実行コマンド',
         value=f'[コマンドリンク]({ctx.message.jump_url})'
     )
+    embed.add_field(
+        name='実行日時',
+        value=f'{datetime.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+    )
     await channel.send(embed=embed)
 
 #send-dm
