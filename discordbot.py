@@ -82,7 +82,7 @@ async def on_ready():
 async def on_command_error(ctx,error):
     channel = bot.get_channel(errorlogchannel)
     now = datetime.utcnow() + timedelta(hours=9)
-    await channel.send(f'エラーが発生しました。({now:%m/%d %H:%M:%S})\n```{str(error)}```')
+    await channel.send(f'`エラーが発生しました。({now:%m/%d %H:%M:%S})`\n```{str(error)}```')
 
 #error-logtest
 @bot.command()
