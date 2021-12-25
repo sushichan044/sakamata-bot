@@ -54,6 +54,8 @@ commandchannel = 917788634655109200
 dmboxchannel = 921781301101613076
 siikuinrole = 915915792275632139
 errorlogchannel = 924142068484440084
+modrole = 916726433445986334
+adminrole = 915954009343422494
 
 '''
 #実験鯖IDなど
@@ -64,8 +66,9 @@ commandchannel = 917788514903539794
 dmboxchannel = 918101377958436954
 siikuinrole = 923719282360188990
 errorlogchannel = 924141910321426452
+modrole = 924355349308383252
+adminrole = 917332284582031390
 '''
-
 
 #Bootmsg-serverlogchannel/console
 async def greet():
@@ -87,6 +90,7 @@ async def on_command_error(ctx,error):
 
 #error-logtest
 @bot.command()
+@commands.has_role(adminrole)
 async def errortest(ctx):
     prin()
 
@@ -123,12 +127,14 @@ async def on_voice_state_update(member,before,after) :
 
 #hello?
 @bot.command()
+@commands.has_role(modrole)
 async def test(ctx):
     """生存確認用"""
     await ctx.send('hello')
 
 #user-info-command
 @bot.command()
+@commands.has_role(modrole)
 async def user(ctx,id:int):
     """ユーザー情報取得"""
     guild = bot.get_guild(guildid)
@@ -151,6 +157,7 @@ async def user(ctx,id:int):
 
 #ping-test
 @bot.command()
+@commands.has_role(adminrole)
 async def ping(ctx):
     """生存確認用"""
     rawping = bot.latency
@@ -184,6 +191,7 @@ async def sendexelog(ctx,msg,descurl):
 
 #send-dm
 @bot.command(name='send-dm')
+@commands.has_role(adminrole)
 async def _dmsend(ctx,id:int,*,arg):
     """DM送信用"""
     user = bot.get_user(id)
@@ -221,6 +229,7 @@ async def on_message_dm(message):
 
 #send-message
 @bot.command(name='send-message')
+@commands.has_role(adminrole)
 async def _messagesend(ctx,channelid:int,*,arg):
     """メッセージ送信用"""
     channel=bot.get_channel(channelid)
@@ -251,6 +260,7 @@ async def confirmmessage(ctx,channelid:int,arg):
 
 #message-edit
 @bot.command(name='edit-message')
+@commands.has_role(adminrole)
 async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     """メッセージ編集用"""
     channel=bot.get_channel(channelid)
