@@ -131,7 +131,7 @@ async def test(ctx):
 @bot.command()
 async def user(ctx,id:int):
     """ユーザー情報取得"""
-    if adminroleid not in ctx.author.role:
+    if adminroleid not in ctx.author.role.id:
         ctx.send('あなたはこのコマンドを実行する権限がありません。')
         return
     else:
