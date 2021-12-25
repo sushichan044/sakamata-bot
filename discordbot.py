@@ -188,7 +188,6 @@ async def sendlog(ctx,msg,descurl):
         value=f'{ctx.author.mention}'
     )
     await channel.send(embed=embed)
-#    await channel.send(f'実行ログ({now:%m/%d %H:%M:%S})\n{msg}\n実行者:{ctx.author.mention}')
 
 #send-dm
 @bot.command(name='send-dm')
@@ -263,9 +262,8 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     channel=bot.get_channel(channelid)
     msgid = await channel.fetch_message(messageid)
     msg =f'{channel.mention}のメッセージを編集しました。'
-#    descurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
-    m = await msgid.edit(content=arg)
-    descurl = m.jump_url
+    await msgid.edit(content=arg)
+    descurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
     await ctx.send('Edited!')
     await sendlog(ctx,msg,descurl)
 
