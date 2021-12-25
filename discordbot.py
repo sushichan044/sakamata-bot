@@ -172,14 +172,14 @@ async def ping(ctx):
 async def sendlog(ctx,msg):
     channel = bot.get_channel(logchannel)
     now = datetime.utcnow() + timedelta(hours=9)
-    await channel.send(f'実行ログ({now:%m/%d %H:%M:%S})\n{msg}')
+    await channel.send(f'実行ログ({now:%m/%d %H:%M:%S})\n{msg}\n実行者:{ctx.author.mention}')
 
 #send-dm
 @bot.command(name='send-dm')
 async def _dmsend(ctx,id:int,*,arg):
     """DM送信用"""
     user = bot.get_user(id)
-    msg=f'DMを{user.mention}に送信しました。'
+    msg = f'DMを{user.mention}に送信しました。'
     await user.send(arg)
     await ctx.send('Sended!')
     await sendlog(ctx,msg)
@@ -242,8 +242,11 @@ async def confirmmessage(ctx,channelid:int,arg):
 async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     """メッセージ編集用"""
     channel=bot.get_channel(channelid)
-    msg=await channel.fetch_message(messageid)
-    await msg.edit(content=arg)
+    msgid = await channel.fetch_message(messageid)
+    msg = f'https://discord.com/channels/{guildid}/{channelid}/{messageid} のメッセージを編集しました。'
+    await msgid.edit(content=arg)
+    await ctx.send('Edited!')
+    await sendlog(ctx,msg)
 
 #reaction_check
 #async def reactioncheck():
