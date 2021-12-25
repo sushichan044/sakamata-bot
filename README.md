@@ -4,7 +4,6 @@
 Python3.10.0
 Visual Studio Code
 discord.py 1.7.3
-dispander 0.5.0
 dispanderfixed 0.1.2
 
 Mainブランチ:クロヱ水族館の本番環境
