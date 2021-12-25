@@ -89,16 +89,6 @@ async def on_command_error(ctx,error):
 async def errortest(ctx):
     prin()
 
-'''
-#Dispander-botreject-ugokanai
-@bot.event
-async def on_message(message):
-    if message.author.bot:
-        return
-    await dispand(message)
-    await bot.process_commands(message)
-'''
-
 #Dispander-All
 @bot.listen('on_message')
 async def on_message_dispand(message):
@@ -129,7 +119,7 @@ async def on_voice_state_update(member,before,after) :
             msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から "{after.channel.mention} に移動しました。'
             await channel.send(msg)
 
-#hello?>>
+#hello?
 @bot.command()
 async def test(ctx):
     """生存確認用"""
@@ -168,8 +158,8 @@ async def ping(ctx):
     ping = round(rawping * 1000)
     await ctx.send(f'Ping is {ping}ms')
 
-#send-log
-async def sendlog(ctx,msg,descurl):
+#send-exe-log
+async def sendexelog(ctx,msg,descurl):
     channel = bot.get_channel(logchannel)
     now = datetime.utcnow()
     embed = discord.Embed(
@@ -198,7 +188,7 @@ async def _dmsend(ctx,id:int,*,arg):
     descurl = ''
     await user.send(arg)
     await ctx.send('Sended!')
-    await sendlog(ctx,msg,descurl)
+    await sendexelog(ctx,msg,descurl)
 
 #recieve-dm
 @bot.listen('on_message')
@@ -239,7 +229,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
         m = await channel.send(arg)
         descurl = m.jump_url
         await ctx.send('Sended!')
-        await sendlog(ctx,msg,descurl)
+        await sendexelog(ctx,msg,descurl)
 
 #confirm-message
 async def confirmmessage(ctx,channelid:int,arg):
@@ -265,7 +255,7 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     await msgid.edit(content=arg)
     descurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
     await ctx.send('Edited!')
-    await sendlog(ctx,msg,descurl)
+    await sendexelog(ctx,msg,descurl)
 
 #reaction_check
 #async def reactioncheck():
