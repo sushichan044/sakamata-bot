@@ -117,7 +117,7 @@ async def on_voice_state_update(member,before,after) :
             msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から退出しました。'
             await channel.send(msg)
         else:
-            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から "{after.channel.mention} に移動しました。'
+            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から {after.channel.mention} に移動しました。'
             await channel.send(msg)
 
 #hello?
