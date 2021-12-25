@@ -53,6 +53,7 @@ vclogchannel = 917009562383556678
 commandchannel = 917788634655109200
 dmboxchannel = 921781301101613076
 siikuinrole = 915915792275632139
+errorlogchannel = 924142068484440084
 
 '''
 #実験鯖IDなど
@@ -62,6 +63,7 @@ vclogchannel = 916988601902989373
 commandchannel = 917788514903539794
 dmboxchannel = 918101377958436954
 siikuinrole = 923719282360188990
+errorlogchannel = 924141910321426452
 
 
 #Bootmsg-serverlogchannel/console
@@ -78,24 +80,14 @@ async def on_ready():
 #error-log
 @bot.event
 async def on_command_error(ctx,error):
-    channel = bot.get_channel(logchannel)
+    channel = bot.get_channel(errorlogchannel)
     now = datetime.utcnow() + timedelta(hours=9)
-    await channel.send(f'エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}')
+    await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}```')
 
 #error-logtest
 @bot.command()
 async def errortest(ctx):
     prin()
-
-'''
-#Dispander-botreject-ugokanai
-@bot.event
-async def on_message(message):
-    if message.author.bot:
-        return
-    await dispand(message)
-    await bot.process_commands(message)
-'''
 
 #Dispander-All
 @bot.listen('on_message')
@@ -108,26 +100,27 @@ async def on_message_dispand(message):
 '''
 デフォルトで提供されている on_message をオーバーライドすると、コマンドが実行されなくなります。
 これを修正するには on_message の最後に bot.process_commands(message) を追加してみてください。
+https://discordbot.jp/blog/17/
 '''
 
 #VC入退室ログ
 @bot.listen()
 async def on_voice_state_update(member,before,after) :
     if member.guild.id == guildid and (before.channel != after.channel):
-        alert_channel = bot.get_channel(vclogchannel)
-        nowvclog = datetime.utcnow() + timedelta(hours=9)
-        vclogmention = f'<@{member.id}>'
+        channel = bot.get_channel(vclogchannel)
+        now = datetime.utcnow() + timedelta(hours=9)
+        vclogmention = member.mention
         if before.channel is None:
-            msg = f'{nowvclog:%m/%d %H:%M:%S} : {vclogmention} が "{after.channel.name}" に参加しました。'
-            await alert_channel.send(msg)
+            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {after.channel.mention} に参加しました。'
+            await channel.send(msg)
         elif after.channel is None:
-            msg = f'{nowvclog:%m/%d %H:%M:%S} : {vclogmention} が "{before.channel.name}" から退出しました。'
-            await alert_channel.send(msg)
+            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から退出しました。'
+            await channel.send(msg)
         else:
-            msg = f'{nowvclog:%m/%d %H:%M:%S} : {vclogmention} が "{before.channel.name}" から "{after.channel.name}" に移動しました。'
-            await alert_channel.send(msg)
+            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から "{after.channel.mention} に移動しました。'
+            await channel.send(msg)
 
-#hello?>>
+#hello?
 @bot.command()
 async def test(ctx):
     """生存確認用"""
@@ -135,21 +128,18 @@ async def test(ctx):
 
 #user-info-command
 @bot.command()
-async def user(ctx,id: int):
+async def user(ctx,id:int):
     """ユーザー情報取得"""
-    user = bot.get_user(id)
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
     #この先表示する用
     memberifbot = member.bot
     memberregdate = member.created_at
     #NickNameあるか？
-    membername = member.name
-    membernickname = member.display_name
-    if membernickname == membername :
-        memberifnickname = "None"
+    if member.display_name == member.name :
+        memberifnickname = 'None'
     else:
-        memberifnickname = membernickname
+        memberifnickname = member.display_name
     memberid = member.id
     memberjoindate = member.joined_at
     membermention = member.mention
@@ -166,12 +156,37 @@ async def ping(ctx):
     ping = round(rawping * 1000)
     await ctx.send(f'Ping is {ping}ms')
 
+#send-exe-log
+async def sendexelog(ctx,msg,descurl):
+    channel = bot.get_channel(logchannel)
+    now = datetime.utcnow()
+    embed = discord.Embed(
+    title = '実行ログ',
+    color = 3447003,
+    description = msg,
+    url = f'{descurl}',
+    timestamp=now
+    )
+    embed.set_author(
+    name=bot.user,
+    icon_url=bot.user.avatar_url
+    )
+    embed.add_field(
+        name='実行者',
+        value=f'{ctx.author.mention}'
+    )
+    await channel.send(embed=embed)
+
 #send-dm
 @bot.command(name='send-dm')
 async def _dmsend(ctx,id:int,*,arg):
     """DM送信用"""
     user = bot.get_user(id)
-    await user.send(arg)
+    msg = f'DMを{user.mention}に送信しました。'
+    m = await user.send(arg)
+    descurl = m.jump_url
+    await ctx.send('Sended!')
+    await sendexelog(ctx,msg,descurl)
 
 #recieve-dm
 @bot.listen('on_message')
@@ -180,10 +195,11 @@ async def on_message_dm(message):
         return
     elif type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
+        now = datetime.utcnow()
         embed = discord.Embed(
         color=3447003,
         description=message.content,
-        timestamp=message.created_at,
+        timestamp=now
         )
         embed.set_author(
         name=message.author.display_name,
@@ -192,7 +208,7 @@ async def on_message_dm(message):
         )
         embed.add_field(
             name='送信者',
-            value=f'<@{message.author.id}>'
+            value=f'{message.author.mention}'
         )
         await channel.send(embed=embed)
     else:
@@ -207,11 +223,16 @@ async def _messagesend(ctx,channelid:int,*,arg):
     if role.mention in arg:
         await ctx.send(embed=await confirmmessage(ctx,channelid,arg))
     else:
-        await channel.send(arg)
+        msg=f'{channel.mention}にメッセージを送信しました。'
+        m = await channel.send(arg)
+        descurl = m.jump_url
+        await ctx.send('Sended!')
+        await sendexelog(ctx,msg,descurl)
 
 #confirm-message
 async def confirmmessage(ctx,channelid:int,arg):
     channel=bot.get_channel(ctx)
+    sendchannel = bot.get_channel(channelid)
     embed = discord.Embed(
     color=3447003,
     description=arg,
@@ -219,7 +240,7 @@ async def confirmmessage(ctx,channelid:int,arg):
     )
     embed.add_field(
         name='確認',
-        value=f'以上のメッセージを<#{channelid}>へ送信しますか?'
+        value=f'以上のメッセージを{sendchannel.mention}へ送信しますか?'
         )
     return embed
 
@@ -228,8 +249,12 @@ async def confirmmessage(ctx,channelid:int,arg):
 async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     """メッセージ編集用"""
     channel=bot.get_channel(channelid)
-    msg=await channel.fetch_message(messageid)
-    await msg.edit(content=arg)
+    msgid = await channel.fetch_message(messageid)
+    msg =f'{channel.mention}のメッセージを編集しました。'
+    await msgid.edit(content=arg)
+    descurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
+    await ctx.send('Edited!')
+    await sendexelog(ctx,msg,descurl)
 
 #reaction_check
 #async def reactioncheck():
