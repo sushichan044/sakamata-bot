@@ -218,7 +218,10 @@ async def _messagesend(ctx,channelid:int,*,arg):
     if role.mention in arg:
         await ctx.send(embed=await confirmmessage(ctx,channelid,arg))
     else:
+        msg=f'<#{channel}にメッセージを送信しました。>'
         await channel.send(arg)
+        await ctx.send('Sended!')
+        await sendlog(ctx,msg)
 
 #confirm-message
 async def confirmmessage(ctx,channelid:int,arg):
