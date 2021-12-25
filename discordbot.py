@@ -141,14 +141,14 @@ async def user(ctx,id:int):
     member = guild.get_member(id)
     #この先表示する用
     memberifbot = member.bot
-    memberregdate = member.created_at
+    memberregdate = member.created_at + timedelta(hours=9)
     #NickNameあるか？
     if member.display_name == member.name :
         memberifnickname = 'None'
     else:
         memberifnickname = member.display_name
     memberid = member.id
-    memberjoindate = member.joined_at
+    memberjoindate = member.joined_at + timedelta(hours=9)
     membermention = member.mention
     memberroles = member.roles
     #Message成形-途中
