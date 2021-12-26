@@ -55,6 +55,7 @@ commandchannel = 917788634655109200
 dmboxchannel = 921781301101613076
 siikuinrole = 915915792275632139
 errorlogchannel = 924142068484440084
+alertchannel = 924744385902575616
 modrole = 916726433445986334
 adminrole = 915954009343422494
 
@@ -67,6 +68,7 @@ commandchannel = 917788514903539794
 dmboxchannel = 918101377958436954
 siikuinrole = 923719282360188990
 errorlogchannel = 924141910321426452
+alertchannel = 924744469327257602
 modrole = 924355349308383252
 adminrole = 917332284582031390
 
@@ -103,7 +105,7 @@ async def errortest(ctx):
 async def detect_NGword(message):
     word_list = ['@everyone','@here']
     if any(x in message.content for x in word_list) == True:
-        channel = bot.get_channel(logchannel)
+        channel = bot.get_channel(alertchannel)
         embed = discord.Embed(
         title='NGワードを検知しました。',
         url=message.jump_url,
