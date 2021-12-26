@@ -1,3 +1,4 @@
+import asyncio
 import os
 import sys
 import traceback
@@ -255,13 +256,17 @@ async def _messagesend(ctx,channelid:int,*,arg):
     try:
         reaction,user = await bot.wait_for('reaction_add',check = check)
     #exe
-    if str(reaction.emoji) == maruemoji:
-        msg=f'{channel.mention}にメッセージを送信しました。'
-        m = await channel.send(arg)
-        descurl = m.jump_url
-        await ctx.send('Sended!')
-        await sendexelog(ctx,msg,descurl)
-    await ctx.send("Cancelled!")
+    except asyncio.TimeoutError:
+        await ctx.send(f'{ctx.author.mention}さん、コマンドはタイムアウトしました。')
+    else:
+        if str(reaction.emoji) == maruemoji:
+            msg=f'{channel.mention}にメッセージを送信しました。'
+            m = await channel.send(arg)
+            descurl = m.jump_url
+            await ctx.send('Sended!')
+            await sendexelog(ctx,msg,descurl)
+        else:
+            await ctx.send("Cancelled!")
 
 #confirm-message
 async def confirmmessage(ctx,channelid:int,arg):
