@@ -129,7 +129,7 @@ async def detect_NGword(message):
             value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
         )
         await channel.send(embed=embed)
-        await channel.send(f'''【ログ保存用】\n{message.content}''')
+        await channel.send(f'''【ログ保存用】\n{message.jump_url}''')
     else:
         return
 
