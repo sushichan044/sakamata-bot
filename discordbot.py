@@ -11,7 +11,7 @@ from discord import channel
 from discord.channel import DMChannel
 from discord.ext import commands
 from discord.ext.commands.core import dm_only
-from dispanderfixed import dispand
+from dispanderfixed-beta import dispand
 
 '''bot招待リンク
 https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=543816019030&scope=bot
