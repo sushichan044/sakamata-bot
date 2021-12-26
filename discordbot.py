@@ -69,6 +69,10 @@ errorlogchannel = 924141910321426452
 modrole = 924355349308383252
 adminrole = 917332284582031390
 
+#emoji
+maruemoji = "\N{Heavy Large Circle}"
+batuemoji = "\N{Cross Mark}"
+
 #Bootmsg-serverlogchannel/console
 async def greet():
     channel = bot.get_channel(logchannel)
@@ -239,15 +243,24 @@ async def on_message_dm(message):
 async def _messagesend(ctx,channelid:int,*,arg):
     """メッセージ送信用"""
     channel=bot.get_channel(channelid)
-    role = ctx.guild.get_role(siikuinrole)
-    if role.mention in arg:
-        await ctx.send(embed=await confirmmessage(ctx,channelid,arg))
-    else:
+    role = ctx.guild.get_role(adminrole)
+    kakuninmsg = f'以下のメッセージを{channel.mention}へ送信します。\n------------------------\n{arg}\n------------------------\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
+    m = await ctx.send(kakuninmsg)
+    m.add_reaction(maruemoji)
+    m.add_reaction(batuemoji)
+    valid_reacrions = [maruemoji,batuemoji]
+    #wait-for-reaction
+    def checkmaru(reaction):
+        return str(reaction.emoji) in valid_reacrions
+    reaction = await bot.wait_for('reaction_add',check = checkmaru)
+    #exe
+    if str(reaction.emoji) == maruemoji:
         msg=f'{channel.mention}にメッセージを送信しました。'
         m = await channel.send(arg)
         descurl = m.jump_url
         await ctx.send('Sended!')
         await sendexelog(ctx,msg,descurl)
+    await ctx.send("Cancelled!")
 
 #confirm-message
 async def confirmmessage(ctx,channelid:int,arg):
