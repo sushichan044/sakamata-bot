@@ -1,5 +1,8 @@
 # sakamatabot
 
+![alt text](https://img.shields.io/badge/discord.py-Python-3776AB.svg?logo=python&style=flat-square)
+![GitHub top language](https://img.shields.io/github/languages/top/sushi-chaaaan/sakamatabot)
+![Discord](https://img.shields.io/discord/915910043461890078?label=Discord)
 ### このリポジトリは？
 ホロライブ所属VTuber沙花叉クロヱさんの非公式ファンDiscordサーバー[「クロヱ水族館」](https://discord.gg/EqfjtNBf2M)の運営/管理補助を行うBotのコードです。
 
