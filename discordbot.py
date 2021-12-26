@@ -295,10 +295,10 @@ BANの解除を希望する場合は以下のフォームをご利用くださ�
 https://forms.gle/mR1foEyd9JHbhYdCA
 '''
 
-#ban-member
-@bot.command(name='ban')
+#kick-member
+@bot.command(name='kick')
 @commands.has_role(adminrole)
-async def _banuser(ctx,id:int,ifdm:str='True'):
+async def _kickuser(ctx,id:int,ifdm:str='True'):
     member = ctx.guild.get_member(id)
     role = ctx.guild.get_role(adminrole)
     validifdm = ['True','False']
@@ -309,10 +309,10 @@ async def _banuser(ctx,id:int,ifdm:str='True'):
         await sendexelog(ctx,msg,descurl)
         return
     else:
-        deal = 'ban'
+        deal = 'kick'
         adddm = ''
         DMcontent = await makedealdm(ctx,deal,adddm)
-        kakuninmsg = f'【ban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member.name}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
+        kakuninmsg = f'【kick実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member.name}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
         exemsg = f'{member.mention}をキックしました。'
         nonexemsg = f'{member.mention}のキックをキャンセルしました。'
         arg = ''
@@ -322,14 +322,14 @@ async def _banuser(ctx,id:int,ifdm:str='True'):
             if ifdm == 'True':
                 m = await member.send(DMcontent)
                 descurl = m.jump_url
-                await member.ban(reason = None)
-                await ctx.send('baned!')
+                await member.kick(reason = None)
+                await ctx.send('kicked!')
                 await sendexelog(ctx,msg,descurl)
                 return
             elif ifdm == 'False':
                 descurl = ''
-                await member.ban(reason = None)
-                await ctx.send('baned!')
+                await member.kick(reason = None)
+                await ctx.send('kicked!')
                 await sendexelog(ctx,msg,descurl)
                 return
             else:
