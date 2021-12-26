@@ -103,9 +103,9 @@ async def errortest(ctx):
 async def on_message_dispand(message):
     if type(message.channel) == discord.DMChannel:
         return
-    elif message.author.bot:
-        return
     elif message.content.startswith('/send-message','/edit-message','/send-dm'):
+        return
+    elif message.content/endswith('中止に必要な承認人数: 1'):
         return
     else:
         await dispand(message)
