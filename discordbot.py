@@ -254,7 +254,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
     def check(reaction,user):
         return str(reaction.emoji) in valid_reactions
     try:
-        reaction,user = await bot.wait_for('reaction_add',check = check)
+        reaction,user = await bot.wait_for('reaction_add',timeout=300.0,check = check)
     #exe
     except asyncio.TimeoutError:
         await ctx.send(f'{ctx.author.mention}さん、コマンドはタイムアウトしました。')
