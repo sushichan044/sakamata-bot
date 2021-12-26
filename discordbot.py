@@ -317,12 +317,22 @@ async def _kickuser(ctx,id:int,ifdm,*,arg):
         msg = exemsg
         await member.kick(reason = None)
         if ifdm == None:
+            m = await user.send(DMcontent)
+            descurl = m.jump_url
+            await ctx.send('Kicked!')
+            await sendexelog(ctx,msg,descurl)
+            return
+        elif ifdm == 'false':
+            descurl = None
+            await ctx.send('Kicked!')
+            await sendexelog(ctx,msg,descurl)
             return
         else:
-            m = await user.send(DMcontent)
-        descurl = m.jump_url
-        await ctx.send('Kicked!')
-        await sendexelog(ctx,msg,descurl)
+            ctx.send('DM送信を止めるには`false`を引数に追加してください。')
+            msg = '不明な引数を検知したため処理を終了しました。'
+            descurl = None
+            await sendexelog(ctx,msg,descurl)
+            return
     elif turned == 'cancel':
         msg=nonexemsg
         descurl = ''
