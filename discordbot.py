@@ -313,7 +313,7 @@ async def _kickuser(ctx,id:int,ifdm=None):
     if ifdm not in validifdm:
         ctx.send('不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはfalseを指定してください。')
         msg = '不明な引数を検知したため処理を終了しました。'
-        descurl = None
+        descurl = ''
         await sendexelog(ctx,msg,descurl)
         return
     else:
@@ -332,7 +332,7 @@ async def _kickuser(ctx,id:int,ifdm=None):
                 await sendexelog(ctx,msg,descurl)
                 return
             elif ifdm == 'false':
-                descurl = None
+                descurl = ''
                 await member.kick(reason = None)
                 await ctx.send('Kicked!')
                 await sendexelog(ctx,msg,descurl)
