@@ -130,7 +130,7 @@ async def detect_NGword(message):
         )
         await channel.send(embed=embed)
     else:
-        return@
+        return
 
 #Dispander-All
 @bot.listen('on_message')
