@@ -105,7 +105,7 @@ async def on_message_dispand(message):
         return
     elif message.content.startswith('/send-message','/edit-message','/send-dm'):
         return
-    elif message.content/endswith('中止に必要な承認人数: 1'):
+    elif message.content.endswith('中止に必要な承認人数: 1'):
         return
     else:
         await dispand(message)
