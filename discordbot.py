@@ -295,10 +295,10 @@ BANの解除を希望する場合は以下のフォームをご利用くださ�
 https://forms.gle/mR1foEyd9JHbhYdCA
 '''
 
-#kick-member
-@bot.command(name='kick')
+#ban-member
+@bot.command(name='ban')
 @commands.has_role(adminrole)
-async def _kickuser(ctx,id:int,ifdm:str='True'):
+async def _banuser(ctx,id:int,ifdm:str='True'):
     member = ctx.guild.get_member(id)
     role = ctx.guild.get_role(adminrole)
     validifdm = ['True','False']
@@ -309,10 +309,10 @@ async def _kickuser(ctx,id:int,ifdm:str='True'):
         await sendexelog(ctx,msg,descurl)
         return
     else:
-        deal = 'kick'
+        deal = 'ban'
         adddm = ''
         DMcontent = await makedealdm(ctx,deal,adddm)
-        kakuninmsg = f'【kick実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member.name}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
+        kakuninmsg = f'【ban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member.name}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
         exemsg = f'{member.mention}をキックしました。'
         nonexemsg = f'{member.mention}のキックをキャンセルしました。'
         arg = ''
@@ -322,14 +322,61 @@ async def _kickuser(ctx,id:int,ifdm:str='True'):
             if ifdm == 'True':
                 m = await member.send(DMcontent)
                 descurl = m.jump_url
-                await member.kick(reason = None)
-                await ctx.send('Kicked!')
+                await member.ban(reason = None)
+                await ctx.send('baned!')
                 await sendexelog(ctx,msg,descurl)
                 return
             elif ifdm == 'False':
                 descurl = ''
-                await member.kick(reason = None)
-                await ctx.send('Kicked!')
+                await member.ban(reason = None)
+                await ctx.send('baned!')
+                await sendexelog(ctx,msg,descurl)
+                return
+            else:
+                return
+        elif turned == 'cancel':
+            msg=nonexemsg
+            descurl = ''
+            await sendexelog(ctx,msg,descurl)
+            await ctx.send('Cancelled!')
+        else:
+            return
+
+#ban-member
+@bot.command(name='ban')
+@commands.has_role(adminrole)
+async def _banuser(ctx,id:int,ifdm:str='True'):
+    member = ctx.guild.get_member(id)
+    role = ctx.guild.get_role(adminrole)
+    validifdm = ['True','False']
+    if ifdm not in validifdm:
+        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
+        msg = '不明な引数を検知したため処理を終了しました。'
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        return
+    else:
+        deal = 'ban'
+        adddm = ''
+        DMcontent = await makedealdm(ctx,deal,adddm)
+        kakuninmsg = f'【ban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member.name}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
+        exemsg = f'{member.mention}をキックしました。'
+        nonexemsg = f'{member.mention}のキックをキャンセルしました。'
+        arg = ''
+        turned = await confirm(ctx,arg,role,kakuninmsg)
+        if turned == 'ok':
+            msg = exemsg
+            if ifdm == 'True':
+                m = await member.send(DMcontent)
+                descurl = m.jump_url
+                await member.ban(reason = None)
+                await ctx.send('baned!')
+                await sendexelog(ctx,msg,descurl)
+                return
+            elif ifdm == 'False':
+                descurl = ''
+                await member.ban(reason = None)
+                await ctx.send('baned!')
                 await sendexelog(ctx,msg,descurl)
                 return
             else:
@@ -344,10 +391,10 @@ async def _kickuser(ctx,id:int,ifdm:str='True'):
 
 #Deal-DM
 async def makedealdm(ctx,deal,adddm):
-    DMcontent = f'''【あなたは{deal}されました】
+    DMcontent = f'''【あなたは{str.upper(deal)}されました】
 クロヱ水族館/Chloeriumの管理者です。
 
-あなたのサーバーでの行為がサーバールールに違反していると判断し、{deal}しました。
+あなたのサーバーでの行為がサーバールールに違反していると判断し、{str.upper(deal)}しました。
 {adddm}
 クロヱ水族館/Chloerium 管理者'''
     return DMcontent
