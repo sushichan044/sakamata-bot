@@ -114,8 +114,8 @@ async def detect_NGword(message):
         timestamp=message.created_at
         )
         embed.set_author(
-        name=bot.user,
-        icon_url=bot.user.avatar_url
+        name=message.author.display_name,
+        icon_url=message.author.avatar_url
         )
         embed.add_field(
             name='送信者',
@@ -130,7 +130,6 @@ async def detect_NGword(message):
             value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
         )
         await channel.send(embed=embed)
-        await channel.send(f'''【ログ保存用】\n{message.jump_url}''')
     else:
         return
 
