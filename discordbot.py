@@ -316,15 +316,16 @@ async def _kickuser(ctx,id:int,ifdm=None):
     turned = await confirm(ctx,arg,role,kakuninmsg)
     if turned == 'ok':
         msg = exemsg
-        await member.kick(reason = None)
         if ifdm == None:
             m = await member.send(DMcontent)
             descurl = m.jump_url
+            await member.kick(reason = None)
             await ctx.send('Kicked!')
             await sendexelog(ctx,msg,descurl)
             return
         elif ifdm == 'false':
             descurl = None
+            await member.kick(reason = None)
             await ctx.send('Kicked!')
             await sendexelog(ctx,msg,descurl)
             return
