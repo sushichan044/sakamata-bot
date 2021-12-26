@@ -55,6 +55,7 @@ commandchannel = 917788634655109200
 dmboxchannel = 921781301101613076
 siikuinrole = 915915792275632139
 errorlogchannel = 924142068484440084
+alertchannel = 924744385902575616
 modrole = 916726433445986334
 adminrole = 915954009343422494
 
@@ -67,6 +68,7 @@ commandchannel = 917788514903539794
 dmboxchannel = 918101377958436954
 siikuinrole = 923719282360188990
 errorlogchannel = 924141910321426452
+alertchannel = 924744469327257602
 modrole = 924355349308383252
 adminrole = 917332284582031390
 '''
@@ -98,6 +100,40 @@ async def on_command_error(ctx,error):
 @commands.has_role(adminrole)
 async def errortest(ctx):
     prin()
+
+#Detect-NGword
+@bot.listen('on_message')
+async def detect_NGword(message):
+    word_list = ['@everyone','@here']
+    if any(x in message.content for x in word_list) == True:
+        channel = bot.get_channel(alertchannel)
+        embed = discord.Embed(
+        title='NGワードを検知しました。',
+        url=message.jump_url,
+        color=16711680,
+        description=message.content,
+        timestamp=message.created_at
+        )
+        embed.set_author(
+        name=bot.user,
+        icon_url=bot.user.avatar_url
+        )
+        embed.add_field(
+            name='送信者',
+            value=f'{message.author.mention}'
+        )
+        embed.add_field(
+            name='送信先',
+            value=f'{message.channel.mention}'
+        )
+        embed.add_field(
+            name='送信日時',
+            value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        )
+        await channel.send(embed=embed)
+        await channel.send(f'''【ログ保存用】\n{message.jump_url}''')
+    else:
+        return
 
 #Dispander-All
 @bot.listen('on_message')
