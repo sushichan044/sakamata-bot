@@ -307,7 +307,7 @@ async def _kickuser(ctx,id:int,ifdm:str='True'):
         return
     else:
         deal = 'kick'
-        adddm = None
+        adddm = ''
         DMcontent = makedealdm(ctx,deal,adddm)
         kakuninmsg = f'【kick実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author.name},ID:{ctx.author.id})\n対象者:\n　{member.name}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
         exemsg = f'{member.mention}をキックしました。'
@@ -348,8 +348,7 @@ async def makedealdm(ctx,deal,adddm):
 
 {adddm}
 
-クロヱ水族館/Chloerium 管理者
-'''
+クロヱ水族館/Chloerium 管理者'''
     return DMcontent
 
 #confirm-system
