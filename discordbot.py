@@ -101,7 +101,6 @@ async def errortest(ctx):
 #Detect-NGword
 @bot.listen('on_message')
 async def detect_NGword(message):
-    guild = bot.get_guild(guildid)
     word_list = ['@everyone','@here']
     if any(x in message.content for x in word_list) == True:
         channel = bot.get_channel(logchannel)
