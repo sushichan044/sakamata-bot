@@ -1,3 +1,4 @@
+import asyncio
 import os
 import sys
 import traceback
@@ -68,6 +69,10 @@ siikuinrole = 923719282360188990
 errorlogchannel = 924141910321426452
 modrole = 924355349308383252
 adminrole = 917332284582031390
+
+#emoji
+maruemoji = "\N{Heavy Large Circle}"
+batuemoji = "\N{Cross Mark}"
 
 #Bootmsg-serverlogchannel/console
 async def greet():
@@ -163,46 +168,6 @@ async def ping(ctx):
     ping = round(rawping * 1000)
     await ctx.send(f'Ping is {ping}ms')
 
-#send-exe-log
-async def sendexelog(ctx,msg,descurl):
-    channel = bot.get_channel(logchannel)
-    embed = discord.Embed(
-    title = '実行ログ',
-    color = 3447003,
-    description = msg,
-    url = f'{descurl}',
-    timestamp=datetime.utcnow()
-    )
-    embed.set_author(
-    name=bot.user,
-    icon_url=bot.user.avatar_url
-    )
-    embed.add_field(
-        name='実行者',
-        value=f'{ctx.author.mention}'
-    )
-    embed.add_field(
-        name='実行コマンド',
-        value=f'[コマンドリンク]({ctx.message.jump_url})'
-    )
-    embed.add_field(
-        name='実行日時',
-        value=f'{datetime.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
-    )
-    await channel.send(embed=embed)
-
-#send-dm
-@bot.command(name='send-dm')
-@commands.has_role(adminrole)
-async def _dmsend(ctx,id:int,*,arg):
-    """DM送信用"""
-    user = bot.get_user(id)
-    msg = f'DMを{user.mention}に送信しました。'
-    m = await user.send(arg)
-    descurl = m.jump_url
-    await ctx.send('Sended!')
-    await sendexelog(ctx,msg,descurl)
-
 #recieve-dm
 @bot.listen('on_message')
 async def on_message_dm(message):
@@ -238,31 +203,52 @@ async def on_message_dm(message):
 @commands.has_role(adminrole)
 async def _messagesend(ctx,channelid:int,*,arg):
     """メッセージ送信用"""
+    #channel:送信先
     channel=bot.get_channel(channelid)
-    role = ctx.guild.get_role(siikuinrole)
-    if role.mention in arg:
-        await ctx.send(embed=await confirmmessage(ctx,channelid,arg))
-    else:
-        msg=f'{channel.mention}にメッセージを送信しました。'
+    #role:承認可能ロール
+    role = ctx.guild.get_role(adminrole)
+    kakuninmsg = f'以下のメッセージを{channel.mention}へ送信します。'
+    exemsg = f'{channel.mention}にメッセージを送信しました。'
+    nonexemsg = f'{channel.mention}へのメッセージ送信をキャンセルしました。'
+    turned = await send_confirm(ctx,arg,role,kakuninmsg)
+    if turned == 'ok':
+        msg=exemsg
         m = await channel.send(arg)
         descurl = m.jump_url
         await ctx.send('Sended!')
         await sendexelog(ctx,msg,descurl)
+    elif turned == 'cancel':
+        msg=nonexemsg
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        await ctx.send('Cancelled!')
+    else:
+        return
 
-#confirm-message
-async def confirmmessage(ctx,channelid:int,arg):
-    channel=bot.get_channel(ctx)
-    sendchannel = bot.get_channel(channelid)
-    embed = discord.Embed(
-    color=3447003,
-    description=arg,
-    timestamp=datetime.utcnow()
-    )
-    embed.add_field(
-        name='確認',
-        value=f'以上のメッセージを{sendchannel.mention}へ送信しますか?'
-        )
-    return embed
+#send-dm
+@bot.command(name='send-dm')
+@commands.has_role(adminrole)
+async def _dmsend(ctx,id:int,*,arg):
+    """DM送信用"""
+    user = bot.get_user(id)
+    role = ctx.guild.get_role(adminrole)
+    kakuninmsg = f'以下のDMを{user.mention}へ送信します。'
+    exemsg = f'{user.mention}にDMを送信しました。'
+    nonexemsg = f'{user.mention}へのDM送信をキャンセルしました。'
+    turned = await send_confirm(ctx,arg,role,kakuninmsg)
+    if turned == 'ok':
+        msg=exemsg
+        m = await user.send(arg)
+        descurl = m.jump_url
+        await ctx.send('Sended!')
+        await sendexelog(ctx,msg,descurl)
+    elif turned == 'cancel':
+        msg=nonexemsg
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        await ctx.send('Cancelled!')
+    else:
+        return
 
 #message-edit
 @bot.command(name='edit-message')
@@ -270,14 +256,69 @@ async def confirmmessage(ctx,channelid:int,arg):
 async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     """メッセージ編集用"""
     channel=bot.get_channel(channelid)
+    role = ctx.guild.get_role(adminrole)
     msgid = await channel.fetch_message(messageid)
-    msg =f'{channel.mention}のメッセージを編集しました。'
-    await msgid.edit(content=arg)
-    descurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
-    await ctx.send('Edited!')
-    await sendexelog(ctx,msg,descurl)
+    kakuninmsg = f'{channel.mention}のメッセージを以下のように編集します。'
+    exemsg = f'{channel.mention}のメッセージを編集しました。'
+    nonexemsg = f'{channel.mention}のメッセージの編集をキャンセルしました。'
+    turned = await send_confirm(ctx,arg,role,kakuninmsg)
+    if turned == 'ok':
+        msg=exemsg
+        await msgid.edit(content=arg)
+        descurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
+        await ctx.send('Edited!')
+        await sendexelog(ctx,msg,descurl)
+    elif turned == 'cancel':
+        msg=nonexemsg
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        await ctx.send('Cancelled!')
+    else:
+        return
 
-#reaction_check
-#async def reactioncheck():
+#confirm-system
+async def send_confirm(ctx,arg,role,kakuninmsg):
+    sendkakuninmsg = f'{kakuninmsg}\n------------------------\n{arg}\n------------------------\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
+    m = await ctx.send(sendkakuninmsg)
+    await m.add_reaction(maruemoji)
+    await m.add_reaction(batuemoji)
+    valid_reactions = [maruemoji,batuemoji]
+    #wait-for-reaction
+    def check(reaction,user):
+        return role in user.roles and str(reaction.emoji) in valid_reactions
+    reaction,user = await bot.wait_for('reaction_add',check = check)
+    #exe
+    if str(reaction.emoji) == maruemoji:
+        return 'ok'
+    else:
+        return 'cancel'
+
+#send-exe-log
+async def sendexelog(ctx,msg,descurl):
+    channel = bot.get_channel(logchannel)
+    embed = discord.Embed(
+    title = '実行ログ',
+    color = 3447003,
+    description = msg,
+    url = f'{descurl}',
+    timestamp=datetime.utcnow()
+    )
+    embed.set_author(
+    name=bot.user,
+    icon_url=bot.user.avatar_url
+    )
+    embed.add_field(
+        name='実行者',
+        value=f'{ctx.author.mention}'
+    )
+    embed.add_field(
+        name='実行コマンド',
+        value=f'[コマンドリンク]({ctx.message.jump_url})'
+    )
+    embed.add_field(
+        name='実行日時',
+        value=f'{datetime.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+    )
+    await channel.send(embed=embed)
 
 bot.run(token)
