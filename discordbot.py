@@ -305,7 +305,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
 #kick-member
 @bot.command(name='kick')
 @commands.has_role(adminrole)
-async def _kickuser(ctx,id:int,ifdm):
+async def _kickuser(ctx,id:int,ifdm=None):
     deal = 'kick'
     member = ctx.guild.get_member(id)
     role = ctx.guild.get_role(adminrole)
