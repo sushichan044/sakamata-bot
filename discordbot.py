@@ -279,7 +279,7 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
 #confirm-system
 async def send_confirm(ctx,arg,role,kakuninmsg):
     sendkakuninmsg = f'{kakuninmsg}\n------------------------\n{arg}\n------------------------\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
-    m = await ctx.send(sendkakuninmsg)
+    m = await ctx.reply(sendkakuninmsg)
     await m.add_reaction(maruemoji)
     await m.add_reaction(batuemoji)
     valid_reactions = [maruemoji,batuemoji]
