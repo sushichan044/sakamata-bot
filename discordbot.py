@@ -316,7 +316,10 @@ async def _kickuser(ctx,id:int,ifdm,*,arg):
     if turned == 'ok':
         msg = exemsg
         await member.kick(reason = None)
-        m = await user.send(DMcontent)
+        if ifdm == None:
+            return
+        else:
+            m = await user.send(DMcontent)
         descurl = m.jump_url
         await ctx.send('Kicked!')
         await sendexelog(ctx,msg,descurl)
