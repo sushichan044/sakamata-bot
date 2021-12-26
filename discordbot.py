@@ -283,13 +283,13 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
 
 
 deal = None
-addDM = None
+adddm = None
 DMcontent = f'''【あなたは{deal}されました】
 クロヱ水族館/Chloeriumの管理者です。
 
 あなたのサーバーでの行為がサーバールールに違反していると判断し、{deal}しました。
 
-{addDM}
+{adddm}
 
 クロヱ水族館/Chloerium 管理者
 '''
@@ -306,7 +306,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
 @bot.command(name='kick')
 @commands.has_role(adminrole)
 async def _kickuser(ctx,id:int,ifdm=None):
-    deal = 'kick'
+    DMcontent.deal = 'kick'
     member = ctx.guild.get_member(id)
     role = ctx.guild.get_role(adminrole)
     validifdm = [None,'false']
@@ -325,7 +325,9 @@ async def _kickuser(ctx,id:int,ifdm=None):
         if turned == 'ok':
             msg = exemsg
             if ifdm == None:
-                m = await member.send(DMcontent)
+                deal = 'kick'
+                adddm = None
+                m = senddealdm(ctx,member,deal,adddm)
                 descurl = m.jump_url
                 await member.kick(reason = None)
                 await ctx.send('Kicked!')
@@ -346,6 +348,20 @@ async def _kickuser(ctx,id:int,ifdm=None):
             await ctx.send('Cancelled!')
         else:
             return
+
+#Deal-DM
+async def senddealdm(ctx,member,deal,adddm):
+    DMcontent = f'''【あなたは{deal}されました】
+クロヱ水族館/Chloeriumの管理者です。
+
+あなたのサーバーでの行為がサーバールールに違反していると判断し、{deal}しました。
+
+{adddm}
+
+クロヱ水族館/Chloerium 管理者
+'''
+    await member.send(f"""{DMcontent}""")
+    return
 
 #confirm-system
 async def confirm(ctx,arg,role,kakuninmsg):
