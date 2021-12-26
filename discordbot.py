@@ -361,7 +361,7 @@ async def _banuser(ctx,id:int,ifdm:str='True'):
 今後、あなたはクロヱ水族館に参加することはできません。
 
 BANの解除を希望する場合は以下のフォームをご利用ください。
-
+クロヱ水族館BAN解除申請フォーム
 https://forms.gle/mR1foEyd9JHbhYdCA
 '''
         DMcontent = await makedealdm(ctx,deal,adddm)
@@ -401,8 +401,7 @@ async def makedealdm(ctx,deal,adddm):
 クロヱ水族館/Chloeriumの管理者です。
 
 あなたのサーバーでの行為がサーバールールに違反していると判断し、{str.upper(deal)}しました。
-{adddm}
-クロヱ水族館/Chloerium 管理者'''
+{adddm}'''
     return DMcontent
 
 #confirm-system
