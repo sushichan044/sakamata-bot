@@ -312,7 +312,7 @@ async def _kickuser(ctx,id:int,ifdm:str='True'):
         kakuninmsg = f'【kick実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author.name},ID:{ctx.author.id})\n対象者:\n　{member.name}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
         exemsg = f'{member.mention}をキックしました。'
         nonexemsg = f'{member.mention}のキックをキャンセルしました。'
-        arg = None
+        arg = ''
         turned = await confirm(ctx,arg,role,kakuninmsg)
         if turned == 'ok':
             msg = exemsg
