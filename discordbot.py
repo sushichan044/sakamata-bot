@@ -248,11 +248,12 @@ async def _messagesend(ctx,channelid:int,*,arg):
     m = await ctx.send(kakuninmsg)
     await m.add_reaction(maruemoji)
     await m.add_reaction(batuemoji)
-    valid_reacrions = [maruemoji,batuemoji]
+    valid_reactions = [maruemoji,batuemoji]
     #wait-for-reaction
-    def checkmaru(reaction):
-        return str(reaction.emoji) in valid_reacrions
-    reaction = await bot.wait_for('reaction_add',check = checkmaru)
+    def check(reaction):
+        return str(reaction.emoji) in valid_reactions
+    try:
+        reaction,user = await bot.wait_for('reaction_add',check = check)
     #exe
     if str(reaction.emoji) == maruemoji:
         msg=f'{channel.mention}にメッセージを送信しました。'
