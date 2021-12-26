@@ -113,8 +113,8 @@ async def detect_NGword(message):
         timestamp=message.created_at
         )
         embed.set_author(
-        name=message.author.display_name,
-        icon_url=message.author.avatar_url
+        name=bot.user,
+        icon_url=bot.user.avatar_url
         )
         embed.add_field(
             name='送信者',
@@ -126,7 +126,7 @@ async def detect_NGword(message):
         )
         await channel.send(embed=embed)
     else:
-        return
+        return@
 
 #Dispander-All
 @bot.listen('on_message')
