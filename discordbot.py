@@ -330,7 +330,7 @@ async def _kickuser(ctx,id:int,ifdm=None):
             await sendexelog(ctx,msg,descurl)
             return
         else:
-            ctx.send('DM送信を止めるには`false`を引数に追加してください。')
+            ctx.send('DM送信を止めるにはfalseを引数に追加してください。')
             msg = '不明な引数を検知したため処理を終了しました。'
             descurl = None
             await sendexelog(ctx,msg,descurl)
