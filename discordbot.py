@@ -321,7 +321,6 @@ async def send_confirm(ctx,arg,role,kakuninmsg):
     else:
         return 'cancel'
 
-
 #reaction_check
 #async def reactioncheck():
 
