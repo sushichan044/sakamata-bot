@@ -250,7 +250,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
     kakuninmsg = f'以下のメッセージを{channel.mention}へ送信します。'
     exemsg = f'{channel.mention}にメッセージを送信しました。'
     nonexemsg = f'{channel.mention}へのメッセージ送信をキャンセルしました。'
-    turned = await send_confirm(ctx,arg,channel,role,kakuninmsg,exemsg,nonexemsg)
+    turned = await send_confirm(ctx,arg,role,kakuninmsg)
     if turned == 'ok':
         msg=exemsg
         m = await channel.send(arg)
@@ -263,9 +263,8 @@ async def _messagesend(ctx,channelid:int,*,arg):
         await sendexelog(ctx,msg,descurl)
         await ctx.send('Cancelled!')
 
-
 #confirm-system
-async def send_confirm(ctx,arg,channel,role,kakuninmsg,exemsg,nonexemsg):
+async def send_confirm(ctx,arg,role,kakuninmsg):
     sendkakuninmsg = f'{kakuninmsg}\n------------------------\n{arg}\n------------------------\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
     m = await ctx.send(sendkakuninmsg)
     await m.add_reaction(maruemoji)
