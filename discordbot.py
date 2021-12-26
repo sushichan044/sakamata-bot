@@ -252,7 +252,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
     valid_reactions = [maruemoji,batuemoji]
     #wait-for-reaction
     def check(reaction,user):
-        return user != bot.user and adminrole in user.roles and str(reaction.emoji) in valid_reactions
+        return adminrole in user.roles and str(reaction.emoji) in valid_reactions
     reaction,user = await bot.wait_for('reaction_add',check = check)
     #exe
     if str(reaction.emoji) == maruemoji:
