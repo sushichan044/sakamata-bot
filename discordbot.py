@@ -105,7 +105,7 @@ async def on_message_dispand(message):
         return
     elif message.author.bot:
         return
-    elif message.content.startswith('/send-message'or'/edit-message'or'/send-dm'):
+    elif message.content.startswith('/send-message','/edit-message','/send-dm'):
         return
     else:
         await dispand(message)
