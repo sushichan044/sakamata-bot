@@ -311,7 +311,7 @@ async def _kickuser(ctx,id:int,ifdm=None):
     role = ctx.guild.get_role(adminrole)
     validifdm = [None,'false']
     if ifdm not in validifdm:
-        ctx.send('不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはfalseを指定してください。')
+        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはfalseを指定してください。',mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
         descurl = ''
         await sendexelog(ctx,msg,descurl)
