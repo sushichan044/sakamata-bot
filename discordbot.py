@@ -278,7 +278,7 @@ async def send_confirm(ctx,arg,channel,role,kakuninmsg):
     m = await ctx.send(msg)
     await m.add_reaction(maruemoji)
     await m.add_reaction(batuemoji)
-    valid_reactions = [maruemoji,batuemoji    valid_reactions = [maruemoji,batuemoji]
+    valid_reactions = [maruemoji,batuemoji]
     #wait-for-reaction
     def check(reaction,user):
         return role in user.roles and str(reaction.emoji) in valid_reactions
