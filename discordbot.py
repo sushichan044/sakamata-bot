@@ -284,16 +284,11 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     else:
         return
 
+#deal-member
+#deal:対処。ban/kick
 deal = None
+#adddm:デフォルトDMに追加で送信するコンテンツ
 adddm = None
-
-'''
-今後、あなたはクロヱ水族館に参加することはできません。
-
-BANの解除を希望する場合は以下のフォームをご利用ください。
-
-https://forms.gle/mR1foEyd9JHbhYdCA
-'''
 
 #kick-member
 @bot.command(name='kick')
