@@ -253,13 +253,9 @@ async def _messagesend(ctx,channelid:int,*,arg):
     #wait-for-reaction
     def check(reaction,user):
         return str(reaction.emoji) in valid_reactions
-    try:
-        reaction,user = await bot.wait_for('reaction_add',timeout=300.0,check = check)
+    reaction,user = await bot.wait_for('reaction_add',check = check)
     #exe
-    except asyncio.TimeoutError:
-        await ctx.send(f'{ctx.author.mention}さん、コマンドはタイムアウトしました。')
-    else:
-        if str(reaction.emoji) == maruemoji:
+    if str(reaction.emoji) == maruemoji:
             msg=f'{channel.mention}にメッセージを送信しました。'
             m = await channel.send(arg)
             descurl = m.jump_url
