@@ -357,7 +357,13 @@ async def _banuser(ctx,id:int,ifdm:str='True'):
         return
     else:
         deal = 'ban'
-        adddm = ''
+        adddm = '''
+今後、あなたはクロヱ水族館に参加することはできません。
+
+BANの解除を希望する場合は以下のフォームをご利用ください。
+
+https://forms.gle/mR1foEyd9JHbhYdCA
+'''
         DMcontent = await makedealdm(ctx,deal,adddm)
         kakuninmsg = f'【ban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member.name}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
         exemsg = f'{member.mention}をBANしました。'
