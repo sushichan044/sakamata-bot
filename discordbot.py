@@ -103,6 +103,8 @@ async def errortest(ctx):
 async def on_message_dispand(message):
     if type(message.channel) == discord.DMChannel:
         return
+    elif message.author.bot:
+        return
     else:
         await dispand(message)
 
