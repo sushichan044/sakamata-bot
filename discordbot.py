@@ -103,7 +103,7 @@ async def errortest(ctx):
 async def detect_NGword(message):
     guild = bot.get_guild(guildid)
     word_list = ['@everyone','@here']
-    if any(x==message.content for x in word_list) == True:
+    if any(x in message.content for x in word_list) == True:
         channel = bot.get_channel(logchannel)
         embed = discord.Embed(
         title='NGワードを検知しました。',
