@@ -211,7 +211,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
     channel=bot.get_channel(channelid)
     #role:承認可能ロール
     role = ctx.guild.get_role(adminrole)
-    kakuninmsg = f'以下のメッセージを{channel.mention}へ送信します。'
+    kakuninmsg = f'【メッセージ送信確認】\n以下のメッセージを{channel.mention}へ送信します。'
     exemsg = f'{channel.mention}にメッセージを送信しました。'
     nonexemsg = f'{channel.mention}へのメッセージ送信をキャンセルしました。'
     turned = await send_confirm(ctx,arg,role,kakuninmsg)
@@ -236,7 +236,7 @@ async def _dmsend(ctx,id:int,*,arg):
     """DM送信用"""
     user = bot.get_user(id)
     role = ctx.guild.get_role(adminrole)
-    kakuninmsg = f'以下のDMを{user.mention}へ送信します。'
+    kakuninmsg = f'【DM送信確認】\n以下のDMを{user.mention}へ送信します。'
     exemsg = f'{user.mention}にDMを送信しました。'
     nonexemsg = f'{user.mention}へのDM送信をキャンセルしました。'
     turned = await send_confirm(ctx,arg,role,kakuninmsg)
@@ -263,7 +263,7 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     role = ctx.guild.get_role(adminrole)
     msgid = await channel.fetch_message(messageid)
     msgurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
-    kakuninmsg = f'{channel.mention}のメッセージ\n{msgurl}\nを以下のように編集します。'
+    kakuninmsg = f'【メッセージ編集確認】\n{channel.mention}のメッセージ\n{msgurl}\nを以下のように編集します。'
     exemsg = f'{channel.mention}のメッセージを編集しました。'
     nonexemsg = f'{channel.mention}のメッセージの編集をキャンセルしました。'
     turned = await send_confirm(ctx,arg,role,kakuninmsg)
