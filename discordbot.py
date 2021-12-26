@@ -248,9 +248,14 @@ async def _messagesend(ctx,channelid:int,*,arg):
     #role:承認可能ロール
     role = ctx.guild.get_role(adminrole)
     kakuninmsg = f'以下のメッセージを{channel.mention}へ送信します。'
-    await send_confirm(ctx,arg,channel,role,kakuninmsg)
-'''
-    m = await ctx.send(kakuninmsg)
+    exemsg = f'{channel.mention}にメッセージを送信しました。'
+    nonexemsg = f'{channel.mention}へのメッセージ送信をキャンセルしました。'
+    await send_confirm(ctx,arg,channel,role,kakuninmsg,exemsg,nonexemsg)
+
+#confirm-message
+async def send_confirm(ctx,arg,channel,role,kakuninmsg,exemsg,nonexemsg):
+    sendkakuninmsg = f'{kakuninmsg}\n------------------------\n{arg}\n------------------------\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
+    m = await ctx.send(sendkakuninmsg)
     await m.add_reaction(maruemoji)
     await m.add_reaction(batuemoji)
     valid_reactions = [maruemoji,batuemoji]
@@ -260,43 +265,16 @@ async def _messagesend(ctx,channelid:int,*,arg):
     reaction,user = await bot.wait_for('reaction_add',check = check)
     #exe
     if str(reaction.emoji) == maruemoji:
-        msg=f'{channel.mention}にメッセージを送信しました。'
+        msg=exemsg
         m = await channel.send(arg)
         descurl = m.jump_url
         await ctx.send('Sended!')
         await sendexelog(ctx,msg,descurl)
     else:
-        msg=f'{channel.mention}へのメッセージ送信をキャンセルしました。'
+        msg=nonexemsg
         descurl = ''
         await sendexelog(ctx,msg,descurl)
         await ctx.send('Cancelled!')
-'''
-
-#admin-confirm-message
-async def send_confirm(ctx,arg,channel,role,kakuninmsg):
-    msg = f'{kakuninmsg}\n------------------------\n{arg}\n------------------------\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
-    m = await ctx.send(msg)
-    await m.add_reaction(maruemoji)
-    await m.add_reaction(batuemoji)
-    valid_reactions = [maruemoji,batuemoji]
-    #wait-for-reaction
-    def check(reaction,user):
-        return role in user.roles and str(reaction.emoji) in valid_reactions
-    reaction,user = await bot.wait_for('reaction_add',check = check)
-    #exe
-    if str(reaction.emoji) == maruemoji:
-        msg=f'{channel.mention}にメッセージを送信しました。'
-        m = await channel.send(arg)
-        descurl = m.jump_url
-        await ctx.send('Sended!')
-        await sendexelog(ctx,msg,descurl)
-    else:
-        msg=f'{channel.mention}へのメッセージ送信をキャンセルしました。'
-        descurl = ''
-        await sendexelog(ctx,msg,descurl)
-        await ctx.send('Cancelled!')
-
-
 
 #message-edit
 @bot.command(name='edit-message')
