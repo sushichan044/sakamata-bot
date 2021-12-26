@@ -261,7 +261,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
             descurl = m.jump_url
             await ctx.send('Sended!')
             await sendexelog(ctx,msg,descurl)
-        else:
+    else:
             await ctx.send("Cancelled!")
 
 #confirm-message
