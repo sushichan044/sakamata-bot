@@ -308,8 +308,8 @@ async def _kickuser(ctx,id:int,ifdm=None):
     else:
         deal = 'kick'
         adddm = None
-        confDMcontent = dealdm(ctx,deal,adddm)
-        kakuninmsg = f'【kick実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author.name},ID:{ctx.author.id})\n対象者:\n　{member.name}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{confDMcontent}'
+        DMcontent = makedealdm(ctx,deal,adddm)
+        kakuninmsg = f'【kick実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author.name},ID:{ctx.author.id})\n対象者:\n　{member.name}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
         exemsg = f'{member.mention}をキックしました。'
         nonexemsg = f'{member.mention}のキックをキャンセルしました。'
         arg = None
@@ -319,7 +319,7 @@ async def _kickuser(ctx,id:int,ifdm=None):
             if ifdm == None:
                 deal = 'kick'
                 adddm = None
-                m = member.send(confDMcontent)
+                m = member.send(DMcontent)
                 descurl = m.jump_url
                 await member.kick(reason = None)
                 await ctx.send('Kicked!')
@@ -342,7 +342,7 @@ async def _kickuser(ctx,id:int,ifdm=None):
             return
 
 #Deal-DM
-async def dealdm(ctx,deal,adddm):
+async def makedealdm(ctx,deal,adddm):
     DMcontent = f'''【あなたは{deal}されました】
 クロヱ水族館/Chloeriumの管理者です。
 
