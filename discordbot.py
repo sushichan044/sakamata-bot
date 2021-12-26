@@ -168,34 +168,6 @@ async def ping(ctx):
     ping = round(rawping * 1000)
     await ctx.send(f'Ping is {ping}ms')
 
-#send-exe-log
-async def sendexelog(ctx,msg,descurl):
-    channel = bot.get_channel(logchannel)
-    embed = discord.Embed(
-    title = '実行ログ',
-    color = 3447003,
-    description = msg,
-    url = f'{descurl}',
-    timestamp=datetime.utcnow()
-    )
-    embed.set_author(
-    name=bot.user,
-    icon_url=bot.user.avatar_url
-    )
-    embed.add_field(
-        name='実行者',
-        value=f'{ctx.author.mention}'
-    )
-    embed.add_field(
-        name='実行コマンド',
-        value=f'[コマンドリンク]({ctx.message.jump_url})'
-    )
-    embed.add_field(
-        name='実行日時',
-        value=f'{datetime.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
-    )
-    await channel.send(embed=embed)
-
 #recieve-dm
 @bot.listen('on_message')
 async def on_message_dm(message):
@@ -321,7 +293,32 @@ async def send_confirm(ctx,arg,role,kakuninmsg):
     else:
         return 'cancel'
 
-#reaction_check
-#async def reactioncheck():
+#send-exe-log
+async def sendexelog(ctx,msg,descurl):
+    channel = bot.get_channel(logchannel)
+    embed = discord.Embed(
+    title = '実行ログ',
+    color = 3447003,
+    description = msg,
+    url = f'{descurl}',
+    timestamp=datetime.utcnow()
+    )
+    embed.set_author(
+    name=bot.user,
+    icon_url=bot.user.avatar_url
+    )
+    embed.add_field(
+        name='実行者',
+        value=f'{ctx.author.mention}'
+    )
+    embed.add_field(
+        name='実行コマンド',
+        value=f'[コマンドリンク]({ctx.message.jump_url})'
+    )
+    embed.add_field(
+        name='実行日時',
+        value=f'{datetime.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+    )
+    await channel.send(embed=embed)
 
 bot.run(token)
