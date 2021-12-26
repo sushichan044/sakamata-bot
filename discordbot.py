@@ -309,39 +309,43 @@ async def _kickuser(ctx,id:int,ifdm=None):
     deal = 'kick'
     member = ctx.guild.get_member(id)
     role = ctx.guild.get_role(adminrole)
-    kakuninmsg = f'【kick実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author.name},ID:{ctx.author.id})\n対象者:\n　{member.name}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
-    exemsg = f'{member.mention}をキックしました。'
-    nonexemsg = f'{member.mention}のキックをキャンセルしました。'
-    arg = None
-    turned = await confirm(ctx,arg,role,kakuninmsg)
-    if turned == 'ok':
-        msg = exemsg
-        if ifdm == None:
-            m = await member.send(DMcontent)
-            descurl = m.jump_url
-            await member.kick(reason = None)
-            await ctx.send('Kicked!')
-            await sendexelog(ctx,msg,descurl)
-            return
-        elif ifdm == 'false':
-            descurl = None
-            await member.kick(reason = None)
-            await ctx.send('Kicked!')
-            await sendexelog(ctx,msg,descurl)
-            return
-        else:
-            ctx.send('DM送信を止めるにはfalseを引数に追加してください。')
-            msg = '不明な引数を検知したため処理を終了しました。'
-            descurl = None
-            await sendexelog(ctx,msg,descurl)
-            return
-    elif turned == 'cancel':
-        msg=nonexemsg
-        descurl = ''
+    validifdm = [None,'false']
+    if ifdm not in validifdm:
+        ctx.send('不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはfalseを指定してください。')
+        msg = '不明な引数を検知したため処理を終了しました。'
+        descurl = None
         await sendexelog(ctx,msg,descurl)
-        await ctx.send('Cancelled!')
-    else:
         return
+    else:
+        kakuninmsg = f'【kick実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author.name},ID:{ctx.author.id})\n対象者:\n　{member.name}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
+        exemsg = f'{member.mention}をキックしました。'
+        nonexemsg = f'{member.mention}のキックをキャンセルしました。'
+        arg = None
+        turned = await confirm(ctx,arg,role,kakuninmsg)
+        if turned == 'ok':
+            msg = exemsg
+            if ifdm == None:
+                m = await member.send(DMcontent)
+                descurl = m.jump_url
+                await member.kick(reason = None)
+                await ctx.send('Kicked!')
+                await sendexelog(ctx,msg,descurl)
+                return
+            elif ifdm == 'false':
+                descurl = None
+                await member.kick(reason = None)
+                await ctx.send('Kicked!')
+                await sendexelog(ctx,msg,descurl)
+                return
+            else:
+                return
+        elif turned == 'cancel':
+            msg=nonexemsg
+            descurl = ''
+            await sendexelog(ctx,msg,descurl)
+            await ctx.send('Cancelled!')
+        else:
+            return
 
 #confirm-system
 async def confirm(ctx,arg,role,kakuninmsg):
