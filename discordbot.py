@@ -256,16 +256,16 @@ async def _messagesend(ctx,channelid:int,*,arg):
     reaction,user = await bot.wait_for('reaction_add',check = check)
     #exe
     if str(reaction.emoji) == maruemoji:
-            msg=f'{channel.mention}にメッセージを送信しました。'
-            m = await channel.send(arg)
-            descurl = m.jump_url
-            await ctx.send('Sended!')
-            await sendexelog(ctx,msg,descurl)
+        msg=f'{channel.mention}にメッセージを送信しました。'
+        m = await channel.send(arg)
+        descurl = m.jump_url
+        await ctx.send('Sended!')
+        await sendexelog(ctx,msg,descurl)
     else:
-            await ctx.send("Cancelled!")
+        await ctx.send("Cancelled!")
 
 #confirm-message
-async def send_confirm(ctx,kakuninmsg):
+#async def send_confirm(ctx,kakuninmsg):
 
 
 #message-edit
