@@ -262,14 +262,15 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     channel=bot.get_channel(channelid)
     role = ctx.guild.get_role(adminrole)
     msgid = await channel.fetch_message(messageid)
-    kakuninmsg = f'{channel.mention}のメッセージを以下のように編集します。'
+    msgurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
+    kakuninmsg = f'{channel.mention}のメッセージ\n{msgurl}\nを以下のように編集します。'
     exemsg = f'{channel.mention}のメッセージを編集しました。'
     nonexemsg = f'{channel.mention}のメッセージの編集をキャンセルしました。'
     turned = await send_confirm(ctx,arg,role,kakuninmsg)
     if turned == 'ok':
         msg=exemsg
         await msgid.edit(content=arg)
-        descurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
+        descurl = msgurl
         await ctx.send('Edited!')
         await sendexelog(ctx,msg,descurl)
     elif turned == 'cancel':
