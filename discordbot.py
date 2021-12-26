@@ -252,7 +252,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
     valid_reactions = [maruemoji,batuemoji]
     #wait-for-reaction
     def check(reaction,user):
-        return adminrole in user.roles and str(reaction.emoji) in valid_reactions
+        return role in user.roles and str(reaction.emoji) in valid_reactions
     reaction,user = await bot.wait_for('reaction_add',check = check)
     #exe
     if str(reaction.emoji) == maruemoji:
@@ -262,7 +262,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
         await ctx.send('Sended!')
         await sendexelog(ctx,msg,descurl)
     else:
-        await ctx.send("Cancelled!")
+        await ctx.send('Cancelled!')
 
 #confirm-message
 #async def send_confirm(ctx,kakuninmsg):
