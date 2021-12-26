@@ -202,11 +202,22 @@ async def sendexelog(ctx,msg,descurl):
 async def _dmsend(ctx,id:int,*,arg):
     """DM送信用"""
     user = bot.get_user(id)
-    msg = f'DMを{user.mention}に送信しました。'
-    m = await user.send(arg)
-    descurl = m.jump_url
-    await ctx.send('Sended!')
-    await sendexelog(ctx,msg,descurl)
+    role = ctx.guild.get_role(adminrole)
+    kakuninmsg = f'以下のDMを{user.mention}へ送信します。'
+    exemsg = f'{user.mention}にDMを送信しました。'
+    nonexemsg = f'{user.mention}へのDM送信をキャンセルしました。'
+    turned = await send_confirm(ctx,arg,role,kakuninmsg)
+    if turned == 'ok':
+        msg=exemsg
+        m = await user.send(arg)
+        descurl = m.jump_url
+        await ctx.send('Sended!')
+        await sendexelog(ctx,msg,descurl)
+    elif turned == 'cancel':
+        msg=nonexemsg
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        await ctx.send('Cancelled!')
 
 #recieve-dm
 @bot.listen('on_message')
