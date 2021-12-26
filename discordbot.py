@@ -295,12 +295,12 @@ https://forms.gle/mR1foEyd9JHbhYdCA
 #kick-member
 @bot.command(name='kick')
 @commands.has_role(adminrole)
-async def _kickuser(ctx,id:int,ifdm=None):
+async def _kickuser(ctx,id:int,ifdm=True):
     member = ctx.guild.get_member(id)
     role = ctx.guild.get_role(adminrole)
-    validifdm = [None,'false']
+    validifdm = ['True','False']
     if ifdm not in validifdm:
-        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはfalseを指定してください。',mention_author=False)
+        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
         descurl = ''
         await sendexelog(ctx,msg,descurl)
@@ -316,14 +316,14 @@ async def _kickuser(ctx,id:int,ifdm=None):
         turned = await confirm(ctx,arg,role,kakuninmsg)
         if turned == 'ok':
             msg = exemsg
-            if ifdm == None:
+            if ifdm == 'True':
                 m = member.send(DMcontent)
                 descurl = m.jump_url
                 await member.kick(reason = None)
                 await ctx.send('Kicked!')
                 await sendexelog(ctx,msg,descurl)
                 return
-            elif ifdm == 'false':
+            elif ifdm == 'False':
                 descurl = ''
                 await member.kick(reason = None)
                 await ctx.send('Kicked!')
