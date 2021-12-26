@@ -98,6 +98,34 @@ async def on_command_error(ctx,error):
 async def errortest(ctx):
     prin()
 
+#Detect-NGword
+@bot.listen('on_message')
+async def detect_NGword(message):
+    if ('@everyone','@here') in message.content:
+        channel = bot.get_channel(logchannel)
+        embed = discord.Embed(
+        title='NGワードを検知しました。',
+        url=message.jump_url,
+        color=16711680,
+        description=message.content,
+        timestamp=message.created_at
+        )
+        embed.set_author(
+        name=message.author.display_name,
+        icon_url=message.author.avatar_url
+        )
+        embed.add_field(
+            name='送信者',
+            value=f'{message.author.mention}'
+        )
+        embed.add_field(
+            name='送信日時',
+            value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        )
+        await channel.send(embed=embed)
+    else:
+        return
+
 #Dispander-All
 @bot.listen('on_message')
 async def on_message_dispand(message):
