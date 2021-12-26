@@ -345,9 +345,7 @@ async def makedealdm(ctx,deal,adddm):
 クロヱ水族館/Chloeriumの管理者です。
 
 あなたのサーバーでの行為がサーバールールに違反していると判断し、{deal}しました。
-
 {adddm}
-
 クロヱ水族館/Chloerium 管理者'''
     return DMcontent
 
