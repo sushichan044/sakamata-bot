@@ -246,8 +246,8 @@ async def _messagesend(ctx,channelid:int,*,arg):
     role = ctx.guild.get_role(adminrole)
     kakuninmsg = f'以下のメッセージを{channel.mention}へ送信します。\n------------------------\n{arg}\n------------------------\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
     m = await ctx.send(kakuninmsg)
-    m.add_reaction(maruemoji)
-    m.add_reaction(batuemoji)
+    await m.add_reaction(maruemoji)
+    await m.add_reaction(batuemoji)
     valid_reacrions = [maruemoji,batuemoji]
     #wait-for-reaction
     def checkmaru(reaction):
