@@ -252,7 +252,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
     valid_reactions = [maruemoji,batuemoji]
     #wait-for-reaction
     def check(reaction,user):
-        return user != bot.user and str(reaction.emoji) in valid_reactions
+        return user != bot.user and adminrole in user.roles.id and str(reaction.emoji) in valid_reactions
     reaction,user = await bot.wait_for('reaction_add',check = check)
     #exe
     if str(reaction.emoji) == maruemoji:
@@ -265,19 +265,8 @@ async def _messagesend(ctx,channelid:int,*,arg):
             await ctx.send("Cancelled!")
 
 #confirm-message
-async def confirmmessage(ctx,channelid:int,arg):
-    channel=bot.get_channel(ctx)
-    sendchannel = bot.get_channel(channelid)
-    embed = discord.Embed(
-    color=3447003,
-    description=arg,
-    timestamp=datetime.utcnow()
-    )
-    embed.add_field(
-        name='確認',
-        value=f'以上のメッセージを{sendchannel.mention}へ送信しますか?'
-        )
-    return embed
+async def send_confirm(ctx,kakuninmsg):
+
 
 #message-edit
 @bot.command(name='edit-message')
