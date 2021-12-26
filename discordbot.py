@@ -281,18 +281,8 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     else:
         return
 
-
 deal = None
 adddm = None
-DMcontent = f'''【あなたは{deal}されました】
-クロヱ水族館/Chloeriumの管理者です。
-
-あなたのサーバーでの行為がサーバールールに違反していると判断し、{deal}しました。
-
-{adddm}
-
-クロヱ水族館/Chloerium 管理者
-'''
 
 '''
 今後、あなたはクロヱ水族館に参加することはできません。
@@ -306,7 +296,6 @@ https://forms.gle/mR1foEyd9JHbhYdCA
 @bot.command(name='kick')
 @commands.has_role(adminrole)
 async def _kickuser(ctx,id:int,ifdm=None):
-    DMcontent.deal = 'kick'
     member = ctx.guild.get_member(id)
     role = ctx.guild.get_role(adminrole)
     validifdm = [None,'false']
