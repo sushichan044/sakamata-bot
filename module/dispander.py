@@ -85,7 +85,7 @@ async def dispand(message):
         sent_messages = []
 
         if m.content or m.attachments:
-            sent_message = await message.reply(embed=compose_embed(m))
+            sent_message = await message.reply(embed=compose_embed(m),mention_author=False)
             sent_messages.append(sent_message)
         # Send the second and subsequent attachments with embed (named 'embed') respectively:
         for attachment in m.attachments[1:]:
@@ -93,11 +93,11 @@ async def dispand(message):
             embed.set_image(
                 url=attachment.proxy_url
             )
-            sent_attachment_message = await message.reply(embed=embed)
+            sent_attachment_message = await message.reply(embed=embed,mention_author=False)
             sent_messages.append(sent_attachment_message)
 
         for embed in m.embeds:
-            sent_embed_message = await message.reply(embed=embed)
+            sent_embed_message = await message.reply(embed=embed,mention_author=False)
             sent_messages.append(sent_embed_message)
 '''
         # 一番先頭のメッセージにゴミ箱のリアクションをつける
