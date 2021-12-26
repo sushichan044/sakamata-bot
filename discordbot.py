@@ -105,6 +105,8 @@ async def on_message_dispand(message):
         return
     elif message.author.bot:
         return
+    elif message.content.startswith('/send-message'or'/edit-message'or'/send-dm'):
+        return
     else:
         await dispand(message)
 
@@ -252,7 +254,7 @@ async def _dmsend(ctx,id:int,*,arg):
     else:
         return
 
-#message-edit
+#edit-message
 @bot.command(name='edit-message')
 @commands.has_role(adminrole)
 async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
