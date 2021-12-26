@@ -196,29 +196,6 @@ async def sendexelog(ctx,msg,descurl):
     )
     await channel.send(embed=embed)
 
-#send-dm
-@bot.command(name='send-dm')
-@commands.has_role(adminrole)
-async def _dmsend(ctx,id:int,*,arg):
-    """DM送信用"""
-    user = bot.get_user(id)
-    role = ctx.guild.get_role(adminrole)
-    kakuninmsg = f'以下のDMを{user.mention}へ送信します。'
-    exemsg = f'{user.mention}にDMを送信しました。'
-    nonexemsg = f'{user.mention}へのDM送信をキャンセルしました。'
-    turned = await send_confirm(ctx,arg,role,kakuninmsg)
-    if turned == 'ok':
-        msg=exemsg
-        m = await user.send(arg)
-        descurl = m.jump_url
-        await ctx.send('Sended!')
-        await sendexelog(ctx,msg,descurl)
-    elif turned == 'cancel':
-        msg=nonexemsg
-        descurl = ''
-        await sendexelog(ctx,msg,descurl)
-        await ctx.send('Cancelled!')
-
 #recieve-dm
 @bot.listen('on_message')
 async def on_message_dm(message):
@@ -273,6 +250,59 @@ async def _messagesend(ctx,channelid:int,*,arg):
         descurl = ''
         await sendexelog(ctx,msg,descurl)
         await ctx.send('Cancelled!')
+    else:
+        return
+
+#send-dm
+@bot.command(name='send-dm')
+@commands.has_role(adminrole)
+async def _dmsend(ctx,id:int,*,arg):
+    """DM送信用"""
+    user = bot.get_user(id)
+    role = ctx.guild.get_role(adminrole)
+    kakuninmsg = f'以下のDMを{user.mention}へ送信します。'
+    exemsg = f'{user.mention}にDMを送信しました。'
+    nonexemsg = f'{user.mention}へのDM送信をキャンセルしました。'
+    turned = await send_confirm(ctx,arg,role,kakuninmsg)
+    if turned == 'ok':
+        msg=exemsg
+        m = await user.send(arg)
+        descurl = m.jump_url
+        await ctx.send('Sended!')
+        await sendexelog(ctx,msg,descurl)
+    elif turned == 'cancel':
+        msg=nonexemsg
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        await ctx.send('Cancelled!')
+    else:
+        return
+
+#message-edit
+@bot.command(name='edit-message')
+@commands.has_role(adminrole)
+async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
+    """メッセージ編集用"""
+    channel=bot.get_channel(channelid)
+    role = ctx.guild.get_role(adminrole)
+    msgid = await channel.fetch_message(messageid)
+    kakuninmsg = f'{channel.mention}のメッセージを以下のように編集します。'
+    exemsg = f'{channel.mention}のメッセージを編集しました。'
+    nonexemsg = f'{channel.mention}のメッセージの編集をキャンセルしました。'
+    turned = await send_confirm(ctx,arg,role,kakuninmsg)
+    if turned == 'ok':
+        msg=exemsg
+        await msgid.edit(content=arg)
+        descurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
+        await ctx.send('Edited!')
+        await sendexelog(ctx,msg,descurl)
+    elif turned == 'cancel':
+        msg=nonexemsg
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        await ctx.send('Cancelled!')
+    else:
+        return
 
 #confirm-system
 async def send_confirm(ctx,arg,role,kakuninmsg):
@@ -291,18 +321,6 @@ async def send_confirm(ctx,arg,role,kakuninmsg):
     else:
         return 'cancel'
 
-#message-edit
-@bot.command(name='edit-message')
-@commands.has_role(adminrole)
-async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
-    """メッセージ編集用"""
-    channel=bot.get_channel(channelid)
-    msgid = await channel.fetch_message(messageid)
-    msg =f'{channel.mention}のメッセージを編集しました。'
-    await msgid.edit(content=arg)
-    descurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
-    await ctx.send('Edited!')
-    await sendexelog(ctx,msg,descurl)
 
 #reaction_check
 #async def reactioncheck():
