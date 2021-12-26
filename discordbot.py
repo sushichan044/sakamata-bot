@@ -121,6 +121,10 @@ async def detect_NGword(message):
             value=f'{message.author.mention}'
         )
         embed.add_field(
+            name='送信先',
+            value=f'{message.channel.mention}'
+        )
+        embed.add_field(
             name='送信日時',
             value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
         )
