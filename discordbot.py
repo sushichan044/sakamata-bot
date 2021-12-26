@@ -327,7 +327,7 @@ async def _kickuser(ctx,id:int,ifdm=None):
             if ifdm == None:
                 deal = 'kick'
                 adddm = None
-                m = senddealdm(ctx,member,deal,adddm)
+                m = await senddealdm(ctx,member,deal,adddm)
                 descurl = m.jump_url
                 await member.kick(reason = None)
                 await ctx.send('Kicked!')
