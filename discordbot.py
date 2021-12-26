@@ -281,6 +281,53 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     else:
         return
 
+
+deal = None
+addDM = None
+DMcontent = f'''【あなたは{deal}されました】
+クロヱ水族館/Chloeriumの管理者です。
+
+あなたのサーバーでの行為がサーバールールに違反していると判断し、{deal}しました。
+
+{addDM}
+
+クロヱ水族館/Chloerium 管理者
+'''
+
+'''
+今後、あなたはクロヱ水族館に参加することはできません。
+
+BANの解除を希望する場合は以下のフォームをご利用ください。
+
+https://forms.gle/mR1foEyd9JHbhYdCA
+'''
+
+#kick-member
+@bot.command(name='kick')
+@commands.has_role(adminrole)
+async def _kickuser(ctx,id:int,dmconf,*,arg):
+    ifdm = 'true'
+    member = ctx.guild.get_member(id)
+    role = ctx.guild.get_role(adminrole)
+    kakuninmsg = f'【kick実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author.name},ID:{ctx.author.id})\n対象者:\n　{member.name}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
+    exemsg = f'{member.mention}をキックしました。'
+    nonexemsg = f'{member.mention}のキックをキャンセルしました。'
+    turned = await confirm(ctx,arg,role,kakuninmsg)
+    if turned == 'ok':
+        msg = exemsg
+        await member.kick(reason = None)
+        m = await user.send(DMcontent)
+        descurl = m.jump_url
+        await ctx.send('Kicked!')
+        await sendexelog(ctx,msg,descurl)
+    elif turned == 'cancel':
+        msg=nonexemsg
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        await ctx.send('Cancelled!')
+    else:
+        return
+
 #confirm-system
 async def confirm(ctx,arg,role,kakuninmsg):
     sendkakuninmsg = f'{kakuninmsg}\n------------------------\n{arg}\n------------------------\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
