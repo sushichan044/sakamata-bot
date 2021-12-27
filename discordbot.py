@@ -441,8 +441,8 @@ async def _unbanuser(ctx,id:int):
     user = await bot.fetch_user(id)
     role = ctx.guild.get_role(adminrole)
     kakuninmsg = f'【Unban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{user}(ID:{user.id})'
-    exemsg = f'{user}(ID:{user.id})\nメンション:{user.mention}\nのBANを解除しました。'
-    nonexemsg = f'{user}(ID:{user.id})\nメンション:{user.mention}\nのBANの解除をキャンセルしました。'
+    exemsg = f'{user.mention}のBANを解除しました。'
+    nonexemsg = f'{user.mention}のBANの解除をキャンセルしました。'
     arg = ''
     turned = await confirm(ctx,arg,role,kakuninmsg)
     if turned == 'ok':
