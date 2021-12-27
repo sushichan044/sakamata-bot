@@ -192,6 +192,30 @@ async def test(ctx):
 @commands.has_role(modrole)
 async def user(ctx,id:int):
     """ユーザー情報取得"""
+    guild = bot.get_guild(guildid)
+    member = guild.get_member(id)
+    #この先表示する用
+    memberifbot = member.bot
+    memberregdate = member.created_at + timedelta(hours=9)
+    #NickNameあるか？
+    if member.display_name == member.name :
+        memberifnickname = 'None'
+    else:
+        memberifnickname = member.display_name
+    memberid = member.id
+    memberjoindate = member.joined_at + timedelta(hours=9)
+    membermention = member.mention
+    memberroles = member.roles
+    #Message成形-途中
+    userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{memberroles}```'
+    await ctx.send(userinfomsg)
+
+#new-user-info-command
+'''
+@bot.command()
+@commands.has_role(modrole)
+async def user(ctx,id:int):
+    """ユーザー情報取得"""
     target: Optional[Member,User]
     target = ctx.guild.get_member(id)
     if target == None:
@@ -218,6 +242,7 @@ async def user(ctx,id:int):
     targetinfomsg = f'```ユーザー名:{target} (ID:{target.id})\nBot?:{target.bot}\nin server?:{targetin}\nニックネーム:{targetifnick}\nアカウント作成日時:{targetregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{targetjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{targetroles}```'
     await ctx.send(targetinfomsg)
     return
+'''
 '''
     #サーバーメンバー判定
     targetregdate =target.created_at + timedelta(hours=9)
