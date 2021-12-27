@@ -82,11 +82,13 @@ async def greet():
     channel = bot.get_channel(logchannel)
     now = datetime.utcnow() + timedelta(hours=9)
     await channel.send(f'起動完了({now:%m/%d-%H:%M:%S})')
+    return
 
 @bot.event
 async def on_ready():
     print('logged in as {0.user}'.format(bot))
     await greet()
+    return
 
 #error-log
 @bot.event
@@ -94,6 +96,7 @@ async def on_command_error(ctx,error):
     channel = bot.get_channel(errorlogchannel)
     now = datetime.utcnow() + timedelta(hours=9)
     await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}```')
+    return
 
 #error-logtest
 @bot.command()
@@ -133,6 +136,7 @@ async def detect_NGword(message):
             value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
         )
         await channel.send(embed=embed)
+        return
     else:
         return
 
@@ -147,6 +151,7 @@ async def on_message_dispand(message):
         return
     else:
         await dispand(message)
+        return
 
 '''
 デフォルトで提供されている on_message をオーバーライドすると、コマンドが実行されなくなります。
@@ -164,12 +169,15 @@ async def on_voice_state_update(member,before,after) :
         if before.channel is None:
             msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {after.channel.mention} に参加しました。'
             await channel.send(msg)
+            return
         elif after.channel is None:
             msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から退出しました。'
             await channel.send(msg)
+            return
         else:
             msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から {after.channel.mention} に移動しました。'
             await channel.send(msg)
+            return
 
 #hello?
 @bot.command()
@@ -177,6 +185,7 @@ async def on_voice_state_update(member,before,after) :
 async def test(ctx):
     """生存確認用"""
     await ctx.send('hello')
+    return
 
 #user-info-command
 @bot.command()
@@ -201,6 +210,7 @@ async def user(ctx,id:int):
     #Message成形-途中
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{memberroles}```'
     await ctx.send(userinfomsg)
+    return
 
 #ping-test
 @bot.command()
@@ -210,6 +220,7 @@ async def ping(ctx):
     rawping = bot.latency
     ping = round(rawping * 1000)
     await ctx.send(f'Ping is {ping}ms')
+    return
 
 #recieve-dm
 @bot.listen('on_message')
@@ -238,6 +249,7 @@ async def on_message_dm(message):
             value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
         )
         await channel.send(embed=embed)
+        return
     else:
         return
 
@@ -261,11 +273,13 @@ async def _messagesend(ctx,channelid:int,*,arg):
         descurl = m.jump_url
         await ctx.send('Sended!')
         await sendexelog(ctx,msg,descurl)
+        return
     elif turned == 'cancel':
         msg=nonexemsg
         descurl = ''
         await sendexelog(ctx,msg,descurl)
         await ctx.send('Cancelled!')
+        return
     else:
         return
 
@@ -287,11 +301,13 @@ async def _dmsend(ctx,id:int,*,arg):
         descurl = m.jump_url
         await ctx.send('Sended!')
         await sendexelog(ctx,msg,descurl)
+        return
     elif turned == 'cancel':
         msg=nonexemsg
         descurl = ''
         await sendexelog(ctx,msg,descurl)
         await ctx.send('Cancelled!')
+        return
     else:
         return
 
@@ -315,11 +331,13 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
         descurl = msgurl
         await ctx.send('Edited!')
         await sendexelog(ctx,msg,descurl)
+        return
     elif turned == 'cancel':
         msg=nonexemsg
         descurl = ''
         await sendexelog(ctx,msg,descurl)
         await ctx.send('Cancelled!')
+        return
     else:
         return
 
@@ -348,6 +366,7 @@ async def _kickuser(ctx,id:int,ifdm:str='True'):
         DMcontent = await makedealdm(ctx,deal,adddm)
         if ifdm == 'False':
             DMcontent = ''
+            return DMcontent
         else:
             pass
         kakuninmsg = f'【kick実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
@@ -377,6 +396,7 @@ async def _kickuser(ctx,id:int,ifdm:str='True'):
             descurl = ''
             await sendexelog(ctx,msg,descurl)
             await ctx.send('Cancelled!')
+            return
         else:
             return
 
@@ -405,6 +425,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
         DMcontent = await makedealdm(ctx,deal,adddm)
         if ifdm == 'False':
             DMcontent = ''
+            return DMcontent
         else:
             pass
         kakuninmsg = f'【ban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
@@ -434,6 +455,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
             descurl = ''
             await ctx.send('Cancelled!')
             await sendexelog(ctx,msg,descurl)
+            return
         else:
             return
 
@@ -454,11 +476,13 @@ async def _unbanuser(ctx,id:int):
         await ctx.guild.unban(user)
         await ctx.send('Unbaned!')
         await sendexelog(ctx,msg,descurl)
+        return
     elif turned == 'cancel':
         msg=nonexemsg
         descurl = ''
         await ctx.send('Cancelled!')
         await sendexelog(ctx,msg,descurl)
+        return
     else:
         return
 
@@ -515,5 +539,6 @@ async def sendexelog(ctx,msg,descurl):
         value=f'{datetime.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
     )
     await channel.send(embed=embed)
+    return
 
 bot.run(token)
