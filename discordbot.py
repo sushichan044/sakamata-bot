@@ -105,7 +105,7 @@ async def errortest(ctx):
 @bot.listen('on_message')
 async def detect_NGword(message):
     word_list = ['@everyone','@here']
-    if message.content.endswith("name='@everyone'>]"):
+    if message.content.endswith("name='@everyone'>]```"):
         return
     elif any(x in message.content for x in word_list) == True:
         channel = bot.get_channel(alertchannel)
@@ -437,7 +437,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
         else:
             return
 
-#Unban
+#Unban-member
 @bot.command(name='unban')
 @commands.has_role(adminrole)
 async def _unbanuser(ctx,id:int):
