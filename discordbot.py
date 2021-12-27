@@ -192,7 +192,7 @@ async def test(ctx):
 @commands.has_role(modrole)
 async def user(ctx,id:int):
     """ユーザー情報取得"""
-    target: Union[Member, User]
+    target: Optional[Member, User]
     target = ctx.guild.get_member(id)
     if target == None:
         target = await bot.fetch_user(id)
