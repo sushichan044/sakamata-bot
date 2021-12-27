@@ -143,7 +143,7 @@ async def detect_NGword(message):
 #Dispander-All
 @bot.listen('on_message')
 async def on_message_dispand(message):
-    if type(message.channel) == discord.DMChannel:
+    if type(message.channel) == DMChannel:
         return
     elif message.content.startswith(('/send-message','/edit-message','/send-dm')):
         return
