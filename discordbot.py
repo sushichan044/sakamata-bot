@@ -5,10 +5,11 @@ import sys
 import traceback
 from datetime import datetime, timedelta
 from logging import debug
+from typing import Optional
 
 import discord
 import requests
-from discord import channel
+from discord import Member, User, channel
 from discord.channel import DMChannel
 from discord.ext import commands
 from discord.ext.commands.core import dm_only, has_role
@@ -190,6 +191,7 @@ async def test(ctx):
 @commands.has_role(modrole)
 async def user(ctx,id:int):
     """ユーザー情報取得"""
+    target: Optional[Member, User]
     target = ctx.guild.get_member(id)
     if target == None:
         target = await bot.fetch_user(id)
