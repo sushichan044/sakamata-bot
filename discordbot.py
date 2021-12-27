@@ -442,7 +442,7 @@ async def _unbanuser(ctx,id:int):
     role = ctx.guild.get_role(adminrole)
     kakuninmsg = f'【Unban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{user}(ID:{id})'
     exemsg = f'{user.mention}をBANを解除しました。'
-    nonexemsg = f'{member.mention}のBANの解除をキャンセルしました。'
+    nonexemsg = f'{user.mention}のBANの解除をキャンセルしました。'
     arg = ''
     turned = await confirm(ctx,arg,role,kakuninmsg)
     if turned == 'ok':
