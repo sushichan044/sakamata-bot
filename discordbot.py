@@ -108,7 +108,7 @@ async def errortest(ctx):
 @bot.listen('on_message')
 async def detect_NGword(message):
     word_list = ['@everyone','@here']
-    if message.content.endswith("name='@everyone'>]```"):
+    if "<Role id=916965252896260117 name='@everyone'>" in message.content:
         return
     elif any(x in message.content for x in word_list) == True:
         channel = bot.get_channel(alertchannel)
