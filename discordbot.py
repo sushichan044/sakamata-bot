@@ -191,10 +191,10 @@ async def test(ctx):
 async def user(ctx,id:int):
     """ユーザー情報取得"""
     target = ctx.guild.get_member(id)
-    if target is None:
+    if target == None:
         target = await bot.fetch_user(id)
     #サーバーメンバー判定
-    if ctx.guild.id in target.mutual_guilds:
+    if ctx.guild.id in target.mutual_guilds == True:
         targetinserver = 'True'
     else:
         targetinserver = 'False'
