@@ -314,7 +314,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
 #send-dm
 @bot.command(name='send-dm')
 @commands.has_role(adminrole)
-async def _dmsend(ctx,id:int,*,arg):
+async def _dmsend(ctx,id:discord.User,*,arg):
     """DM送信用"""
     user = bot.get_user(id)
     role = ctx.guild.get_role(adminrole)
