@@ -315,9 +315,6 @@ async def _messagesend(ctx,channelid:int,*,arg):
 @bot.command(name='send-dm')
 @commands.has_role(adminrole)
 async def _dmsend(ctx,user:discord.User,*,arg):
-#async def _dmsend(ctx,id:int,*,arg):
-    """DM送信用"""
-#    user = bot.get_user(id)
     role = ctx.guild.get_role(adminrole)
     kakuninmsg = f'【DM送信確認】\n以下のDMを{user.mention}へ送信します。'
     exemsg = f'{user.mention}にDMを送信しました。'
@@ -379,8 +376,8 @@ adddm = None
 #kick-member
 @bot.command(name='kick')
 @commands.has_role(adminrole)
-async def _kickuser(ctx,id:int,ifdm:str='True'):
-    member = ctx.guild.get_member(id)
+async def _kickuser(ctx,member:discord.Member,ifdm:str='True'):
+#    member = ctx.guild.get_member(id)
     role = ctx.guild.get_role(adminrole)
     validifdm = ['True','False']
     if ifdm not in validifdm:
