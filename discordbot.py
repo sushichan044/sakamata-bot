@@ -255,7 +255,7 @@ async def ping(ctx):
 async def on_message_dm(message):
     if message.author.bot:
         return
-    elif type(message.channel) == discord.DMChannel and bot.user == message.channel.me:
+    elif type(message.channel) == DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
         embed = discord.Embed(
         title='DMを受信しました。',
@@ -314,7 +314,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
 #send-dm
 @bot.command(name='send-dm')
 @commands.has_role(adminrole)
-async def _dmsend(ctx,user:discord.Member,*,arg):
+async def _dmsend(ctx,user:Member,*,arg):
     role = ctx.guild.get_role(adminrole)
     kakuninmsg = f'【DM送信確認】\n以下のDMを{user.mention}へ送信します。'
     exemsg = f'{user.mention}にDMを送信しました。'
@@ -376,7 +376,7 @@ adddm = None
 #kick-member
 @bot.command(name='kick')
 @commands.has_role(adminrole)
-async def _kickuser(ctx,member:discord.Member,ifdm:str='True'):
+async def _kickuser(ctx,member:Member,ifdm:str='True'):
     role = ctx.guild.get_role(adminrole)
     validifdm = ['True','False']
     if ifdm not in validifdm:
@@ -427,7 +427,7 @@ async def _kickuser(ctx,member:discord.Member,ifdm:str='True'):
 #ban-member
 @bot.command(name='ban')
 @commands.has_role(adminrole)
-async def _banuser(ctx,member:discord.Member,ifdm:str='True'):
+async def _banuser(ctx,member:Member,ifdm:str='True'):
     role = ctx.guild.get_role(adminrole)
     validifdm = ['True','False']
     if ifdm not in validifdm:
