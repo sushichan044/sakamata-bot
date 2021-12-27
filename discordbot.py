@@ -239,10 +239,6 @@ async def user(ctx,id:int):
     else:
         pass
     '''
-    #Message成形-途中
-    targetinfomsg = f'```ユーザー名:{target} (ID:{target.id})\nBot?:{target.bot}\nin server?:{targetinserver}\nニックネーム:{targetifnickname}\nアカウント作成日時:{targetregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{targetjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{targetroles}```'
-    await ctx.send(targetinfomsg)
-    return
 
 #ping-test
 @bot.command()
