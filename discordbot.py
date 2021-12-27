@@ -212,7 +212,7 @@ async def user(ctx,id:int):
         targetjoindate = 'None'
         targetroles = 'None'
     else:
-        return
+        pass
     targetregdate =target.created_at + timedelta(hours=9)
     #Message成形-途中
     targetinfomsg = f'```ユーザー名:{target} (ID:{target.id})\nBot?:{target.bot}\nin server?:{targetin}\nニックネーム:{targetifnick}\nアカウント作成日時:{targetregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{targetjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{targetroles}```'
