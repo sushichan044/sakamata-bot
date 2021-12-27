@@ -366,7 +366,6 @@ async def _kickuser(ctx,id:int,ifdm:str='True'):
         DMcontent = await makedealdm(ctx,deal,adddm)
         if ifdm == 'False':
             DMcontent = ''
-            return DMcontent
         else:
             pass
         kakuninmsg = f'【kick実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
@@ -425,7 +424,6 @@ https://forms.gle/mR1foEyd9JHbhYdCA
         DMcontent = await makedealdm(ctx,deal,adddm)
         if ifdm == 'False':
             DMcontent = ''
-            return DMcontent
         else:
             pass
         kakuninmsg = f'【ban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
