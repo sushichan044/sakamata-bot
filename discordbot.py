@@ -10,7 +10,7 @@ import requests
 from discord import channel
 from discord.channel import DMChannel
 from discord.ext import commands
-from discord.ext.commands.core import dm_only
+from discord.ext.commands.core import dm_only, has_role
 from dispanderfixed import dispand
 
 '''bot招待リンク
@@ -180,8 +180,9 @@ async def test(ctx):
 @commands.has_role(modrole)
 async def user(ctx,id:int):
     """ユーザー情報取得"""
-    guild = bot.get_guild(guildid)
-    member = guild.get_member(id)
+#    guild = bot.get_guild(guildid)
+#    member = guild.get_member(id)
+    member = ctx.guild.get_member(id)
     #この先表示する用
     memberifbot = member.bot
     memberregdate = member.created_at + timedelta(hours=9)
@@ -428,10 +429,35 @@ https://forms.gle/mR1foEyd9JHbhYdCA
         elif turned == 'cancel':
             msg=nonexemsg
             descurl = ''
-            await sendexelog(ctx,msg,descurl)
             await ctx.send('Cancelled!')
+            await sendexelog(ctx,msg,descurl)
         else:
             return
+
+#Unban
+@bot.command(name='unban')
+@commands.has_role(adminrole)
+async def _unbanuser(ctx,id:int):
+    user = bot.fetch_user(id)
+    role = ctx.guild.get_role(adminrole)
+    kakuninmsg = f'【Unban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{user}(ID:{user.id})'
+    exemsg = f'{user.mention}をBANを解除しました。'
+    nonexemsg = f'{member.mention}のBANの解除をキャンセルしました。'
+    arg = ''
+    turned = await confirm(ctx,arg,role,kakuninmsg)
+    if turned == 'ok':
+        msg = exemsg
+        descurl = ''
+        await ctx.guild.unban(user)
+        await ctx.send('Unbaned!')
+        await sendexelog(ctx,msg,descurl)
+    elif turned == 'cancel':
+        msg=nonexemsg
+        descurl = ''
+        await ctx.send('Cancelled!')
+        await sendexelog(ctx,msg,descurl)
+    else:
+        return
 
 #Deal-DM
 async def makedealdm(ctx,deal,adddm):
