@@ -265,8 +265,8 @@ async def _messagesend(ctx,channelid:int,*,arg):
     kakuninmsg = f'【メッセージ送信確認】\n以下のメッセージを{channel.mention}へ送信します。'
     exemsg = f'{channel.mention}にメッセージを送信しました。'
     nonexemsg = f'{channel.mention}へのメッセージ送信をキャンセルしました。'
-    arg = f'\n{arg}\n------------------------'
-    turned = await confirm(ctx,arg,role,kakuninmsg)
+    confarg = f'\n{arg}\n------------------------'
+    turned = await confirm(ctx,confarg,role,kakuninmsg)
     if turned == 'ok':
         msg=exemsg
         m = await channel.send(arg)
@@ -293,8 +293,8 @@ async def _dmsend(ctx,id:int,*,arg):
     kakuninmsg = f'【DM送信確認】\n以下のDMを{user.mention}へ送信します。'
     exemsg = f'{user.mention}にDMを送信しました。'
     nonexemsg = f'{user.mention}へのDM送信をキャンセルしました。'
-    arg = f'\n{arg}\n------------------------'
-    turned = await confirm(ctx,arg,role,kakuninmsg)
+    confarg = f'\n{arg}\n------------------------'
+    turned = await confirm(ctx,confarg,role,kakuninmsg)
     if turned == 'ok':
         msg=exemsg
         m = await user.send(arg)
@@ -323,8 +323,8 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     kakuninmsg = f'【メッセージ編集確認】\n{channel.mention}のメッセージ\n{msgurl}\nを以下のように編集します。'
     exemsg = f'{channel.mention}のメッセージを編集しました。'
     nonexemsg = f'{channel.mention}のメッセージの編集をキャンセルしました。'
-    arg = f'\n{arg}\n------------------------'
-    turned = await confirm(ctx,arg,role,kakuninmsg)
+    confarg = f'\n{arg}\n------------------------'
+    turned = await confirm(ctx,confarg,role,kakuninmsg)
     if turned == 'ok':
         msg=exemsg
         await msgid.edit(content=arg)
@@ -371,8 +371,8 @@ async def _kickuser(ctx,id:int,ifdm:str='True'):
         kakuninmsg = f'【kick実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
         exemsg = f'{member.mention}をキックしました。'
         nonexemsg = f'{member.mention}のキックをキャンセルしました。'
-        arg = ''
-        turned = await confirm(ctx,arg,role,kakuninmsg)
+        confarg = ''
+        turned = await confirm(ctx,confarg,role,kakuninmsg)
         if turned == 'ok':
             msg = exemsg
             if ifdm == 'True':
@@ -429,8 +429,8 @@ https://forms.gle/mR1foEyd9JHbhYdCA
         kakuninmsg = f'【ban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
         exemsg = f'{member.mention}をBANしました。'
         nonexemsg = f'{member.mention}のBANをキャンセルしました。'
-        arg = ''
-        turned = await confirm(ctx,arg,role,kakuninmsg)
+        confarg = ''
+        turned = await confirm(ctx,confarg,role,kakuninmsg)
         if turned == 'ok':
             msg = exemsg
             if ifdm == 'True':
@@ -466,8 +466,8 @@ async def _unbanuser(ctx,id:int):
     kakuninmsg = f'【Unban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{user}(ID:{user.id})'
     exemsg = f'{user.mention}のBANを解除しました。'
     nonexemsg = f'{user.mention}のBANの解除をキャンセルしました。'
-    arg = ''
-    turned = await confirm(ctx,arg,role,kakuninmsg)
+    confarg = ''
+    turned = await confirm(ctx,confarg,role,kakuninmsg)
     if turned == 'ok':
         msg = exemsg
         descurl = ''
@@ -494,8 +494,8 @@ async def makedealdm(ctx,deal,adddm):
     return DMcontent
 
 #confirm-system
-async def confirm(ctx,arg,role,kakuninmsg):
-    sendkakuninmsg = f'{kakuninmsg}\n------------------------{arg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
+async def confirm(ctx,confarg,role,kakuninmsg):
+    sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
     m = await ctx.send(sendkakuninmsg)
     await m.add_reaction(maruemoji)
     await m.add_reaction(batuemoji)
