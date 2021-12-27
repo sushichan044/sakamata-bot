@@ -377,7 +377,6 @@ adddm = None
 @bot.command(name='kick')
 @commands.has_role(adminrole)
 async def _kickuser(ctx,member:discord.Member,ifdm:str='True'):
-#    member = ctx.guild.get_member(id)
     role = ctx.guild.get_role(adminrole)
     validifdm = ['True','False']
     if ifdm not in validifdm:
@@ -428,8 +427,7 @@ async def _kickuser(ctx,member:discord.Member,ifdm:str='True'):
 #ban-member
 @bot.command(name='ban')
 @commands.has_role(adminrole)
-async def _banuser(ctx,id:int,ifdm:str='True'):
-    member = ctx.guild.get_member(id)
+async def _banuser(ctx,member:discord.Member,ifdm:str='True'):
     role = ctx.guild.get_role(adminrole)
     validifdm = ['True','False']
     if ifdm not in validifdm:
