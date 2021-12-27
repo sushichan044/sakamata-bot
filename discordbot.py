@@ -192,24 +192,24 @@ async def test(ctx):
 @commands.has_role(modrole)
 async def user(ctx,id:int):
     """ユーザー情報取得"""
-#    guild = bot.get_guild(guildid)
-#    member = guild.get_member(id)
-    member = ctx.guild.get_member(id)
+    target = ctx.guild.get_member(id)
+    if target is None:
+        target = await bot.fetch_user(id)
     #この先表示する用
-    memberifbot = member.bot
-    memberregdate = member.created_at + timedelta(hours=9)
+    targetifbot = target.bot
+    targetregdate = target.created_at + timedelta(hours=9)
     #NickNameあるか？
-    if member.display_name == member.name :
-        memberifnickname = 'None'
+    if target.display_name == target.name :
+        targetifnickname = None
     else:
-        memberifnickname = member.display_name
-    memberid = member.id
-    memberjoindate = member.joined_at + timedelta(hours=9)
-    membermention = member.mention
-    memberroles = member.roles
+        targetifnickname = target.display_name
+    memberid = target.id
+    targetjoindate = target.joined_at + timedelta(hours=9)
+    membermention = target.mention
+    targetroles = target.roles
     #Message成形-途中
-    userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{memberroles}```'
-    await ctx.send(userinfomsg)
+    targetinfomsg = f'```ユーザー名:{target} (ID:{memberid})\nBot?:{targetifbot}\nニックネーム:{targetifnickname}\nアカウント作成日時:{targetregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{targetjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{targetroles}```'
+    await ctx.send(targetinfomsg)
     return
 
 #ping-test
@@ -319,7 +319,7 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     channel=bot.get_channel(channelid)
     role = ctx.guild.get_role(adminrole)
     msgid = await channel.fetch_message(messageid)
-    msgurl = f'https://discord.com/channels/{guildid}/{channelid}/{messageid}'
+    msgurl = f'https://discord.com/channels/{ctx.guild.id}/{channelid}/{messageid}'
     kakuninmsg = f'【メッセージ編集確認】\n{channel.mention}のメッセージ\n{msgurl}\nを以下のように編集します。'
     exemsg = f'{channel.mention}のメッセージを編集しました。'
     nonexemsg = f'{channel.mention}のメッセージの編集をキャンセルしました。'
