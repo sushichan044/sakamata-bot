@@ -210,7 +210,7 @@ async def user(ctx,id:int):
         targetjoindate = target.joined_at + timedelta(hours=9)
         targetroles = target.roles
         if target.display_name == target.name :
-            targetifnickname = None
+            pass
         else:
             targetifnickname = target.display_name
     #Message成形-途中
