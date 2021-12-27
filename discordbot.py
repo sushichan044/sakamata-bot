@@ -199,13 +199,11 @@ async def user(ctx,id:int):
     else:
         targetinserver = 'False'
     membermention = target.mention
-    targetifbot = target.bot
     targetregdate = target.created_at + timedelta(hours=9)
-    memberid = target.id
     #同サーバー内のみ判定
-    targetjoindate = None
-    targetroles = None
-    targetifnickname = None
+    targetjoindate = 'None'
+    targetroles = 'None'
+    targetifnickname = 'None'
     if targetinserver == 'False':
         pass
     else:
@@ -216,7 +214,7 @@ async def user(ctx,id:int):
             targetjoindate = target.joined_at + timedelta(hours=9)
             targetroles = target.roles
     #Message成形-途中
-    targetinfomsg = f'```ユーザー名:{target} (ID:{memberid})\nBot?:{targetifbot}\nin server?:{targetinserver}\nニックネーム:{targetifnickname}\nアカウント作成日時:{targetregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{targetjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{targetroles}```'
+    targetinfomsg = f'```ユーザー名:{target} (ID:{target.id})\nBot?:{target.bot}\nin server?:{targetinserver}\nニックネーム:{targetifnickname}\nアカウント作成日時:{targetregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{targetjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{targetroles}```'
     await ctx.send(targetinfomsg)
     return
 
