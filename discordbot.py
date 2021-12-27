@@ -1,5 +1,6 @@
 import asyncio
 import os
+import re
 import sys
 import traceback
 from datetime import datetime, timedelta
@@ -104,7 +105,9 @@ async def errortest(ctx):
 @bot.listen('on_message')
 async def detect_NGword(message):
     word_list = ['@everyone','@here']
-    if any(x in message.content for x in word_list) == True:
+    if message.content.endswith("name='@everyone'>]"):
+        return
+    elif any(x in message.content for x in word_list) == True:
         channel = bot.get_channel(alertchannel)
         embed = discord.Embed(
         title='NGワードを検知しました。',
