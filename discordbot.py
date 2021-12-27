@@ -193,13 +193,14 @@ async def user(ctx,id:int):
     target = ctx.guild.get_member(id)
     if target == None:
         target = await bot.fetch_user(id)
+    else:
+        pass
     #サーバーメンバー判定
     if ctx.guild.id in target.mutual_guilds == True:
         targetinserver = 'True'
     else:
         targetinserver = 'False'
-    membermention = target.mention
-    targetregdate = target.created_at + timedelta(hours=9)
+        targetregdate = target.created_at + timedelta(hours=9)
     #同サーバー内のみ判定
     targetjoindate = 'None'
     targetroles = 'None'
