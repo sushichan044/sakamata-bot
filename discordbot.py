@@ -10,10 +10,10 @@ from typing import Union
 
 import discord
 import requests
-from discord import Member, User, channel
+from discord import Member, User
 from discord.channel import DMChannel
 from discord.ext import commands
-from discord.ext.commands.core import dm_only, has_role
+from discord.ext.commands.core import has_role
 from dispanderfixed import dispand
 
 '''bot招待リンク
