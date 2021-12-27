@@ -340,6 +340,7 @@ async def _messagesend(ctx,channelid:int,*,arg):
 @bot.command(name='send-dm')
 @commands.has_role(adminrole)
 async def _dmsend(ctx,user:Member,*,arg):
+    """DM送信用"""
     role = ctx.guild.get_role(adminrole)
     kakuninmsg = f'【DM送信確認】\n以下のDMを{user.mention}へ送信します。'
     exemsg = f'{user.mention}にDMを送信しました。'
