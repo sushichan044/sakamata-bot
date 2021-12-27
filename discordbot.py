@@ -52,7 +52,6 @@ bot = commands.Bot(command_prefix='/',intents=intents,help_command=JapaneseHelpC
 guildid = 915910043461890078
 logchannel = 917009541433016370
 vclogchannel = 917009562383556678
-commandchannel = 917788634655109200
 dmboxchannel = 921781301101613076
 siikuinrole = 915915792275632139
 errorlogchannel = 924142068484440084
@@ -65,7 +64,6 @@ adminrole = 915954009343422494
 guildid = 916965252896260117
 logchannel = 916971090042060830
 vclogchannel = 916988601902989373
-commandchannel = 917788514903539794
 dmboxchannel = 918101377958436954
 siikuinrole = 923719282360188990
 errorlogchannel = 924141910321426452
@@ -195,20 +193,30 @@ async def user(ctx,id:int):
     target = ctx.guild.get_member(id)
     if target is None:
         target = await bot.fetch_user(id)
-    #この先表示する用
+    #サーバーメンバー判定
+    if ctx.guild.id in target.mutual_guilds:
+        targetinserver = 'True'
+    else:
+        targetinserver = 'False'
+    membermention = target.mention
     targetifbot = target.bot
     targetregdate = target.created_at + timedelta(hours=9)
-    #NickNameあるか？
-    if target.display_name == target.name :
-        targetifnickname = None
-    else:
-        targetifnickname = target.display_name
     memberid = target.id
-    targetjoindate = target.joined_at + timedelta(hours=9)
-    membermention = target.mention
-    targetroles = target.roles
+    #同サーバー内のみ判定
+    targetjoindate = None
+    targetroles = None
+    targetifnickname = None
+    if targetinserver == 'False':
+        pass
+    else:
+        if target.display_name == target.name :
+            targetifnickname = None
+        else:
+            targetifnickname = target.display_name
+            targetjoindate = target.joined_at + timedelta(hours=9)
+            targetroles = target.roles
     #Message成形-途中
-    targetinfomsg = f'```ユーザー名:{target} (ID:{memberid})\nBot?:{targetifbot}\nニックネーム:{targetifnickname}\nアカウント作成日時:{targetregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{targetjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{targetroles}```'
+    targetinfomsg = f'```ユーザー名:{target} (ID:{memberid})\nBot?:{targetifbot}\nin server?:{targetinserver}\nニックネーム:{targetifnickname}\nアカウント作成日時:{targetregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{targetjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{targetroles}```'
     await ctx.send(targetinfomsg)
     return
 
