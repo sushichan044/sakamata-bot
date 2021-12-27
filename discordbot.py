@@ -207,6 +207,7 @@ async def user(ctx,id:int):
         else:
             targetifnick = target.display_name
     elif isinstance(target,User):
+        targetifnick = 'None'
         targetin = 'False'
         targetjoindate = 'None'
         targetroles = 'None'
