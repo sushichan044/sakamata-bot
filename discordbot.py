@@ -192,12 +192,32 @@ async def test(ctx):
 @commands.has_role(modrole)
 async def user(ctx,id:int):
     """ユーザー情報取得"""
-    target: Optional[Member, User]
+    target: Optional[Member,User]
     target = ctx.guild.get_member(id)
     if target == None:
         target = await bot.fetch_user(id)
     else:
         pass
+    if isinstance(target,Member):
+        targetin = 'True'
+        targetjoindate = target.joined_at + timedelta(hours=9)
+        targetroles = target.roles
+        if target.display_name == target.name :
+            targetifnick = 'None'
+        else:
+            targetifnick = target.display_name
+    elif isinstance(target,User):
+        targetin = 'False'
+        targetjoindate = 'None'
+        targetroles = 'None'
+    else:
+        return
+    targetregdate =target.created_at + timedelta(hours=9)
+    #Message成形-途中
+    targetinfomsg = f'```ユーザー名:{target} (ID:{target.id})\nBot?:{target.bot}\nin server?:{targetin}\nニックネーム:{targetifnick}\nアカウント作成日時:{targetregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{targetjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{targetroles}```'
+    await ctx.send(targetinfomsg)
+    return
+'''
     #サーバーメンバー判定
     targetregdate =target.created_at + timedelta(hours=9)
     if ctx.guild.id in target.mutual_guilds == True:
@@ -217,6 +237,7 @@ async def user(ctx,id:int):
             targetifnickname = target.display_name
     else:
         pass
+    '''
     #Message成形-途中
     targetinfomsg = f'```ユーザー名:{target} (ID:{target.id})\nBot?:{target.bot}\nin server?:{targetinserver}\nニックネーム:{targetifnickname}\nアカウント作成日時:{targetregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{targetjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{targetroles}```'
     await ctx.send(targetinfomsg)
