@@ -440,7 +440,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
 async def _unbanuser(ctx,id:int):
     user = bot.fetch_user(id)
     role = ctx.guild.get_role(adminrole)
-    kakuninmsg = f'【Unban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{user}(ID:{user.id})'
+    kakuninmsg = f'【Unban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{user}(ID:{id})'
     exemsg = f'{user.mention}をBANを解除しました。'
     nonexemsg = f'{member.mention}のBANの解除をキャンセルしました。'
     arg = ''
