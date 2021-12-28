@@ -95,6 +95,7 @@ async def on_ready():
 async def memberjoined(member):
     guild = bot.get_guild(guildid)
     member_count = guild.member_count
+    return
 
 
 
