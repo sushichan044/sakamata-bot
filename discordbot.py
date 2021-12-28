@@ -84,7 +84,6 @@ batuemoji = "\N{Cross Mark}"
 async def greet():
     channel = bot.get_channel(logchannel)
     now = datetime.utcnow() + timedelta(hours=9)
-    await membercount()
     await channel.send(f'起動完了({now:%m/%d-%H:%M:%S})')
     return
 
