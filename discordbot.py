@@ -99,19 +99,6 @@ async def on_ready():
     print('logged in as {0.user}'.format(bot))
     await greet()
     return
-'''
-#Member-count
-@bot.listen('on_member_join')
-async def memberjoin(member):
-    await membercount()
-    return
-
-#Member-count
-@bot.listen('on_member_remove')
-async def memberremove(member):
-    await membercount()
-    return
-'''
 
 #Membercount本体
 async def membercount():
