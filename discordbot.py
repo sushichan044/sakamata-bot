@@ -91,13 +91,13 @@ async def greet():
 #Task-MemberCount
 @tasks.loop(minutes=10)
 async def start_count():
+    await bot.wait_until_ready()
     await membercount()
 
 #起動イベント
 @bot.event
 async def on_ready():
     print('logged in as {0.user}'.format(bot))
-    start_count.start()
     await greet()
     return
 '''
@@ -631,4 +631,6 @@ async def sendexelog(ctx,msg,descurl):
     await channel.send(embed=embed)
     return
 
+
+start_count.start()
 bot.run(token)
