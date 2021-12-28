@@ -90,6 +90,15 @@ async def on_ready():
     await greet()
     return
 
+#Member-count
+@bot.listen('on_member_join')
+async def memberjoined(member):
+    guild = bot.get_guild(guildid)
+    member_count = guild.member_count
+    return
+
+
+
 #error-log
 @bot.event
 async def on_command_error(ctx,error):
@@ -512,27 +521,37 @@ https://forms.gle/mR1foEyd9JHbhYdCA
 @commands.has_role(adminrole)
 async def _unbanuser(ctx,id:int):
     user = await bot.fetch_user(id)
+    banned_users = await ctx.guild.bans()
     role = ctx.guild.get_role(adminrole)
-    kakuninmsg = f'【Unban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{user}(ID:{user.id})'
-    exemsg = f'{user.mention}のBANを解除しました。'
-    nonexemsg = f'{user.mention}のBANの解除をキャンセルしました。'
-    confarg = ''
-    turned = await confirm(ctx,confarg,role,kakuninmsg)
-    if turned == 'ok':
-        msg = exemsg
-        descurl = ''
-        await ctx.guild.unban(user)
-        await ctx.send('Unbaned!')
-        await sendexelog(ctx,msg,descurl)
-        return
-    elif turned == 'cancel':
-        msg=nonexemsg
-        descurl = ''
-        await ctx.send('Cancelled!')
-        await sendexelog(ctx,msg,descurl)
-        return
-    else:
-        return
+    for ban_entry in banned_users:
+            banneduser = ban_entry.user.id
+            if banneduser == user.id:
+                kakuninmsg = f'【Unban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{user}(ID:{user.id})'
+                exemsg = f'{user.mention}のBANを解除しました。'
+                nonexemsg = f'{user.mention}のBANの解除をキャンセルしました。'
+                confarg = ''
+                turned = await confirm(ctx,confarg,role,kakuninmsg)
+                if turned == 'ok':
+                    msg = exemsg
+                    descurl = ''
+                    await ctx.guild.unban(user)
+                    await ctx.send('Unbaned!')
+                    await sendexelog(ctx,msg,descurl)
+                    return
+                elif turned == 'cancel':
+                    msg=nonexemsg
+                    descurl = ''
+                    await ctx.send('Cancelled!')
+                    await sendexelog(ctx,msg,descurl)
+                    return
+                else:
+                    return
+            else:
+                await ctx.reply('BANリストにないユーザーを指定したため処理を停止します。',mention_author=False)
+                msg = 'BANリストにないユーザーを指定したため処理を停止しました。'
+                descurl = ''
+                await sendexelog(ctx,msg,descurl)
+                return
 
 #Deal-DM
 async def makedealdm(ctx,deal,adddm):
