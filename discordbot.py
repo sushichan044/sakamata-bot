@@ -62,6 +62,7 @@ alertchannel = 924744385902575616
 modrole = 916726433445986334
 adminrole = 915954009343422494
 countvc = 925256795491012668
+everyone = 915910043461890078
 
 '''
 #実験鯖IDなど
@@ -75,6 +76,7 @@ alertchannel = 924744469327257602
 modrole = 924355349308383252
 adminrole = 917332284582031390
 countvc = 925249967478673519
+everyone = 916965252896260117
 '''
 
 #emoji
@@ -127,7 +129,7 @@ async def errortest(ctx):
 @bot.listen('on_message')
 async def detect_NGword(message):
     word_list = ['@everyone','@here','@飼育員たち']
-    if "<Role id=916965252896260117 name='@everyone'>" in message.content:
+    if f"<Role id={everyone} name='@everyone'>" in message.content:
         return
     elif any(x in message.content for x in word_list) == True:
         channel = bot.get_channel(alertchannel)
