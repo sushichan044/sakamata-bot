@@ -60,6 +60,7 @@ errorlogchannel = 924142068484440084
 alertchannel = 924744385902575616
 modrole = 916726433445986334
 adminrole = 915954009343422494
+countvc = 925256795491012668
 
 '''
 #実験鯖IDなど
@@ -72,6 +73,7 @@ errorlogchannel = 924141910321426452
 alertchannel = 924744469327257602
 modrole = 924355349308383252
 adminrole = 917332284582031390
+countvc = 925249967478673519
 
 #emoji
 maruemoji = "\N{Heavy Large Circle}"
@@ -92,12 +94,22 @@ async def on_ready():
 
 #Member-count
 @bot.listen('on_member_join')
-async def memberjoined(member):
-    guild = bot.get_guild(guildid)
-    member_count = guild.member_count
+async def memberjoin():
+    await membercount()
     return
 
+#Member-count
+@bot.listen('on_member_remove')
+async def memberremove():
+    await membercount()
+    return
 
+#本体
+async def membercount():
+    guild = bot.get_guild(guildid)
+    member_count = guild.member_count
+    vc = await bot.get_channel(countvc).edit(name=f'Member Count:{member_count}')
+    return
 
 #error-log
 @bot.event
