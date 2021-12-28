@@ -523,7 +523,7 @@ async def _unbanuser(ctx,id:int):
     banned_users = await ctx.guild.bans()
     role = ctx.guild.get_role(adminrole)
     for ban_entry in banned_users:
-            banneduser = ban_entry.id
+            banneduser = ban_entry.user.id
             if banneduser == user.id:
                 kakuninmsg = f'【Unban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{user}(ID:{user.id})'
                 exemsg = f'{user.mention}のBANを解除しました。'
