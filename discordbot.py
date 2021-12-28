@@ -13,6 +13,7 @@ import requests
 from discord import Member, User
 from discord.channel import DMChannel
 from discord.ext import commands
+from discord.ext import tasks
 from discord.ext.commands.core import has_role
 from dispanderfixed import dispand
 
@@ -60,6 +61,7 @@ errorlogchannel = 924142068484440084
 alertchannel = 924744385902575616
 modrole = 916726433445986334
 adminrole = 915954009343422494
+countvc = 925256795491012668
 
 '''
 #実験鯖IDなど
@@ -72,33 +74,40 @@ errorlogchannel = 924141910321426452
 alertchannel = 924744469327257602
 modrole = 924355349308383252
 adminrole = 917332284582031390
+countvc = 925249967478673519
 '''
 
 #emoji
 maruemoji = "\N{Heavy Large Circle}"
 batuemoji = "\N{Cross Mark}"
 
-#Bootmsg-serverlogchannel/console
+#Boot-log
 async def greet():
     channel = bot.get_channel(logchannel)
     now = datetime.utcnow() + timedelta(hours=9)
     await channel.send(f'起動完了({now:%m/%d-%H:%M:%S})')
     return
 
+#Task-MemberCount
+@tasks.loop(minutes=10)
+async def start_count():
+    await bot.wait_until_ready()
+    await membercount()
+
+#起動イベント
 @bot.event
 async def on_ready():
     print('logged in as {0.user}'.format(bot))
     await greet()
     return
 
-#Member-count
-@bot.listen('on_member_join')
-async def memberjoined(member):
+#Membercount本体
+async def membercount():
     guild = bot.get_guild(guildid)
     member_count = guild.member_count
+    vc = bot.get_channel(countvc)
+    await vc.edit(name=f'Member Count:{member_count}')
     return
-
-
 
 #error-log
 @bot.event
@@ -609,4 +618,6 @@ async def sendexelog(ctx,msg,descurl):
     await channel.send(embed=embed)
     return
 
+
+start_count.start()
 bot.run(token)
