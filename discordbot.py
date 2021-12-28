@@ -125,7 +125,7 @@ async def errortest(ctx):
 #Detect-NGword
 @bot.listen('on_message')
 async def detect_NGword(message):
-    word_list = ['@everyone','@here']
+    word_list = ['@everyone','@here','@飼育員たち']
     if "<Role id=916965252896260117 name='@everyone'>" in message.content:
         return
     elif any(x in message.content for x in word_list) == True:
