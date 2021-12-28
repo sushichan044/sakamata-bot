@@ -80,7 +80,7 @@ countvc = 925249967478673519
 maruemoji = "\N{Heavy Large Circle}"
 batuemoji = "\N{Cross Mark}"
 
-#Bootmsg-serverlogchannel/console
+#Boot-log
 async def greet():
     channel = bot.get_channel(logchannel)
     now = datetime.utcnow() + timedelta(hours=9)
@@ -88,6 +88,12 @@ async def greet():
     await channel.send(f'起動完了({now:%m/%d-%H:%M:%S})')
     return
 
+#Task-MemberCount
+@tasks.loop(minutes=10)
+async def start_count():
+    await membercount()
+
+#起動イベント
 @bot.event
 async def on_ready():
     print('logged in as {0.user}'.format(bot))
@@ -107,12 +113,8 @@ async def memberremove(member):
     await membercount()
     return
 '''
-#task
-@tasks.loop(minutes=10)
-async def start_count():
-    await membercount()
 
-#本体
+#Membercount本体
 async def membercount():
     guild = bot.get_guild(guildid)
     member_count = guild.member_count
