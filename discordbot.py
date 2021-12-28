@@ -513,10 +513,6 @@ https://forms.gle/mR1foEyd9JHbhYdCA
             await sendexelog(ctx,msg,descurl)
             return
         else:
-            await ctx.reply('BANリストにないユーザーを指定したため処理を停止します。',mention_author=False)
-            msg = 'BANリストにないユーザーを指定したため処理を停止しました。'
-            descurl = ''
-            await sendexelog(ctx,msg,descurl)
             return
 
 #Unban-member
@@ -550,7 +546,10 @@ async def _unbanuser(ctx,id:int):
                 else:
                     return
             else:
-
+                await ctx.reply('BANリストにないユーザーを指定したため処理を停止します。',mention_author=False)
+                msg = 'BANリストにないユーザーを指定したため処理を停止しました。'
+                descurl = ''
+                await sendexelog(ctx,msg,descurl)
                 return
 
 #Deal-DM
