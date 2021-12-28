@@ -108,7 +108,8 @@ async def memberremove():
 async def membercount():
     guild = bot.get_guild(guildid)
     member_count = guild.member_count
-    vc = await bot.get_channel(countvc).edit(name=f'Member Count:{member_count}')
+    vc = bot.get_channel(countvc)
+    await vc.edit(name=f'Member Count:{member_count}')
     return
 
 #error-log
