@@ -95,13 +95,13 @@ async def on_ready():
 
 #Member-count
 @bot.listen('on_member_join')
-async def memberjoin():
+async def memberjoin(member):
     await membercount()
     return
 
 #Member-count
 @bot.listen('on_member_remove')
-async def memberremove():
+async def memberremove(member):
     await membercount()
     return
 
