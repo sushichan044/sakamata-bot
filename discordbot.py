@@ -13,6 +13,7 @@ import requests
 from discord import Member, User
 from discord.channel import DMChannel
 from discord.ext import commands
+from discord.ext import tasks
 from discord.ext.commands.core import has_role
 from dispanderfixed import dispand
 
@@ -90,9 +91,10 @@ async def greet():
 @bot.event
 async def on_ready():
     print('logged in as {0.user}'.format(bot))
+    start_count.start()
     await greet()
     return
-
+'''
 #Member-count
 @bot.listen('on_member_join')
 async def memberjoin(member):
@@ -104,6 +106,11 @@ async def memberjoin(member):
 async def memberremove(member):
     await membercount()
     return
+'''
+#task
+@tasks.loop(minutes=10)
+async def start_count():
+    await membercount()
 
 #本体
 async def membercount():
