@@ -2,8 +2,8 @@
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/sushi-chaaaan/sakamatabot?style=flat-square)
 ![alt text](https://img.shields.io/badge/discord.py-Python-3776AB.svg?logo=python&style=flat-square)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dispanderfixed?style=flat-square)
-![PyPI](https://img.shields.io/pypi/v/dispanderfixed?label=dispanderfixed&style=flat-square)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dispanderfixed?style=flat-square)](https://www.python.org/downloads/release/python-3101/)
+[![PyPI](https://img.shields.io/pypi/v/dispanderfixed?label=dispanderfixed&style=flat-square)](https://pypi.org/project/dispanderfixed/)
 [![Discord](https://img.shields.io/discord/915910043461890078?label=Discord)](https://discord.gg/EqfjtNBf2M)
 
 ### このリポジトリは？
