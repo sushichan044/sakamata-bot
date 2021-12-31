@@ -131,14 +131,15 @@ async def detect_NGword(message):
     url_list = ['discord.gg/']
     if message.author == bot.user and f"<Role id={everyone} name='@everyone'>" in message.content:
         return
-    m = [x for x in word_list
-        if x in message.content]
-    if len(m) != 0 and message.author != bot.user:
-        m = ''.join(m)
-        await sendnglog(message,m)
-        return
     else:
-        return
+        m = [x for x in word_list
+            if x in message.content]
+        if len(m) != 0 and message.author != bot.user:
+            m = ''.join(m)
+            await sendnglog(message,m)
+            return
+        else:
+            return
 
 #send-nglog
 async def sendnglog(message,m):
