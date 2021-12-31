@@ -134,9 +134,7 @@ async def detect_NGword(message):
         return
     else:
         m = [x for x in word_list if x in message.content]
-        n = [x for x in url_list if re.match(r'discord.gg/[\w]*(?!.*\?event=)',x)]
-        if m != [] or n != []:
-            m = m+n
+        if len(m) != 0:
             m = '\n'.join(m)
             await sendnglog(message,m)
             return
