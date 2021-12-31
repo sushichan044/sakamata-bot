@@ -7,18 +7,18 @@
 [![Discord](https://img.shields.io/discord/915910043461890078?label=Discord)](https://discord.gg/EqfjtNBf2M)
 
 ### このリポジトリは？
-ホロライブ所属VTuber沙花叉クロヱさんの非公式ファンDiscordサーバー[「クロヱ水族館」](https://discord.gg/EqfjtNBf2M)の運営/管理補助を行うBotのコードです。
+ホロライブ所属VTuber沙花叉クロヱさんの非公式ファンDiscordサーバー[「クロヱ水族館」](https://discord.gg/EqfjtNBf2M)の運営/管理補助を行うBotのコードです。<br>
 テスト環境がクラウド上にあるため、Commitが多くなっています。
 
 ### 開発環境及び使用ライブラリ
-Python3.10.0
-discord.py 1.7.3
-dispanderfixed 0.1.3 ([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)
+Python3.10.0<br>
+discord.py 1.7.3<br>
+dispanderfixed 0.1.3 ([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
 
 ### 各ブランチ
-Mainブランチ:クロヱ水族館の本番環境
-experimentalブランチ:バックアップ用。安定したコードしか上がりません。
-experimental-alphaブランチ:大規模改修を行うときに最初に書くブランチ。不安定なコードがコミットされます。
+Mainブランチ:クロヱ水族館の本番環境<br>
+experimentalブランチ:バックアップ用。安定したコードしか上がりません。<br>
+experimental-alphaブランチ:大規模改修を行うときに最初に書くブランチ。不安定なコードがコミットされます。<br>
 
 
 ### 機能追加履歴
