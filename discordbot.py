@@ -133,7 +133,7 @@ async def detect_NGword(message):
         return
     else:
         m = [x for x in word_list if x in message.content]
-        if len(m) != 0 and message.author != bot.user:
+        if len(m) != 0:
             m = ''.join(m)
             await sendnglog(message,m)
             return
