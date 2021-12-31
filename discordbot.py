@@ -129,12 +129,12 @@ async def errortest(ctx):
 async def detect_NGword(message):
     word_list = ['@everyone','@here','@飼育員たち','discord.gg/']
     url_list = ['discord.gg/']
-    if message.author == bot.user and f"<Role id={everyone} name='@everyone'>" in message.content:
+    if message.author ==bot.user:
         return
     else:
         m = [x for x in word_list if x in message.content]
-        if len(m) != 0 and message.author != bot.user:
-            m = ''.join(m)
+        if len(m) != 0:
+            m = '\n'.join(m)
             await sendnglog(message,m)
             return
         else:
