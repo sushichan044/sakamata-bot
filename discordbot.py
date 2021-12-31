@@ -49,7 +49,7 @@ intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='/',intents=intents,help_command=JapaneseHelpCommand())
 
 
-
+'''
 #本番鯖IDなど
 
 guildid = 915910043461890078
@@ -77,7 +77,7 @@ modrole = 924355349308383252
 adminrole = 917332284582031390
 countvc = 925249967478673519
 everyone = 916965252896260117
-'''
+
 
 #emoji
 maruemoji = "\N{Heavy Large Circle}"
@@ -128,13 +128,20 @@ async def errortest(ctx):
 #Detect-NGword
 @bot.listen('on_message')
 async def detect_NGword(message):
-    word_list = ['@everyone','@here','@飼育員たち','discord.gg/']
-    url_list = ['discord.gg/']
+    word_list = ['@everyone','@here','@飼育員たち']
     if message.author ==bot.user:
         return
     else:
         m = [x for x in word_list if x in message.content]
-        if len(m) != 0:
+        prog = re.compile(r'discord.gg/[\w]*')
+        n = prog.findall(message.content)
+#        print(n)
+        invites_url = [x.url for x in await message.guild.invites()]
+        replaced_invites = [item.replace('https://','') for item in invites_url]
+#        print(f'{replaced_invites}')
+        n = [x for x in n if x not in replaced_invites]
+        if m != [] or n != []:
+            m = m+n
             m = '\n'.join(m)
             await sendnglog(message,m)
             return
