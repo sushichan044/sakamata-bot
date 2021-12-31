@@ -134,10 +134,14 @@ async def detect_NGword(message):
         return
     else:
         m = [x for x in word_list if x in message.content]
-        prog = re.compile(r'discord.gg/[\w]*(?!.*\?event=)')
-        n = prog.findall(message.content)
+#        prog = re.compile(r'discord.gg/[\w]*(?!.*\?event=)')
+        newprog = re.compile(r'discord.gg/[\w]*')
+#        n = prog.findall(message.content)
+        n = newprog.findall(message.content)
 #        n = re.match(r'discord.gg/[\w]*(?!.*\?event=)',message.content)
 #        n = [x for x in message.content if re.match(r'discord.gg/[\w]*(?!.*\?event=)',x)]
+        invites = await message.guild.invites()
+        n = [x for x in n if x not in invites]
         if m != [] or n != []:
             m = m+n
             m = '\n'.join(m)
