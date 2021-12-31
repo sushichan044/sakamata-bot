@@ -131,7 +131,7 @@ async def detect_NGword(message):
     url_list = ['discord.gg/']
     if f"<Role id={everyone} name='@everyone'>" in message.content:
         return
-    m = [x for x in message.content for x in word_list]
+    m = [x in message.content for x in word_list]
     if len(m) != 0:
         ''.join(m)
         await sendnglog(message,m)
