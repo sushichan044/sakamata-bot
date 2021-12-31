@@ -134,7 +134,7 @@ async def detect_NGword(message):
     else:
         m = [x for x in word_list if x in message.content]
         if len(m) != 0:
-            m = ''.join(m)
+            m = '\n'.join(m)
             await sendnglog(message,m)
             return
         else:
