@@ -5,7 +5,7 @@ import sys
 import traceback
 from datetime import datetime, timedelta
 from logging import debug
-from typing import Optional
+from typing import Optional, Pattern
 from typing import Union
 
 import discord
@@ -127,38 +127,51 @@ async def errortest(ctx):
 #Detect-NGword
 @bot.listen('on_message')
 async def detect_NGword(message):
-    word_list = ['@everyone','@here','@飼育員たち']
-    if f"<Role id={everyone} name='@everyone'>" in message.content:
-        return
-    elif any(x in message.content for x in word_list) == True:
-        channel = bot.get_channel(alertchannel)
-        embed = discord.Embed(
-        title='NGワードを検知しました。',
-        url=message.jump_url,
-        color=16711680,
-        description=message.content,
-        timestamp=message.created_at
-        )
-        embed.set_author(
-        name=message.author.display_name,
-        icon_url=message.author.avatar_url
-        )
-        embed.add_field(
-            name='送信者',
-            value=f'{message.author.mention}'
-        )
-        embed.add_field(
-            name='送信先',
-            value=f'{message.channel.mention}'
-        )
-        embed.add_field(
-            name='送信日時',
-            value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
-        )
-        await channel.send(embed=embed)
+    word_list = ['@everyone','@here','@飼育員たち','discord.gg/']
+    url_list = ['discord.gg/']
+    if message.author == bot.user and f"<Role id={everyone} name='@everyone'>" in message.content:
         return
     else:
-        return
+        m = [x for x in word_list if x in message.content]
+        if len(m) != 0 and message.author != bot.user:
+            m = ''.join(m)
+            await sendnglog(message,m)
+            return
+        else:
+            return
+
+#send-nglog
+async def sendnglog(message,m):
+    channel = bot.get_channel(alertchannel)
+    embed = discord.Embed(
+    title=f'NGワードを検知しました。',
+    url=message.jump_url,
+    color=16711680,
+    description=message.content,
+    timestamp=message.created_at
+    )
+    embed.set_author(
+    name=message.author.display_name,
+    icon_url=message.author.avatar_url
+    )
+    embed.add_field(
+        name='検知ワード',
+        value=f'{m}'
+    )
+    embed.add_field(
+        name='送信者',
+        value=f'{message.author.mention}'
+    )
+    embed.add_field(
+        name='送信先',
+        value=f'{message.channel.mention}'
+    )
+    embed.add_field(
+        name='送信日時',
+        value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+    )
+    await channel.send(embed=embed)
+    return
 
 #Dispander-All
 @bot.listen('on_message')
