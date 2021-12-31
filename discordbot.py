@@ -49,7 +49,7 @@ intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='/',intents=intents,help_command=JapaneseHelpCommand())
 
 
-
+'''
 #本番鯖IDなど
 
 guildid = 915910043461890078
@@ -77,7 +77,7 @@ modrole = 924355349308383252
 adminrole = 917332284582031390
 countvc = 925249967478673519
 everyone = 916965252896260117
-'''
+
 
 #emoji
 maruemoji = "\N{Heavy Large Circle}"
