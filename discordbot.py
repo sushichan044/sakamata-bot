@@ -146,7 +146,7 @@ async def detect_NGword(message):
         replaced_invites =  string_new.split(",")
         conf = '\n'.join(replaced_invites)
         channel = bot.get_channel(alertchannel)
-        await channel.send(f'{conf}')
+        print(f'{conf}')
  #       replaced_invites = [s.replace('https://','') for s in invites]
         n = [x for x in n if x not in replaced_invites]
         if m != [] or n != []:
