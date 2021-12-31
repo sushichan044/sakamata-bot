@@ -129,7 +129,7 @@ async def errortest(ctx):
 async def detect_NGword(message):
     word_list = ['@everyone','@here','@飼育員たち']
     url_list = ['discord.gg/']
-    if f"<Role id={everyone} name='@everyone'>" in message.content:
+    if message.author == bot.user and f"<Role id={everyone} name='@everyone'>" in message.content:
         return
     m = [x for x in word_list
         if x in message.content]
