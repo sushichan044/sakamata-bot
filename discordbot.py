@@ -141,7 +141,7 @@ async def detect_NGword(message):
 #        n = re.match(r'discord.gg/[\w]*(?!.*\?event=)',message.content)
 #        n = [x for x in message.content if re.match(r'discord.gg/[\w]*(?!.*\?event=)',x)]
         invites = await message.guild.invites()
-        string = ",".join(invites)
+        string = ",".join(str(invites))
         string_new = string.replace('https://','')
         replaced_invites =  string_new.split(",")
  #       replaced_invites = [s.replace('https://','') for s in invites]
