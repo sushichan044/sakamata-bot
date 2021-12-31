@@ -138,19 +138,12 @@ async def detect_NGword(message):
         newprog = re.compile(r'discord.gg/[\w]*')
 #        n = prog.findall(message.content)
         n = newprog.findall(message.content)
+        print(n)
 #        n = re.match(r'discord.gg/[\w]*(?!.*\?event=)',message.content)
 #        n = [x for x in message.content if re.match(r'discord.gg/[\w]*(?!.*\?event=)',x)]
-        invites = await message.guild.invites()
         invites_url = [x.url for x in await message.guild.invites()]
         replaced_invites = [item.replace('https://','') for item in invites_url]
-        '''
-        string_new = string.replace('https://','')
-        replaced_invites =  string_new.split(",")
-        conf = ','.join(replaced_invites)
-        channel = bot.get_channel(alertchannel)
-        '''
         print(f'{replaced_invites}')
- #       replaced_invites = [s.replace('https://','') for s in invites]
         n = [x for x in n if x not in replaced_invites]
         if m != [] or n != []:
             m = m+n
