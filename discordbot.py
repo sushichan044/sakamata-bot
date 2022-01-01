@@ -634,8 +634,8 @@ async def _checkmember(ctx):
         guild = bot.get_guild(guildid)
         role = guild.get_role(adminrole)
         confarg=''
-        exemsg = f'{user.mention}のメンバーシップ認証を承認しました。'
-        nonexemsg = f'{user.mention}のメンバーシップ認証を拒否しました。'
+        exemsg = f'{ctx.author.mention}のメンバーシップ認証を承認しました。'
+        nonexemsg = f'{ctx.author.mention}のメンバーシップ認証を拒否しました。'
         kakuninmsg=f'{ctx.author.mention}のメンバーシップ認証を承認しますか?'
         turned = await confirm(ctx,confarg,role,kakuninmsg)
         if turned == 'ok':
