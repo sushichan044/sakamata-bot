@@ -9,6 +9,7 @@ from typing import Optional, Pattern
 from typing import Union
 
 import discord
+from discord import channel
 import requests
 from discord import Member, User
 from discord.channel import DMChannel
@@ -62,6 +63,7 @@ modrole = 916726433445986334
 adminrole = 915954009343422494
 countvc = 925256795491012668
 everyone = 915910043461890078
+membercheckchannel = 926777825925677096
 
 '''
 #実験鯖IDなど
@@ -76,6 +78,7 @@ modrole = 924355349308383252
 adminrole = 917332284582031390
 countvc = 925249967478673519
 everyone = 916965252896260117
+membercheckchannel = 926777719964987412
 
 
 #emoji
@@ -135,7 +138,7 @@ async def detect_NGword(message):
         prog = re.compile(r'discord.gg/[\w]*')
         n = prog.findall(message.content)
 #        print(n)
-        invites_url = [x.url for x in await message.guild.invites()]
+        invites_url = [x.url for x in await message.guild.invites()[1:]]
         replaced_invites = [item.replace('https://','') for item in invites_url]
 #        print(f'{replaced_invites}')
         n = [x for x in n if x not in replaced_invites]
@@ -595,7 +598,13 @@ async def _checkmember(ctx):
         await sendexelog(ctx,msg,descurl)
         return
     else:
-        return
+#        for attachment in ctx.message.attachments[1:]:
+#                    invites_url = [x.url for x in await message.guild.invites()]
+        channel= bot.get_channel(membercheckchannel)
+        image_url = [x.url for x in ctx.message.attachments[1:]]
+        sendimg = '\n'.join(image_url)
+        await channel.send(sendimg)
+
 
 #Deal-DM
 async def makedealdm(ctx,deal,adddm):
