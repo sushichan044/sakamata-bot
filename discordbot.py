@@ -630,7 +630,7 @@ async def _checkmember(ctx):
             url=x
             )
             embedimg.append(embed)
-        await components.send(channel,embeds=embed)
+        await components.send(channel,embeds=embedimg)
         '''
         for attachment in m.attachments[1:]:
             embed = discord.Embed()
