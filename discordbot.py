@@ -5,15 +5,11 @@ import sys
 import traceback
 from datetime import datetime, timedelta
 from logging import debug
-from typing import Optional, Pattern
-from typing import Union
 
 import discord
-from discord import channel
-from discord import message
 import requests
-from discord import Member, User
-from discord.channel import CategoryChannel, DMChannel
+from discord import Member
+from discord.channel import DMChannel
 from discord.ext import commands
 from discord.ext import tasks
 from dispanderfixed import dispand
