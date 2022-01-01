@@ -653,18 +653,18 @@ async def _checkmember(ctx):
         await m.add_reaction(batuemoji)
         valid_reactions = [maruemoji,batuemoji]
         #wait-for-reaction
-        def check(reaction,user):
-            return role in user.roles and str(reaction.emoji) in valid_reactions
-        reaction,user = await bot.wait_for('reaction_add',check = check)
+        def checkmember(payload):
+            return role in payload.member.roles and str(payload.emoji) in valid_reactions and payload.message_id == m.id
+        payload = await bot.wait_for('raw_reaction_add',check = checkmember)
         #exe
-        if str(reaction.emoji) == maruemoji:
+        if str(payload.emoji) == maruemoji:
             msg = exemsg
             descurl = ''
             member = guild.get_member(ctx.message.author.id)
             addmemberrole = guild.get_role(memberrole)
             await member.add_roles(addmemberrole)
             await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
-            await channel.send('Accepted!')
+            await m.reply('Accepted!')
             await sendexelog(ctx,msg,descurl)
             return
         else:
@@ -705,11 +705,11 @@ async def confirm(ctx,confarg,role,kakuninmsg):
     await m.add_reaction(batuemoji)
     valid_reactions = [maruemoji,batuemoji]
     #wait-for-reaction
-    def check(reaction,user):
-        return role in user.roles and str(reaction.emoji) in valid_reactions
-    reaction,user = await bot.wait_for('reaction_add',check = check)
+    def checkconf(payload):
+        return role in payload.member.roles and str(payload.emoji) in valid_reactions and payload.message_id == m.id
+    payload = await bot.wait_for('raw_reaction_add',check = checkconf)
     #exe
-    if str(reaction.emoji) == maruemoji:
+    if str(payload.emoji) == maruemoji:
         return 'ok'
     else:
         return 'cancel'
