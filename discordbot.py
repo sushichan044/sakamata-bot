@@ -10,6 +10,7 @@ from typing import Union
 
 import discord
 from discord import channel
+from discord import message
 import requests
 from discord import Member, User
 from discord.channel import CategoryChannel, DMChannel
@@ -657,12 +658,18 @@ async def _checkmember(ctx):
             addmemberrole = guild.get_role(memberrole)
             await member.add_roles(addmemberrole)
             await channel.send('Accepted!')
+            await ctx.send('ご協力ありがとうございました!メンバー限定チャンネルをご利用いただけます!')
             await sendexelog(ctx,msg,descurl)
             return
         else:
             msg=nonexemsg
             descurl = ''
             await channel.send('Cancelled!')
+            await channel.send('DMで送信する不承認理由を入力してください。')
+            def check(message):
+                return message.content != None and message.channel ==channel
+            message = await bot.wait_for('message',check=check)
+            await ctx.reply(content=message.content,mention_author=False)
             await sendexelog(ctx,msg,descurl)
             return
 
