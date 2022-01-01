@@ -57,14 +57,15 @@ guildid = 915910043461890078
 logchannel = 917009541433016370
 vclogchannel = 917009562383556678
 dmboxchannel = 921781301101613076
-siikuinrole = 915915792275632139
 errorlogchannel = 924142068484440084
 alertchannel = 924744385902575616
+membercheckchannel = 926777825925677096
+countvc = 925256795491012668
+siikuinrole = 915915792275632139
 modrole = 916726433445986334
 adminrole = 915954009343422494
-countvc = 925256795491012668
 everyone = 915910043461890078
-membercheckchannel = 926777825925677096
+memberrole = 923789641159700500
 
 '''
 #実験鯖IDなど
@@ -72,14 +73,15 @@ guildid = 916965252896260117
 logchannel = 916971090042060830
 vclogchannel = 916988601902989373
 dmboxchannel = 918101377958436954
-siikuinrole = 923719282360188990
 errorlogchannel = 924141910321426452
 alertchannel = 924744469327257602
+membercheckchannel = 926777719964987412
+countvc = 925249967478673519
+siikuinrole = 923719282360188990
 modrole = 924355349308383252
 adminrole = 917332284582031390
-countvc = 925249967478673519
 everyone = 916965252896260117
-membercheckchannel = 926777719964987412
+memberrole = 926268230417408010
 
 
 #emoji
@@ -629,6 +631,30 @@ async def _checkmember(ctx):
             )
             embedimg.append(embed)
         await components.send(channel,embeds=embedimg)
+        guild = bot.get_guild(guildid)
+        role = guild.get_role(adminrole)
+        confarg=''
+        exemsg = f'{user.mention}のメンバーシップ認証を承認しました。'
+        nonexemsg = f'{user.mention}のメンバーシップ認証を拒否しました。'
+        kakuninmsg=f'{ctx.author.mention}のメンバーシップ認証を承認しますか?'
+        turned = await confirm(ctx,confarg,role,kakuninmsg)
+        if turned == 'ok':
+            msg = exemsg
+            descurl = ''
+            member = guild.get_member(ctx.author.id)
+            addmemberrole = guild.get_role(memberrole)
+            await member.add_roles(addmemberrole)
+            await channel.send('Accepted!')
+            await sendexelog(ctx,msg,descurl)
+            return
+        elif turned == 'cancel':
+            msg=nonexemsg
+            descurl = ''
+            await channel.send('Cancelled!')
+            await sendexelog(ctx,msg,descurl)
+            return
+        else:
+            return
 
 
 #save-img
