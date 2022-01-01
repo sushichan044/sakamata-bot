@@ -598,14 +598,12 @@ async def _checkmember(ctx):
         descurl = ''
         await sendexelog(ctx,msg,descurl)
         return
-
     else:
         channel= bot.get_channel(membercheckchannel)
         image_url = [x.url for x in ctx.message.attachments]
-#        sendimg = '\n'.join(image_url)
         embedimg = []
         embed = discord.Embed(
-        title='DMを受信しました。',
+        title='メンバー認証コマンドを受信しました。',
         url=ctx.message.jump_url,
         color=3447003,
         description=ctx.message.content,
@@ -631,16 +629,6 @@ async def _checkmember(ctx):
             )
             embedimg.append(embed)
         await components.send(channel,embeds=embedimg)
-        '''
-        for attachment in m.attachments[1:]:
-            embed = discord.Embed()
-            embed.set_image(
-            url=attachment.proxy_url
-            )
-            sent_attachment_message = await message.reply(embed=embed,mention_author=False)
-            sent_messages.append(sent_attachment_message)
-        '''
-
 
 
 #save-img
