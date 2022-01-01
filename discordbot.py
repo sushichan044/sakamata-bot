@@ -597,13 +597,22 @@ async def _checkmember(ctx):
         descurl = ''
         await sendexelog(ctx,msg,descurl)
         return
+
     else:
 #        for attachment in ctx.message.attachments[1:]:
 #                    invites_url = [x.url for x in await message.guild.invites()]
         channel= bot.get_channel(membercheckchannel)
-        image_url = [x.url for x in ctx.message.attachments]
+        image_url = [x.proxy_url for x in ctx.message.attachments]
         sendimg = '\n'.join(image_url)
         await channel.send(sendimg)
+
+
+#save-img
+async def download_img(url, file_name):
+    r = requests.get(url, stream=True)
+    if r.status_code == 200:
+        with open(file_name, 'wb') as f:
+            f.write(r.content)
 
 
 #Deal-DM
