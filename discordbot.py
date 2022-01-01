@@ -16,6 +16,7 @@ from discord.channel import DMChannel
 from discord.ext import commands
 from discord.ext import tasks
 from dispanderfixed import dispand
+from discord.ext import components
 
 '''bot招待リンク
 https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=543816019030&scope=bot
@@ -599,12 +600,30 @@ async def _checkmember(ctx):
         return
 
     else:
-#        for attachment in ctx.message.attachments[1:]:
-#                    invites_url = [x.url for x in await message.guild.invites()]
         channel= bot.get_channel(membercheckchannel)
         image_url = [x.url for x in ctx.message.attachments]
         sendimg = '\n'.join(image_url)
-        await channel.send(sendimg)
+        embed = discord.Embed(
+        title='DMを受信しました。',
+        url=ctx.message.jump_url,
+        color=3447003,
+        description=ctx.message.content,
+        timestamp=ctx.message.created_at
+        )
+        embed.set_author(
+        name=ctx.message.author.display_name,
+        icon_url=ctx.message.author.avatar_url
+        )
+        embed.add_field(
+            name='送信者',
+            value=f'{ctx.message.author.mention}'
+        )
+        embed.add_field(
+            name='受信日時',
+            value=f'{ctx.message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        )
+        await channel.send(embed=embed)
+
 
 
 #save-img
