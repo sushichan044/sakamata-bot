@@ -1,8 +1,9 @@
 # sakamatabot
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/sushi-chaaaan/sakamatabot?style=flat-square)
-![alt text](https://img.shields.io/badge/discord.py-Python-3776AB.svg?logo=python&style=flat-square)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dispanderfixed?style=flat-square)](https://www.python.org/downloads/release/python-3101/)
+[![PyPI](https://img.shields.io/pypi/v/discord.py?label=discord.py)](https://pypi.org/project/discord.py/)
+[![PyPI](https://img.shields.io/pypi/v/dpy-components?label=dpy-components)](https://pypi.org/project/dpy-components/)
 [![PyPI](https://img.shields.io/pypi/v/dispanderfixed?label=dispanderfixed&style=flat-square)](https://pypi.org/project/dispanderfixed/)
 [![Discord](https://img.shields.io/discord/915910043461890078?label=Discord)](https://discord.gg/EqfjtNBf2M)
 
@@ -12,8 +13,9 @@
 
 ### 開発環境及び使用ライブラリ
 Python3.10.0<br>
-discord.py 1.7.3<br>
-dispanderfixed 0.1.3 ([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
+discord.py 1.7.3([pypi](https://pypi.org/project/discord.py/))<br>
+dpy-components 0.4.2([pypi](https://pypi.org/project/dpy-components/))<br>
+dispanderfixed 0.3.0([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
 
 ### 各ブランチ
 Mainブランチ:クロヱ水族館の本番環境<br>
