@@ -326,6 +326,8 @@ async def ping(ctx):
 async def on_message_dm(message):
     if message.author.bot:
         return
+    elif '/check' in message.content:
+        return
     elif type(message.channel) == DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
         embed = discord.Embed(
