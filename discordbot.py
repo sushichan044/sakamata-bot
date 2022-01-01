@@ -9,13 +9,15 @@ from typing import Optional, Pattern
 from typing import Union
 
 import discord
+from discord import channel
+from discord import message
 import requests
 from discord import Member, User
-from discord.channel import DMChannel
+from discord.channel import CategoryChannel, DMChannel
 from discord.ext import commands
 from discord.ext import tasks
-from discord.ext.commands.core import has_role
 from dispanderfixed import dispand
+from discord.ext import components
 
 '''bot招待リンク
 https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=543816019030&scope=bot
@@ -56,13 +58,15 @@ guildid = 915910043461890078
 logchannel = 917009541433016370
 vclogchannel = 917009562383556678
 dmboxchannel = 921781301101613076
-siikuinrole = 915915792275632139
 errorlogchannel = 924142068484440084
 alertchannel = 924744385902575616
+membercheckchannel = 926777825925677096
+countvc = 925256795491012668
+siikuinrole = 915915792275632139
 modrole = 916726433445986334
 adminrole = 915954009343422494
-countvc = 925256795491012668
 everyone = 915910043461890078
+memberrole = 923789641159700500
 
 '''
 #実験鯖IDなど
@@ -70,15 +74,16 @@ guildid = 916965252896260117
 logchannel = 916971090042060830
 vclogchannel = 916988601902989373
 dmboxchannel = 918101377958436954
-siikuinrole = 923719282360188990
 errorlogchannel = 924141910321426452
 alertchannel = 924744469327257602
+membercheckchannel = 926777719964987412
+countvc = 925249967478673519
+siikuinrole = 923719282360188990
 modrole = 924355349308383252
 adminrole = 917332284582031390
-countvc = 925249967478673519
 everyone = 916965252896260117
+memberrole = 926268230417408010
 '''
-
 
 #emoji
 maruemoji = "\N{Heavy Large Circle}"
@@ -137,7 +142,8 @@ async def detect_NGword(message):
         prog = re.compile(r'discord.gg/[\w]*')
         n = prog.findall(message.content)
 #        print(n)
-        invites_url = [x.url for x in await message.guild.invites()]
+        invites_list = await message.guild.invites()
+        invites_url = [x.url for x in invites_list]
         replaced_invites = [item.replace('https://','') for item in invites_url]
 #        print(f'{replaced_invites}')
         n = [x for x in n if x not in replaced_invites]
@@ -322,8 +328,12 @@ async def ping(ctx):
 async def on_message_dm(message):
     if message.author.bot:
         return
+    elif '/check' in message.content:
+        return
     elif type(message.channel) == DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
+        image_url = [x.url for x in message.attachments]
+        embedimg = []
         embed = discord.Embed(
         title='DMを受信しました。',
         url=message.jump_url,
@@ -343,7 +353,14 @@ async def on_message_dm(message):
             name='受信日時',
             value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
         )
-        await channel.send(embed=embed)
+        embedimg.append(embed)
+        for x in image_url:
+            embed = discord.Embed()
+            embed.set_image(
+            url=x
+            )
+            embedimg.append(embed)
+        await components.send(channel,embeds=embedimg)
         return
     else:
         return
@@ -585,6 +602,94 @@ async def _unbanuser(ctx,id:int):
                 descurl = ''
                 await sendexelog(ctx,msg,descurl)
                 return
+
+#check-member
+@bot.command(name='check')
+@commands.dm_only()
+async def _checkmember(ctx):
+    if ctx.message.attachments == []:
+        await ctx.reply(content='画像が添付されていません。画像を添付して送り直してください。',mention_author=False)
+        msg = 'メンバー認証コマンドに画像が添付されていなかったため処理を停止しました。'
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        return
+    else:
+        channel= bot.get_channel(membercheckchannel)
+        image_url = [x.url for x in ctx.message.attachments]
+        embedimg = []
+        embed = discord.Embed(
+        title='メンバー認証コマンドを受信しました。',
+        url=ctx.message.jump_url,
+        color=3447003,
+        description=ctx.message.content,
+        timestamp=ctx.message.created_at
+        )
+        embed.set_author(
+        name=ctx.message.author.display_name,
+        icon_url=ctx.message.author.avatar_url
+        )
+        embed.add_field(
+            name='送信者',
+            value=f'{ctx.message.author.mention}'
+        )
+        embed.add_field(
+            name='受信日時',
+            value=f'{ctx.message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        )
+        embedimg.append(embed)
+        for x in image_url:
+            embed = discord.Embed()
+            embed.set_image(
+            url=x
+            )
+            embedimg.append(embed)
+        await components.send(channel,embeds=embedimg)
+        guild = bot.get_guild(guildid)
+        role = guild.get_role(adminrole)
+        confarg=''
+        exemsg = f'{ctx.message.author.mention}のメンバーシップ認証を承認しました。'
+        nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を拒否しました。'
+        kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
+        sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
+        m = await channel.send(sendkakuninmsg)
+        await m.add_reaction(maruemoji)
+        await m.add_reaction(batuemoji)
+        valid_reactions = [maruemoji,batuemoji]
+        #wait-for-reaction
+        def check(reaction,user):
+            return role in user.roles and str(reaction.emoji) in valid_reactions
+        reaction,user = await bot.wait_for('reaction_add',check = check)
+        #exe
+        if str(reaction.emoji) == maruemoji:
+            msg = exemsg
+            descurl = ''
+            member = guild.get_member(ctx.message.author.id)
+            addmemberrole = guild.get_role(memberrole)
+            await member.add_roles(addmemberrole)
+            await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
+            await channel.send('Accepted!')
+            await sendexelog(ctx,msg,descurl)
+            return
+        else:
+            msg=nonexemsg
+            descurl = ''
+            await channel.send('DMで送信する不承認理由を入力してください。')
+            def check(message):
+                return message.content != None and message.channel == channel
+            message = await bot.wait_for('message',check=check)
+            replymsg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
+            await ctx.reply(content=replymsg,mention_author=False)
+            await channel.send('Cancelled!')
+            await sendexelog(ctx,msg,descurl)
+            return
+
+#save-img
+async def download_img(url, file_name):
+    r = requests.get(url, stream=True)
+    if r.status_code == 200:
+        with open(file_name, 'wb') as f:
+            f.write(r.content)
+
 
 #Deal-DM
 async def makedealdm(ctx,deal,adddm):
