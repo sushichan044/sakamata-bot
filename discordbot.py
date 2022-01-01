@@ -610,6 +610,7 @@ async def _checkmember(ctx):
         await sendexelog(ctx,msg,descurl)
         return
     else:
+        await ctx.reply(content='認証要求を受理しました。\nしばらくお待ちください!')
         channel= bot.get_channel(membercheckchannel)
         image_url = [x.url for x in ctx.message.attachments]
         embedimg = []
