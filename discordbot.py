@@ -644,7 +644,7 @@ async def _checkmember(ctx):
         valid_reactions = [maruemoji,batuemoji]
         #wait-for-reaction
         def check(reaction,user):
-            return role in user.roles and str(reaction.emoji) in valid_reactions and reaction.count == 2
+            return role in user.roles and str(reaction.emoji) in valid_reactions and reaction.count == 3
         reaction,user = await bot.wait_for('reaction_add',check = check)
         #exe
         if str(reaction.emoji) == maruemoji:
