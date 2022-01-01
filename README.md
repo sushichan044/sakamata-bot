@@ -2,27 +2,32 @@
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/sushi-chaaaan/sakamatabot?style=flat-square)
 ![alt text](https://img.shields.io/badge/discord.py-Python-3776AB.svg?logo=python&style=flat-square)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dispanderfixed?style=flat-square)
-![PyPI](https://img.shields.io/pypi/v/dispanderfixed?label=dispanderfixed&style=flat-square)
-![Discord](https://img.shields.io/discord/915910043461890078?label=Discord)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dispanderfixed?style=flat-square)](https://www.python.org/downloads/release/python-3101/)
+[![PyPI](https://img.shields.io/pypi/v/dispanderfixed?label=dispanderfixed&style=flat-square)](https://pypi.org/project/dispanderfixed/)
+[![Discord](https://img.shields.io/discord/915910043461890078?label=Discord)](https://discord.gg/EqfjtNBf2M)
 
 ### このリポジトリは？
-ホロライブ所属VTuber沙花叉クロヱさんの非公式ファンDiscordサーバー[「クロヱ水族館」](https://discord.gg/EqfjtNBf2M)の運営/管理補助を行うBotのコードです。
+ホロライブ所属VTuber沙花叉クロヱさんの非公式ファンDiscordサーバー[「クロヱ水族館」](https://discord.gg/EqfjtNBf2M)の運営/管理補助を行うBotのコードです。<br>
+テスト環境がクラウド上にあるため、Commitが多くなっています。
 
 ### 開発環境及び使用ライブラリ
-Python3.10.0
-discord.py 1.7.3
-dispanderfixed 0.1.3 ([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)
+Python3.10.0<br>
+discord.py 1.7.3<br>
+dispanderfixed 0.1.3 ([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
 
 ### 各ブランチ
-Mainブランチ:クロヱ水族館の本番環境
-experimentalブランチ:バックアップ用。安定したコードしか上がりません。
-experimental-alphaブランチ:大規模改修を行うときに最初に書くブランチ。不安定なコードがコミットされます。
+Mainブランチ:クロヱ水族館の本番環境<br>
+experimentalブランチ:バックアップ用。安定したコードしか上がりません。<br>
+experimental-alphaブランチ:大規模改修を行うときに最初に書くブランチ。不安定なコードがコミットされます。<br>
 
 
 ### 機能追加履歴
 
-> v.1.0.6(2021.12.27)
+> v1.0.7(2021.12.31)
+
+NGワード検知機能を強化。自身のサーバー以外の招待URｌを検知可能に。
+
+> v1.0.6(2021.12.27)
 
 NGワード検知機能を追加
 
