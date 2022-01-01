@@ -589,7 +589,7 @@ async def _unbanuser(ctx,id:int):
 @commands.dm_only()
 async def _checkmember(ctx):
     if ctx.message.attachments == []:
-        ctx.reply(content='画像が添付されていません。画像を添付して送り直してください。',mention_author=False)
+        await ctx.reply(content='画像が添付されていません。画像を添付して送り直してください。',mention_author=False)
         msg = 'メンバー認証コマンドに画像が添付されていなかったため処理を停止しました。'
         descurl = ''
         await sendexelog(ctx,msg,descurl)
