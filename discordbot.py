@@ -332,6 +332,8 @@ async def on_message_dm(message):
         return
     elif type(message.channel) == DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
+        image_url = [x.url for x in message.attachments]
+        embedimg = []
         embed = discord.Embed(
         title='DMを受信しました。',
         url=message.jump_url,
@@ -351,7 +353,14 @@ async def on_message_dm(message):
             name='受信日時',
             value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
         )
-        await channel.send(embed=embed)
+        embedimg.append(embed)
+        for x in image_url:
+            embed = discord.Embed()
+            embed.set_image(
+            url=x
+            )
+            embedimg.append(embed)
+        await components.send(channel,embeds=embedimg)
         return
     else:
         return
@@ -600,7 +609,7 @@ async def _unbanuser(ctx,id:int):
 async def _checkmember(ctx):
     if ctx.message.attachments == []:
         await ctx.reply(content='画像が添付されていません。画像を添付して送り直してください。',mention_author=False)
-        msg = 'メンバー認証コマンドに画像が添付されていなかったため\n処理を停止しました。'
+        msg = 'メンバー認証コマンドに画像が添付されていなかったため処理を停止しました。'
         descurl = ''
         await sendexelog(ctx,msg,descurl)
         return
