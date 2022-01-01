@@ -138,7 +138,7 @@ async def detect_NGword(message):
         prog = re.compile(r'discord.gg/[\w]*')
         n = prog.findall(message.content)
 #        print(n)
-        invites_url = [x.url for x in await message.guild.invites()[1:]]
+        invites_url = [x.url for x in await message.guild.invites()]
         replaced_invites = [item.replace('https://','') for item in invites_url]
 #        print(f'{replaced_invites}')
         n = [x for x in n if x not in replaced_invites]
@@ -601,7 +601,7 @@ async def _checkmember(ctx):
 #        for attachment in ctx.message.attachments[1:]:
 #                    invites_url = [x.url for x in await message.guild.invites()]
         channel= bot.get_channel(membercheckchannel)
-        image_url = [x.url for x in ctx.message.attachments[1:]]
+        image_url = [x.url for x in ctx.message.attachments]
         sendimg = '\n'.join(image_url)
         await channel.send(sendimg)
 
