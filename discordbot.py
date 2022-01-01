@@ -640,14 +640,14 @@ async def _checkmember(ctx):
         exemsg = f'{ctx.message.author.mention}のメンバーシップ認証を承認しました。'
         nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を拒否しました。'
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
-        sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 3\n中止に必要な承認人数: 3'
+        sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
         m = await channel.send(sendkakuninmsg)
         await m.add_reaction(maruemoji)
         await m.add_reaction(batuemoji)
         valid_reactions = [maruemoji,batuemoji]
         #wait-for-reaction
         def check(reaction,user):
-            return role in user.roles and str(reaction.emoji) in valid_reactions and reaction.count == 4
+            return role in user.roles and str(reaction.emoji) in valid_reactions
         reaction,user = await bot.wait_for('reaction_add',check = check)
         #exe
         if str(reaction.emoji) == maruemoji:
