@@ -14,7 +14,6 @@ from discord import Member, User
 from discord.channel import DMChannel
 from discord.ext import commands
 from discord.ext import tasks
-from discord.ext.commands.core import has_role
 from dispanderfixed import dispand
 
 '''bot招待リンク
@@ -584,6 +583,19 @@ async def _unbanuser(ctx,id:int):
                 descurl = ''
                 await sendexelog(ctx,msg,descurl)
                 return
+
+#check-member
+@bot.command(name='check')
+@commands.dm_only()
+async def _checkmember(ctx):
+    if ctx.message.attachments == []:
+        ctx.reply(content='画像が添付されていません。画像を添付して送り直してください。',mention_author=False)
+        msg = 'メンバー認証コマンドに画像が添付されていなかったため処理を停止しました。'
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        return
+    else:
+        return
 
 #Deal-DM
 async def makedealdm(ctx,deal,adddm):
