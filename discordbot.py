@@ -12,7 +12,7 @@ import discord
 from discord import channel
 import requests
 from discord import Member, User
-from discord.channel import DMChannel
+from discord.channel import CategoryChannel, DMChannel
 from discord.ext import commands
 from discord.ext import tasks
 from dispanderfixed import dispand
@@ -637,8 +637,17 @@ async def _checkmember(ctx):
         exemsg = f'{ctx.message.author.mention}のメンバーシップ認証を承認しました。'
         nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を拒否しました。'
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
-        turned = await confirm(ctx,confarg,role,kakuninmsg)
-        if turned == 'ok':
+        sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
+        m = await channel.send(sendkakuninmsg)
+        await m.add_reaction(maruemoji)
+        await m.add_reaction(batuemoji)
+        valid_reactions = [maruemoji,batuemoji]
+        #wait-for-reaction
+        def check(reaction,user):
+            return role in user.roles and str(reaction.emoji) in valid_reactions
+        reaction,user = await bot.wait_for('reaction_add',check = check)
+        #exe
+        if str(reaction.emoji) == maruemoji:
             msg = exemsg
             descurl = ''
             member = guild.get_member(ctx.message.author.id)
@@ -647,15 +656,12 @@ async def _checkmember(ctx):
             await channel.send('Accepted!')
             await sendexelog(ctx,msg,descurl)
             return
-        elif turned == 'cancel':
+        else:
             msg=nonexemsg
             descurl = ''
             await channel.send('Cancelled!')
             await sendexelog(ctx,msg,descurl)
             return
-        else:
-            return
-
 
 #save-img
 async def download_img(url, file_name):
