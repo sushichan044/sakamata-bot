@@ -602,7 +602,8 @@ async def _checkmember(ctx):
     else:
         channel= bot.get_channel(membercheckchannel)
         image_url = [x.url for x in ctx.message.attachments]
-        sendimg = '\n'.join(image_url)
+#        sendimg = '\n'.join(image_url)
+        embedimg = []
         embed = discord.Embed(
         title='DMを受信しました。',
         url=ctx.message.jump_url,
@@ -622,7 +623,23 @@ async def _checkmember(ctx):
             name='受信日時',
             value=f'{ctx.message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
         )
-        await channel.send(embed=embed)
+        embedimg.append(embed)
+        for x in image_url:
+            embed = discord.Embed()
+            embed.set_image(
+            url=x
+            )
+            embedimg.append(embed)
+        await components.send(channel,embeds=embed)
+        '''
+        for attachment in m.attachments[1:]:
+            embed = discord.Embed()
+            embed.set_image(
+            url=attachment.proxy_url
+            )
+            sent_attachment_message = await message.reply(embed=embed,mention_author=False)
+            sent_messages.append(sent_attachment_message)
+        '''
 
 
 
