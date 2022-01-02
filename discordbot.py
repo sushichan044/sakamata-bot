@@ -86,13 +86,13 @@ memberrole = 926268230417408010
 
 #Classes
 class MemberConfView(View):
-    async def body(self,kakuninmsg):
+    async def body(self):
         return Message(
             embed = discord.Embed(
             title='メンバーシップ認証',
             url='',
             color=3447003,
-            description=f'{kakuninmsg}',
+            description=f'確認',
             timestamp=discord.utils.utcnow()
             ),
             components=[
@@ -662,7 +662,7 @@ async def _checkmember(ctx):
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
 #        await channel.send(kakuninmsg)
-        turned = await ViewTracker(MemberConfView(kakuninmsg),timeout=None).track(MessageProvider(channel))
+        turned = await ViewTracker(MemberConfView(),timeout=None).track(MessageProvider(channel))
         if turned == True:
             msg = exemsg
             descurl = ''
