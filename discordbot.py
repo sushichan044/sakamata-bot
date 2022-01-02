@@ -89,7 +89,7 @@ memberrole = 926268230417408010
 class MemberConfView(View):
     async def body(self):
         return Message(
-            content='',
+            content='承認用ボタン',
             components=[
                 Button('承認')
                 .style(discord.ButtonStyle.green)
