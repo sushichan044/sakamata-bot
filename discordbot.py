@@ -668,8 +668,8 @@ async def _checkmember(ctx):
             ActionButton('承認',discord.ButtonStyle.green, value=True),
             ActionButton('否認',discord.ButtonStyle.red, value = False)
         ],ephemeral=True)
-        mc:bool = await alert.wait_for_click(interaction)
-        if mc:
+        value:bool = await alert.wait_for_click(interaction)
+        if value:
             msg = exemsg
             descurl = ''
             member = guild.get_member(ctx.message.author.id)
