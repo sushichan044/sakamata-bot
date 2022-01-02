@@ -12,9 +12,7 @@ from discord import Member
 from discord.channel import DMChannel
 from discord.ext import commands
 from discord.ext import tasks
-#from dispanderfixed import dispand
 from newdispanderfixed import dispand
-#from discord.ext import components
 
 '''bot招待リンク
 https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=543816019030&scope=bot
@@ -30,7 +28,7 @@ https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permission
 ###################################################################
 
 #onlinetoken@heroku
-token = 'OTE3MTg3MTYzNDEyNjYwMjI0.Ya1DHA.LJfGyoKRHKQrNNbMrzBPZ5xJs1E'
+token = os.environ['DISCORD_BOT_TOKEN']
 
 #help-command-localize-test
 class JapaneseHelpCommand(commands.DefaultHelpCommand):
@@ -133,6 +131,8 @@ async def errortest(ctx):
 async def detect_NGword(message):
     word_list = ['@everyone','@here','@飼育員たち']
     if message.author ==bot.user:
+        return
+    elif type(message.channel) == DMChannel:
         return
     else:
         m = [x for x in word_list if x in message.content]
@@ -727,7 +727,7 @@ async def sendexelog(ctx,msg,descurl):
     )
     embed.set_author(
     name=bot.user,
-    icon_url=bot.user.avatar.url
+    icon_url=bot.user.display_avatar.url
     )
     embed.add_field(
         name='実行者',
