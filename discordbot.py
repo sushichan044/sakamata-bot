@@ -10,8 +10,7 @@ import discord
 import requests
 from discord import Member
 from discord.channel import DMChannel
-from discord.ext import commands
-from discord.ext import tasks
+from discord.ext import commands, tasks
 from newdispanderfixed import dispand
 
 '''bot招待リンク
