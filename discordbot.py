@@ -667,7 +667,7 @@ async def _checkmember(ctx):
             ActionButton('承認',discord.ButtonStyle.green, value=True),
             ActionButton('否認',discord.ButtonStyle.red, value = False)
         ])
-        mc = await membalert.wait_for_click(interaction)
+        mc = await membalert.wait_for_click(discord.Integration)
         if mc:
             msg = exemsg
             descurl = ''
