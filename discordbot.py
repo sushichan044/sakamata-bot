@@ -759,7 +759,6 @@ async def compose_embed(message):
 @bot.listen('on_thread_join')
 async def detect_thread(thread):
     if bot.user not in thread.members:
-        await thread.join()
         channel = bot.get_channel(threadlogchannel)
         embed = discord.Embed(
             title='スレッドが作成されました。',
@@ -789,6 +788,7 @@ async def detect_thread(thread):
         value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
         )
         await channel.send(embed=embed)
+        await thread.join()
         return
     else:
         return
