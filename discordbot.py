@@ -758,6 +758,38 @@ async def compose_embed(message):
 #notice-thread/send-log/join
 @bot.listen('on_thread_join')
 async def detect_thread(thread):
+    channel = bot.get_channel(threadlogchannel)
+    embed = discord.Embed(
+        title='スレッドが作成されました。',
+        url='',
+        color=3447003,
+        description='',
+        timestamp=discord.utils.utcnow()
+    )
+    embed.set_author(
+        name=thread.owner.display_name,
+        icon_url=thread.owner.display_avatar.url,
+    )
+    embed.add_field(
+        name='作成元チャンネル',
+        value=f'{thread.parent.mention}'
+    )
+    embed.add_field(
+        name='作成スレッド',
+        value=f'{thread.mention}'
+    )
+    embed.add_field(
+        name='作成者',
+        value=f'{thread.owner.mention}'
+    )
+    embed.add_field(
+        name='作成日時',
+        value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+    )
+    await channel.send(embed=embed)
+#    await thread.join()
+    return
+'''
     list = await thread.fetch_members()
     if bot.user.id in [x.id for x in list]:
         return
@@ -793,7 +825,7 @@ async def detect_thread(thread):
         await channel.send(embed=embed)
         await thread.join()
         return
-
+'''
 
 
 start_count.start()
