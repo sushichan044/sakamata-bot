@@ -5,6 +5,7 @@ import sys
 import traceback
 import logging
 from datetime import datetime, timedelta
+from typing import Optional
 
 import discord
 from discord.interactions import Interaction
@@ -663,11 +664,11 @@ async def _checkmember(ctx):
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
 #        await channel.send(kakuninmsg)
-        membalert = Alert(f'{kakuninmsg}','',[
+        alert = Alert(f'{kakuninmsg}','',[
             ActionButton('承認',discord.ButtonStyle.green, value=True),
             ActionButton('否認',discord.ButtonStyle.red, value = False)
-        ])
-        mc:bool = await membalert.wait_for_click(interaction)
+        ],ephemeral=True)
+        mc:bool = await alert.wait_for_click(interaction)
         if mc:
             msg = exemsg
             descurl = ''
