@@ -5,15 +5,15 @@ import sys
 import traceback
 import logging
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, Text
 
 import discord
 from discord.interactions import Interaction
 import requests
 from discord import Member
-from discord.channel import DMChannel
+from discord.channel import DMChannel, TextChannel
 from discord.ext import commands, tasks, pages
-from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert, ActionButton, state
+from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert, ActionButton, state, tracker
 from discord.commands import slash_command
 from newdispanderfixed import dispand
 
@@ -86,47 +86,49 @@ memberrole = 926268230417408010
 
 #Classes
 class MemberConfView(View):
-    async def body(self):
+    async def ok(self,interaction:discord.Interaction):
+        return True
+    async def ng (self,interaction:discord.Interaction):
+        return False
+    async def body(self) -> Message:
         return Message(
             embeds = [
                 discord.Embed(
                     title='メンバーシップ認証',
                     url='',
                     color=3447003,
-                    description=f'確認',
-                    timestamp=discord.utils.utcnow()
                     )
             ],
             components=[
                 Button('承認')
                 .style(discord.ButtonStyle.green)
-                .on_click(lambda x:True),
+                .on_click(self.ok),
                 Button('否認')
                 .style(discord.ButtonStyle.red)
-                .on_click(lambda x:False)
+                .on_click(self.ng)
             ]
         )
 
-
+'''
 class SampleView(View):
     content = state("content")
 
     def __init__(self):
         super().__init__()
-        self.content = "編集中..."
+        self.content = "メンバーシップ認証"
 
     async def show_alert(self, interaction: discord.Interaction):
-        alert = Alert("編集を終了しますか？", "", [
-            ActionButton("いいえ", discord.ButtonStyle.blurple, False),
-            ActionButton("はい", discord.ButtonStyle.danger, True)
-        ], ephemeral=True)
+        alert = Alert("承認しますか？", "", [
+            ActionButton("はい", discord.ButtonStyle.green, True),
+            ActionButton("いいえ", discord.ButtonStyle.red, False)
+        ])
         result = await alert.wait_for_click(interaction)
         if result:
-            self.content = "編集を終了しました。"
+            self.content = "承認しました。"
 
     async def body(self):
-        return Message()\
-            .content(self.content)\
+        return Message()
+            .content(self.content)
             .items([
                 Button("終わる")
                 .on_click(self.show_alert)
@@ -143,7 +145,7 @@ async def uitest(message: discord.Message):
     view = SampleView()
     tracker = ViewTracker(view, timeout=None)
     await tracker.track(MessageProvider(message.channel))
-
+'''
 
 
 
@@ -699,21 +701,17 @@ async def _checkmember(ctx):
         nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
-#        await channel.send(kakuninmsg)
-        interaction = discord.Interaction
-        alert = Alert(f'{kakuninmsg}','',[
-            ActionButton('承認',discord.ButtonStyle.green, value=True),
-            ActionButton('否認',discord.ButtonStyle.red, value = False)
-        ],ephemeral=True)
-        value:bool = await alert.wait_for_click(interaction)
-        if value:
+        view = MemberConfView()
+        tracker = ViewTracker(view)
+        m = await tracker.track(MessageProvider(channel))
+        if m:
             msg = exemsg
             descurl = ''
             member = guild.get_member(ctx.message.author.id)
             addmemberrole = guild.get_role(memberrole)
             await member.add_roles(addmemberrole)
             await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
-            await turned.reply('Accepted!')
+            await m.reply('Accepted!')
             await sendexelog(ctx,msg,descurl)
             return
         else:
@@ -728,29 +726,9 @@ async def _checkmember(ctx):
             await channel.send('Cancelled!')
             await sendexelog(ctx,msg,descurl)
             return
-'''
-async def membok():
-    msg = exemsg
-    descurl = ''
-    member = guild.get_member(ctx.message.author.id)
-    addmemberrole = guild.get_role(memberrole)
-    await member.add_roles(addmemberrole)
-    await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
-    await turned.reply('Accepted!')
-    await sendexelog(ctx,msg,descurl)
-    return
-            msg=nonexemsg
-            descurl = ''
-            await channel.send('DMで送信する不承認理由を入力してください。')
-            def check(message):
-                return message.content != None and message.channel == channel
-            message = await bot.wait_for('message',check=check)
-            replymsg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
-            await ctx.reply(content=replymsg,mention_author=False)
-            await channel.send('Cancelled!')
-            await sendexelog(ctx,msg,descurl)
-            return
 
+
+'''
         m = await channel.send(sendkakuninmsg)
         await m.add_reaction(maruemoji)
         await m.add_reaction(batuemoji)
