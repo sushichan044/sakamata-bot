@@ -5,15 +5,13 @@ import sys
 import traceback
 import logging
 from datetime import datetime, timedelta
-from typing import Optional, Text
 
 import discord
-from discord.interactions import Interaction
 import requests
 from discord import Member
 from discord.channel import DMChannel, TextChannel
 from discord.ext import commands, tasks, pages
-from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert, ActionButton, state, tracker
+from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert, ActionButton
 from discord.commands import slash_command
 from newdispanderfixed import dispand
 
