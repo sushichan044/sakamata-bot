@@ -98,10 +98,10 @@ class MemberConfView(View):
             components=[
                 Button('承認')
                 .style(discord.ButtonStyle.green)
-                .on_click(lambda _:'True'),
+                .on_click(lambda x:True),
                 Button('否認')
                 .style(discord.ButtonStyle.red)
-                .on_click(lambda _:'False')
+                .on_click(lambda x:False)
             ]
         )
 
@@ -665,7 +665,7 @@ async def _checkmember(ctx):
         view=MemberConfView()
         tracker=ViewTracker(view,timeout=None)
         turned = await tracker.track(MessageProvider(channel))
-        if turned == 'True':
+        if turned:
             msg = exemsg
             descurl = ''
             member = guild.get_member(ctx.message.author.id)
@@ -675,7 +675,7 @@ async def _checkmember(ctx):
             await turned.reply('Accepted!')
             await sendexelog(ctx,msg,descurl)
             return
-        elif turned == 'False':
+        else:
             msg=nonexemsg
             descurl = ''
             await channel.send('DMで送信する不承認理由を入力してください。')
@@ -686,8 +686,6 @@ async def _checkmember(ctx):
             await ctx.reply(content=replymsg,mention_author=False)
             await channel.send('Cancelled!')
             await sendexelog(ctx,msg,descurl)
-            return
-        else:
             return
 '''
         m = await channel.send(sendkakuninmsg)
