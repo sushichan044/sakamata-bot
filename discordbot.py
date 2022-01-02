@@ -3,8 +3,8 @@ import os
 import re
 import sys
 import traceback
+import logging
 from datetime import datetime, timedelta
-from logging import debug
 
 import discord
 import requests
@@ -18,6 +18,8 @@ from newdispanderfixed import dispand
 '''bot招待リンク
 https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=543816019030&scope=bot
 '''
+
+logging.basicConfig(level=logging.INFO)
 
 ### イベントハンドラ一覧(client) #################################################
 # async def の後を変えるだけで実行されるイベンドが変わる
@@ -49,7 +51,7 @@ bot = commands.Bot(command_prefix='/',intents=intents,help_command=JapaneseHelpC
 
 
 #本番鯖IDなど
-
+'''
 guildid = 915910043461890078
 logchannel = 917009541433016370
 vclogchannel = 917009562383556678
@@ -81,7 +83,7 @@ modrole = 924355349308383252
 adminrole = 917332284582031390
 everyone = 916965252896260117
 memberrole = 926268230417408010
-'''
+
 
 #emoji
 maruemoji = "\N{Heavy Large Circle}"
