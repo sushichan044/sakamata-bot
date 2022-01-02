@@ -892,8 +892,12 @@ async def detect_thread(thread):
 #detect-thread-archive
 @bot.listen('on_thread_update')
 async def detect_archive(before,after):
-    if after.archived and not before.archived:
+    if after.locked and not before.locked:
+        return
+    elif after.archived and not before.archived:
         await after.edit(archived=False)
+        return
+    else:
         return
 
 start_count.start()
