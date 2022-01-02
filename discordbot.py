@@ -11,7 +11,7 @@ import requests
 from discord import Member
 from discord.channel import DMChannel
 from discord.ext import commands, tasks, pages
-from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider
+from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, tracker
 from discord.commands import slash_command
 from newdispanderfixed import dispand
 
@@ -98,10 +98,10 @@ class MemberConfView(View):
             components=[
                 Button('承認')
                 .style(discord.ButtonStyle.green)
-                .on_click(lambda _:True),
+                .on_click(lambda _:'True'),
                 Button('否認')
                 .style(discord.ButtonStyle.red)
-                .on_click(lambda _:False)
+                .on_click(lambda _:'False')
             ]
         )
 
@@ -662,18 +662,20 @@ async def _checkmember(ctx):
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
 #        await channel.send(kakuninmsg)
-        turned = await ViewTracker(MemberConfView(),timeout=None).track(MessageProvider(channel))
-        if turned == True:
+        view=MemberConfView
+        tracker=ViewTracker(view,timeout=None)
+        turned = await tracker.track(MessageProvider(channel))
+        if turned == 'True':
             msg = exemsg
             descurl = ''
             member = guild.get_member(ctx.message.author.id)
             addmemberrole = guild.get_role(memberrole)
             await member.add_roles(addmemberrole)
             await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
-            await m.reply('Accepted!')
+            await turned.reply('Accepted!')
             await sendexelog(ctx,msg,descurl)
             return
-        elif turned == False:
+        elif turned == 'False':
             msg=nonexemsg
             descurl = ''
             await channel.send('DMで送信する不承認理由を入力してください。')
