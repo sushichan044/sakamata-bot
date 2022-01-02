@@ -7,8 +7,6 @@ import logging
 from datetime import datetime, timedelta
 
 import discord
-from discord.embeds import Embed
-from discord.enums import ButtonStyle
 import requests
 from discord import Member
 from discord.channel import DMChannel
@@ -88,16 +86,15 @@ memberrole = 926268230417408010
 
 #Classes
 class MemberConfView(View):
-    async def body(self):
-        embed = discord.Embed(
+    async def body(self,ctx,kakuninmsg):
+        return Message(
+            embed = discord.Embed(
             title='メンバーシップ認証',
             url='',
             color=3447003,
-            description=f'メンバーシップ認証を承認しますか？',
+            description=f'{kakuninmsg}',
             timestamp=discord.utils.utcnow()
-        )
-        return Message(
-            embed = embed,
+            ),
             components=[
                 Button('承認')
                 .style(discord.ButtonStyle.green)
@@ -665,7 +662,7 @@ async def _checkmember(ctx):
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
 #        await channel.send(kakuninmsg)
-        turned = await ViewTracker(MemberConfView(),timeout=None).track(MessageProvider(channel))
+        turned = await ViewTracker(MemberConfView(ctx,kakuninmsg),timeout=None).track(MessageProvider(channel))
         if turned == True:
             msg = exemsg
             descurl = ''
