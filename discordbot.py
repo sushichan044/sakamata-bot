@@ -7,11 +7,12 @@ import logging
 from datetime import datetime, timedelta
 
 import discord
+from discord.ext.ui.alert import ActionButton
 import requests
 from discord import Member
 from discord.channel import DMChannel
 from discord.ext import commands, tasks, pages
-from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, tracker
+from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert
 from discord.commands import slash_command
 from newdispanderfixed import dispand
 
@@ -662,10 +663,12 @@ async def _checkmember(ctx):
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
 #        await channel.send(kakuninmsg)
-        view=MemberConfView()
-        tracker=ViewTracker(view,timeout=None)
-        turned = await tracker.track(MessageProvider(channel))
-        if turned:
+        membalert = Alert(f'{kakuninmsg}','',[
+            ActionButton('承認',discord.ButtonStyle.green, value=True),
+            ActionButton('否認',discord.ButtonStyle.red, value = False)
+        ])
+        mc = await membalert.wait_for_click(interaction)
+        if mc:
             msg = exemsg
             descurl = ''
             member = guild.get_member(ctx.message.author.id)
@@ -688,6 +691,28 @@ async def _checkmember(ctx):
             await sendexelog(ctx,msg,descurl)
             return
 '''
+async def membok():
+    msg = exemsg
+    descurl = ''
+    member = guild.get_member(ctx.message.author.id)
+    addmemberrole = guild.get_role(memberrole)
+    await member.add_roles(addmemberrole)
+    await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
+    await turned.reply('Accepted!')
+    await sendexelog(ctx,msg,descurl)
+    return
+            msg=nonexemsg
+            descurl = ''
+            await channel.send('DMで送信する不承認理由を入力してください。')
+            def check(message):
+                return message.content != None and message.channel == channel
+            message = await bot.wait_for('message',check=check)
+            replymsg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
+            await ctx.reply(content=replymsg,mention_author=False)
+            await channel.send('Cancelled!')
+            await sendexelog(ctx,msg,descurl)
+            return
+
         m = await channel.send(sendkakuninmsg)
         await m.add_reaction(maruemoji)
         await m.add_reaction(batuemoji)
