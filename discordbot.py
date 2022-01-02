@@ -108,6 +108,42 @@ class MemberConfView(View):
         )
 
 
+class SampleView(View):
+    content = state("content")
+
+    def __init__(self):
+        super().__init__()
+        self.content = "編集中..."
+
+    async def show_alert(self, interaction: discord.Interaction):
+        alert = Alert("編集を終了しますか？", "", [
+            ActionButton("いいえ", discord.ButtonStyle.blurple, False),
+            ActionButton("はい", discord.ButtonStyle.danger, True)
+        ], ephemeral=True)
+        result = await alert.wait_for_click(interaction)
+        if result:
+            self.content = "編集を終了しました。"
+
+    async def body(self):
+        return Message()\
+            .content(self.content)\
+            .items([
+                Button("終わる")
+                .on_click(self.show_alert)
+                .style(discord.ButtonStyle.danger)
+                .disabled(self.content != "編集中..."),
+        ])
+
+
+@bot.listen('on_message')
+async def uitest(message: discord.Message):
+    if message.content != "!test":
+        return
+
+    view = SampleView()
+    tracker = ViewTracker(view, timeout=None)
+    await tracker.track(MessageProvider(message.channel))
+
 
 
 
@@ -664,6 +700,7 @@ async def _checkmember(ctx):
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
 #        await channel.send(kakuninmsg)
+        interaction = discord.Interaction
         alert = Alert(f'{kakuninmsg}','',[
             ActionButton('承認',discord.ButtonStyle.green, value=True),
             ActionButton('否認',discord.ButtonStyle.red, value = False)
