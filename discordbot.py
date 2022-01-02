@@ -755,7 +755,7 @@ async def compose_embed(message):
         )
     return embed
 
-#notice-thread/send-log/join
+#notice-thread/send-log
 @bot.listen('on_thread_join')
 async def detect_thread(thread):
     channel = bot.get_channel(threadlogchannel)
@@ -794,6 +794,12 @@ async def detect_thread(thread):
         await channel.send(embed=embed)
         return
 
+#detect-thread-archive
+@bot.listen('on_thread_update')
+async def detect_archive(before,after):
+    if after.archived and not before.archived:
+        await after.edit(archived=False)
+        return
 
 start_count.start()
 bot.run(token)
