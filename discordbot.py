@@ -343,41 +343,6 @@ async def on_message_dm(message):
             sent_messages.append(embed)
         await channel.send(embeds=sent_messages)
         return
-'''
-        image_url = [x.url for x in message.attachments]
-        embedimg = []
-
-        embed = discord.Embed(
-        title='DMを受信しました。',
-        url=message.jump_url,
-        color=3447003,
-        description=message.content,
-        timestamp=message.created_at
-        )
-        embed.set_author(
-        name=message.author.display_name,
-        icon_url=message.author.avatar.url
-        )
-        embed.add_field(
-            name='送信者',
-            value=f'{message.author.mention}'
-        )
-        embed.add_field(
-            name='受信日時',
-            value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
-        )
-        embedimg.append(embed)
-        for x in image_url:
-            embed = discord.Embed()
-            embed.set_image(
-            url=x
-            )
-            embedimg.append(embed)
-        await channel.send(embeds=embedimg)
-        return
-    else:
-        return
-'''
 
 #send-message
 @bot.command(name='send-message')
@@ -761,7 +726,8 @@ async def sendexelog(ctx,msg,descurl):
     await channel.send(embed=embed)
     return
 
-def compose_embed(message):
+#compose-embed
+async def compose_embed(message):
     embed = discord.Embed(
         title='DMを受信しました。',
         url=message.jump_url,
