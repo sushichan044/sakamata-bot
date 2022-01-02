@@ -7,12 +7,11 @@ import logging
 from datetime import datetime, timedelta
 
 import discord
-from discord.ext.ui.alert import ActionButton
 import requests
 from discord import Member
 from discord.channel import DMChannel
 from discord.ext import commands, tasks, pages
-from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert
+from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert, ActionButton
 from discord.commands import slash_command
 from newdispanderfixed import dispand
 
