@@ -89,7 +89,7 @@ batuemoji = "\N{Cross Mark}"
 async def greet():
     channel = bot.get_channel(logchannel)
     now = discord.utils.utcnow() + timedelta(hours=9)
-    await channel.send(f'起動完了({now:%m/%d-%H:%M:%S})')
+    await channel.send(f'id:{bot.user.id}起動完了({now:%m/%d-%H:%M:%S})')
     return
 
 #Task-MemberCount
@@ -758,9 +758,8 @@ async def compose_embed(message):
 #notice-thread/send-log/join
 @bot.listen('on_thread_join')
 async def detect_thread(thread):
-    guild = bot.get_guild(guildid)
-    botmember = await guild.fetch_member(bot.user.id)
-    if botmember not in thread.members:
+    threadmemid = [x.id for x in thread.members]
+    if bot.user.id not in threadmemid:
         channel = bot.get_channel(threadlogchannel)
         embed = discord.Embed(
             title='スレッドが作成されました。',
