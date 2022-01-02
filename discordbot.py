@@ -12,8 +12,9 @@ from discord import Member
 from discord.channel import DMChannel
 from discord.ext import commands
 from discord.ext import tasks
-from dispanderfixed import dispand
-from discord.ext import components
+#from dispanderfixed import dispand
+from newdispanderfixed import dispand
+#from discord.ext import components
 
 '''bot招待リンク
 https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=543816019030&scope=bot
@@ -29,7 +30,7 @@ https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permission
 ###################################################################
 
 #onlinetoken@heroku
-token = os.environ['DISCORD_BOT_TOKEN']
+token = 'OTE3MTg3MTYzNDEyNjYwMjI0.Ya1DHA.LJfGyoKRHKQrNNbMrzBPZ5xJs1E'
 
 #help-command-localize-test
 class JapaneseHelpCommand(commands.DefaultHelpCommand):
@@ -49,7 +50,7 @@ bot = commands.Bot(command_prefix='/',intents=intents,help_command=JapaneseHelpC
 
 
 #本番鯖IDなど
-
+'''
 guildid = 915910043461890078
 logchannel = 917009541433016370
 vclogchannel = 917009562383556678
@@ -79,7 +80,7 @@ modrole = 924355349308383252
 adminrole = 917332284582031390
 everyone = 916965252896260117
 memberrole = 926268230417408010
-'''
+
 
 #emoji
 maruemoji = "\N{Heavy Large Circle}"
@@ -88,7 +89,7 @@ batuemoji = "\N{Cross Mark}"
 #Boot-log
 async def greet():
     channel = bot.get_channel(logchannel)
-    now = datetime.utcnow() + timedelta(hours=9)
+    now = discord.utils.utcnow() + timedelta(hours=9)
     await channel.send(f'起動完了({now:%m/%d-%H:%M:%S})')
     return
 
@@ -117,7 +118,7 @@ async def membercount():
 @bot.event
 async def on_command_error(ctx,error):
     channel = bot.get_channel(errorlogchannel)
-    now = datetime.utcnow() + timedelta(hours=9)
+    now = discord.utils.utcnow() + timedelta(hours=9)
     await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}```')
     return
 
@@ -163,7 +164,7 @@ async def sendnglog(message,m):
     )
     embed.set_author(
     name=message.author.display_name,
-    icon_url=message.author.avatar_url
+    icon_url=message.author.avatar.url
     )
     embed.add_field(
         name='検知ワード',
@@ -208,7 +209,7 @@ https://discordbot.jp/blog/17/
 async def on_voice_state_update(member,before,after) :
     if member.guild.id == guildid and (before.channel != after.channel):
         channel = bot.get_channel(vclogchannel)
-        now = datetime.utcnow() + timedelta(hours=9)
+        now = discord.utils.utcnow() + timedelta(hours=9)
         vclogmention = member.mention
         if before.channel is None:
             msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {after.channel.mention} に参加しました。'
@@ -339,7 +340,7 @@ async def on_message_dm(message):
         )
         embed.set_author(
         name=message.author.display_name,
-        icon_url=message.author.avatar_url
+        icon_url=message.author.avatar.url
         )
         embed.add_field(
             name='送信者',
@@ -356,7 +357,7 @@ async def on_message_dm(message):
             url=x
             )
             embedimg.append(embed)
-        await components.send(channel,embeds=embedimg)
+        await channel.send(embeds=embedimg)
         return
     else:
         return
@@ -623,7 +624,7 @@ async def _checkmember(ctx):
         )
         embed.set_author(
         name=ctx.message.author.display_name,
-        icon_url=ctx.message.author.avatar_url
+        icon_url=ctx.message.author.avatar.url
         )
         embed.add_field(
             name='送信者',
@@ -640,7 +641,7 @@ async def _checkmember(ctx):
             url=x
             )
             embedimg.append(embed)
-        await components.send(channel,embeds=embedimg)
+        await channel.send(embeds=embedimg)
         guild = bot.get_guild(guildid)
         role = guild.get_role(adminrole)
         confarg=''
@@ -722,11 +723,11 @@ async def sendexelog(ctx,msg,descurl):
     color = 3447003,
     description = msg,
     url = f'{descurl}',
-    timestamp=datetime.utcnow()
+    timestamp=discord.utils.utcnow()
     )
     embed.set_author(
     name=bot.user,
-    icon_url=bot.user.avatar_url
+    icon_url=bot.user.avatar.url
     )
     embed.add_field(
         name='実行者',
@@ -738,7 +739,7 @@ async def sendexelog(ctx,msg,descurl):
     )
     embed.add_field(
         name='実行日時',
-        value=f'{datetime.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
     )
     await channel.send(embed=embed)
     return
