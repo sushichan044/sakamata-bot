@@ -7,6 +7,7 @@ import logging
 from datetime import datetime, timedelta
 
 import discord
+from discord.enums import ButtonStyle
 import requests
 from discord import Member
 from discord.channel import DMChannel
@@ -85,8 +86,19 @@ everyone = 916965252896260117
 memberrole = 926268230417408010
 
 #Classes
-class ConfView(View):
-    
+class MemberConfView(View):
+    async def body(self):
+        return Message(
+            content='',
+            components=[
+                Button('承認')
+                .style(discord.ButtonStyle.green)
+                .on_click(lambda _:True),
+                Button('否認')
+                .style(discord.ButtonStyle.red)
+                .on_click(lambda _:False)
+            ]
+        )
 
 
 
@@ -644,6 +656,31 @@ async def _checkmember(ctx):
         nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
+        await channel.send(kakuninmsg)
+        turned = await ViewTracker(MemberConfView()).track(MessageProvider(channel))
+        if turned == True:
+            msg = exemsg
+            descurl = ''
+            member = guild.get_member(ctx.message.author.id)
+            addmemberrole = guild.get_role(memberrole)
+            await member.add_roles(addmemberrole)
+            await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
+            await m.reply('Accepted!')
+            await sendexelog(ctx,msg,descurl)
+            return
+        else:
+            msg=nonexemsg
+            descurl = ''
+            await channel.send('DMで送信する不承認理由を入力してください。')
+            def check(message):
+                return message.content != None and message.channel == channel
+            message = await bot.wait_for('message',check=check)
+            replymsg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
+            await ctx.reply(content=replymsg,mention_author=False)
+            await channel.send('Cancelled!')
+            await sendexelog(ctx,msg,descurl)
+            return
+'''
         m = await channel.send(sendkakuninmsg)
         await m.add_reaction(maruemoji)
         await m.add_reaction(batuemoji)
@@ -675,6 +712,7 @@ async def _checkmember(ctx):
             await channel.send('Cancelled!')
             await sendexelog(ctx,msg,descurl)
             return
+'''
 
 #save-img
 async def download_img(url, file_name):
