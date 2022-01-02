@@ -630,7 +630,7 @@ async def _checkmember(ctx):
         role = guild.get_role(adminrole)
         confarg=''
         exemsg = f'{ctx.message.author.mention}のメンバーシップ認証を承認しました。'
-        nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を拒否しました。'
+        nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
         m = await channel.send(sendkakuninmsg)
