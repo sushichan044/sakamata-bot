@@ -760,36 +760,38 @@ async def compose_embed(message):
 async def detect_thread(thread):
     if bot.user not in thread.members:
         await thread.join()
-    channel = bot.get_channel(threadlogchannel)
-    embed = discord.Embed(
-        title='スレッドが作成されました。',
-        url='',
-        color=3447003,
-        description='',
-        timestamp=discord.utils.utcnow()
-    )
-    embed.set_author(
-        name=thread.owner.display_name,
-        icon_url=thread.owner.display_avatar.url,
-    )
-    embed.add_field(
-    name='作成元チャンネル',
-    value=f'{thread.parent.mention}'
-    )
-    embed.add_field(
-    name='作成スレッド',
-    value=f'{thread.mention}'
-    )
-    embed.add_field(
-    name='作成者',
-    value=f'{thread.owner.mention}'
-    )
-    embed.add_field(
-    name='作成日時',
-    value=f'{discord.utils.utcnow():%Y/%m/%d %H:%M:%S}'
-    )
-    await channel.send(embed=embed)
-    return
+        channel = bot.get_channel(threadlogchannel)
+        embed = discord.Embed(
+            title='スレッドが作成されました。',
+            url='',
+            color=3447003,
+            description='',
+            timestamp=discord.utils.utcnow()
+        )
+        embed.set_author(
+            name=thread.owner.display_name,
+            icon_url=thread.owner.display_avatar.url,
+        )
+        embed.add_field(
+        name='作成元チャンネル',
+        value=f'{thread.parent.mention}'
+        )
+        embed.add_field(
+        name='作成スレッド',
+        value=f'{thread.mention}'
+        )
+        embed.add_field(
+        name='作成者',
+        value=f'{thread.owner.mention}'
+        )
+        embed.add_field(
+        name='作成日時',
+        value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        )
+        await channel.send(embed=embed)
+        return
+    else:
+        return
 
 
 
