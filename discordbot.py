@@ -328,8 +328,25 @@ async def on_message_dm(message):
         return
     elif type(message.channel) == DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
+        sent_messages = []
+        if message.content or message.attachments:
+        # Send the second and subsequent attachments with embed (named 'embed') respectively:
+            embed=compose_embed(message)
+            sent_messages.append(embed)
+            for attachment in message.attachments[1:]:
+                embed = discord.Embed()
+                embed.set_image(
+                    url=attachment.proxy_url
+                )
+                sent_messages.append(embed)
+        for embed in message.embeds:
+            sent_messages.append(embed)
+        await channel.send(embeds=sent_messages)
+        return
+'''
         image_url = [x.url for x in message.attachments]
         embedimg = []
+
         embed = discord.Embed(
         title='DMを受信しました。',
         url=message.jump_url,
@@ -360,6 +377,7 @@ async def on_message_dm(message):
         return
     else:
         return
+'''
 
 #send-message
 @bot.command(name='send-message')
@@ -743,6 +761,31 @@ async def sendexelog(ctx,msg,descurl):
     await channel.send(embed=embed)
     return
 
+def compose_embed(message):
+    embed = discord.Embed(
+        title='DMを受信しました。',
+        url=message.jump_url,
+        color=3447003,
+        description=message.content,
+        timestamp=message.created_at
+    )
+    embed.set_author(
+        name=message.author.display_name,
+        icon_url=message.author.avatar.url,
+    )
+    embed.add_field(
+        name='送信者',
+        value=f'{message.author.mention}'
+    )
+    embed.add_field(
+        name='受信日時',
+        value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+    )
+    if message.attachments and message.attachments[0].proxy_url:
+        embed.set_image(
+            url=message.attachments[0].proxy_url
+        )
+    return embed
 
 start_count.start()
 bot.run(token)
