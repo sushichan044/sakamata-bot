@@ -756,7 +756,7 @@ async def compose_embed(message):
     return embed
 
 #notice-thread/send-log/join
-@bot.listen('thread_join')
+@bot.listen('on_thread_join')
 async def detect_thread(thread):
     if bot.user not in thread.members:
         await thread.join()
@@ -773,7 +773,7 @@ async def detect_thread(thread):
         icon_url=thread.owner.display_avatar.url,
     )
     embed.add_field(
-    name='作成もとチャンネル',
+    name='作成元チャンネル',
     value=f'{thread.parent.mention}'
     )
     embed.add_field(
