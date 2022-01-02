@@ -758,7 +758,8 @@ async def compose_embed(message):
 #notice-thread/send-log/join
 @bot.listen('on_thread_join')
 async def detect_thread(thread):
-    if bot.user.id in [x.id for x in await thread.fetch_members]:
+    list = await thread.fetch_members
+    if bot.user.id in [x.id for x in list]:
         return
     else:
         channel = bot.get_channel(threadlogchannel)
