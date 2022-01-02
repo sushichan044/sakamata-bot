@@ -758,7 +758,9 @@ async def compose_embed(message):
 #notice-thread/send-log/join
 @bot.listen('on_thread_join')
 async def detect_thread(thread):
-    if bot.user not in thread.members:
+    guild = bot.get_guild(guildid)
+    botmember = await guild.fetch_member(bot.user.id)
+    if botmember not in thread.members:
         channel = bot.get_channel(threadlogchannel)
         embed = discord.Embed(
             title='スレッドが作成されました。',
