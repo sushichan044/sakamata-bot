@@ -331,7 +331,7 @@ async def on_message_dm(message):
         sent_messages = []
         if message.content or message.attachments:
         # Send the second and subsequent attachments with embed (named 'embed') respectively:
-            embed=compose_embed(message)
+            embed= await compose_embed(message)
             sent_messages.append(embed)
             for attachment in message.attachments[1:]:
                 embed = discord.Embed()
