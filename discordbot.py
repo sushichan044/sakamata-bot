@@ -662,7 +662,7 @@ async def _checkmember(ctx):
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
 #        await channel.send(kakuninmsg)
-        view=MemberConfView
+        view=MemberConfView()
         tracker=ViewTracker(view,timeout=None)
         turned = await tracker.track(MessageProvider(channel))
         if turned == 'True':
