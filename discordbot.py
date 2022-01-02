@@ -759,7 +759,9 @@ async def compose_embed(message):
 @bot.listen('on_thread_join')
 async def detect_thread(thread):
     threadmemid = [x.id for x in thread.members]
-    if bot.user.id not in threadmemid:
+    if bot.user.id in threadmemid:
+        return
+    else:
         channel = bot.get_channel(threadlogchannel)
         embed = discord.Embed(
             title='スレッドが作成されました。',
@@ -790,8 +792,6 @@ async def detect_thread(thread):
         )
         await channel.send(embed=embed)
         await thread.join()
-        return
-    else:
         return
 
 
