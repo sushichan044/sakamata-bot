@@ -7,6 +7,7 @@ import logging
 from datetime import datetime, timedelta
 
 import discord
+from discord.embeds import Embed
 from discord.enums import ButtonStyle
 import requests
 from discord import Member
@@ -87,9 +88,20 @@ memberrole = 926268230417408010
 
 #Classes
 class MemberConfView(View):
-    async def body(self):
+    async def body(self,ctx):
+        embed = discord.Embed(
+            title='メンバーシップ認証',
+            url='',
+            color=3447003,
+            description=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか？',
+            timestamp=discord.utils.utcnow()
+        )
+        embed.set_author(
+            name=ctx.message.author.display_name,
+            icon_url=ctx.message.author.avatar.url
+        )
         return Message(
-            content='承認用ボタン',
+            embed = embed,
             components=[
                 Button('承認')
                 .style(discord.ButtonStyle.green)
@@ -656,7 +668,7 @@ async def _checkmember(ctx):
         nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
-        await channel.send(kakuninmsg)
+#        await channel.send(kakuninmsg)
         turned = await ViewTracker(MemberConfView()).track(MessageProvider(channel))
         if turned == True:
             msg = exemsg
@@ -668,7 +680,7 @@ async def _checkmember(ctx):
             await m.reply('Accepted!')
             await sendexelog(ctx,msg,descurl)
             return
-        else:
+        elif turned == False:
             msg=nonexemsg
             descurl = ''
             await channel.send('DMで送信する不承認理由を入力してください。')
@@ -679,6 +691,8 @@ async def _checkmember(ctx):
             await ctx.reply(content=replymsg,mention_author=False)
             await channel.send('Cancelled!')
             await sendexelog(ctx,msg,descurl)
+            return
+        else:
             return
 '''
         m = await channel.send(sendkakuninmsg)
