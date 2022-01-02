@@ -7,6 +7,7 @@ import logging
 from datetime import datetime, timedelta
 
 import discord
+from discord.interactions import Interaction
 import requests
 from discord import Member
 from discord.channel import DMChannel
@@ -666,7 +667,7 @@ async def _checkmember(ctx):
             ActionButton('承認',discord.ButtonStyle.green, value=True),
             ActionButton('否認',discord.ButtonStyle.red, value = False)
         ])
-        mc = await membalert.wait_for_click(discord.Integration)
+        mc = await membalert.wait_for_click(interaction:discord.Interaction)
         if mc:
             msg = exemsg
             descurl = ''
