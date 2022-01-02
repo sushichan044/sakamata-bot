@@ -11,7 +11,7 @@ import requests
 from discord import Member
 from discord.channel import DMChannel
 from discord.ext import commands, tasks, pages
-from discord.ext.ui import View, Message, Button, state
+from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider
 from discord.commands import slash_command
 from newdispanderfixed import dispand
 
@@ -83,6 +83,13 @@ modrole = 924355349308383252
 adminrole = 917332284582031390
 everyone = 916965252896260117
 memberrole = 926268230417408010
+
+#Classes
+class ConfView(View):
+    
+
+
+
 
 
 #emoji
