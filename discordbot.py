@@ -86,13 +86,15 @@ memberrole = 926268230417408010
 class MemberConfView(View):
     async def body(self):
         return Message(
-            embed = discord.Embed(
-            title='メンバーシップ認証',
-            url='',
-            color=3447003,
-            description=f'確認',
-            timestamp=discord.utils.utcnow()
-            ),
+            embeds = [
+                discord.Embed(
+                    title='メンバーシップ認証',
+                    url='',
+                    color=3447003,
+                    description=f'確認',
+                    timestamp=discord.utils.utcnow()
+                    )
+            ],
             components=[
                 Button('承認')
                 .style(discord.ButtonStyle.green)
