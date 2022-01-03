@@ -526,10 +526,10 @@ adddm = None
 
 #timeout-member
 @bot.command(name='timeout')
-@commands.has_role(adminrole)
+@commands.has_role(modrole)
 async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
     until = datetime.strptime(xuntil,'%Y%m%d') + timedelta(hours=-9)
-    role = ctx.guild.get_role(adminrole)
+    role = ctx.guild.get_role(modrole)
     validifdm = ['True','False']
     untilstr = datetime.strftime(until + timedelta(hours=9),'%Y/%m/%d/%H:%M')
     if ifdm not in validifdm:
@@ -576,6 +576,34 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
             return
         else:
             return
+
+#untimeout-member
+@bot.command(name='untimeout')
+@commands.has_role(modrole)
+async def _untimeout(ctx,member:Member):
+    role = ctx.guild.get_role(modrole)
+    deal = 'utimeout'
+    kakuninmsg = f'【untimeout実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})'
+    exemsg = f'{member.mention}のタイムアウトの解除をしました。'
+    nonexemsg = f'{member.mention}のタイムアウトの解除をキャンセルしました。'
+    confarg = ''
+    turned = await confirm(ctx,confarg,role,kakuninmsg)
+    if turned == 'ok':
+        msg = exemsg
+        descurl = ''
+        await member.timeout(None,reason = None)
+        await ctx.send('untimeouted!')
+        await sendexelog(ctx,msg,descurl)
+        return
+    elif turned == 'cancel':
+        msg=nonexemsg
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        await ctx.send('Cancelled!')
+        return
+    else:
+        return
+
 
 #kick-member
 @bot.command(name='kick')
