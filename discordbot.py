@@ -104,7 +104,7 @@ class MemberConfView(View):
     async def ng(self,interaction:discord.Interaction):
         self.future.set_result(False)
         self.status = False
-        self.okstr = '否認されました'
+        self.ngstr = '否認されました'
         await interaction.response.defer()
         return
     async def body(self) -> Message:
@@ -736,7 +736,7 @@ async def _checkmember(ctx):
                 addmemberrole = guild.get_role(memberrole)
                 await member.add_roles(addmemberrole)
                 await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
-                await channel.send('Accepted!')
+                #await channel.send('Accepted!')
                 await sendexelog(ctx,msg,descurl)
                 return
             else:
@@ -748,7 +748,7 @@ async def _checkmember(ctx):
                 message = await bot.wait_for('message',check=check)
                 replymsg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
                 await ctx.reply(content=replymsg,mention_author=False)
-                await channel.send('Cancelled!')
+                #await channel.send('Cancelled!')
                 await sendexelog(ctx,msg,descurl)
                 return
 
