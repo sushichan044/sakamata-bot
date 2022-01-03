@@ -86,19 +86,25 @@ memberrole = 926268230417408010
 #Classes
 class MemberConfView(View):
     status = state('status')
+    okstr = state('okstr')
+    ngstr = state('ngstr')
 
     def __init__(self, future):
         super().__init__()
         self.future = future
         self.status = None
+        self.okstr = '承認'
+        self.ngstr = '否認'
     async def ok(self,interaction:discord.Interaction):
         self.future.set_result(True)
         self.status = True
+        self.okstr = '承認されました'
         await interaction.response.defer()
         return
     async def ng(self,interaction:discord.Interaction):
         self.future.set_result(False)
         self.status = False
+        self.okstr = '否認されました'
         await interaction.response.defer()
         return
     async def body(self) -> Message:
@@ -111,11 +117,11 @@ class MemberConfView(View):
                     )
             ],
             components=[
-                Button('承認')
+                Button(self.okstr)
                 .style(discord.ButtonStyle.green)
                 .disabled(self.status != None)
                 .on_click(self.ok),
-                Button('否認')
+                Button(self.ngstr)
                 .style(discord.ButtonStyle.red)
                 .disabled(self.status != None)
                 .on_click(self.ng)
