@@ -528,6 +528,7 @@ adddm = None
 @bot.command(name='timeout')
 @commands.has_role(modrole)
 async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
+    '''メンバーをタイムアウト'''
     until = datetime.strptime(xuntil,'%Y%m%d') + timedelta(hours=-9)
     role = ctx.guild.get_role(modrole)
     validifdm = ['True','False']
@@ -581,6 +582,7 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
 @bot.command(name='untimeout')
 @commands.has_role(modrole)
 async def _untimeout(ctx,member:Member):
+    '''メンバーのタイムアウトを解除'''
     role = ctx.guild.get_role(modrole)
     kakuninmsg = f'【untimeout実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})'
     exemsg = f'{member.mention}のタイムアウトの解除をしました。'
@@ -608,6 +610,7 @@ async def _untimeout(ctx,member:Member):
 @bot.command(name='kick')
 @commands.has_role(adminrole)
 async def _kickuser(ctx,member:Member,ifdm:str='True'):
+    '''メンバーをキック'''
     role = ctx.guild.get_role(adminrole)
     validifdm = ['True','False']
     if ifdm not in validifdm:
@@ -659,6 +662,7 @@ async def _kickuser(ctx,member:Member,ifdm:str='True'):
 @bot.command(name='ban')
 @commands.has_role(adminrole)
 async def _banuser(ctx,member:Member,ifdm:str='True'):
+    '''メンバーをBAN'''
     role = ctx.guild.get_role(adminrole)
     validifdm = ['True','False']
     if ifdm not in validifdm:
@@ -716,6 +720,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
 @bot.command(name='unban')
 @commands.has_role(adminrole)
 async def _unbanuser(ctx,id:int):
+    '''ユーザーのBANを解除'''
     user = await bot.fetch_user(id)
     banned_users = await ctx.guild.bans()
     role = ctx.guild.get_role(adminrole)
@@ -753,6 +758,7 @@ async def _unbanuser(ctx,id:int):
 @bot.command(name='check')
 @commands.dm_only()
 async def _checkmember(ctx):
+    '''メンバーシップ認証用'''
     if ctx.message.attachments == []:
         await ctx.reply(content='画像が添付されていません。画像を添付して送り直してください。',mention_author=False)
         msg = 'メンバー認証コマンドに画像が添付されていなかったため処理を停止しました。'
