@@ -88,6 +88,7 @@ class MemberConfView(View):
     status = state('status')
     okstr = state('okstr')
     ngstr = state('ngstr')
+    ctx = state('ctx')
 
     def __init__(self, future,ctx):
         super().__init__()
