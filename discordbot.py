@@ -113,7 +113,7 @@ class MemberConfView(View):
             embeds = [
                 discord.Embed(
                     title='メンバーシップ認証',
-                    description=f'{self.ctx.message.author.mention}'
+                    description=f'{self.ctx.message.author.mention}',
                     url='',
                     color=3447003,
                     ),
