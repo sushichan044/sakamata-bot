@@ -321,7 +321,7 @@ async def user(ctx,id:int):
     memberid = member.id
     memberjoindate = member.joined_at + timedelta(hours=9)
     membermention = member.mention
-    roles = [(x.name,x.id) for x in member.roles]
+    roles = ((x.name,x.id) for x in member.roles)
     '''
     rolename = [x.name for x in member.roles]
     roleid = [x.id for x in member.roles]
