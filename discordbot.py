@@ -321,7 +321,8 @@ async def user(ctx,id:int):
     memberid = member.id
     memberjoindate = member.joined_at + timedelta(hours=9)
     membermention = member.mention
-    memberroles = member.roles
+    roles = [(x.name,x.id) for x in member.roles]
+    sentrole = '\n',join(roles)
     #Message成形-途中
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{memberroles}```'
     await ctx.send(userinfomsg)
