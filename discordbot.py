@@ -84,11 +84,12 @@ memberrole = 926268230417408010
 
 #Classes
 class MemberConfView(View):
-    future = asyncio.Future
-    async def ok(self,future):
-        future.set_result(True)
-    async def ng (self,future):
-        future.set_result(False)
+    def __init__(self, future):
+        self.future = future
+    async def ok(self,interaction:discord.Interaction):
+        self.future.set_result(True)
+    async def ng (self,interaction:discord.Interaction):
+        self.future.set_result(False)
     m = asyncio.Future()
     async def body(self) -> Message:
         return Message(
@@ -102,10 +103,10 @@ class MemberConfView(View):
             components=[
                 Button('承認')
                 .style(discord.ButtonStyle.green)
-                .on_click(self.ok(future)),
+                .on_click(self.ok),
                 Button('否認')
                 .style(discord.ButtonStyle.red)
-                .on_click(self.ng(future))
+                .on_click(self.ng)
             ]
         )
 
@@ -701,7 +702,8 @@ async def _checkmember(ctx):
         nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
-        view = MemberConfView()
+        future = asyncio.Future
+        view = MemberConfView(future)
         tracker = ViewTracker(view)
         future = await tracker.track(MessageProvider(channel))
         if future:
