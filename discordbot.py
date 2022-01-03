@@ -328,7 +328,7 @@ async def user(ctx,id:int):
     ziprole = [(zname,zid) for zname,zid in zip(rolename,roleid)]
     '''
     jlrole = '\n'.join(roles)
-    jtrole = '/ID:'.join(jlrole)
+    jtrole = '/ID:'.join(str(x) for x in jlrole)
     #Message成形-途中
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{jtrole}```'
     await ctx.send(userinfomsg)
