@@ -87,9 +87,9 @@ class MemberConfView(View):
     def __init__(self, future):
         self.future = future
     async def ok(self,interaction:discord.Interaction):
-        self.future.set_result(True)
-    async def ng (self,interaction:discord.Interaction):
-        self.future.set_result(False)
+        self.future.set_result('True')
+    async def ng(self,interaction:discord.Interaction):
+        self.future.set_result('False')
     async def body(self) -> Message:
         return Message(
             embeds = [
@@ -705,7 +705,7 @@ async def _checkmember(ctx):
         view = MemberConfView(future)
         tracker = ViewTracker(view)
         await tracker.track(MessageProvider(channel))
-        if future.result():
+        if future.result()=='True':
             msg = exemsg
             descurl = ''
             member = guild.get_member(ctx.message.author.id)
