@@ -710,7 +710,7 @@ async def _checkmember(ctx):
                 descurl = ''
                 await channel.send('DMで送信する不承認理由を入力してください。')
                 def check(message):
-                    return message.content != None and message.channel == channel
+                    return message.content != None and message.channel == channel and message.author != bot.user
                 message = await bot.wait_for('message',check=check)
                 replymsg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
                 await ctx.reply(content=replymsg,mention_author=False)
