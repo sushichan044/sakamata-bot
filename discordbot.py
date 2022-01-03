@@ -112,7 +112,7 @@ class MemberConfView(View):
         return Message(
             embeds = [
                 discord.Embed(
-                    title='メンバーシップ認証',
+                    title='メンバーシップ認証コマンドを受信しました。',
                     description=self.ctx.message.author.mention,
                     url=self.ctx.message.jump_url,
                     color=3447003,
