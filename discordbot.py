@@ -88,8 +88,10 @@ class MemberConfView(View):
         self.future = future
     async def ok(self,interaction:discord.Interaction):
         self.future.set_result('True')
+        return
     async def ng(self,interaction:discord.Interaction):
         self.future.set_result('False')
+        return
     async def body(self) -> Message:
         return Message(
             embeds = [
