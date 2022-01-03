@@ -325,7 +325,7 @@ async def user(ctx,id:int):
     membermention = member.mention
     roles = [[x.name,x.id] for x in member.roles]
 #[[name,id],[name,id]...]
-    x = ['/ID:'.join(str(y) for y in x) for x in roles]
+    x = [' /ID: '.join(str(y) for y in x) for x in roles]
     z = '\n'.join(x)
     #Message成形-途中
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
