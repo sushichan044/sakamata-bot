@@ -6,6 +6,7 @@ import traceback
 import logging
 from datetime import datetime, timedelta
 from typing import Optional
+from typing_extensions import Required
 
 import discord
 import requests
@@ -13,7 +14,7 @@ from discord import Member
 from discord.channel import DMChannel, TextChannel
 from discord.ext import commands, tasks, pages
 from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert, ActionButton, state
-from discord.commands import slash_command
+from discord.commands import Option
 from newdispanderfixed import dispand
 
 '''bot招待リンク
@@ -312,6 +313,35 @@ async def user(ctx,id:int):
     #Message成形-途中
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
     await ctx.send(userinfomsg)
+
+
+@bot.slash_command(guild_ids=[915910043461890078,916965252896260117])
+@commands.has_role(modrole)
+async def newuser(
+    ctx,
+    id:Option(int,'ユーザーIDを入力してください。',required=True),
+):
+    guild = bot.get_guild(guildid)
+    member = guild.get_member(id)
+    #この先表示する用
+    memberifbot = member.bot
+    memberregdate = member.created_at + timedelta(hours=9)
+    #NickNameあるか？
+    if member.display_name == member.name :
+        memberifnickname = 'None'
+    else:
+        memberifnickname = member.display_name
+    memberid = member.id
+    memberjoindate = member.joined_at + timedelta(hours=9)
+    membermention = member.mention
+    roles = [[x.name,x.id] for x in member.roles]
+#[[name,id],[name,id]...]
+    x = ['/ID: '.join(str(y) for y in x) for x in roles]
+    z = '\n'.join(x)
+    #Message成形-途中
+    userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
+    await ctx.send(userinfomsg)
+
 
 #new-user-info-command
 '''
