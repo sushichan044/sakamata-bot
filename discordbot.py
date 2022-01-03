@@ -9,6 +9,7 @@ from typing import Optional
 from typing_extensions import Required
 
 import discord
+from discord.commands import permissions
 import requests
 from discord import Member
 from discord.channel import DMChannel, TextChannel
@@ -315,11 +316,9 @@ async def user(ctx,id:int):
     await ctx.send(userinfomsg)
 
 
-@bot.slash_command(guild_ids=[915910043461890078,916965252896260117])
-async def newuser(
-    ctx,
-    id: Option(int,'ユーザーIDを入力してください。',required=True),
-):
+@bot.slash_command(guild_ids=[915910043461890078,916965252896260117],default_permission=False)
+@permissions.has_role(modrole)
+async def newuser(ctx,id:int):
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
     #この先表示する用
