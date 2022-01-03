@@ -86,11 +86,13 @@ memberrole = 926268230417408010
 class MemberConfView(View):
     def __init__(self, future):
         self.future = future
-    def ok(self,interaction:discord.Interaction):
+    async def ok(self,interaction:discord.Interaction):
         self.future.set_result(True)
+        await interaction.response.defer()
         return
-    def ng(self,interaction:discord.Interaction):
+    async def ng(self,interaction:discord.Interaction):
         self.future.set_result(False)
+        await interaction.response.defer()
         return
     async def body(self) -> Message:
         return Message(
@@ -322,11 +324,11 @@ async def user(ctx,id:int):
     memberjoindate = member.joined_at + timedelta(hours=9)
     membermention = member.mention
     roles = [[x.name,x.id] for x in member.roles]
-    print(roles)#[[name,id],[name,id]...]
+#[[name,id],[name,id]...]
     x = ['/ID:'.join(str(y) for y in x) for x in roles]
     z = '\n'.join(x)
     #Message成形-途中
-    userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{z}```'
+    userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
     await ctx.send(userinfomsg)
 
 #new-user-info-command
@@ -710,6 +712,7 @@ async def _checkmember(ctx):
         view = MemberConfView(future)
         tracker = ViewTracker(view)
         await tracker.track(MessageProvider(channel))
+        await future
         if future.done():
             if future.result():
                 msg = exemsg
