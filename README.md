@@ -11,10 +11,10 @@
 テスト環境がクラウド上にあるため、Commitが多くなっています。
 
 ### 開発環境及び使用ライブラリ
-Python3.10.0<br>
-[pycord 2.0.0a](https://github.com/Pycord-Development/pycord)<br>
-[discord-ext-ui](https://pypi.org/project/discord-ext-ui/)<br>
-newdispanderfixed 0.1.4([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
+Python 3.10.0<br>
+[pycord](https://github.com/Pycord-Development/pycord) 2.0.0a<br>
+[discord-ext-ui](https://pypi.org/project/discord-ext-ui/) 3.1.1<br>
+[newdispanderfixed](https://pypi.org/project/newdispanderfixed/) 0.1.4([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
 
 ### 各ブランチ
 Mainブランチ:クロヱ水族館の本番環境<br>
@@ -26,8 +26,9 @@ alpha-buttonブランチ:大規模改修を行うときに最初に書くブラ�
 
 > v1.1.1(2022.01.03)
 
-pycordへ移行<br>
-discord-ext-uiを導入<br>
+[pycord](https://github.com/Pycord-Development/pycord)へ移行<br>
+[newdispanderfixed](https://pypi.org/project/newdispanderfixed/)へ移行<br>
+[discord-ext-ui](https://pypi.org/project/discord-ext-ui/)を導入<br>
 メンバーシップ認証機能をブラッシュアップ
 ユーザー情報取得機能をブラッシュアップ
 
@@ -39,7 +40,7 @@ discord-ext-uiを導入<br>
 
 > v1.0.7(2021.12.31)
 
-NGワード検知機能を強化。自身のサーバー以外の招待URｌを検知可能に。
+NGワード検知機能を強化。自身のサーバー以外の招待URLを検知可能に。
 
 > v1.0.6(2021.12.27)
 
