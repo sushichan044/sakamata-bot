@@ -50,7 +50,7 @@ bot = commands.Bot(command_prefix='/',intents=intents,help_command=JapaneseHelpC
 
 
 #本番鯖IDなど
-'''
+
 guildid = 915910043461890078
 logchannel = 917009541433016370
 vclogchannel = 917009562383556678
@@ -82,7 +82,7 @@ modrole = 924355349308383252
 adminrole = 917332284582031390
 everyone = 916965252896260117
 memberrole = 926268230417408010
-
+'''
 #Classes
 class MemberConfView(View):
     status = state('status')
