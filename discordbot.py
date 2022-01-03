@@ -5,13 +5,14 @@ import sys
 import traceback
 import logging
 from datetime import datetime, timedelta
+from typing import Optional
 
 import discord
 import requests
 from discord import Member
 from discord.channel import DMChannel, TextChannel
 from discord.ext import commands, tasks, pages
-from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert, ActionButton
+from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert, ActionButton, state
 from discord.commands import slash_command
 from newdispanderfixed import dispand
 
@@ -84,14 +85,19 @@ memberrole = 926268230417408010
 
 #Classes
 class MemberConfView(View):
+    status = state('status')
+
     def __init__(self, future):
         self.future = future
+        self.status = Optional[bool]
     async def ok(self,interaction:discord.Interaction):
         self.future.set_result(True)
+        self.status = True
         await interaction.response.defer()
         return
     async def ng(self,interaction:discord.Interaction):
         self.future.set_result(False)
+        self.status = False
         await interaction.response.defer()
         return
     async def body(self) -> Message:
@@ -106,9 +112,11 @@ class MemberConfView(View):
             components=[
                 Button('承認')
                 .style(discord.ButtonStyle.green)
+                .disabled(self.status != None)
                 .on_click(self.ok),
                 Button('否認')
                 .style(discord.ButtonStyle.red)
+                .disabled(self.status != None)
                 .on_click(self.ng)
             ]
         )
