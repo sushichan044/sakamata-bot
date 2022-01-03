@@ -86,11 +86,11 @@ memberrole = 926268230417408010
 class MemberConfView(View):
     def __init__(self, future):
         self.future = future
-    async def ok(self,interaction:discord.Interaction):
-        self.future.set_result('True')
+    def ok(self,interaction:discord.Interaction):
+        self.future.set_result(True)
         return
-    async def ng(self,interaction:discord.Interaction):
-        self.future.set_result('False')
+    def ng(self,interaction:discord.Interaction):
+        self.future.set_result(False)
         return
     async def body(self) -> Message:
         return Message(
@@ -708,7 +708,7 @@ async def _checkmember(ctx):
         tracker = ViewTracker(view)
         await tracker.track(MessageProvider(channel))
         if future.done():
-            if future.result()=='True':
+            if future.result():
                 msg = exemsg
                 descurl = ''
                 member = guild.get_member(ctx.message.author.id)
