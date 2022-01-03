@@ -323,11 +323,7 @@ async def user(ctx,id:int):
     membermention = member.mention
     roles = [[x.name,x.id] for x in member.roles]
     print(roles)#[[name,id],[name,id]...]
-    zroles = []
-    for x in roles:
-        for y in x:
-            z = '/ID:'.join(str(y))
-            zroles.append(y)
+    zroles = ['/ID:'.join(str(x) for x in roles)]
     #zroles = ['/ID:'.join([str(x) for x in roles])] #[name/ID:id,...]
     print(zroles)
     jlrole = '\n'.join(zroles)
