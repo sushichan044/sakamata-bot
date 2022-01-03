@@ -113,10 +113,16 @@ class MemberConfView(View):
             embeds = [
                 discord.Embed(
                     title='メンバーシップ認証',
-                    description=f'{self.ctx.message.author.mention}',
-                    url='',
+                    description=self.ctx.message.author.mention,
+                    url=self.ctx.message.jump_url,
                     color=3447003,
-                    ),
+                    timestamp=self.ctx.message.created_at
+                    )
+                ,
+                discord.Embed.set_author(
+                    name=self.ctx.message.author.display_name,
+                    icon_url=self.ctx.message.author.avatar.url
+                    )
             ],
             components=[
                 Button(self.okstr)
