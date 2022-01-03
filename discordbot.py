@@ -701,7 +701,7 @@ async def _checkmember(ctx):
         nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
-        future = asyncio.Future()
+        future = asyncio.futures.Future()
         view = MemberConfView(future)
         tracker = ViewTracker(view)
         await tracker.track(MessageProvider(channel))
