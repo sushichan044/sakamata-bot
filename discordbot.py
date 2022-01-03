@@ -321,16 +321,11 @@ async def user(ctx,id:int):
     memberid = member.id
     memberjoindate = member.joined_at + timedelta(hours=9)
     membermention = member.mention
-    roles = ((x.name,x.id) for x in member.roles)
-    '''
-    rolename = [x.name for x in member.roles]
-    roleid = [x.id for x in member.roles]
-    ziprole = [(zname,zid) for zname,zid in zip(rolename,roleid)]
-    '''
-    jlrole = '\n'.join(roles)
-    jtrole = '/ID:'.join(str(x) for x in jlrole)
+    roles = [[x.name,x.id] for x in member.roles]
+    zroles = [[',ID:'.join(x)]for x in roles]
+    jlrole = '\n'.join(zroles)
     #Message成形-途中
-    userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{jtrole}```'
+    userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{jlrole}```'
     await ctx.send(userinfomsg)
 
 #new-user-info-command
