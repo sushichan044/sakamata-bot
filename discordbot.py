@@ -88,7 +88,6 @@ class MemberConfView(View):
     status = state('status')
     okstr = state('okstr')
     ngstr = state('ngstr')
-    ctx = state('ctx')
 
     def __init__(self, future,ctx):
         super().__init__()
@@ -727,7 +726,7 @@ async def _checkmember(ctx):
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
         future = asyncio.Future()
-        view = MemberConfView(future)
+        view = MemberConfView(future,ctx)
         tracker = ViewTracker(view)
         await tracker.track(MessageProvider(channel))
         await future
