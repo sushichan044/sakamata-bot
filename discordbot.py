@@ -90,7 +90,6 @@ class MemberConfView(View):
         self.future.set_result(True)
     async def ng (self,interaction:discord.Interaction):
         self.future.set_result(False)
-    m = asyncio.Future()
     async def body(self) -> Message:
         return Message(
             embeds = [
@@ -702,11 +701,11 @@ async def _checkmember(ctx):
         nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
-        future = asyncio.Future
+        future = asyncio.Future()
         view = MemberConfView(future)
         tracker = ViewTracker(view)
-        future = await tracker.track(MessageProvider(channel))
-        if future:
+        await tracker.track(MessageProvider(channel))
+        if future.result():
             msg = exemsg
             descurl = ''
             member = guild.get_member(ctx.message.author.id)
