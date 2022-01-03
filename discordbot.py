@@ -88,6 +88,7 @@ class MemberConfView(View):
     status = state('status')
 
     def __init__(self, future):
+        super().__init__()
         self.future = future
         self.status = None
     async def ok(self,interaction:discord.Interaction):
