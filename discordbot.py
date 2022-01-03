@@ -3,14 +3,17 @@ import os
 import re
 import sys
 import traceback
+import logging
 from datetime import datetime, timedelta
-from logging import debug
+from typing import Optional
 
 import discord
 import requests
 from discord import Member
-from discord.channel import DMChannel
-from discord.ext import commands, tasks
+from discord.channel import DMChannel, TextChannel
+from discord.ext import commands, tasks, pages
+from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert, ActionButton, state
+from discord.commands import slash_command
 from newdispanderfixed import dispand
 
 '''bot招待リンク
@@ -47,7 +50,7 @@ bot = commands.Bot(command_prefix='/',intents=intents,help_command=JapaneseHelpC
 
 
 #本番鯖IDなど
-
+'''
 guildid = 915910043461890078
 logchannel = 917009541433016370
 vclogchannel = 917009562383556678
@@ -79,7 +82,58 @@ modrole = 924355349308383252
 adminrole = 917332284582031390
 everyone = 916965252896260117
 memberrole = 926268230417408010
-'''
+
+#Classes
+class MemberConfView(View):
+    status = state('status')
+    okstr = state('okstr')
+    ngstr = state('ngstr')
+    que = state('que')
+
+    def __init__(self, future,ctx):
+        super().__init__()
+        self.future = future
+        self.status = None
+        self.okstr = '承認'
+        self.ngstr = '否認'
+        self.ctx = ctx
+        self.que = '承認しますか？'
+    async def ok(self,interaction:discord.Interaction):
+        self.future.set_result(True)
+        self.status = True
+        self.que = '承認済み'
+        self.okstr = '承認されました'
+        await interaction.response.defer()
+        return
+    async def ng(self,interaction:discord.Interaction):
+        self.future.set_result(False)
+        self.status = False
+        self.que = '否認済み'
+        self.ngstr = '否認されました'
+        await interaction.response.defer()
+        return
+    async def body(self) -> Message:
+        return Message(
+            embeds = [
+                discord.Embed(
+                    title=self.que,
+                    description=f'',
+                    color=15767485,
+                    url=self.ctx.message.jump_url,
+                    ),
+            ],
+            components=[
+                Button(self.okstr)
+                .style(discord.ButtonStyle.green)
+                .disabled(self.status != None)
+                .on_click(self.ok),
+                Button(self.ngstr)
+                .style(discord.ButtonStyle.red)
+                .disabled(self.status != None)
+                .on_click(self.ng)
+            ]
+        )
+
 
 #emoji
 maruemoji = "\N{Heavy Large Circle}"
@@ -251,9 +305,12 @@ async def user(ctx,id:int):
     memberid = member.id
     memberjoindate = member.joined_at + timedelta(hours=9)
     membermention = member.mention
-    memberroles = member.roles
+    roles = [[x.name,x.id] for x in member.roles]
+#[[name,id],[name,id]...]
+    x = [' /ID: '.join(str(y) for y in x) for x in roles]
+    z = '\n'.join(x)
     #Message成形-途中
-    userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{memberroles}```'
+    userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
     await ctx.send(userinfomsg)
 
 #new-user-info-command
@@ -633,6 +690,37 @@ async def _checkmember(ctx):
         nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
+        future = asyncio.Future()
+        view = MemberConfView(future,ctx)
+        tracker = ViewTracker(view)
+        await tracker.track(MessageProvider(channel))
+        await future
+        if future.done():
+            if future.result():
+                msg = exemsg
+                descurl = ''
+                member = guild.get_member(ctx.message.author.id)
+                addmemberrole = guild.get_role(memberrole)
+                await member.add_roles(addmemberrole)
+                await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
+                #await channel.send('Accepted!')
+                await sendexelog(ctx,msg,descurl)
+                return
+            else:
+                msg=nonexemsg
+                descurl = ''
+                await channel.send('DMで送信する不承認理由を入力してください。')
+                def check(message):
+                    return message.content != None and message.channel == channel
+                message = await bot.wait_for('message',check=check)
+                replymsg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
+                await ctx.reply(content=replymsg,mention_author=False)
+                #await channel.send('Cancelled!')
+                await sendexelog(ctx,msg,descurl)
+                return
+
+
+'''
         m = await channel.send(sendkakuninmsg)
         await m.add_reaction(maruemoji)
         await m.add_reaction(batuemoji)
@@ -664,6 +752,7 @@ async def _checkmember(ctx):
             await channel.send('Cancelled!')
             await sendexelog(ctx,msg,descurl)
             return
+'''
 
 #save-img
 async def download_img(url, file_name):
@@ -797,8 +886,12 @@ async def detect_thread(thread):
 #detect-thread-archive
 @bot.listen('on_thread_update')
 async def detect_archive(before,after):
-    if after.archived and not before.archived:
+    if after.locked and not before.locked:
+        return
+    elif after.archived and not before.archived:
         await after.edit(archived=False)
+        return
+    else:
         return
 
 start_count.start()
