@@ -88,6 +88,7 @@ class MemberConfView(View):
     status = state('status')
     okstr = state('okstr')
     ngstr = state('ngstr')
+    que = state('que')
 
     def __init__(self, future,ctx):
         super().__init__()
@@ -96,15 +97,18 @@ class MemberConfView(View):
         self.okstr = '承認'
         self.ngstr = '否認'
         self.ctx = ctx
+        self.que = '承認しますか？'
     async def ok(self,interaction:discord.Interaction):
         self.future.set_result(True)
         self.status = True
+        self.que = '承認済み'
         self.okstr = '承認されました'
         await interaction.response.defer()
         return
     async def ng(self,interaction:discord.Interaction):
         self.future.set_result(False)
         self.status = False
+        self.que = '否認済み'
         self.ngstr = '否認されました'
         await interaction.response.defer()
         return
@@ -115,6 +119,7 @@ class MemberConfView(View):
                     title='承認しますか？',
                     description=f'',
                     color=15767485,
+                    url=self.ctx.message.jump_url,
                     ),
             ],
             components=[
