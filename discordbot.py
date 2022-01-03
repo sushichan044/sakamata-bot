@@ -582,7 +582,6 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
 @commands.has_role(modrole)
 async def _untimeout(ctx,member:Member):
     role = ctx.guild.get_role(modrole)
-    deal = 'utimeout'
     kakuninmsg = f'【untimeout実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})'
     exemsg = f'{member.mention}のタイムアウトの解除をしました。'
     nonexemsg = f'{member.mention}のタイムアウトの解除をキャンセルしました。'
