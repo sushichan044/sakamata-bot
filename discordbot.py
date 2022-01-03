@@ -84,10 +84,12 @@ memberrole = 926268230417408010
 
 #Classes
 class MemberConfView(View):
-    async def ok(self,interaction:discord.Interaction):
-        return True
-    async def ng (self,interaction:discord.Interaction):
-        return False
+    future = asyncio.Future
+    async def ok(self,future):
+        future.set_result(True)
+    async def ng (self,future):
+        future.set_result(False)
+    m = asyncio.Future()
     async def body(self) -> Message:
         return Message(
             embeds = [
@@ -100,10 +102,10 @@ class MemberConfView(View):
             components=[
                 Button('承認')
                 .style(discord.ButtonStyle.green)
-                .on_click(self.ok),
+                .on_click(self.ok(future)),
                 Button('否認')
                 .style(discord.ButtonStyle.red)
-                .on_click(self.ng)
+                .on_click(self.ng(future))
             ]
         )
 
@@ -701,8 +703,8 @@ async def _checkmember(ctx):
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
         view = MemberConfView()
         tracker = ViewTracker(view)
-        m = await tracker.track(MessageProvider(channel))
-        if m:
+        future = await tracker.track(MessageProvider(channel))
+        if future:
             msg = exemsg
             descurl = ''
             member = guild.get_member(ctx.message.author.id)
