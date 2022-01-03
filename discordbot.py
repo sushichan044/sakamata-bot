@@ -89,12 +89,13 @@ class MemberConfView(View):
     okstr = state('okstr')
     ngstr = state('ngstr')
 
-    def __init__(self, future):
+    def __init__(self, future,ctx):
         super().__init__()
         self.future = future
         self.status = None
         self.okstr = '承認'
         self.ngstr = '否認'
+        self.ctx = ctx
     async def ok(self,interaction:discord.Interaction):
         self.future.set_result(True)
         self.status = True
@@ -112,9 +113,10 @@ class MemberConfView(View):
             embeds = [
                 discord.Embed(
                     title='メンバーシップ認証',
+                    description=f'{self.ctx.message.author.mention}'
                     url='',
                     color=3447003,
-                    )
+                    ),
             ],
             components=[
                 Button(self.okstr)
