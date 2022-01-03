@@ -325,8 +325,9 @@ async def user(ctx,id:int):
     print(roles)#[[name,id],[name,id]...]
     zroles = []
     for x in roles:
-        z = '/ID:'.join(str(x))
-        zroles.append(z)
+        for y in x:
+            z = '/ID:'.join(str(y))
+            zroles.append(y)
     #zroles = ['/ID:'.join([str(x) for x in roles])] #[name/ID:id,...]
     print(zroles)
     jlrole = '\n'.join(zroles)
