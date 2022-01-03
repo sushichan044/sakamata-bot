@@ -721,7 +721,7 @@ async def _checkmember(ctx):
                 addmemberrole = guild.get_role(memberrole)
                 await member.add_roles(addmemberrole)
                 await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
-                await m.reply('Accepted!')
+                await channel.send('Accepted!')
                 await sendexelog(ctx,msg,descurl)
                 return
             else:
