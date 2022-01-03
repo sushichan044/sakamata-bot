@@ -13,9 +13,9 @@
 
 ### 開発環境及び使用ライブラリ
 Python3.10.0<br>
-discord.py 1.7.3([pypi](https://pypi.org/project/discord.py/))<br>
-dpy-components 0.4.2([pypi](https://pypi.org/project/dpy-components/))<br>
-dispanderfixed 0.3.0([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
+[pycord 2.0.0a](https://github.com/Pycord-Development/pycord)<br>
+[discord-ext-ui](https://github.com/sizumita/discord-ext-ui)<br>
+newdispanderfixed 0.1.4([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
 
 ### 各ブランチ
 Mainブランチ:クロヱ水族館の本番環境<br>
