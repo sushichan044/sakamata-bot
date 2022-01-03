@@ -540,7 +540,7 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
         return
     else:
         deal = 'timeout'
-        adddm = ''
+        adddm = f'\nあなたは{untilstr}までサーバーでの発言とボイスチャットへの接続を制限されます。'
         DMcontent = await makedealdm(ctx,deal,adddm)
         if ifdm == 'False':
             DMcontent = ''
