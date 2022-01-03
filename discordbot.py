@@ -316,10 +316,9 @@ async def user(ctx,id:int):
 
 
 @bot.slash_command(guild_ids=[915910043461890078,916965252896260117])
-@commands.has_role(modrole)
 async def newuser(
     ctx,
-    id:Option(int,'ユーザーIDを入力してください。',required=True),
+    id: Option(int,'ユーザーIDを入力してください。',required=True),
 ):
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
