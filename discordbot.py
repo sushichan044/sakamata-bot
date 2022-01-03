@@ -134,45 +134,6 @@ class MemberConfView(View):
             ]
         )
 
-'''
-class SampleView(View):
-    content = state("content")
-
-    def __init__(self):
-        super().__init__()
-        self.content = "メンバーシップ認証"
-
-    async def show_alert(self, interaction: discord.Interaction):
-        alert = Alert("承認しますか？", "", [
-            ActionButton("はい", discord.ButtonStyle.green, True),
-            ActionButton("いいえ", discord.ButtonStyle.red, False)
-        ])
-        result = await alert.wait_for_click(interaction)
-        if result:
-            self.content = "承認しました。"
-
-    async def body(self):
-        return Message()
-            .content(self.content)
-            .items([
-                Button("終わる")
-                .on_click(self.show_alert)
-                .style(discord.ButtonStyle.danger)
-                .disabled(self.content != "編集中..."),
-        ])
-
-
-@bot.listen('on_message')
-async def uitest(message: discord.Message):
-    if message.content != "!test":
-        return
-
-    view = SampleView()
-    tracker = ViewTracker(view, timeout=None)
-    await tracker.track(MessageProvider(message.channel))
-'''
-
-
 
 #emoji
 maruemoji = "\N{Heavy Large Circle}"
