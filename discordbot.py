@@ -527,7 +527,8 @@ adddm = None
 #timeout-member
 @bot.command(name='timeout')
 @commands.has_role(adminrole)
-async def _timeout(ctx,member:Member,until:datetime,ifdm:str='True'):
+async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
+    until = datetime.strptime(xuntil,'%Y%m%d')
     role = ctx.guild.get_role(adminrole)
     validifdm = ['True','False']
     if ifdm not in validifdm:
