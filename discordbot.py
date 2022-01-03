@@ -531,6 +531,7 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
     until = datetime.strptime(xuntil,'%Y%m%d') + timedelta(hours=-9)
     role = ctx.guild.get_role(adminrole)
     validifdm = ['True','False']
+    untilstr = datetime.strftime(until,'%Y/%m/%d')
     if ifdm not in validifdm:
         await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
@@ -545,7 +546,7 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
             DMcontent = ''
         else:
             pass
-        kakuninmsg = f'【timeout実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
+        kakuninmsg = f'【timeout実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\n期限:{untilstr}\nDM送信:{ifdm}\nDM内容:{DMcontent}'
         exemsg = f'{member.mention}をタイムアウトしました。'
         nonexemsg = f'{member.mention}のタイムアウトをキャンセルしました。'
         confarg = ''
@@ -557,13 +558,13 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
                 descurl = m.jump_url
                 await member.timeout(until,reason = None)
                 await ctx.send('timeouted!')
-                await sendexelog(ctx,msg,descurl)
+                await sendtolog(ctx,msg,descurl,untilstr)
                 return
             elif ifdm == 'False':
                 descurl = ''
                 await member.timeout(until,reason = None)
                 await ctx.send('timeouted!')
-                await sendexelog(ctx,msg,descurl)
+                await sendtolog(ctx,msg,descurl,untilstr)
                 return
             else:
                 return
@@ -640,7 +641,7 @@ async def _banuser(ctx,member:Member,ifdm:str='True'):
         await sendexelog(ctx,msg,descurl)
         return
     else:
-        deal = 'ban'
+        deal = 'BAN'
         adddm = '''
 今後、あなたはクロヱ水族館に参加することはできません。
 
@@ -653,7 +654,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
             DMcontent = ''
         else:
             pass
-        kakuninmsg = f'【ban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
+        kakuninmsg = f'【BAN実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
         exemsg = f'{member.mention}をBANしました。'
         nonexemsg = f'{member.mention}のBANをキャンセルしました。'
         confarg = ''
@@ -871,10 +872,10 @@ async def download_img(url, file_name):
 
 #Deal-DM
 async def makedealdm(ctx,deal,adddm):
-    DMcontent = f'''【あなたは{str.upper(deal)}されました】
+    DMcontent = f'''【あなたは{deal}されました】
 クロヱ水族館/Chloeriumの管理者です。
 
-あなたのサーバーでの行為がサーバールールに違反していると判断し、{str.upper(deal)}しました。
+あなたのサーバーでの行為がサーバールールに違反していると判断し、{deal}しました。
 {adddm}'''
     return DMcontent
 
@@ -923,6 +924,40 @@ async def sendexelog(ctx,msg,descurl):
     )
     await channel.send(embed=embed)
     return
+
+#send-timeout-log
+async def sendtolog(ctx,msg,descurl,untilstr):
+    channel = bot.get_channel(logchannel)
+    embed = discord.Embed(
+    title = '実行ログ',
+    color = 3447003,
+    description = msg,
+    url = f'{descurl}',
+    timestamp=discord.utils.utcnow()
+    )
+    embed.set_author(
+    name=bot.user,
+    icon_url=bot.user.display_avatar.url
+    )
+    embed.add_field(
+        name='実行者',
+        value=f'{ctx.author.mention}'
+    )
+    embed.add_field(
+        name='実行コマンド',
+        value=f'[コマンドリンク]({ctx.message.jump_url})'
+    )
+    embed.add_field(
+        name='解除日時',
+        value=f'{untilstr}'
+    )
+    embed.add_field(
+        name='実行日時',
+        value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+    )
+    await channel.send(embed=embed)
+    return
+
 
 #compose-embed
 async def compose_embed(message):
