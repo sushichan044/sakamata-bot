@@ -698,8 +698,23 @@ async def _checkmember(ctx):
                 addmemberrole = guild.get_role(memberrole)
                 await member.add_roles(addmemberrole)
                 await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
-                #await channel.send('Accepted!')
-                await sendexelog(ctx,msg,descurl)
+                channellog = bot.get_channel(logchannel)
+                embed = discord.Embed(
+                title = '実行ログ',
+                color = 3447003,
+                description = msg,
+                url = f'{descurl}',
+                timestamp=discord.utils.utcnow()
+                )
+                embed.set_author(
+                name=bot.user,
+                icon_url=bot.user.display_avatar.url
+                )
+                embed.add_field(
+                    name='実行日時',
+                    value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+                )
+                await channellog.send(embed=embed)
                 return
             else:
                 msg=nonexemsg
