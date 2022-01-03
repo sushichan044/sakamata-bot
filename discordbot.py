@@ -524,6 +524,57 @@ deal = None
 #adddm:デフォルトDMに追加で送信するコンテンツ
 adddm = None
 
+#timeout-member
+@bot.command(name='timeout')
+@commands.has_role(adminrole)
+async def _timeout(ctx,member:Member,until:datetime,ifdm:str='True'):
+    role = ctx.guild.get_role(adminrole)
+    validifdm = ['True','False']
+    if ifdm not in validifdm:
+        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
+        msg = '不明な引数を検知したため処理を終了しました。'
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        return
+    else:
+        deal = 'timeout'
+        adddm = ''
+        DMcontent = await makedealdm(ctx,deal,adddm)
+        if ifdm == 'False':
+            DMcontent = ''
+        else:
+            pass
+        kakuninmsg = f'【timeout実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
+        exemsg = f'{member.mention}をタイムアウトしました。'
+        nonexemsg = f'{member.mention}のタイムアウトをキャンセルしました。'
+        confarg = ''
+        turned = await confirm(ctx,confarg,role,kakuninmsg)
+        if turned == 'ok':
+            msg = exemsg
+            if ifdm == 'True':
+                m = await member.send(DMcontent)
+                descurl = m.jump_url
+                await member.timeout(until,reason = None)
+                await ctx.send('timeouted!')
+                await sendexelog(ctx,msg,descurl)
+                return
+            elif ifdm == 'False':
+                descurl = ''
+                await member.timeout(until,reason = None)
+                await ctx.send('timeouted!')
+                await sendexelog(ctx,msg,descurl)
+                return
+            else:
+                return
+        elif turned == 'cancel':
+            msg=nonexemsg
+            descurl = ''
+            await sendexelog(ctx,msg,descurl)
+            await ctx.send('Cancelled!')
+            return
+        else:
+            return
+
 #kick-member
 @bot.command(name='kick')
 @commands.has_role(adminrole)
