@@ -5,13 +5,14 @@ import sys
 import traceback
 import logging
 from datetime import datetime, timedelta
+from typing import Optional
 
 import discord
 import requests
 from discord import Member
 from discord.channel import DMChannel, TextChannel
 from discord.ext import commands, tasks, pages
-from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert, ActionButton
+from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert, ActionButton, state
 from discord.commands import slash_command
 from newdispanderfixed import dispand
 
@@ -84,73 +85,54 @@ memberrole = 926268230417408010
 
 #Classes
 class MemberConfView(View):
-    def __init__(self, future):
+    status = state('status')
+    okstr = state('okstr')
+    ngstr = state('ngstr')
+    que = state('que')
+
+    def __init__(self, future,ctx):
+        super().__init__()
         self.future = future
+        self.status = None
+        self.okstr = '承認'
+        self.ngstr = '否認'
+        self.ctx = ctx
+        self.que = '承認しますか？'
     async def ok(self,interaction:discord.Interaction):
         self.future.set_result(True)
+        self.status = True
+        self.que = '承認済み'
+        self.okstr = '承認されました'
         await interaction.response.defer()
         return
     async def ng(self,interaction:discord.Interaction):
         self.future.set_result(False)
+        self.status = False
+        self.que = '否認済み'
+        self.ngstr = '否認されました'
         await interaction.response.defer()
         return
     async def body(self) -> Message:
         return Message(
             embeds = [
                 discord.Embed(
-                    title='メンバーシップ認証',
-                    url='',
-                    color=3447003,
-                    )
+                    title=self.que,
+                    description=f'',
+                    color=15767485,
+                    url=self.ctx.message.jump_url,
+                    ),
             ],
             components=[
-                Button('承認')
+                Button(self.okstr)
                 .style(discord.ButtonStyle.green)
+                .disabled(self.status != None)
                 .on_click(self.ok),
-                Button('否認')
+                Button(self.ngstr)
                 .style(discord.ButtonStyle.red)
+                .disabled(self.status != None)
                 .on_click(self.ng)
             ]
         )
-
-'''
-class SampleView(View):
-    content = state("content")
-
-    def __init__(self):
-        super().__init__()
-        self.content = "メンバーシップ認証"
-
-    async def show_alert(self, interaction: discord.Interaction):
-        alert = Alert("承認しますか？", "", [
-            ActionButton("はい", discord.ButtonStyle.green, True),
-            ActionButton("いいえ", discord.ButtonStyle.red, False)
-        ])
-        result = await alert.wait_for_click(interaction)
-        if result:
-            self.content = "承認しました。"
-
-    async def body(self):
-        return Message()
-            .content(self.content)
-            .items([
-                Button("終わる")
-                .on_click(self.show_alert)
-                .style(discord.ButtonStyle.danger)
-                .disabled(self.content != "編集中..."),
-        ])
-
-
-@bot.listen('on_message')
-async def uitest(message: discord.Message):
-    if message.content != "!test":
-        return
-
-    view = SampleView()
-    tracker = ViewTracker(view, timeout=None)
-    await tracker.track(MessageProvider(message.channel))
-'''
-
 
 
 #emoji
@@ -709,7 +691,7 @@ async def _checkmember(ctx):
         kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
         sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
         future = asyncio.Future()
-        view = MemberConfView(future)
+        view = MemberConfView(future,ctx)
         tracker = ViewTracker(view)
         await tracker.track(MessageProvider(channel))
         await future
@@ -721,7 +703,7 @@ async def _checkmember(ctx):
                 addmemberrole = guild.get_role(memberrole)
                 await member.add_roles(addmemberrole)
                 await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
-                await channel.send('Accepted!')
+                #await channel.send('Accepted!')
                 await sendexelog(ctx,msg,descurl)
                 return
             else:
@@ -733,7 +715,7 @@ async def _checkmember(ctx):
                 message = await bot.wait_for('message',check=check)
                 replymsg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
                 await ctx.reply(content=replymsg,mention_author=False)
-                await channel.send('Cancelled!')
+                #await channel.send('Cancelled!')
                 await sendexelog(ctx,msg,descurl)
                 return
 
