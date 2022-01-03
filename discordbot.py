@@ -116,7 +116,7 @@ class MemberConfView(View):
         return Message(
             embeds = [
                 discord.Embed(
-                    title='承認しますか？',
+                    title=self.que,
                     description=f'',
                     color=15767485,
                     url=self.ctx.message.jump_url,
