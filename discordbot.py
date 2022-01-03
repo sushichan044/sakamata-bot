@@ -5,14 +5,17 @@ import sys
 import traceback
 import logging
 from datetime import datetime, timedelta
+from typing import Optional
+from typing_extensions import Required
 
 import discord
+from discord.commands import permissions
 import requests
 from discord import Member
 from discord.channel import DMChannel, TextChannel
 from discord.ext import commands, tasks, pages
 from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert, ActionButton, state
-from discord.commands import slash_command
+from discord.commands import Option
 from newdispanderfixed import dispand
 
 '''bot招待リンク
@@ -306,11 +309,37 @@ async def user(ctx,id:int):
     membermention = member.mention
     roles = [[x.name,x.id] for x in member.roles]
 #[[name,id],[name,id]...]
-    x = [' /ID: '.join(str(y) for y in x) for x in roles]
+    x = ['/ID: '.join(str(y) for y in x) for x in roles]
     z = '\n'.join(x)
     #Message成形-途中
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
     await ctx.send(userinfomsg)
+
+
+@bot.slash_command(guild_ids=[915910043461890078,916965252896260117],default_permission=False)
+@permissions.has_role(modrole)
+async def newuser(ctx,id:int):
+    guild = bot.get_guild(guildid)
+    member = guild.get_member(id)
+    #この先表示する用
+    memberifbot = member.bot
+    memberregdate = member.created_at + timedelta(hours=9)
+    #NickNameあるか？
+    if member.display_name == member.name :
+        memberifnickname = 'None'
+    else:
+        memberifnickname = member.display_name
+    memberid = member.id
+    memberjoindate = member.joined_at + timedelta(hours=9)
+    membermention = member.mention
+    roles = [[x.name,x.id] for x in member.roles]
+#[[name,id],[name,id]...]
+    x = ['/ID: '.join(str(y) for y in x) for x in roles]
+    z = '\n'.join(x)
+    #Message成形-途中
+    userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
+    await ctx.send(userinfomsg)
+
 
 #new-user-info-command
 '''
@@ -495,6 +524,86 @@ deal = None
 #adddm:デフォルトDMに追加で送信するコンテンツ
 adddm = None
 
+#timeout-member
+@bot.command(name='timeout')
+@commands.has_role(modrole)
+async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
+    until = datetime.strptime(xuntil,'%Y%m%d') + timedelta(hours=-9)
+    role = ctx.guild.get_role(modrole)
+    validifdm = ['True','False']
+    untilstr = datetime.strftime(until + timedelta(hours=9),'%Y/%m/%d/%H:%M')
+    if ifdm not in validifdm:
+        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
+        msg = '不明な引数を検知したため処理を終了しました。'
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        return
+    else:
+        deal = 'timeout'
+        adddm = f'あなたは{untilstr}までサーバーでの発言とボイスチャットへの接続を制限されます。'
+        DMcontent = await makedealdm(ctx,deal,adddm)
+        if ifdm == 'False':
+            DMcontent = ''
+        else:
+            pass
+        kakuninmsg = f'【timeout実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\n期限:{untilstr}\nDM送信:{ifdm}\nDM内容:{DMcontent}'
+        exemsg = f'{member.mention}をタイムアウトしました。'
+        nonexemsg = f'{member.mention}のタイムアウトをキャンセルしました。'
+        confarg = ''
+        turned = await confirm(ctx,confarg,role,kakuninmsg)
+        if turned == 'ok':
+            msg = exemsg
+            if ifdm == 'True':
+                m = await member.send(DMcontent)
+                descurl = m.jump_url
+                await member.timeout(until,reason = None)
+                await ctx.send('timeouted!')
+                await sendtolog(ctx,msg,descurl,untilstr)
+                return
+            elif ifdm == 'False':
+                descurl = ''
+                await member.timeout(until,reason = None)
+                await ctx.send('timeouted!')
+                await sendtolog(ctx,msg,descurl,untilstr)
+                return
+            else:
+                return
+        elif turned == 'cancel':
+            msg=nonexemsg
+            descurl = ''
+            await sendexelog(ctx,msg,descurl)
+            await ctx.send('Cancelled!')
+            return
+        else:
+            return
+
+#untimeout-member
+@bot.command(name='untimeout')
+@commands.has_role(modrole)
+async def _untimeout(ctx,member:Member):
+    role = ctx.guild.get_role(modrole)
+    kakuninmsg = f'【untimeout実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})'
+    exemsg = f'{member.mention}のタイムアウトの解除をしました。'
+    nonexemsg = f'{member.mention}のタイムアウトの解除をキャンセルしました。'
+    confarg = ''
+    turned = await confirm(ctx,confarg,role,kakuninmsg)
+    if turned == 'ok':
+        msg = exemsg
+        descurl = ''
+        await member.timeout(None,reason = None)
+        await ctx.send('untimeouted!')
+        await sendexelog(ctx,msg,descurl)
+        return
+    elif turned == 'cancel':
+        msg=nonexemsg
+        descurl = ''
+        await sendexelog(ctx,msg,descurl)
+        await ctx.send('Cancelled!')
+        return
+    else:
+        return
+
+
 #kick-member
 @bot.command(name='kick')
 @commands.has_role(adminrole)
@@ -559,7 +668,7 @@ async def _banuser(ctx,member:Member,ifdm:str='True'):
         await sendexelog(ctx,msg,descurl)
         return
     else:
-        deal = 'ban'
+        deal = 'BAN'
         adddm = '''
 今後、あなたはクロヱ水族館に参加することはできません。
 
@@ -572,7 +681,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
             DMcontent = ''
         else:
             pass
-        kakuninmsg = f'【ban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
+        kakuninmsg = f'【BAN実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\nDM送信:{ifdm}\nDM内容:{DMcontent}'
         exemsg = f'{member.mention}をBANしました。'
         nonexemsg = f'{member.mention}のBANをキャンセルしました。'
         confarg = ''
@@ -790,10 +899,10 @@ async def download_img(url, file_name):
 
 #Deal-DM
 async def makedealdm(ctx,deal,adddm):
-    DMcontent = f'''【あなたは{str.upper(deal)}されました】
+    DMcontent = f'''【あなたは{deal}されました】
 クロヱ水族館/Chloeriumの管理者です。
 
-あなたのサーバーでの行為がサーバールールに違反していると判断し、{str.upper(deal)}しました。
+あなたのサーバーでの行為がサーバールールに違反していると判断し、{deal}しました。
 {adddm}'''
     return DMcontent
 
@@ -842,6 +951,40 @@ async def sendexelog(ctx,msg,descurl):
     )
     await channel.send(embed=embed)
     return
+
+#send-timeout-log
+async def sendtolog(ctx,msg,descurl,untilstr):
+    channel = bot.get_channel(logchannel)
+    embed = discord.Embed(
+    title = '実行ログ',
+    color = 3447003,
+    description = msg,
+    url = f'{descurl}',
+    timestamp=discord.utils.utcnow()
+    )
+    embed.set_author(
+    name=bot.user,
+    icon_url=bot.user.display_avatar.url
+    )
+    embed.add_field(
+        name='実行者',
+        value=f'{ctx.author.mention}'
+    )
+    embed.add_field(
+        name='実行コマンド',
+        value=f'[コマンドリンク]({ctx.message.jump_url})'
+    )
+    embed.add_field(
+        name='解除日時',
+        value=f'{untilstr}'
+    )
+    embed.add_field(
+        name='実行日時',
+        value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+    )
+    await channel.send(embed=embed)
+    return
+
 
 #compose-embed
 async def compose_embed(message):
