@@ -684,12 +684,8 @@ async def _checkmember(ctx):
             embedimg.append(embed)
         await channel.send(embeds=embedimg)
         guild = bot.get_guild(guildid)
-        role = guild.get_role(adminrole)
-        confarg=''
         exemsg = f'{ctx.message.author.mention}のメンバーシップ認証を承認しました。'
         nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
-        kakuninmsg=f'{ctx.message.author.mention}のメンバーシップ認証を承認しますか?'
-        sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
         future = asyncio.Future()
         view = MemberConfView(future,ctx)
         tracker = ViewTracker(view)
@@ -703,20 +699,51 @@ async def _checkmember(ctx):
                 addmemberrole = guild.get_role(memberrole)
                 await member.add_roles(addmemberrole)
                 await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
-                #await channel.send('Accepted!')
-                await sendexelog(ctx,msg,descurl)
+                channellog = bot.get_channel(logchannel)
+                embed = discord.Embed(
+                title = '実行ログ',
+                color = 3447003,
+                description = msg,
+                url = f'{descurl}',
+                timestamp=discord.utils.utcnow()
+                )
+                embed.set_author(
+                name=bot.user,
+                icon_url=bot.user.display_avatar.url
+                )
+                embed.add_field(
+                    name='実行日時',
+                    value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+                )
+                await channellog.send(embed=embed)
                 return
             else:
                 msg=nonexemsg
                 descurl = ''
                 await channel.send('DMで送信する不承認理由を入力してください。')
                 def check(message):
-                    return message.content != None and message.channel == channel
+                    return message.content != None and message.channel == channel and message.author != bot.user
                 message = await bot.wait_for('message',check=check)
                 replymsg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
                 await ctx.reply(content=replymsg,mention_author=False)
                 #await channel.send('Cancelled!')
-                await sendexelog(ctx,msg,descurl)
+                channellog = bot.get_channel(logchannel)
+                embed = discord.Embed(
+                title = '実行ログ',
+                color = 3447003,
+                description = msg,
+                url = f'{descurl}',
+                timestamp=discord.utils.utcnow()
+                )
+                embed.set_author(
+                name=bot.user,
+                icon_url=bot.user.display_avatar.url
+                )
+                embed.add_field(
+                    name='実行日時',
+                    value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+                )
+                await channellog.send(embed=embed)
                 return
 
 
