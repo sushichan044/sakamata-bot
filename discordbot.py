@@ -546,10 +546,10 @@ adddm = None
 async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
     '''メンバーをタイムアウト'''
     until = datetime.strptime(xuntil,'%Y%m%d')
+    tzuntil = until.astimezone(utc)
     role = ctx.guild.get_role(modrole)
     validifdm = ['True','False']
-    actuntil = until.astimezone(jst)
-    untilstr = datetime.strftime(actuntil,'%Y/%m/%d/%H:%M')
+    untilstr = datetime.strftime(tzuntil,'%Y/%m/%d/%H:%M')
     if ifdm not in validifdm:
         await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
@@ -574,13 +574,13 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
             if ifdm == 'True':
                 m = await member.send(DMcontent)
                 descurl = m.jump_url
-                await member.timeout(actuntil,reason = None)
+                await member.timeout(tzuntil + timedelta(hours=-9),reason = None)
                 await ctx.send('timeouted!')
                 await sendtolog(ctx,msg,descurl,untilstr)
                 return
             elif ifdm == 'False':
                 descurl = ''
-                await member.timeout(until,reason = None)
+                await member.timeout(tzuntil + timedelta(hours=-9),reason = None)
                 await ctx.send('timeouted!')
                 await sendtolog(ctx,msg,descurl,untilstr)
                 return
