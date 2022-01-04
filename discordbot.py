@@ -333,7 +333,7 @@ async def user(ctx,id:int):
 @permissions.has_role(modrole)
 async def newuser(
     ctx,
-    id: Option(int,'対象のIDを入力してください。',required=True),
+    id: Option(int,'対象のIDを入力してください。'),
 ):
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
