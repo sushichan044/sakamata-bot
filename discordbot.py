@@ -165,6 +165,13 @@ async def on_ready():
     await greet()
     return
 
+#manualcount
+@bot.command(name='manualcount')
+@commands.has_role(adminrole)
+async def _manual(ctx):
+    await membercount()
+    return
+
 #Membercount本体
 async def membercount():
     guild = bot.get_guild(guildid)
@@ -241,7 +248,7 @@ async def sendnglog(message,m):
     )
     embed.add_field(
         name='送信日時',
-        value=f'{message.created_at.astimezone(tz):%Y/%m/%d %H:%M:%S}'
+        value=f'{message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
     )
     await channel.send(embed=embed)
     return
