@@ -184,7 +184,7 @@ async def membercount():
 @bot.event
 async def on_command_error(ctx,error):
     channel = bot.get_channel(errorlogchannel)
-    now = discord.utils.utcnow() + timedelta(hours=9)
+    now = discord.utils.utcnow().astimezone(jst)
     await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}```')
     if isinstance(error,commands.MissingRole):
         await ctx.reply(content='このコマンドを実行する権限がありません。',mention_author=False)
@@ -548,7 +548,7 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
     until = datetime.strptime(xuntil,'%Y%m%d')
     role = ctx.guild.get_role(modrole)
     validifdm = ['True','False']
-    actuntil = until.astimezone(tz)
+    actuntil = until.astimezone(jst)
     untilstr = datetime.strftime(actuntil,'%Y/%m/%d/%H:%M')
     if ifdm not in validifdm:
         await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
@@ -804,7 +804,7 @@ async def _checkmember(ctx):
         )
         embed.add_field(
             name='受信日時',
-            value=f'{ctx.message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+            value=f'{ctx.message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
         )
         embedimg.append(embed)
         for x in image_url:
@@ -844,7 +844,7 @@ async def _checkmember(ctx):
                 )
                 embed.add_field(
                     name='実行日時',
-                    value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+                    value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
                 )
                 await channellog.send(embed=embed)
                 return
@@ -872,7 +872,7 @@ async def _checkmember(ctx):
                 )
                 embed.add_field(
                     name='実行日時',
-                    value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+                    value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
                 )
                 await channellog.send(embed=embed)
                 return
