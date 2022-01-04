@@ -171,9 +171,9 @@ async def _manual(ctx):
 #Membercount本体
 async def membercount():
     guild = bot.get_guild(guildid)
-    member_count = guild.member_count
+    membercount = guild.member_count
     vc = bot.get_channel(countvc)
-    await vc.edit(name=f'Member Count: {member_count}')
+    await vc.edit(name=f'Member Count: {membercount}')
     return
 
 #error-log
