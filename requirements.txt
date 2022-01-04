@@ -2,6 +2,7 @@ aiohttp==3.7.4.post0
 async-timeout==3.0.1
 attrs==21.2.0
 bleach==4.1.0
+Brotli==1.0.9
 certifi==2021.10.8
 cffi==1.15.0
 chardet==4.0.0
@@ -14,6 +15,7 @@ importlib-metadata==4.8.2
 multidict==5.2.0
 newdispanderfixed==0.1.5
 oauthlib==3.1.1
+orjson==3.6.5
 packaging==21.3
 pycparser==2.21
 Pygments==2.10.0
