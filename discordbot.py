@@ -811,7 +811,7 @@ async def _checkmember(ctx):
         nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
         future = asyncio.Future()
         view = MemberConfView(future,ctx)
-        tracker = ViewTracker(view)
+        tracker = ViewTracker(view,timeout=None)
         await tracker.track(MessageProvider(channel))
         await future
         if future.done():
