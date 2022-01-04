@@ -177,7 +177,7 @@ async def membercount():
 @bot.event
 async def on_command_error(ctx,error):
     channel = bot.get_channel(errorlogchannel)
-    now = discord.utils.utcnow() + timedelta(hours=9)
+    now = discord.utils.utcnow().astimezone(tz)
     await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}```')
     return
 
@@ -241,7 +241,7 @@ async def sendnglog(message,m):
     )
     embed.add_field(
         name='送信日時',
-        value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        value=f'{message.created_at.astimezone(tz):%Y/%m/%d %H:%M:%S}'
     )
     await channel.send(embed=embed)
     return
