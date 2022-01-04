@@ -190,7 +190,7 @@ async def on_command_error(ctx,error):
 
 @bot.event
 async def on_command_error(ctx,error):
-    if isinstance(error,commands.MissingPermissions):
+    if isinstance(error,commands.MissingRole):
         await ctx.reply(content='このコマンドを実行する権限がありません。',mention_author=False)
 
 #error-logtest
