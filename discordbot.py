@@ -302,14 +302,14 @@ async def user(ctx,id:int):
     member = guild.get_member(id)
     #この先表示する用
     memberifbot = member.bot
-    memberregdate = member.created_at + timedelta(hours=9)
+    memberregdate = member.created_at.astimezone(tz)
     #NickNameあるか？
     if member.display_name == member.name :
         memberifnickname = 'None'
     else:
         memberifnickname = member.display_name
     memberid = member.id
-    memberjoindate = member.joined_at + timedelta(hours=9)
+    memberjoindate = member.joined_at.astimezone(tz)
     membermention = member.mention
     roles = [[x.name,x.id] for x in member.roles]
 #[[name,id],[name,id]...]
@@ -327,14 +327,14 @@ async def newuser(ctx,id:int):
     member = guild.get_member(id)
     #この先表示する用
     memberifbot = member.bot
-    memberregdate = member.created_at + timedelta(hours=9)
+    memberregdate = member.created_at.astimezone(tz)
     #NickNameあるか？
     if member.display_name == member.name :
         memberifnickname = 'None'
     else:
         memberifnickname = member.display_name
     memberid = member.id
-    memberjoindate = member.joined_at + timedelta(hours=9)
+    memberjoindate = member.joined_at.astimezone(tz)
     membermention = member.mention
     roles = [[x.name,x.id] for x in member.roles]
 #[[name,id],[name,id]...]
@@ -415,7 +415,7 @@ async def ping(ctx):
 async def on_message_dm(message):
     if message.author.bot:
         return
-    elif '/check' in message.content:
+    elif message.content == '/check':
         return
     elif type(message.channel) == DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
