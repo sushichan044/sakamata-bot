@@ -149,7 +149,7 @@ async def greet():
     channel = bot.get_channel(logchannel)
 #    now = discord.utils.utcnow() + timedelta(hours=9)
     now = discord.utils.utcnow()
-    await channel.send(f'起動完了({now.astimezone(tz=jst):%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
+    await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
     return
 
 #Task-MemberCount
@@ -168,16 +168,16 @@ async def on_ready():
 #Membercount本体
 async def membercount():
     guild = bot.get_guild(guildid)
-    member_count = guild.member_count
+    membercount = guild.member_count
     vc = bot.get_channel(countvc)
-    await vc.edit(name=f'Member Count: {member_count}')
+    await vc.edit(name=f'Member Count: {membercount}')
     return
 
 #error-log
 @bot.event
 async def on_command_error(ctx,error):
     channel = bot.get_channel(errorlogchannel)
-    now = discord.utils.utcnow().astimezone(tz)
+    now = discord.utils.utcnow().astimezone(jst)
     await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}```')
     return
 
