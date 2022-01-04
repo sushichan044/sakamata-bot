@@ -32,7 +32,7 @@ https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permission
 ###################################################################
 
 utc = timezone.utc
-jst = timezone(timedelta(hours=9))
+jst = timezone(timedelta(hours=9),'Asia/Tokyo')
 
 #onlinetoken@heroku
 token = os.environ['DISCORD_BOT_TOKEN']
@@ -309,14 +309,14 @@ async def user(ctx,id:int):
     member = guild.get_member(id)
     #この先表示する用
     memberifbot = member.bot
-    memberregdate = member.created_at.astimezone(tz)
+    memberregdate = member.created_at.astimezone(jst)
     #NickNameあるか？
     if member.display_name == member.name :
         memberifnickname = 'None'
     else:
         memberifnickname = member.display_name
     memberid = member.id
-    memberjoindate = member.joined_at.astimezone(tz)
+    memberjoindate = member.joined_at.astimezone(jst)
     membermention = member.mention
     roles = [[x.name,x.id] for x in member.roles]
 #[[name,id],[name,id]...]
