@@ -333,10 +333,10 @@ async def user(ctx,id:int):
 @permissions.has_role(modrole)
 async def newuser(
     ctx,
-    id: Option(int,'対象のIDを入力してください。'),
+    id: Option(str,'対象のIDを入力してください。'),
 ):
     guild = bot.get_guild(guildid)
-    member = guild.get_member(id)
+    member = guild.get_member(int(id))
     #この先表示する用
     memberifbot = member.bot
     memberregdate = member.created_at.astimezone(jst)
