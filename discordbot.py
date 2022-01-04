@@ -177,6 +177,11 @@ async def on_command_error(ctx,error):
     await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}```')
     return
 
+@bot.event
+async def on_command_error(ctx,error):
+    if isinstance(error,commands.MissingPermissions):
+        await ctx.reply(content='このコマンドを実行する権限がありません。',mention_author=False)
+
 #error-logtest
 @bot.command()
 @commands.has_role(adminrole)
