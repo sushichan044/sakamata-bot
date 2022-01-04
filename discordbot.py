@@ -4,7 +4,7 @@ import re
 import sys
 import traceback
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone, tzinfo
 from typing import Optional
 from typing_extensions import Required
 
@@ -30,6 +30,9 @@ https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permission
 # 新規メンバー参加時に実行： on_member_join(member)
 # ボイスチャンネル出入に実行： on_voice_state_update(member, before, after)
 ###################################################################
+
+utc = timezone.utc
+jst = timezone(timedelta(hours=9),'Asia/Tokyo')
 
 #onlinetoken@heroku
 token = os.environ['DISCORD_BOT_TOKEN']
@@ -144,8 +147,9 @@ batuemoji = "\N{Cross Mark}"
 #Boot-log
 async def greet():
     channel = bot.get_channel(logchannel)
-    now = discord.utils.utcnow() + timedelta(hours=9)
-    await channel.send(f'起動完了({now:%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
+#    now = discord.utils.utcnow() + timedelta(hours=9)
+    now = discord.utils.utcnow()
+    await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
     return
 
 #Task-MemberCount
@@ -180,7 +184,7 @@ async def membercount():
 @bot.event
 async def on_command_error(ctx,error):
     channel = bot.get_channel(errorlogchannel)
-    now = discord.utils.utcnow() + timedelta(hours=9)
+    now = discord.utils.utcnow().astimezone(jst)
     await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}```')
     if isinstance(error,commands.MissingRole):
         await ctx.reply(content='このコマンドを実行する権限がありません。',mention_author=False)
@@ -246,7 +250,7 @@ async def sendnglog(message,m):
     )
     embed.add_field(
         name='送信日時',
-        value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        value=f'{message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
     )
     await channel.send(embed=embed)
     return
@@ -275,18 +279,18 @@ https://discordbot.jp/blog/17/
 async def on_voice_state_update(member,before,after) :
     if member.guild.id == guildid and (before.channel != after.channel):
         channel = bot.get_channel(vclogchannel)
-        now = discord.utils.utcnow() + timedelta(hours=9)
+        now = discord.utils.utcnow()
         vclogmention = member.mention
         if before.channel is None:
-            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {after.channel.mention} に参加しました。'
+            msg = f'{now.astimezone(jst):%m/%d %H:%M:%S} : {vclogmention} が {after.channel.mention} に参加しました。'
             await channel.send(msg)
             return
         elif after.channel is None:
-            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から退出しました。'
+            msg = f'{now.astimezone(jst):%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から退出しました。'
             await channel.send(msg)
             return
         else:
-            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から {after.channel.mention} に移動しました。'
+            msg = f'{now.astimezone(jst):%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から {after.channel.mention} に移動しました。'
             await channel.send(msg)
             return
 
@@ -307,14 +311,14 @@ async def user(ctx,id:int):
     member = guild.get_member(id)
     #この先表示する用
     memberifbot = member.bot
-    memberregdate = member.created_at + timedelta(hours=9)
+    memberregdate = member.created_at.astimezone(jst)
     #NickNameあるか？
     if member.display_name == member.name :
         memberifnickname = 'None'
     else:
         memberifnickname = member.display_name
     memberid = member.id
-    memberjoindate = member.joined_at + timedelta(hours=9)
+    memberjoindate = member.joined_at.astimezone(jst)
     membermention = member.mention
     roles = [[x.name,x.id] for x in member.roles]
 #[[name,id],[name,id]...]
@@ -327,19 +331,22 @@ async def user(ctx,id:int):
 
 @bot.slash_command(guild_ids=[guildid],default_permission=False)
 @permissions.has_role(modrole)
-async def newuser(ctx,id:int):
+async def newuser(
+    ctx,
+    id: Option(str,'対象のIDを入力してください。'),
+):
     guild = bot.get_guild(guildid)
-    member = guild.get_member(id)
+    member = guild.get_member(int(id))
     #この先表示する用
     memberifbot = member.bot
-    memberregdate = member.created_at + timedelta(hours=9)
+    memberregdate = member.created_at.astimezone(jst)
     #NickNameあるか？
     if member.display_name == member.name :
         memberifnickname = 'None'
     else:
         memberifnickname = member.display_name
     memberid = member.id
-    memberjoindate = member.joined_at + timedelta(hours=9)
+    memberjoindate = member.joined_at.astimezone(jst)
     membermention = member.mention
     roles = [[x.name,x.id] for x in member.roles]
 #[[name,id],[name,id]...]
@@ -420,7 +427,7 @@ async def ping(ctx):
 async def on_message_dm(message):
     if message.author.bot:
         return
-    elif '/check' in message.content:
+    elif message.content == '/check':
         return
     elif type(message.channel) == DMChannel and bot.user == message.channel.me:
         channel = bot.get_channel(dmboxchannel)
@@ -538,10 +545,11 @@ adddm = None
 @commands.has_role(modrole)
 async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
     '''メンバーをタイムアウト'''
-    until = datetime.strptime(xuntil,'%Y%m%d') + timedelta(hours=-9)
+    until = datetime.strptime(xuntil,'%Y%m%d')
+    tzuntil = until.astimezone(utc)
     role = ctx.guild.get_role(modrole)
     validifdm = ['True','False']
-    untilstr = datetime.strftime(until + timedelta(hours=9),'%Y/%m/%d/%H:%M')
+    untilstr = datetime.strftime(tzuntil,'%Y/%m/%d/%H:%M')
     if ifdm not in validifdm:
         await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
@@ -566,13 +574,13 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
             if ifdm == 'True':
                 m = await member.send(DMcontent)
                 descurl = m.jump_url
-                await member.timeout(until,reason = None)
+                await member.timeout(tzuntil + timedelta(hours=-9),reason = None)
                 await ctx.send('timeouted!')
                 await sendtolog(ctx,msg,descurl,untilstr)
                 return
             elif ifdm == 'False':
                 descurl = ''
-                await member.timeout(until,reason = None)
+                await member.timeout(tzuntil + timedelta(hours=-9),reason = None)
                 await ctx.send('timeouted!')
                 await sendtolog(ctx,msg,descurl,untilstr)
                 return
@@ -796,7 +804,7 @@ async def _checkmember(ctx):
         )
         embed.add_field(
             name='受信日時',
-            value=f'{ctx.message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+            value=f'{ctx.message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
         )
         embedimg.append(embed)
         for x in image_url:
@@ -836,7 +844,7 @@ async def _checkmember(ctx):
                 )
                 embed.add_field(
                     name='実行日時',
-                    value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+                    value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
                 )
                 await channellog.send(embed=embed)
                 return
@@ -864,7 +872,7 @@ async def _checkmember(ctx):
                 )
                 embed.add_field(
                     name='実行日時',
-                    value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+                    value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
                 )
                 await channellog.send(embed=embed)
                 return
@@ -962,7 +970,7 @@ async def sendexelog(ctx,msg,descurl):
     )
     embed.add_field(
         name='実行日時',
-        value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
     )
     await channel.send(embed=embed)
     return
@@ -995,7 +1003,7 @@ async def sendtolog(ctx,msg,descurl,untilstr):
     )
     embed.add_field(
         name='実行日時',
-        value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
     )
     await channel.send(embed=embed)
     return
@@ -1020,7 +1028,7 @@ async def compose_embed(message):
     )
     embed.add_field(
         name='受信日時',
-        value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        value=f'{message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
     )
     if message.attachments and message.attachments[0].proxy_url:
         embed.set_image(
@@ -1062,7 +1070,7 @@ async def detect_thread(thread):
         )
         embed.add_field(
         name='作成日時',
-        value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
         )
         await channel.send(embed=embed)
         return
