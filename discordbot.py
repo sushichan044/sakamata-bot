@@ -161,6 +161,13 @@ async def on_ready():
     await greet()
     return
 
+#manualcount
+@bot.command(name='manualcount')
+@commands.has_role(adminrole)
+async def _manual(ctx):
+    await membercount()
+    return
+
 #Membercount本体
 async def membercount():
     guild = bot.get_guild(guildid)
