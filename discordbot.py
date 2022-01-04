@@ -325,7 +325,7 @@ async def user(ctx,id:int):
     await ctx.send(userinfomsg)
 
 
-@bot.slash_command(guild_ids=[915910043461890078,916965252896260117],default_permission=False)
+@bot.slash_command(guild_ids=[guildid],default_permission=False)
 @permissions.has_role(modrole)
 async def newuser(ctx,id:int):
     guild = bot.get_guild(guildid)
