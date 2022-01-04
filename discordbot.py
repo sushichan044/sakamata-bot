@@ -175,12 +175,9 @@ async def on_command_error(ctx,error):
     channel = bot.get_channel(errorlogchannel)
     now = discord.utils.utcnow() + timedelta(hours=9)
     await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}```')
-    return
-
-@bot.event
-async def on_command_error(ctx,error):
     if isinstance(error,commands.MissingRole):
         await ctx.reply(content='このコマンドを実行する権限がありません。',mention_author=False)
+        return
 
 #error-logtest
 @bot.command()
