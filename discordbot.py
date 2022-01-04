@@ -4,7 +4,7 @@ import re
 import sys
 import traceback
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone, tzinfo
 from typing import Optional
 from typing_extensions import Required
 import pytz
@@ -536,7 +536,7 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
     until = datetime.strptime(xuntil,'%Y%m%d')
     role = ctx.guild.get_role(modrole)
     validifdm = ['True','False']
-    untilstr = datetime.strftime(until.astimezone(tz),'%Y/%m/%d/%H:%M')
+    untilstr = datetime.strftime(until,'%Y/%m/%d/%H:%M',tzinfo = timezone.utc)
     if ifdm not in validifdm:
         await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
@@ -561,7 +561,7 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
             if ifdm == 'True':
                 m = await member.send(DMcontent)
                 descurl = m.jump_url
-                await member.timeout(until,reason = None)
+                await member.timeout(until.astimezone(utc),reason = None)
                 await ctx.send('timeouted!')
                 await sendtolog(ctx,msg,descurl,untilstr)
                 return
