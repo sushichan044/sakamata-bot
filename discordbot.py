@@ -32,7 +32,7 @@ https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permission
 # ボイスチャンネル出入に実行： on_voice_state_update(member, before, after)
 ###################################################################
 
-tz = pytz.timezone('Azia/Tokyo')
+tz = pytz.timezone('Asia/Tokyo')
 
 #onlinetoken@heroku
 token = os.environ['DISCORD_BOT_TOKEN']
