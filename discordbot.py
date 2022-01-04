@@ -970,7 +970,7 @@ async def sendexelog(ctx,msg,descurl):
     )
     embed.add_field(
         name='実行日時',
-        value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
     )
     await channel.send(embed=embed)
     return
@@ -1003,7 +1003,7 @@ async def sendtolog(ctx,msg,descurl,untilstr):
     )
     embed.add_field(
         name='実行日時',
-        value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
     )
     await channel.send(embed=embed)
     return
@@ -1028,7 +1028,7 @@ async def compose_embed(message):
     )
     embed.add_field(
         name='受信日時',
-        value=f'{message.created_at + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        value=f'{message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
     )
     if message.attachments and message.attachments[0].proxy_url:
         embed.set_image(
@@ -1070,7 +1070,7 @@ async def detect_thread(thread):
         )
         embed.add_field(
         name='作成日時',
-        value=f'{discord.utils.utcnow() + timedelta(hours=9):%Y/%m/%d %H:%M:%S}'
+        value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
         )
         await channel.send(embed=embed)
         return
