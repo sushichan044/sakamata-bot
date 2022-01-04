@@ -7,7 +7,6 @@ import logging
 from datetime import datetime, timedelta, timezone, tzinfo
 from typing import Optional
 from typing_extensions import Required
-import pytz
 
 import discord
 from discord.commands import permissions
@@ -32,7 +31,8 @@ https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permission
 # ボイスチャンネル出入に実行： on_voice_state_update(member, before, after)
 ###################################################################
 
-tz = pytz.timezone('Asia/Tokyo')
+utc = timezone.utc
+jst = timezone(timedelta(hours=9))
 
 #onlinetoken@heroku
 token = os.environ['DISCORD_BOT_TOKEN']
@@ -148,8 +148,8 @@ batuemoji = "\N{Cross Mark}"
 async def greet():
     channel = bot.get_channel(logchannel)
 #    now = discord.utils.utcnow() + timedelta(hours=9)
-    now = discord.utils.utcnow().astimezone(tz)
-    await channel.send(f'起動完了({now:%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
+    now = discord.utils.utcnow()
+    await channel.send(f'起動完了({now.astimezone(tz=jst):%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
     return
 
 #Task-MemberCount
@@ -536,7 +536,7 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
     until = datetime.strptime(xuntil,'%Y%m%d')
     role = ctx.guild.get_role(modrole)
     validifdm = ['True','False']
-    actuntil = until.astimezone(timezone.utc)
+    actuntil = until.astimezone(tz)
     untilstr = datetime.strftime(actuntil,'%Y/%m/%d/%H:%M')
     if ifdm not in validifdm:
         await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
