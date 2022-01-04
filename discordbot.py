@@ -148,9 +148,8 @@ batuemoji = "\N{Cross Mark}"
 async def greet():
     channel = bot.get_channel(logchannel)
 #    now = discord.utils.utcnow() + timedelta(hours=9)
-    now = discord.utils.utcnow()
-    nowtk = tz.localize(now)
-    await channel.send(f'起動完了({nowtk:%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
+    now = discord.utils.utcnow().astimezone(tz)
+    await channel.send(f'起動完了({now:%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
     return
 
 #Task-MemberCount
