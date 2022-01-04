@@ -329,21 +329,21 @@ async def user(ctx,id:int):
     await ctx.send(userinfomsg)
 
 
-@bot.slash_command(guild_ids=[915910043461890078,916965252896260117],default_permission=False)
+@bot.slash_command(guild_ids=[guildid],default_permission=False)
 @permissions.has_role(modrole)
 async def newuser(ctx,id:int):
     guild = bot.get_guild(guildid)
     member = guild.get_member(id)
     #この先表示する用
     memberifbot = member.bot
-    memberregdate = member.created_at.astimezone(tz)
+    memberregdate = member.created_at.astimezone(jst)
     #NickNameあるか？
     if member.display_name == member.name :
         memberifnickname = 'None'
     else:
         memberifnickname = member.display_name
     memberid = member.id
-    memberjoindate = member.joined_at.astimezone(tz)
+    memberjoindate = member.joined_at.astimezone(jst)
     membermention = member.mention
     roles = [[x.name,x.id] for x in member.roles]
 #[[name,id],[name,id]...]
