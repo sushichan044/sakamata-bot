@@ -7,6 +7,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import Optional
 from typing_extensions import Required
+import pytz
 
 import discord
 from discord.commands import permissions
@@ -30,6 +31,8 @@ https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permission
 # 新規メンバー参加時に実行： on_member_join(member)
 # ボイスチャンネル出入に実行： on_voice_state_update(member, before, after)
 ###################################################################
+
+tz = pytz.timezone('Azia/Tokyo')
 
 #onlinetoken@heroku
 token = os.environ['DISCORD_BOT_TOKEN']
@@ -144,8 +147,10 @@ batuemoji = "\N{Cross Mark}"
 #Boot-log
 async def greet():
     channel = bot.get_channel(logchannel)
-    now = discord.utils.utcnow() + timedelta(hours=9)
-    await channel.send(f'起動完了({now:%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
+#    now = discord.utils.utcnow() + timedelta(hours=9)
+    now = discord.utils.utcnow()
+    nowtk = tz.localize(now)
+    await channel.send(f'起動完了({nowtk:%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
     return
 
 #Task-MemberCount
