@@ -533,10 +533,10 @@ adddm = None
 @commands.has_role(modrole)
 async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
     '''メンバーをタイムアウト'''
-    until = datetime.strptime(xuntil,'%Y%m%d') + timedelta(hours=-9)
+    until = datetime.strptime(xuntil,'%Y%m%d')
     role = ctx.guild.get_role(modrole)
     validifdm = ['True','False']
-    untilstr = datetime.strftime(until + timedelta(hours=9),'%Y/%m/%d/%H:%M')
+    untilstr = datetime.strftime(until.astimezone(tz),'%Y/%m/%d/%H:%M')
     if ifdm not in validifdm:
         await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
