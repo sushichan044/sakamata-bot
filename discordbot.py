@@ -270,18 +270,18 @@ https://discordbot.jp/blog/17/
 async def on_voice_state_update(member,before,after) :
     if member.guild.id == guildid and (before.channel != after.channel):
         channel = bot.get_channel(vclogchannel)
-        now = discord.utils.utcnow() + timedelta(hours=9)
+        now = discord.utils.utcnow()
         vclogmention = member.mention
         if before.channel is None:
-            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {after.channel.mention} に参加しました。'
+            msg = f'{now.astimezone(tz):%m/%d %H:%M:%S} : {vclogmention} が {after.channel.mention} に参加しました。'
             await channel.send(msg)
             return
         elif after.channel is None:
-            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から退出しました。'
+            msg = f'{now.astimezone(tz):%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から退出しました。'
             await channel.send(msg)
             return
         else:
-            msg = f'{now:%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から {after.channel.mention} に移動しました。'
+            msg = f'{now.astimezone(tz):%m/%d %H:%M:%S} : {vclogmention} が {before.channel.mention} から {after.channel.mention} に移動しました。'
             await channel.send(msg)
             return
 
