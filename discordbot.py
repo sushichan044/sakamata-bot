@@ -335,7 +335,8 @@ async def _newuser(
     ctx,
     id: Option(str,'対象のIDを入力してください。'),
 ):
-    guild = bot.get_guild(guildid)
+    '''ユーザー情報を取得できます。'''
+    guild = ctx.guild
     member = guild.get_member(int(id))
     #この先表示する用
     memberifbot = member.bot
@@ -1163,7 +1164,7 @@ API_KEY = 'AIzaSyAP9IbX_mMnbJEQP0PtG0-QBi5mJFRGYaM'
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
-
+'''
 #create-event
 @bot.command(name='make-event')
 @commands.has_role(modrole)
@@ -1188,16 +1189,18 @@ async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,)
                                        location = streamurl,
                                        )
     return
+'''
 
 #create-event-slash
-@bot.slash_command(guild_ids=[guildid],defaulr_permission=False,name='make-event')
-@commands.has_role(modrole)
+@bot.slash_command(guild_ids=[guildid],default_permission=False,name='make-event')
+@permissions.has_role(modrole)
 async def _newcreateevent(ctx,
                           eventname: Option(str,'配信の名前(例:マリカ,歌枠,など)'),
                           streamurl: Option(str,'配信のURL'),
                           start_time: Option(str,'配信開始時間(202205182100または2100(当日))'),
                           duration: Option(float,'予想される配信の長さ(単位:時間)(例:1.5)'),
 ):
+    '''配信を簡単にイベントに登録できます。'''
     guild = ctx.guild
     if len(start_time)==4:
         todate = datetime.now(timezone.utc).astimezone(jst)
