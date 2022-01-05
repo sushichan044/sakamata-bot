@@ -925,7 +925,7 @@ async def _checkmember(ctx):
         return
     else:
         await ctx.reply(content='認証要求を受理しました。\nしばらくお待ちください。', mention_author=False)
-        channel = bot.get_channel(membercheckchannel)
+        """
         image_url = [x.url for x in ctx.message.attachments]
         embedimg = []
         embed = discord.Embed(
@@ -955,6 +955,8 @@ async def _checkmember(ctx):
             )
             embedimg.append(embed)
         await channel.send(embeds=embedimg)
+        """
+        channel = bot.get_channel(membercheckchannel)
         guild = bot.get_guild(guildid)
         exemsg = f'{ctx.message.author.mention}のメンバーシップ認証を承認しました。'
         nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
@@ -968,8 +970,8 @@ async def _checkmember(ctx):
                 msg = exemsg
                 descurl = ''
                 member = guild.get_member(ctx.message.author.id)
-                addmemberrole = guild.get_role(memberrole)
-                await member.add_roles(addmemberrole)
+                add_memberrole = guild.get_role(memberrole)
+                await member.add_roles(add_memberrole)
                 await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!', mention_author=False)
                 channellog = bot.get_channel(logchannel)
                 embed = discord.Embed(
