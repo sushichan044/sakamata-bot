@@ -1193,10 +1193,10 @@ async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,)
 @bot.slash_command(guild_ids=[guildid],defaulr_permission=False,name='make-event')
 @commands.has_role(modrole)
 async def _newcreateevent(ctx,
-                          eventname: Option(str,'配信の名前'),
+                          eventname: Option(str,'配信の名前(例:マリカ,歌枠,など)'),
                           streamurl: Option(str,'配信のURL'),
-                          start_time: Option(str,'配信開始時間(202205182100または2100)'),
-                          duration: Option(int,'予想される配信の長さ(単位:時間)'),
+                          start_time: Option(str,'配信開始時間(202205182100または2100(当日))'),
+                          duration: Option(int,'予想される配信の長さ(単位:時間)(例:1.5)'),
 ):
     guild = ctx.guild
     if len(start_time)==4:
