@@ -51,7 +51,7 @@ bot = commands.Bot(command_prefix='/', intents=intents, help_command=JapaneseHel
 
 
 
-#本番鯖IDなど
+# 本番鯖IDなど
 
 guildid = 915910043461890078
 logchannel = 917009541433016370
