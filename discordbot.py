@@ -617,7 +617,7 @@ adddm = None
 async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
     '''メンバーをタイムアウト'''
     until = datetime.strptime(xuntil,'%Y%m%d')
-    tzuntil = until.astimezone(utc)
+    tzuntil = datetime.replace(until,tzinfo=jst)
     role = ctx.guild.get_role(modrole)
     validifdm = ['True','False']
     untilstr = datetime.strftime(tzuntil,'%Y/%m/%d/%H:%M')
@@ -645,7 +645,7 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
             if ifdm == 'True':
                 m = await member.send(DMcontent)
                 descurl = m.jump_url
-                await member.timeout(tzuntil + timedelta(hours=-9),reason = None)
+                await member.timeout(tzuntil.astimezone(utc),reason = None)
                 await ctx.send('timeouted!')
                 await sendtolog(ctx,msg,descurl,untilstr)
                 return
@@ -1177,6 +1177,7 @@ async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,)
         true_start_jst = datetime.replace(true_start,tzinfo=jst)
     else:
         await ctx.reply(content='正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```',mention_author=False)
+        return
     true_duration = timedelta(hours=duration)
     true_end = true_start_jst + true_duration
     await guild.create_scheduled_event(name = eventname,
