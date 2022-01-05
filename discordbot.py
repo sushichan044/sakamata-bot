@@ -1172,9 +1172,11 @@ async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,)
         todate = datetime.now(timezone.utc).astimezone(jst)
         starttime = datetime.strptime(start_time,'%H%M')
         true_start_jst = datetime.replace(starttime,year=todate.year,month=todate.month,day=todate.day,tzinfo=jst)
-    else:
+    elif len(start_time)==12:
         true_start = datetime.strptime(start_time,'%Y%m%d%H%M')
         true_start_jst = datetime.replace(true_start,tzinfo=jst)
+    else:
+        ctx.reply(content='正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)　もしくは\n2100(入力した日の21:00)　です。',mention_author=False)
     true_duration = timedelta(hours=duration)
     true_end = true_start_jst + true_duration
     await guild.create_scheduled_event(name = eventname,
