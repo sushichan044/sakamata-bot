@@ -329,9 +329,9 @@ async def user(ctx,id:int):
     await ctx.send(userinfomsg)
 
 
-@bot.slash_command(guild_ids=[guildid],default_permission=False)
+@bot.slash_command(name='user',guild_ids=[guildid],default_permission=False)
 @permissions.has_role(modrole)
-async def newuser(
+async def _newuser(
     ctx,
     id: Option(str,'対象のIDを入力してください。'),
 ):
