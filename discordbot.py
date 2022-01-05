@@ -1169,7 +1169,7 @@ YOUTUBE_API_VERSION = 'v3'
 async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,):
     guild = ctx.guild
     if len(start_time)==4:
-        todate = datetime.date.today(jst)
+        todate = datetime.now(timezone.utc).astimezone(jst)
         starttime = datetime.strptime(start_time,'%H%M')
         true_start_jst = datetime.replace(starttime,year=todate.year,month=todate.month,day=todate.day,tzinfo=jst)
     else:
