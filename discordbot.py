@@ -563,12 +563,11 @@ pollnoemoji = '\N{Large Red Circle}'
 @bot.command(name='poll')
 @commands.has_role(siikuinrole)
 async def _poll(ctx,title,*select):
-    if select is None:
+    if len(select)==0:
         embed = discord.Embed(
             title = title,
             description="'\N{Large Red Circle}'Yes\n'\N{Large Green Circle}'No",
             color=3447003,
-            timestamp=discord.utils.utcnow()
         )
         m = await ctx.send(embed=embed)
         await m.add_reaction(pollyesemoji)
@@ -578,7 +577,6 @@ async def _poll(ctx,title,*select):
         embed = discord.Embed(
             title='選択肢が多すぎます。',
             color=16098851,
-            timestamp=discord.utils.utcnow()
         )
         ctx.send(embed=embed)
         return
@@ -592,7 +590,6 @@ async def _poll(ctx,title,*select):
             title=title,
             description=senddesc,
             color=3447003,
-            timestamp=discord.utils.utcnow(),
         )
         m = await ctx.send(embed=embed)
         for x in range(len(select)):
