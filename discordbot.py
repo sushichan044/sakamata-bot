@@ -301,7 +301,7 @@ async def test(ctx):
     """生存確認用"""
     await ctx.send('hello')
     return
-
+'''
 #user-info-command
 @bot.command()
 @commands.has_role(modrole)
@@ -327,11 +327,11 @@ async def user(ctx,id:int):
     #Message成形-途中
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
     await ctx.send(userinfomsg)
+'''
 
-
-@bot.slash_command(guild_ids=[guildid],default_permission=False)
+@bot.slash_command(name='user',guild_ids=[guildid],default_permission=False)
 @permissions.has_role(modrole)
-async def newuser(
+async def _newuser(
     ctx,
     id: Option(str,'対象のIDを入力してください。'),
 ):
@@ -1181,7 +1181,7 @@ async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,)
         return
     true_duration = timedelta(hours=duration)
     true_end = true_start_jst + true_duration
-    await guild.create_scheduled_event(name = eventname,
+    await guild.create_scheduled_event(name = f'【配信】{eventname}',
                                        description='',
                                        start_time = true_start_jst.astimezone(utc),
                                        end_time = true_end,
@@ -1211,7 +1211,7 @@ async def _newcreateevent(ctx,
         return
     true_duration = timedelta(hours=duration)
     true_end = true_start_jst + true_duration
-    await guild.create_scheduled_event(name = eventname,
+    await guild.create_scheduled_event(name = f'【配信】{eventname}',
                                        description='',
                                        start_time = true_start_jst.astimezone(utc),
                                        end_time = true_end,
