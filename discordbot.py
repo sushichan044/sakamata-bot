@@ -1192,7 +1192,7 @@ async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,)
 
 #create-event-slash
 @bot.slash_command(guild_ids=[guildid],default_permission=False,name='make-event')
-@commands.has_role(modrole)
+@permissions.has_role(modrole)
 async def _newcreateevent(ctx,
                           eventname: Option(str,'配信の名前(例:マリカ,歌枠,など)'),
                           streamurl: Option(str,'配信のURL'),
