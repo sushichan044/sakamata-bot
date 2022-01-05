@@ -1,20 +1,15 @@
 import asyncio
 import os
 import re
-import sys
-import traceback
-import logging
-from datetime import datetime, timedelta, timezone, tzinfo
-from typing import Optional, Union
-from typing_extensions import Required
+from datetime import datetime, timedelta, timezone
 
 import discord
 from discord.commands import permissions
 import requests
 from discord import Member
-from discord.channel import DMChannel, TextChannel
+from discord.channel import DMChannel
 from discord.ext import commands, tasks, pages
-from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, Alert, ActionButton, state
+from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, state
 from discord.commands import Option
 from newdispanderfixed import dispand
 
@@ -22,22 +17,24 @@ from newdispanderfixed import dispand
 https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=543816019030&scope=bot
 '''
 
-### イベントハンドラ一覧(client) #################################################
-# async def の後を変えるだけで実行されるイベンドが変わる
-# メッセージ受信時に実行：   on_message(message)
-# Bot起動時に実行：      on_ready(message)
-# リアクション追加時に実行:  on_reaction_add(reaction, user)
-# 新規メンバー参加時に実行： on_member_join(member)
-# ボイスチャンネル出入に実行： on_voice_state_update(member, before, after)
-###################################################################
+'''イベントハンドラ一覧(client)
+async def の後を変えるだけで実行されるイベンドが変わる
+メッセージ受信時に実行：   on_message(message)
+Bot起動時に実行：      on_ready(message)
+リアクション追加時に実行:  on_reaction_add(reaction, user)
+新規メンバー参加時に実行： on_member_join(member)
+ボイスチャンネル出入に実行： on_voice_state_update(member, before, after)'''
+
 
 utc = timezone.utc
-jst = timezone(timedelta(hours=9),'Asia/Tokyo')
+jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
 
-#onlinetoken@heroku
+# onlinetoken@heroku
 token = os.environ['DISCORD_BOT_TOKEN']
 
-#help-command-localize-test
+# help-command-localize-test
+
+
 class JapaneseHelpCommand(commands.DefaultHelpCommand):
     def __init__(self):
         super().__init__()
@@ -46,11 +43,11 @@ class JapaneseHelpCommand(commands.DefaultHelpCommand):
         self.command_attrs["help"] = "コマンド一覧と簡単な説明を表示"
 
     def get_ending_note(self):
-        return (f"各コマンドの説明: /help <コマンド名>\n"
-                f"各カテゴリの説明: /help <カテゴリ名>\n")
+        return ('各コマンドの説明: /help <コマンド名>\n')
+
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix='/',intents=intents,help_command=JapaneseHelpCommand())
+bot = commands.Bot(command_prefix='/', intents=intents, help_command=JapaneseHelpCommand())
 
 
 
@@ -72,7 +69,7 @@ everyone = 915910043461890078
 memberrole = 923789641159700500
 
 '''
-#実験鯖IDなど
+# 実験鯖IDなど
 guildid = 916965252896260117
 logchannel = 916971090042060830
 vclogchannel = 916988601902989373
@@ -88,14 +85,16 @@ adminrole = 917332284582031390
 everyone = 916965252896260117
 memberrole = 926268230417408010
 '''
-#Classes
+# Classes
+
+
 class MemberConfView(View):
     status = state('status')
     okstr = state('okstr')
     ngstr = state('ngstr')
     que = state('que')
 
-    def __init__(self, future,ctx):
+    def __init__(self, future, ctx):
         super().__init__()
         self.future = future
         self.status = None
@@ -103,26 +102,29 @@ class MemberConfView(View):
         self.ngstr = '否認'
         self.ctx = ctx
         self.que = '承認しますか？'
-    async def ok(self,interaction:discord.Interaction):
+
+    async def ok(self, interaction: discord.Interaction):
         self.future.set_result(True)
         self.status = True
         self.que = '承認済み'
         self.okstr = '承認されました'
         await interaction.response.defer()
         return
-    async def ng(self,interaction:discord.Interaction):
+
+    async def ng(self, interaction: discord.Interaction):
         self.future.set_result(False)
         self.status = False
         self.que = '否認済み'
         self.ngstr = '否認されました'
         await interaction.response.defer()
         return
+
     async def body(self) -> Message:
         return Message(
-            embeds = [
+            embeds=[
                 discord.Embed(
                     title=self.que,
-                    description=f'',
+                    description='',
                     color=15767485,
                     url=self.ctx.message.jump_url,
                     ),
@@ -130,21 +132,23 @@ class MemberConfView(View):
             components=[
                 Button(self.okstr)
                 .style(discord.ButtonStyle.green)
-                .disabled(self.status != None)
+                .disabled(self.status is not None)
                 .on_click(self.ok),
                 Button(self.ngstr)
                 .style(discord.ButtonStyle.red)
-                .disabled(self.status != None)
+                .disabled(self.status is not None)
                 .on_click(self.ng)
             ]
         )
 
 
-#emoji
+# emoji
 maruemoji = "\N{Heavy Large Circle}"
 batuemoji = "\N{Cross Mark}"
 
-#Boot-log
+# Boot-log
+
+
 async def greet():
     channel = bot.get_channel(logchannel)
 #    now = discord.utils.utcnow() + timedelta(hours=9)
@@ -152,27 +156,35 @@ async def greet():
     await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
     return
 
-#Task-MemberCount
+# Task-MemberCount
+
+
 @tasks.loop(minutes=10)
 async def start_count():
     await bot.wait_until_ready()
     await membercount()
 
-#起動イベント
+# 起動イベント
+
+
 @bot.event
 async def on_ready():
     print('logged in as {0.user}'.format(bot))
     await greet()
     return
 
-#manualcount
+# manualcount
+
+
 @bot.command(name='manualcount')
 @commands.has_role(adminrole)
 async def _manual(ctx):
     await membercount()
     return
 
-#Membercount本体
+# Membercount本体
+
+
 async def membercount():
     guild = bot.get_guild(guildid)
     membercount = guild.member_count
@@ -180,27 +192,33 @@ async def membercount():
     await vc.edit(name=f'Member Count: {membercount}')
     return
 
-#error-log
+# error-log
+
+
 @bot.event
-async def on_command_error(ctx,error):
+async def on_command_error(ctx, error):
     channel = bot.get_channel(errorlogchannel)
     now = discord.utils.utcnow().astimezone(jst)
     await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}```')
-    if isinstance(error,commands.MissingRole):
-        await ctx.reply(content='このコマンドを実行する権限がありません。',mention_author=False)
+    if isinstance(error, commands.MissingRole):
+        await ctx.reply(content='このコマンドを実行する権限がありません。', mention_author=False)
         return
 
-#error-logtest
+# error-logtest
+
+
 @bot.command()
 @commands.has_role(adminrole)
 async def errortest(ctx):
     prin()
 
-#Detect-NGword
+# Detect-NGword
+
+
 @bot.listen('on_message')
 async def detect_NGword(message):
-    word_list = ['@everyone','@here','@飼育員たち']
-    if message.author ==bot.user:
+    word_list = ['@everyone', '@here', '@飼育員たち']
+    if message.author == bot.user:
         return
     elif type(message.channel) == DMChannel:
         return
@@ -211,30 +229,32 @@ async def detect_NGword(message):
 #        print(n)
         invites_list = await message.guild.invites()
         invites_url = [x.url for x in invites_list]
-        replaced_invites = [item.replace('https://','') for item in invites_url]
+        replaced_invites = [item.replace('https://', '') for item in invites_url]
 #        print(f'{replaced_invites}')
         n = [x for x in n if x not in replaced_invites]
         if m != [] or n != []:
             m = m+n
             m = '\n'.join(m)
-            await sendnglog(message,m)
+            await sendnglog(message, m)
             return
         else:
             return
 
-#send-nglog
-async def sendnglog(message,m):
+# send-nglog
+
+
+async def sendnglog(message, m):
     channel = bot.get_channel(alertchannel)
     embed = discord.Embed(
-    title=f'NGワードを検知しました。',
-    url=message.jump_url,
-    color=16711680,
-    description=message.content,
-    timestamp=message.created_at
+        title='NGワードを検知しました。',
+        url=message.jump_url,
+        color=16711680,
+        description=message.content,
+        timestamp=message.created_at
     )
     embed.set_author(
-    name=message.author.display_name,
-    icon_url=message.author.avatar.url
+        name=message.author.display_name,
+        icon_url=message.author.avatar.url
     )
     embed.add_field(
         name='検知ワード',
@@ -255,12 +275,14 @@ async def sendnglog(message,m):
     await channel.send(embed=embed)
     return
 
-#Dispander-All
+# Dispander-All
+
+
 @bot.listen('on_message')
 async def on_message_dispand(message):
     if type(message.channel) == DMChannel:
         return
-    elif message.content.startswith(('/send-message','/edit-message','/send-dm')):
+    elif message.content.startswith(('/send-message', '/edit-message', '/send-dm')):
         return
     elif message.content.endswith('中止に必要な承認人数: 1'):
         return
@@ -274,9 +296,11 @@ async def on_message_dispand(message):
 https://discordbot.jp/blog/17/
 '''
 
-#VC入退室ログ
+# VC入退室ログ
+
+
 @bot.listen()
-async def on_voice_state_update(member,before,after) :
+async def on_voice_state_update(member, before, after):
     if member.guild.id == guildid and (before.channel != after.channel):
         channel = bot.get_channel(vclogchannel)
         now = discord.utils.utcnow()
@@ -294,7 +318,9 @@ async def on_voice_state_update(member,before,after) :
             await channel.send(msg)
             return
 
-#hello?
+# hello?
+
+
 @bot.command()
 @commands.has_role(modrole)
 async def test(ctx):
@@ -329,7 +355,8 @@ async def user(ctx,id:int):
     await ctx.send(userinfomsg)
 '''
 
-@bot.slash_command(name='user',guild_ids=[guildid],default_permission=False)
+
+@bot.slash_command(name='user', guild_ids=[guildid], default_permission=False)
 @permissions.has_role(modrole)
 async def _newuser(
     ctx,
@@ -338,28 +365,28 @@ async def _newuser(
     '''ユーザー情報を取得できます。'''
     guild = ctx.guild
     member = guild.get_member(int(id))
-    #この先表示する用
+    # この先表示する用
     memberifbot = member.bot
     memberregdate = member.created_at.astimezone(jst)
-    #NickNameあるか？
-    if member.display_name == member.name :
+    # NickNameあるか？
+    if member.display_name == member.name:
         memberifnickname = 'None'
     else:
         memberifnickname = member.display_name
     memberid = member.id
     memberjoindate = member.joined_at.astimezone(jst)
-    membermention = member.mention
-    roles = [[x.name,x.id] for x in member.roles]
-#[[name,id],[name,id]...]
+    # membermention = member.mention
+    roles = [[x.name, x.id] for x in member.roles]
+    # [[name,id],[name,id]...]
     x = ['/ID: '.join(str(y) for y in x) for x in roles]
     z = '\n'.join(x)
-    #Message成形-途中
+    # Message成形-途中
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
     await ctx.respond(userinfomsg)
     return
 
 
-#new-user-info-command
+# new-user-info-command
 '''
 @bot.command()
 @commands.has_role(modrole)
@@ -367,7 +394,7 @@ async def user(ctx,id:int):
     """ユーザー情報取得"""
     target: Optional[Member,User]
     target = ctx.guild.get_member(id)
-    if target == None:
+    if target is None:
         target = await bot.fetch_user(id)
     else:
         pass
@@ -414,7 +441,9 @@ async def user(ctx,id:int):
         pass
     '''
 
-#ping-test
+# ping-test
+
+
 @bot.command()
 @commands.has_role(adminrole)
 async def ping(ctx):
@@ -424,7 +453,9 @@ async def ping(ctx):
     await ctx.send(f'Ping is {ping}ms')
     return
 
-#recieve-dm
+# recieve-dm
+
+
 @bot.listen('on_message')
 async def on_message_dm(message):
     if message.author.bot:
@@ -435,8 +466,8 @@ async def on_message_dm(message):
         channel = bot.get_channel(dmboxchannel)
         sent_messages = []
         if message.content or message.attachments:
-        # Send the second and subsequent attachments with embed (named 'embed') respectively:
-            embed= await compose_embed(message)
+            # Send the second and subsequent attachments with embed (named 'embed') respectively:
+            embed = await compose_embed(message)
             sent_messages.append(embed)
             for attachment in message.attachments[1:]:
                 embed = discord.Embed()
@@ -449,69 +480,75 @@ async def on_message_dm(message):
         await channel.send(embeds=sent_messages)
         return
 
-#send-message
+# send-message
+
+
 @bot.command(name='send-message')
 @commands.has_role(adminrole)
-async def _messagesend(ctx,channelid:int,*,arg):
+async def _messagesend(ctx, channelid: int, *, arg):
     """メッセージ送信用"""
-    #channel:送信先
-    channel=bot.get_channel(channelid)
-    #role:承認可能ロール
+    # channel:送信先
+    channel = bot.get_channel(channelid)
+    # role:承認可能ロール
     role = ctx.guild.get_role(adminrole)
     kakuninmsg = f'【メッセージ送信確認】\n以下のメッセージを{channel.mention}へ送信します。'
     exemsg = f'{channel.mention}にメッセージを送信しました。'
     nonexemsg = f'{channel.mention}へのメッセージ送信をキャンセルしました。'
     confarg = f'\n{arg}\n------------------------'
-    turned = await confirm(ctx,confarg,role,kakuninmsg)
+    turned = await confirm(ctx, confarg, role, kakuninmsg)
     if turned == 'ok':
-        msg=exemsg
+        msg = exemsg
         m = await channel.send(arg)
         descurl = m.jump_url
         await ctx.send('Sended!')
-        await sendexelog(ctx,msg,descurl)
+        await sendexelog(ctx, msg, descurl)
         return
     elif turned == 'cancel':
-        msg=nonexemsg
+        msg = nonexemsg
         descurl = ''
-        await sendexelog(ctx,msg,descurl)
+        await sendexelog(ctx, msg, descurl)
         await ctx.send('Cancelled!')
         return
     else:
         return
 
-#send-dm
+# send-dm
+
+
 @bot.command(name='send-dm')
 @commands.has_role(adminrole)
-async def _dmsend(ctx,user:Member,*,arg):
+async def _dmsend(ctx, user: Member, *, arg):
     """DM送信用"""
     role = ctx.guild.get_role(adminrole)
     kakuninmsg = f'【DM送信確認】\n以下のDMを{user.mention}へ送信します。'
     exemsg = f'{user.mention}にDMを送信しました。'
     nonexemsg = f'{user.mention}へのDM送信をキャンセルしました。'
     confarg = f'\n{arg}\n------------------------'
-    turned = await confirm(ctx,confarg,role,kakuninmsg)
+    turned = await confirm(ctx, confarg, role, kakuninmsg)
     if turned == 'ok':
-        msg=exemsg
+        msg = exemsg
         m = await user.send(arg)
         descurl = m.jump_url
         await ctx.send('Sended!')
-        await sendexelog(ctx,msg,descurl)
+        await sendexelog(ctx, msg, descurl)
         return
     elif turned == 'cancel':
-        msg=nonexemsg
+        msg = nonexemsg
         descurl = ''
-        await sendexelog(ctx,msg,descurl)
+        await sendexelog(ctx, msg, descurl)
         await ctx.send('Cancelled!')
         return
     else:
         return
 
-#edit-message
+# edit-message
+
+
 @bot.command(name='edit-message')
 @commands.has_role(adminrole)
-async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
+async def _editmessage(ctx, channelid: int, messageid: int, *, arg):
     """メッセージ編集用"""
-    channel=bot.get_channel(channelid)
+    channel = bot.get_channel(channelid)
     role = ctx.guild.get_role(adminrole)
     msgid = await channel.fetch_message(messageid)
     msgurl = f'https://discord.com/channels/{ctx.guild.id}/{channelid}/{messageid}'
@@ -519,43 +556,43 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     exemsg = f'{channel.mention}のメッセージを編集しました。'
     nonexemsg = f'{channel.mention}のメッセージの編集をキャンセルしました。'
     confarg = f'\n{arg}\n------------------------'
-    turned = await confirm(ctx,confarg,role,kakuninmsg)
+    turned = await confirm(ctx, confarg, role, kakuninmsg)
     if turned == 'ok':
-        msg=exemsg
+        msg = exemsg
         await msgid.edit(content=arg)
         descurl = msgurl
         await ctx.send('Edited!')
-        await sendexelog(ctx,msg,descurl)
+        await sendexelog(ctx, msg, descurl)
         return
     elif turned == 'cancel':
-        msg=nonexemsg
+        msg = nonexemsg
         descurl = ''
-        await sendexelog(ctx,msg,descurl)
+        await sendexelog(ctx, msg, descurl)
         await ctx.send('Cancelled!')
         return
     else:
         return
 
-#PollEmoji
+# PollEmoji
 pollemoji_list = [
     '\N{Large Red Circle}',
     '\N{Large Green Circle}',
     '\N{Large Orange Circle}',
     '\N{Large Blue Circle}',
-#    '\N{Large Yellow Circle}',
+    # '\N{Large Yellow Circle}',
     '\N{Large Brown Circle}',
     '\N{Large Purple Circle}',
-#    '\N{Medium Black Circle}',
-#    '\N{Medium White Circle}',
+    # '\N{Medium Black Circle}',
+    # '\N{Medium White Circle}',
     '\N{Large Red Square}',
     '\N{Large Green Square}',
     '\N{Large Orange Square}',
     '\N{Large Blue Square}',
-#    '\N{Large Yellow Square}',
+    # '\N{Large Yellow Square}',
     '\N{Large Brown Square}',
     '\N{Large Purple Square}',
-#    '\N{Black Large Square}',
-#    '\N{White Large Square}',
+    # '\N{Black Large Square}',
+    # '\N{White Large Square}',
     '\N{Large Orange Diamond}',
     '\N{Large Blue Diamond}',
     '\N{Heavy Black Heart}',
@@ -565,21 +602,20 @@ pollemoji_list = [
     '\N{Brown Heart}',
     '\N{Purple Heart}',
 ]
+# Poll
 
-pollyesemoji = '\N{Large Green Circle}'
-pollnoemoji = '\N{Large Red Circle}'
 
-#Poll
 @bot.command(name='poll')
 @commands.has_role(siikuinrole)
-async def _poll(ctx,title,*select):
-#    if len(select)==0:
+async def _poll(ctx, title, *select):
     if select == ():
         embed = discord.Embed(
-            title = title,
+            title=title,
             description="\N{Large Green Circle}Yes\n\N{Large Red Circle}No",
             color=3447003,
         )
+        pollyesemoji = '\N{Large Green Circle}'
+        pollnoemoji = '\N{Large Red Circle}'
         m = await ctx.send(embed=embed)
         await m.add_reaction(pollyesemoji)
         await m.add_reaction(pollnoemoji)
@@ -607,32 +643,34 @@ async def _poll(ctx,title,*select):
             await m.add_reaction(pollemoji_list[x])
         return
 
-#deal-member
-#deal:対処。ban/kick
+# deal-member
+# deal:対処。ban/kick
 deal = None
-#adddm:デフォルトDMに追加で送信するコンテンツ
+# adddm:デフォルトDMに追加で送信するコンテンツ
 adddm = None
 
-#timeout-member
+# timeout-member
+
+
 @bot.command(name='timeout')
 @commands.has_role(modrole)
-async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
+async def _timeout(ctx, member: Member, xuntil: str, ifdm: str = 'True'):
     '''メンバーをタイムアウト'''
-    until = datetime.strptime(xuntil,'%Y%m%d')
-    tzuntil = datetime.replace(until,tzinfo=jst)
+    until = datetime.strptime(xuntil, '%Y%m%d')
+    tzuntil = datetime.replace(until, tzinfo=jst)
     role = ctx.guild.get_role(modrole)
-    validifdm = ['True','False']
-    untilstr = datetime.strftime(tzuntil,'%Y/%m/%d/%H:%M')
+    validifdm = ['True', 'False']
+    untilstr = datetime.strftime(tzuntil, '%Y/%m/%d/%H:%M')
     if ifdm not in validifdm:
-        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
+        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。', mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
         descurl = ''
-        await sendexelog(ctx,msg,descurl)
+        await sendexelog(ctx, msg, descurl)
         return
     else:
         deal = 'timeout'
         adddm = f'あなたは{untilstr}までサーバーでの発言とボイスチャットへの接続を制限されます。'
-        DMcontent = await makedealdm(ctx,deal,adddm)
+        DMcontent = await makedealdm(ctx, deal, adddm)
         if ifdm == 'False':
             DMcontent = ''
         else:
@@ -641,78 +679,82 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
         exemsg = f'{member.mention}をタイムアウトしました。'
         nonexemsg = f'{member.mention}のタイムアウトをキャンセルしました。'
         confarg = ''
-        turned = await confirm(ctx,confarg,role,kakuninmsg)
+        turned = await confirm(ctx, confarg, role, kakuninmsg)
         if turned == 'ok':
             msg = exemsg
             if ifdm == 'True':
                 m = await member.send(DMcontent)
                 descurl = m.jump_url
-                await member.timeout(tzuntil.astimezone(utc),reason = None)
+                await member.timeout(tzuntil.astimezone(utc), reason=None)
                 await ctx.send('timeouted!')
-                await sendtolog(ctx,msg,descurl,untilstr)
+                await sendtolog(ctx, msg, descurl, untilstr)
                 return
             elif ifdm == 'False':
                 descurl = ''
-                await member.timeout(tzuntil + timedelta(hours=-9),reason = None)
+                await member.timeout(tzuntil + timedelta(hours=-9), reason=None)
                 await ctx.send('timeouted!')
-                await sendtolog(ctx,msg,descurl,untilstr)
+                await sendtolog(ctx, msg, descurl, untilstr)
                 return
             else:
                 return
         elif turned == 'cancel':
-            msg=nonexemsg
+            msg = nonexemsg
             descurl = ''
-            await sendexelog(ctx,msg,descurl)
+            await sendexelog(ctx, msg, descurl)
             await ctx.send('Cancelled!')
             return
         else:
             return
 
-#untimeout-member
+# untimeout-member
+
+
 @bot.command(name='untimeout')
 @commands.has_role(modrole)
-async def _untimeout(ctx,member:Member):
+async def _untimeout(ctx, member: Member):
     '''メンバーのタイムアウトを解除'''
     role = ctx.guild.get_role(modrole)
     kakuninmsg = f'【untimeout実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})'
     exemsg = f'{member.mention}のタイムアウトの解除をしました。'
     nonexemsg = f'{member.mention}のタイムアウトの解除をキャンセルしました。'
     confarg = ''
-    turned = await confirm(ctx,confarg,role,kakuninmsg)
+    turned = await confirm(ctx, confarg, role, kakuninmsg)
     if turned == 'ok':
         msg = exemsg
         descurl = ''
-        await member.timeout(None,reason = None)
+        await member.timeout(None, reason=None)
         await ctx.send('untimeouted!')
-        await sendexelog(ctx,msg,descurl)
+        await sendexelog(ctx, msg, descurl)
         return
     elif turned == 'cancel':
-        msg=nonexemsg
+        msg = nonexemsg
         descurl = ''
-        await sendexelog(ctx,msg,descurl)
+        await sendexelog(ctx, msg, descurl)
         await ctx.send('Cancelled!')
         return
     else:
         return
 
 
-#kick-member
+# kick-member
+
+
 @bot.command(name='kick')
 @commands.has_role(adminrole)
-async def _kickuser(ctx,member:Member,ifdm:str='True'):
+async def _kickuser(ctx, member: Member, ifdm: str = 'True'):
     '''メンバーをキック'''
     role = ctx.guild.get_role(adminrole)
-    validifdm = ['True','False']
+    validifdm = ['True', 'False']
     if ifdm not in validifdm:
-        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
+        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。', mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
         descurl = ''
-        await sendexelog(ctx,msg,descurl)
+        await sendexelog(ctx, msg, descurl)
         return
     else:
         deal = 'kick'
         adddm = ''
-        DMcontent = await makedealdm(ctx,deal,adddm)
+        DMcontent = await makedealdm(ctx, deal, adddm)
         if ifdm == 'False':
             DMcontent = ''
         else:
@@ -721,45 +763,47 @@ async def _kickuser(ctx,member:Member,ifdm:str='True'):
         exemsg = f'{member.mention}をキックしました。'
         nonexemsg = f'{member.mention}のキックをキャンセルしました。'
         confarg = ''
-        turned = await confirm(ctx,confarg,role,kakuninmsg)
+        turned = await confirm(ctx, confarg, role, kakuninmsg)
         if turned == 'ok':
             msg = exemsg
             if ifdm == 'True':
                 m = await member.send(DMcontent)
                 descurl = m.jump_url
-                await member.kick(reason = None)
+                await member.kick(reason=None)
                 await ctx.send('kicked!')
-                await sendexelog(ctx,msg,descurl)
+                await sendexelog(ctx, msg, descurl)
                 return
             elif ifdm == 'False':
                 descurl = ''
-                await member.kick(reason = None)
+                await member.kick(reason=None)
                 await ctx.send('kicked!')
-                await sendexelog(ctx,msg,descurl)
+                await sendexelog(ctx, msg, descurl)
                 return
             else:
                 return
         elif turned == 'cancel':
-            msg=nonexemsg
+            msg = nonexemsg
             descurl = ''
-            await sendexelog(ctx,msg,descurl)
+            await sendexelog(ctx, msg, descurl)
             await ctx.send('Cancelled!')
             return
         else:
             return
 
-#ban-member
+# ban-member
+
+
 @bot.command(name='ban')
 @commands.has_role(adminrole)
-async def _banuser(ctx,member:Member,ifdm:str='True'):
+async def _banuser(ctx, member: Member, ifdm: str = 'True'):
     '''メンバーをBAN'''
     role = ctx.guild.get_role(adminrole)
-    validifdm = ['True','False']
+    validifdm = ['True', 'False']
     if ifdm not in validifdm:
-        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。',mention_author=False)
+        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。', mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
         descurl = ''
-        await sendexelog(ctx,msg,descurl)
+        await sendexelog(ctx, msg, descurl)
         return
     else:
         deal = 'BAN'
@@ -770,7 +814,7 @@ BANの解除を希望する場合は以下のフォームをご利用くださ�
 クロヱ水族館BAN解除申請フォーム
 https://forms.gle/mR1foEyd9JHbhYdCA
 '''
-        DMcontent = await makedealdm(ctx,deal,adddm)
+        DMcontent = await makedealdm(ctx, deal, adddm)
         if ifdm == 'False':
             DMcontent = ''
         else:
@@ -779,97 +823,101 @@ https://forms.gle/mR1foEyd9JHbhYdCA
         exemsg = f'{member.mention}をBANしました。'
         nonexemsg = f'{member.mention}のBANをキャンセルしました。'
         confarg = ''
-        turned = await confirm(ctx,confarg,role,kakuninmsg)
+        turned = await confirm(ctx, confarg, role, kakuninmsg)
         if turned == 'ok':
             msg = exemsg
             if ifdm == 'True':
                 m = await member.send(DMcontent)
                 descurl = m.jump_url
-                await member.ban(reason = None)
+                await member.ban(reason=None)
                 await ctx.send('baned!')
-                await sendexelog(ctx,msg,descurl)
+                await sendexelog(ctx, msg, descurl)
                 return
             elif ifdm == 'False':
                 descurl = ''
-                await member.ban(reason = None)
+                await member.ban(reason=None)
                 await ctx.send('baned!')
-                await sendexelog(ctx,msg,descurl)
+                await sendexelog(ctx, msg, descurl)
                 return
             else:
                 return
         elif turned == 'cancel':
-            msg=nonexemsg
+            msg = nonexemsg
             descurl = ''
             await ctx.send('Cancelled!')
-            await sendexelog(ctx,msg,descurl)
+            await sendexelog(ctx, msg, descurl)
             return
         else:
             return
 
-#Unban-member
+# Unban-member
+
+
 @bot.command(name='unban')
 @commands.has_role(adminrole)
-async def _unbanuser(ctx,id:int):
+async def _unbanuser(ctx, id: int):
     '''ユーザーのBANを解除'''
     user = await bot.fetch_user(id)
     banned_users = await ctx.guild.bans()
     role = ctx.guild.get_role(adminrole)
     for ban_entry in banned_users:
-            banneduser = ban_entry.user.id
-            if banneduser == user.id:
-                kakuninmsg = f'【Unban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{user}(ID:{user.id})'
-                exemsg = f'{user.mention}のBANを解除しました。'
-                nonexemsg = f'{user.mention}のBANの解除をキャンセルしました。'
-                confarg = ''
-                turned = await confirm(ctx,confarg,role,kakuninmsg)
-                if turned == 'ok':
-                    msg = exemsg
-                    descurl = ''
-                    await ctx.guild.unban(user)
-                    await ctx.send('Unbaned!')
-                    await sendexelog(ctx,msg,descurl)
-                    return
-                elif turned == 'cancel':
-                    msg=nonexemsg
-                    descurl = ''
-                    await ctx.send('Cancelled!')
-                    await sendexelog(ctx,msg,descurl)
-                    return
-                else:
-                    return
-            else:
-                await ctx.reply('BANリストにないユーザーを指定したため処理を停止します。',mention_author=False)
-                msg = 'BANリストにないユーザーを指定したため処理を停止しました。'
+        banneduser = ban_entry.user.id
+        if banneduser == user.id:
+            kakuninmsg = f'【Unban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{user}(ID:{user.id})'
+            exemsg = f'{user.mention}のBANを解除しました。'
+            nonexemsg = f'{user.mention}のBANの解除をキャンセルしました。'
+            confarg = ''
+            turned = await confirm(ctx, confarg, role, kakuninmsg)
+            if turned == 'ok':
+                msg = exemsg
                 descurl = ''
-                await sendexelog(ctx,msg,descurl)
+                await ctx.guild.unban(user)
+                await ctx.send('Unbaned!')
+                await sendexelog(ctx, msg, descurl)
                 return
+            elif turned == 'cancel':
+                msg = nonexemsg
+                descurl = ''
+                await ctx.send('Cancelled!')
+                await sendexelog(ctx, msg, descurl)
+                return
+            else:
+                return
+        else:
+            await ctx.reply('BANリストにないユーザーを指定したため処理を停止します。', mention_author=False)
+            msg = 'BANリストにないユーザーを指定したため処理を停止しました。'
+            descurl = ''
+            await sendexelog(ctx, msg, descurl)
+            return
 
-#check-member
+# check-member
+
+
 @bot.command(name='check')
 @commands.dm_only()
 async def _checkmember(ctx):
     '''メンバーシップ認証用'''
     if ctx.message.attachments == []:
-        await ctx.reply(content='画像が添付されていません。画像を添付して送り直してください。',mention_author=False)
+        await ctx.reply(content='画像が添付されていません。画像を添付して送り直してください。', mention_author=False)
         msg = 'メンバー認証コマンドに画像が添付されていなかったため処理を停止しました。'
         descurl = ''
-        await sendexelog(ctx,msg,descurl)
+        await sendexelog(ctx, msg, descurl)
         return
     else:
-        await ctx.reply(content='認証要求を受理しました。\nしばらくお待ちください。',mention_author=False)
-        channel= bot.get_channel(membercheckchannel)
+        await ctx.reply(content='認証要求を受理しました。\nしばらくお待ちください。', mention_author=False)
+        channel = bot.get_channel(membercheckchannel)
         image_url = [x.url for x in ctx.message.attachments]
         embedimg = []
         embed = discord.Embed(
-        title='メンバー認証コマンドを受信しました。',
-        url=ctx.message.jump_url,
-        color=3447003,
-        description=ctx.message.content,
-        timestamp=ctx.message.created_at
+            title='メンバー認証コマンドを受信しました。',
+            url=ctx.message.jump_url,
+            color=3447003,
+            description=ctx.message.content,
+            timestamp=ctx.message.created_at
         )
         embed.set_author(
-        name=ctx.message.author.display_name,
-        icon_url=ctx.message.author.avatar.url
+            name=ctx.message.author.display_name,
+            icon_url=ctx.message.author.avatar.url
         )
         embed.add_field(
             name='送信者',
@@ -883,7 +931,7 @@ async def _checkmember(ctx):
         for x in image_url:
             embed = discord.Embed()
             embed.set_image(
-            url=x
+                url=x
             )
             embedimg.append(embed)
         await channel.send(embeds=embedimg)
@@ -891,8 +939,8 @@ async def _checkmember(ctx):
         exemsg = f'{ctx.message.author.mention}のメンバーシップ認証を承認しました。'
         nonexemsg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
         future = asyncio.Future()
-        view = MemberConfView(future,ctx)
-        tracker = ViewTracker(view,timeout=None)
+        view = MemberConfView(future, ctx)
+        tracker = ViewTracker(view, timeout=None)
         await tracker.track(MessageProvider(channel))
         await future
         if future.done():
@@ -902,18 +950,18 @@ async def _checkmember(ctx):
                 member = guild.get_member(ctx.message.author.id)
                 addmemberrole = guild.get_role(memberrole)
                 await member.add_roles(addmemberrole)
-                await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
+                await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!', mention_author=False)
                 channellog = bot.get_channel(logchannel)
                 embed = discord.Embed(
-                title = '実行ログ',
-                color = 3447003,
-                description = msg,
-                url = f'{descurl}',
-                timestamp=discord.utils.utcnow()
+                    title='実行ログ',
+                    color=3447003,
+                    description=msg,
+                    url=f'{descurl}',
+                    timestamp=discord.utils.utcnow()
                 )
                 embed.set_author(
-                name=bot.user,
-                icon_url=bot.user.display_avatar.url
+                    name=bot.user,
+                    icon_url=bot.user.display_avatar.url
                 )
                 embed.add_field(
                     name='実行日時',
@@ -922,26 +970,26 @@ async def _checkmember(ctx):
                 await channellog.send(embed=embed)
                 return
             else:
-                msg=nonexemsg
+                msg = nonexemsg
                 descurl = ''
                 await channel.send('DMで送信する不承認理由を入力してください。')
+
                 def check(message):
-                    return message.content != None and message.channel == channel and message.author != bot.user
-                message = await bot.wait_for('message',check=check)
+                    return message.content is not None and message.channel == channel and message.author != bot.user
+                message = await bot.wait_for('message', check=check)
                 replymsg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
-                await ctx.reply(content=replymsg,mention_author=False)
-                #await channel.send('Cancelled!')
+                await ctx.reply(content=replymsg, mention_author=False)
                 channellog = bot.get_channel(logchannel)
                 embed = discord.Embed(
-                title = '実行ログ',
-                color = 3447003,
-                description = msg,
-                url = f'{descurl}',
-                timestamp=discord.utils.utcnow()
+                    title='実行ログ',
+                    color=3447003,
+                    description=msg,
+                    url=f'{descurl}',
+                    timestamp=discord.utils.utcnow()
                 )
                 embed.set_author(
-                name=bot.user,
-                icon_url=bot.user.display_avatar.url
+                    name=bot.user,
+                    icon_url=bot.user.display_avatar.url
                 )
                 embed.add_field(
                     name='実行日時',
@@ -976,7 +1024,7 @@ async def _checkmember(ctx):
             descurl = ''
             await channel.send('DMで送信する不承認理由を入力してください。')
             def check(message):
-                return message.content != None and message.channel == channel
+                return message.content is not None and message.channel == channel
             message = await bot.wait_for('message',check=check)
             replymsg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
             await ctx.reply(content=replymsg,mention_author=False)
@@ -985,7 +1033,9 @@ async def _checkmember(ctx):
             return
 '''
 
-#save-img
+# save-img
+
+
 async def download_img(url, file_name):
     r = requests.get(url, stream=True)
     if r.status_code == 200:
@@ -993,8 +1043,10 @@ async def download_img(url, file_name):
             f.write(r.content)
 
 
-#Deal-DM
-async def makedealdm(ctx,deal,adddm):
+# Deal-DM
+
+
+async def makedealdm(ctx, deal, adddm):
     DMcontent = f'''【あなたは{deal}されました】
 クロヱ水族館/Chloeriumの管理者です。
 
@@ -1002,36 +1054,41 @@ async def makedealdm(ctx,deal,adddm):
 {adddm}'''
     return DMcontent
 
-#confirm-system
-async def confirm(ctx,confarg,role,kakuninmsg):
+# confirm-system
+
+
+async def confirm(ctx, confarg, role, kakuninmsg):
     sendkakuninmsg = f'{kakuninmsg}\n------------------------{confarg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
     m = await ctx.send(sendkakuninmsg)
     await m.add_reaction(maruemoji)
     await m.add_reaction(batuemoji)
-    valid_reactions = [maruemoji,batuemoji]
-    #wait-for-reaction
+    valid_reactions = [maruemoji, batuemoji]
+    # wait-for-reaction
+
     def checkconf(payload):
         return role in payload.member.roles and str(payload.emoji) in valid_reactions and payload.message_id == m.id
-    payload = await bot.wait_for('raw_reaction_add',check = checkconf)
-    #exe
+    payload = await bot.wait_for('raw_reaction_add', check=checkconf)
+    # exe
     if str(payload.emoji) == maruemoji:
         return 'ok'
     else:
         return 'cancel'
 
-#send-exe-log
-async def sendexelog(ctx,msg,descurl):
+# send-exe-log
+
+
+async def sendexelog(ctx, msg, descurl):
     channel = bot.get_channel(logchannel)
     embed = discord.Embed(
-    title = '実行ログ',
-    color = 3447003,
-    description = msg,
-    url = f'{descurl}',
-    timestamp=discord.utils.utcnow()
+        title='実行ログ',
+        color=3447003,
+        description=msg,
+        url=f'{descurl}',
+        timestamp=discord.utils.utcnow()
     )
     embed.set_author(
-    name=bot.user,
-    icon_url=bot.user.display_avatar.url
+        name=bot.user,
+        icon_url=bot.user.display_avatar.url
     )
     embed.add_field(
         name='実行者',
@@ -1048,19 +1105,21 @@ async def sendexelog(ctx,msg,descurl):
     await channel.send(embed=embed)
     return
 
-#send-timeout-log
-async def sendtolog(ctx,msg,descurl,untilstr):
+# send-timeout-log
+
+
+async def sendtolog(ctx, msg, descurl, untilstr):
     channel = bot.get_channel(logchannel)
     embed = discord.Embed(
-    title = '実行ログ',
-    color = 3447003,
-    description = msg,
-    url = f'{descurl}',
-    timestamp=discord.utils.utcnow()
+        title='実行ログ',
+        color=3447003,
+        description=msg,
+        url=f'{descurl}',
+        timestamp=discord.utils.utcnow()
     )
     embed.set_author(
-    name=bot.user,
-    icon_url=bot.user.display_avatar.url
+        name=bot.user,
+        icon_url=bot.user.display_avatar.url
     )
     embed.add_field(
         name='実行者',
@@ -1082,7 +1141,9 @@ async def sendtolog(ctx,msg,descurl,untilstr):
     return
 
 
-#compose-embed
+# compose-embed
+
+
 async def compose_embed(message):
     embed = discord.Embed(
         title='DMを受信しました。',
@@ -1109,7 +1170,9 @@ async def compose_embed(message):
         )
     return embed
 
-#notice-thread/send-log
+# notice-thread/send-log
+
+
 @bot.listen('on_thread_join')
 async def detect_thread(thread):
     channel = bot.get_channel(threadlogchannel)
@@ -1130,27 +1193,29 @@ async def detect_thread(thread):
             icon_url=thread.owner.display_avatar.url,
         )
         embed.add_field(
-        name='作成元チャンネル',
-        value=f'{thread.parent.mention}'
+            name='作成元チャンネル',
+            value=f'{thread.parent.mention}'
         )
         embed.add_field(
-        name='作成スレッド',
-        value=f'{thread.mention}'
+            name='作成スレッド',
+            value=f'{thread.mention}'
         )
         embed.add_field(
-        name='作成者',
-        value=f'{thread.owner.mention}'
+            name='作成者',
+            value=f'{thread.owner.mention}'
         )
         embed.add_field(
-        name='作成日時',
-        value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
+            name='作成日時',
+            value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
         )
         await channel.send(embed=embed)
         return
 
-#detect-thread-archive
+# detect-thread-archive
+
+
 @bot.listen('on_thread_update')
-async def detect_archive(before,after):
+async def detect_archive(before, after):
     if after.locked and not before.locked:
         return
     elif after.archived and not before.archived:
@@ -1159,7 +1224,7 @@ async def detect_archive(before,after):
     else:
         return
 
-#YoutubeAPI
+# YoutubeAPI
 API_KEY = 'AIzaSyAP9IbX_mMnbJEQP0PtG0-QBi5mJFRGYaM'
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
@@ -1191,34 +1256,36 @@ async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,)
     return
 '''
 
-#create-event-slash
-@bot.slash_command(guild_ids=[guildid],default_permission=False,name='make-event')
+# create-event-slash
+
+
+@bot.slash_command(guild_ids=[guildid], default_permission=False, name='make-event')
 @permissions.has_role(modrole)
 async def _newcreateevent(ctx,
                           eventname: Option(str,'配信の名前(例:マリカ,歌枠,など)'),
                           streamurl: Option(str,'配信のURL'),
                           start_time: Option(str,'配信開始時間(202205182100または2100(当日))'),
                           duration: Option(float,'予想される配信の長さ(単位:時間)(例:1.5)'),
-):
+                          ):
     '''配信を簡単にイベントに登録できます。'''
     guild = ctx.guild
-    if len(start_time)==4:
+    if len(start_time) == 4:
         todate = datetime.now(timezone.utc).astimezone(jst)
-        starttime = datetime.strptime(start_time,'%H%M')
-        true_start_jst = datetime.replace(starttime,year=todate.year,month=todate.month,day=todate.day,tzinfo=jst)
-    elif len(start_time)==12:
-        true_start = datetime.strptime(start_time,'%Y%m%d%H%M')
-        true_start_jst = datetime.replace(true_start,tzinfo=jst)
+        starttime = datetime.strptime(start_time, '%H%M')
+        true_start_jst = datetime.replace(starttime, year=todate.year, month=todate.month, day=todate.day, tzinfo=jst)
+    elif len(start_time) == 12:
+        true_start = datetime.strptime(start_time, '%Y%m%d%H%M')
+        true_start_jst = datetime.replace(true_start, tzinfo=jst)
     else:
-        await ctx.respond(content='正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```',mention_author=False)
+        await ctx.respond(content='正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```', mention_author=False)
         return
     true_duration = timedelta(hours=duration)
     true_end = true_start_jst + true_duration
-    await guild.create_scheduled_event(name = f'【配信】{eventname}',
+    await guild.create_scheduled_event(name=f'【配信】{eventname}',
                                        description='',
-                                       start_time = true_start_jst.astimezone(utc),
-                                       end_time = true_end,
-                                       location = streamurl,
+                                       start_time=true_start_jst.astimezone(utc),
+                                       end_time=true_end,
+                                       location=streamurl,
                                        )
     await ctx.respond('配信を登録しました。')
     return
