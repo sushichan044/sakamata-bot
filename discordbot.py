@@ -1163,7 +1163,7 @@ API_KEY = 'AIzaSyAP9IbX_mMnbJEQP0PtG0-QBi5mJFRGYaM'
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
-
+'''
 #create-event
 @bot.command(name='make-event')
 @commands.has_role(modrole)
@@ -1188,6 +1188,7 @@ async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,)
                                        location = streamurl,
                                        )
     return
+'''
 
 #create-event-slash
 @bot.slash_command(guild_ids=[guildid],defaulr_permission=False,name='make-event')
