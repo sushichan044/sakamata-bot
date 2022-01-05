@@ -575,7 +575,7 @@ async def _poll(ctx,title,*select):
     if select == ():
         embed = discord.Embed(
             title = title,
-            description="\N{Large Red Circle}Yes\n\N{Large Green Circle}No",
+            description="\N{Large Green Circle}Yes\n\N{Large Red Circle}No",
             color=3447003,
         )
         m = await ctx.send(embed=embed)
