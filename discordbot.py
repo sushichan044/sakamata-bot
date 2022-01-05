@@ -1172,7 +1172,7 @@ async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,)
     true_duration = timedelta(hours=duration)
     true_end = true_start + true_duration
     await guild.create_scheduled_event(name = eventname,
-                                       descripton='',
+                                       description='',
                                        start_time = true_start,
                                        end_time = true_end,
                                        location = streamurl,
