@@ -1,17 +1,20 @@
 import asyncio
+import logging
 import os
 import re
 from datetime import datetime, timedelta, timezone
 
 import discord
-from discord.commands import permissions
 import requests
 from discord import Member
 from discord.channel import DMChannel
-from discord.ext import commands, tasks, pages
-from discord.ext.ui import View, Message, Button, ViewTracker, MessageProvider, state
-from discord.commands import Option
+from discord.commands import Option, permissions
+from discord.ext import commands, pages, tasks
+from discord.ext.ui import (
+    Button, Message, MessageProvider, View, ViewTracker, state)
 from newdispanderfixed import dispand
+
+logging.basicConfig(level=logging.INFO)
 
 '''bot招待リンク
 https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=543816019030&scope=bot
