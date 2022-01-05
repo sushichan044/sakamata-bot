@@ -563,10 +563,11 @@ pollnoemoji = '\N{Large Red Circle}'
 @bot.command(name='poll')
 @commands.has_role(siikuinrole)
 async def _poll(ctx,title,*select):
-    if len(select)==0:
+#    if len(select)==0:
+    if select == ():
         embed = discord.Embed(
             title = title,
-            description="'\N{Large Red Circle}'Yes\n'\N{Large Green Circle}'No",
+            description="\N{Large Red Circle}Yes\n\N{Large Green Circle}No",
             color=3447003,
         )
         m = await ctx.send(embed=embed)
