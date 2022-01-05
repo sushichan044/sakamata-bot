@@ -534,6 +534,68 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
     else:
         return
 
+#PollEmoji
+pollemoji_list = [
+    '\N{Large Red Circle}',
+    '\N{Large Green Circle}'
+    '\N{Large Orange Circle}',
+    '\N{Large Blue Circle}',
+    '\N{Large Yellow Circle}',
+    '\N{Large Purple Circle}',
+    '\N{Large Brown Circle}',
+    '\N{Medium Black Circle}',
+    '\N{Medium White Circle}',
+    '\N{Large Red Square}',
+    '\N{Large Green Square}'
+    '\N{Large Orange Square}',
+    '\N{Large Blue Square}',
+    '\N{Large Yellow Square}',
+    '\N{Large Purple Square}',
+    '\N{Large Brown Square}',
+    '\N{Black Large Square}',
+    '\N{White Large Square}',
+]
+
+#Poll
+@bot.command(name='poll')
+@commands.has_role(siikuinrole)
+async def _poll(ctx,title,*select):
+    if select is None:
+        embed = discord.Embed(
+            title = title,
+            description="'\N{Large Red Circle}'Yes\n'\N{Large Green Circle}'No",
+            color=3447003,
+            timestamp=discord.utils.utcnow()
+        )
+        m = await ctx.send(embed=embed)
+        await m.add_reaction('\N{Large Red Circle}')
+        await m.add_reaction('\N{Large Green Circle}')
+        return
+    elif len(select) > 20:
+        embed = discord.Embed(
+            title='選択肢が多すぎます。',
+            color=16098851,
+            timestamp=discord.utils.utcnow()
+        )
+        ctx.send(embed=embed)
+        return
+    else:
+        senddesclist = []
+        for num in range(len(select)):
+            element = f'{pollemoji_list[num]}{select[num]}'
+            senddesclist.append(element)
+        senddesc = '\n'.join(senddesclist)
+        embed = discord.Embed(
+            title=title,
+            description=senddesc,
+            color=3447003,
+            timestamp=discord.utils.utcnow(),
+        )
+        m = await ctx.send(embed=embed)
+        for x in range(len(select)):
+            await m.add_reaction(pollemoji_list[x])
+        return
+
 #deal-member
 #deal:対処。ban/kick
 deal = None
