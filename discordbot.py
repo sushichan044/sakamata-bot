@@ -537,7 +537,7 @@ async def _editmessage(ctx,channelid:int,messageid:int,*,arg):
 #PollEmoji
 pollemoji_list = [
     '\N{Large Red Circle}',
-    '\N{Large Green Circle}'
+    '\N{Large Green Circle}',
     '\N{Large Orange Circle}',
     '\N{Large Blue Circle}',
     '\N{Large Yellow Circle}',
@@ -546,7 +546,7 @@ pollemoji_list = [
     '\N{Medium Black Circle}',
     '\N{Medium White Circle}',
     '\N{Large Red Square}',
-    '\N{Large Green Square}'
+    '\N{Large Green Square}',
     '\N{Large Orange Square}',
     '\N{Large Blue Square}',
     '\N{Large Yellow Square}',
