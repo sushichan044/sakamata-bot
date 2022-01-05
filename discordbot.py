@@ -1207,7 +1207,7 @@ async def _newcreateevent(ctx,
         true_start = datetime.strptime(start_time,'%Y%m%d%H%M')
         true_start_jst = datetime.replace(true_start,tzinfo=jst)
     else:
-        await ctx.reply(content='正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```',mention_author=False)
+        await ctx.respond(content='正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```',mention_author=False)
         return
     true_duration = timedelta(hours=duration)
     true_end = true_start_jst + true_duration
@@ -1217,6 +1217,7 @@ async def _newcreateevent(ctx,
                                        end_time = true_end,
                                        location = streamurl,
                                        )
+    await ctx.respond('配信を登録しました。')
     return
 
 start_count.start()
