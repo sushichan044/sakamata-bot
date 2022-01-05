@@ -645,7 +645,7 @@ async def _poll(ctx, title, *select):
             title='選択肢が多すぎます。',
             color=16098851,
         )
-        ctx.send(embed=embed)
+        await ctx.send(embed=embed)
         return
     else:
         senddesclist = []
