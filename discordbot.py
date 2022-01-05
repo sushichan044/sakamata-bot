@@ -560,7 +560,7 @@ pollemoji_list = [
     '\N{Green Heart}',
     '\N{Orange Heart}',
     '\N{Blue Heart}',
-    '\N{Brown Heart}'
+    '\N{Brown Heart}',
     '\N{Purple Heart}',
 ]
 
