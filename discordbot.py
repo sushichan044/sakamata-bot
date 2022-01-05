@@ -1225,7 +1225,7 @@ async def detect_archive(before, after):
         return
 
 # YoutubeAPI
-API_KEY = 'AIzaSyAP9IbX_mMnbJEQP0PtG0-QBi5mJFRGYaM'
+API_KEY = os.environ['GOOGLE_API_KEY']
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
