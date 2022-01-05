@@ -540,22 +540,26 @@ pollemoji_list = [
     '\N{Large Green Circle}',
     '\N{Large Orange Circle}',
     '\N{Large Blue Circle}',
-    '\N{Large Yellow Circle}',
+#    '\N{Large Yellow Circle}',
     '\N{Large Purple Circle}',
     '\N{Large Brown Circle}',
-    '\N{Medium Black Circle}',
+#    '\N{Medium Black Circle}',
     '\N{Medium White Circle}',
     '\N{Large Red Square}',
     '\N{Large Green Square}',
     '\N{Large Orange Square}',
     '\N{Large Blue Square}',
-    '\N{Large Yellow Square}',
+#    '\N{Large Yellow Square}',
     '\N{Large Purple Square}',
     '\N{Large Brown Square}',
-    '\N{Black Large Square}',
+#    '\N{Black Large Square}',
     '\N{White Large Square}',
     '\N{Large Orange Diamond}',
-    '\N{Large Blue Diamond}'
+    '\N{Large Blue Diamond}',
+    '\N{Heavy Black Heart}',
+    '\N{Green Heart}',
+    '\N{Orange Heart}',
+    '\N{Blue Heart}'
 ]
 
 pollyesemoji = '\N{Large Green Circle}'
