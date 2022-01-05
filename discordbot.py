@@ -1198,6 +1198,7 @@ async def _newcreateevent(ctx,
                           start_time: Option(str,'配信開始時間(202205182100または2100(当日))'),
                           duration: Option(float,'予想される配信の長さ(単位:時間)(例:1.5)'),
 ):
+    '''配信を簡単にイベントに登録できます。'''
     guild = ctx.guild
     if len(start_time)==4:
         todate = datetime.now(timezone.utc).astimezone(jst)
