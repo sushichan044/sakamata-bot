@@ -47,7 +47,8 @@ class JapaneseHelpCommand(commands.DefaultHelpCommand):
 
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix='/', intents=intents, help_command=JapaneseHelpCommand())
+bot = commands.Bot(command_prefix='/', intents=intents,
+                   help_command=JapaneseHelpCommand())
 
 
 # 本番鯖IDなど
@@ -223,6 +224,14 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRole):
         await ctx.reply(content='このコマンドを実行する権限がありません。', mention_author=False)
         return
+    elif isinstance(error, commands.CommandNotFound):
+        await ctx.reply(content='指定されたコマンドは存在しません。', mention_author=False)
+        return
+    elif isinstance(error, commands.BotMissingPermissions):
+        await ctx.replay(content='Botに必要な権限がありません。', mention_author=False)
+        return
+    else:
+        return
 
 # error-logtest
 
@@ -249,11 +258,12 @@ async def detect_NGword(message):
 #        print(n)
         invites_list = await message.guild.invites()
         invites_url = [x.url for x in invites_list]
-        replaced_invites = [item.replace('https://', '') for item in invites_url]
+        replaced_invites = [item.replace('https://', '')
+                            for item in invites_url]
 #        print(f'{replaced_invites}')
         n = [x for x in n if x not in replaced_invites]
         if m != [] or n != []:
-            m = m+n
+            m = m + n
             m = '\n'.join(m)
             await sendnglog(message, m)
             return
@@ -380,7 +390,7 @@ async def user(ctx,id:int):
 @permissions.has_role(modrole)
 async def _newuser(
     ctx,
-    id: Option(str,'対象のIDを入力してください。'),
+    id: Option(str, '対象のIDを入力してください。'),
 ):
     '''ユーザー情報を取得できます。'''
     guild = ctx.guild
@@ -1284,17 +1294,18 @@ async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,)
 @bot.slash_command(guild_ids=[guildid], default_permission=False, name='make-event')
 @permissions.has_role(modrole)
 async def _newcreateevent(ctx,
-                          eventname: Option(str,'配信の名前(例:マリカ,歌枠,など)'),
-                          streamurl: Option(str,'配信のURL'),
-                          start_time: Option(str,'配信開始時間(202205182100または2100(当日))'),
-                          duration: Option(float,'予想される配信の長さ(単位:時間)(例:1.5)'),
+                          eventname: Option(str, '配信の名前(例:マリカ,歌枠,など)'),
+                          streamurl: Option(str, '配信のURL'),
+                          start_time: Option(str, '配信開始時間(202205182100または2100(当日))'),
+                          duration: Option(float, '予想される配信の長さ(単位:時間)(例:1.5)'),
                           ):
     '''配信を簡単にイベントに登録できます。'''
     guild = ctx.guild
     if len(start_time) == 4:
         todate = datetime.now(timezone.utc).astimezone(jst)
         starttime = datetime.strptime(start_time, '%H%M')
-        true_start_jst = datetime.replace(starttime, year=todate.year, month=todate.month, day=todate.day, tzinfo=jst)
+        true_start_jst = datetime.replace(
+            starttime, year=todate.year, month=todate.month, day=todate.day, tzinfo=jst)
     elif len(start_time) == 12:
         true_start = datetime.strptime(start_time, '%Y%m%d%H%M')
         true_start_jst = datetime.replace(true_start, tzinfo=jst)
@@ -1305,7 +1316,8 @@ async def _newcreateevent(ctx,
     true_end = true_start_jst + true_duration
     await guild.create_scheduled_event(name=f'【配信】{eventname}',
                                        description='',
-                                       start_time=true_start_jst.astimezone(utc),
+                                       start_time=true_start_jst.astimezone(
+                                           utc),
                                        end_time=true_end,
                                        location=streamurl,
                                        )
