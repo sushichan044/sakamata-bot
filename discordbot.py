@@ -119,15 +119,36 @@ class MemberConfView(View):
         return
 
     async def body(self) -> Message:
+        image_url = [x.url for x in self.ctx.message.attachments]
+        embedimg = []
+        embed = discord.Embed(
+            title=self.que,
+            description='メンバー認証コマンドを受信しました。',
+            color=15767485,
+            url=self.ctx.message.jump_url,
+            timestamp=self.ctx.message.created_at
+        )
+        embed.set_author(
+            name=self.ctx.message.author.display_name,
+            icon_url=self.ctx.message.author.avatar.url
+        )
+        embed.add_field(
+            name='送信者',
+            value=f'{self.ctx.message.author.mention}'
+        )
+        embed.add_field(
+            name='受信日時',
+            value=f'{self.ctx.message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
+        )
+        embedimg.append(embed)
+        for x in image_url:
+            embed = discord.Embed()
+            embed.set_image(
+                url=x
+            )
+            embedimg.append(embed)
         return Message(
-            embeds=[
-                discord.Embed(
-                    title=self.que,
-                    description='',
-                    color=15767485,
-                    url=self.ctx.message.jump_url,
-                    ),
-            ],
+            embeds=embedimg,
             components=[
                 Button(self.okstr)
                 .style(discord.ButtonStyle.green)
