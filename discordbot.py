@@ -1168,11 +1168,15 @@ YOUTUBE_API_VERSION = 'v3'
 @commands.has_role(modrole)
 async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,):
     guild = ctx.guild
-
-    true_start = datetime.strptime(start_time,'%Y%m%d%H%M')
-    true_start_jst = datetime.replace(true_start,tzinfo=jst)
+    if len(start_time)==4:
+        todate = datetime.date.today(jst)
+        starttime = datetime.strptime(start_time,'%H%M')
+        true_start_jst = datetime.replace(starttime,year=todate.year,month=todate.month,day=todate.day,tzinfo=jst)
+    else:
+        true_start = datetime.strptime(start_time,'%Y%m%d%H%M')
+        true_start_jst = datetime.replace(true_start,tzinfo=jst)
     true_duration = timedelta(hours=duration)
-    true_end = true_start + true_duration
+    true_end = true_start_jst + true_duration
     await guild.create_scheduled_event(name = eventname,
                                        description='',
                                        start_time = true_start_jst.astimezone(utc),
@@ -1180,10 +1184,6 @@ async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,)
                                        location = streamurl,
                                        )
     return
-
-'''    if len(start_time)==4:
-        todate = datetime.date.today(jst)
-        '''
 
 start_count.start()
 bot.run(token)
