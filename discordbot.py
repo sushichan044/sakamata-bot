@@ -336,7 +336,7 @@ async def _newuser(
     id: Option(str,'対象のIDを入力してください。'),
 ):
     '''ユーザー情報を取得できます。'''
-    guild = bot.get_guild(guildid)
+    guild = ctx.guild
     member = guild.get_member(int(id))
     #この先表示する用
     memberifbot = member.bot
