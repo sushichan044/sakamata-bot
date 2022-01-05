@@ -354,7 +354,8 @@ async def newuser(
     z = '\n'.join(x)
     #Message成形-途中
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
-    await ctx.send(userinfomsg)
+    await ctx.respond(userinfomsg)
+    return
 
 
 #new-user-info-command
@@ -617,7 +618,7 @@ adddm = None
 async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
     '''メンバーをタイムアウト'''
     until = datetime.strptime(xuntil,'%Y%m%d')
-    tzuntil = until.astimezone(utc)
+    tzuntil = datetime.replace(until,tzinfo=jst)
     role = ctx.guild.get_role(modrole)
     validifdm = ['True','False']
     untilstr = datetime.strftime(tzuntil,'%Y/%m/%d/%H:%M')
@@ -645,7 +646,7 @@ async def _timeout(ctx,member:Member,xuntil:str,ifdm:str='True'):
             if ifdm == 'True':
                 m = await member.send(DMcontent)
                 descurl = m.jump_url
-                await member.timeout(tzuntil + timedelta(hours=-9),reason = None)
+                await member.timeout(tzuntil.astimezone(utc),reason = None)
                 await ctx.send('timeouted!')
                 await sendtolog(ctx,msg,descurl,untilstr)
                 return
@@ -1156,6 +1157,68 @@ async def detect_archive(before,after):
         return
     else:
         return
+
+#YoutubeAPI
+API_KEY = 'AIzaSyAP9IbX_mMnbJEQP0PtG0-QBi5mJFRGYaM'
+YOUTUBE_API_SERVICE_NAME = 'youtube'
+YOUTUBE_API_VERSION = 'v3'
+
+
+#create-event
+@bot.command(name='make-event')
+@commands.has_role(modrole)
+async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,):
+    guild = ctx.guild
+    if len(start_time)==4:
+        todate = datetime.now(timezone.utc).astimezone(jst)
+        starttime = datetime.strptime(start_time,'%H%M')
+        true_start_jst = datetime.replace(starttime,year=todate.year,month=todate.month,day=todate.day,tzinfo=jst)
+    elif len(start_time)==12:
+        true_start = datetime.strptime(start_time,'%Y%m%d%H%M')
+        true_start_jst = datetime.replace(true_start,tzinfo=jst)
+    else:
+        await ctx.reply(content='正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```',mention_author=False)
+        return
+    true_duration = timedelta(hours=duration)
+    true_end = true_start_jst + true_duration
+    await guild.create_scheduled_event(name = eventname,
+                                       description='',
+                                       start_time = true_start_jst.astimezone(utc),
+                                       end_time = true_end,
+                                       location = streamurl,
+                                       )
+    return
+
+#create-event-slash
+@bot.slash_command(guild_ids=[guildid],defaulr_permission=False,name='make-event')
+@commands.has_role(modrole)
+async def _newcreateevent(ctx,
+                          eventname: Option(str,'配信の名前'),
+                          streamurl: Option(str,'配信のURL'),
+                          start_time: Option(str,'配信開始時間(202205182100または2100)'),
+                          duration: Option(int,'予想される配信の長さ(単位:時間)'),
+):
+    guild = ctx.guild
+    if len(start_time)==4:
+        todate = datetime.now(timezone.utc).astimezone(jst)
+        starttime = datetime.strptime(start_time,'%H%M')
+        true_start_jst = datetime.replace(starttime,year=todate.year,month=todate.month,day=todate.day,tzinfo=jst)
+    elif len(start_time)==12:
+        true_start = datetime.strptime(start_time,'%Y%m%d%H%M')
+        true_start_jst = datetime.replace(true_start,tzinfo=jst)
+    else:
+        await ctx.respond(content='正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```',mention_author=False)
+        return
+    true_duration = timedelta(hours=duration)
+    true_end = true_start_jst + true_duration
+    await guild.create_scheduled_event(name = eventname,
+                                       description='',
+                                       start_time = true_start_jst.astimezone(utc),
+                                       end_time = true_end,
+                                       location = streamurl,
+                                       )
+    await ctx.respond('配信を登録しました。')
+    return
 
 start_count.start()
 bot.run(token)
