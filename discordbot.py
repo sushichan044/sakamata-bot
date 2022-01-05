@@ -554,6 +554,8 @@ pollemoji_list = [
     '\N{Large Brown Square}',
     '\N{Black Large Square}',
     '\N{White Large Square}',
+    '\N{Large Orange Diamond}',
+    '\N{Large Blue Diamond}'
 ]
 
 pollyesemoji = '\N{Large Green Circle}'
