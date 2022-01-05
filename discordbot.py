@@ -355,6 +355,7 @@ async def newuser(
     #Message成形-途中
     userinfomsg = f'```ユーザー名:{member} (ID:{memberid})\nBot?:{memberifbot}\nニックネーム:{memberifnickname}\nアカウント作成日時:{memberregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{memberjoindate:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
     await ctx.send(userinfomsg)
+    return
 
 
 #new-user-info-command
@@ -1167,6 +1168,36 @@ YOUTUBE_API_VERSION = 'v3'
 @bot.command(name='make-event')
 @commands.has_role(modrole)
 async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,):
+    guild = ctx.guild
+    if len(start_time)==4:
+        todate = datetime.now(timezone.utc).astimezone(jst)
+        starttime = datetime.strptime(start_time,'%H%M')
+        true_start_jst = datetime.replace(starttime,year=todate.year,month=todate.month,day=todate.day,tzinfo=jst)
+    elif len(start_time)==12:
+        true_start = datetime.strptime(start_time,'%Y%m%d%H%M')
+        true_start_jst = datetime.replace(true_start,tzinfo=jst)
+    else:
+        await ctx.reply(content='正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```',mention_author=False)
+        return
+    true_duration = timedelta(hours=duration)
+    true_end = true_start_jst + true_duration
+    await guild.create_scheduled_event(name = eventname,
+                                       description='',
+                                       start_time = true_start_jst.astimezone(utc),
+                                       end_time = true_end,
+                                       location = streamurl,
+                                       )
+    return
+
+#create-event-slash
+@bot.slash_command(guild_ids=[guildid],defaulr_permission=False,name='make-event')
+@commands.has_role(modrole)
+async def _newcreateevent(ctx,
+                          eventname: Option(str,'配信の名前'),
+                          streamurl: Option(str,'配信のURL'),
+                          start_time: Option(str,'配信開始時間(202205182100または2100)'),
+                          duration: Option(int,'予想される配信の長さ(単位:時間)'),
+):
     guild = ctx.guild
     if len(start_time)==4:
         todate = datetime.now(timezone.utc).astimezone(jst)
