@@ -1157,5 +1157,22 @@ async def detect_archive(before,after):
     else:
         return
 
+#YoutubeAPI
+API_KEY = 'AIzaSyAP9IbX_mMnbJEQP0PtG0-QBi5mJFRGYaM'
+YOUTUBE_API_SERVICE_NAME = 'youtube'
+YOUTUBE_API_VERSION = 'v3'
+
+
+#create-event
+@bot.command(name='make-event')
+@commands.has_role(modrole)
+async def _createevent(ctx,eventname,streamurl:str,start_time:str,duration:int,):
+    guild = ctx.guild
+    true_start = datetime.strptime(start_time,'%Y%m%d%H%M')
+    true_duration = timedelta(hours=duration)
+    true_end = true_start + true_duration
+    await guild.create_scheduled_event(eventname,true_start,true_end,streamurl)
+    return
+
 start_count.start()
 bot.run(token)
