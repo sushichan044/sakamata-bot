@@ -556,6 +556,9 @@ pollemoji_list = [
     '\N{White Large Square}',
 ]
 
+pollyesemoji = '\N{Large Green Circle}'
+pollnoemoji = '\N{Large Red Circle}'
+
 #Poll
 @bot.command(name='poll')
 @commands.has_role(siikuinrole)
@@ -568,8 +571,8 @@ async def _poll(ctx,title,*select):
             timestamp=discord.utils.utcnow()
         )
         m = await ctx.send(embed=embed)
-        await m.add_reaction('\N{Large Red Circle}')
-        await m.add_reaction('\N{Large Green Circle}')
+        await m.add_reaction(pollyesemoji)
+        await m.add_reaction(pollnoemoji)
         return
     elif len(select) > 20:
         embed = discord.Embed(
