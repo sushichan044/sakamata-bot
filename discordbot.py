@@ -1335,19 +1335,6 @@ async def _newcreateevent(ctx,
     await ctx.respond('配信を登録しました。')
     return
 
-# test
-
-
-@bot.slash_command(name='test', guild_ids=[guildid])
-async def _test(
-    ctx,
-    time: Option(datetime, '日付選んでもろて'),
-):
-    jst_time = datetime.replace(time, tzinfo=jst)
-    send_time = datetime.strftime(jst_time, '%Y/%m/%d/%H:%M')
-    ctx.response(content=f'{send_time}', mention_author=False)
-    return
-
 
 start_count.start()
 bot.run(token)
