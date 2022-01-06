@@ -220,6 +220,14 @@ async def membercount():
 
 
 @bot.event
+async def on_error(event):
+    channel = bot.get_channel(errorlogchannel)
+    now = discord.utils.utcnow().astimezone(jst)
+    await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(event)}```')
+    return
+
+
+@bot.event
 async def on_command_error(ctx, error):
     channel = bot.get_channel(errorlogchannel)
     now = discord.utils.utcnow().astimezone(jst)
