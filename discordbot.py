@@ -54,7 +54,6 @@ bot = commands.Bot(command_prefix='/', intents=intents,
                    help_command=JapaneseHelpCommand())
 
 
-
 # 本番鯖IDなど
 
 guildid = 915910043461890078
