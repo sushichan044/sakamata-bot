@@ -17,7 +17,7 @@ from newdispanderfixed import dispand
 logging.basicConfig(level=logging.INFO)
 
 '''bot招待リンク
-https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=543816019030&scope=bot
+https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=1403113958646&scope=bot%20applications.commands
 '''
 
 '''イベントハンドラ一覧(client)
@@ -1334,6 +1334,7 @@ async def _newcreateevent(ctx,
                                        )
     await ctx.respond('配信を登録しました。')
     return
+
 
 start_count.start()
 bot.run(token)
