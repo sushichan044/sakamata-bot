@@ -1325,7 +1325,7 @@ async def _newcreateevent(ctx,
         return
     true_duration = timedelta(hours=duration)
     true_end = true_start_jst + true_duration
-    await guild.create_scheduled_event(name=f'【配信】{eventname}',
+    await guild.create_scheduled_event(name=f'{eventname}',
                                        description='',
                                        start_time=true_start_jst.astimezone(
                                            utc),
