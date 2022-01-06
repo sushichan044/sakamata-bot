@@ -751,10 +751,10 @@ async def _timeout(ctx, member: Member, xuntil: str, ifdm: str = 'True'):
 
 
 @bot.command(name='untimeout')
-@commands.has_role(modrole)
+@commands.has_role(adminrole)
 async def _untimeout(ctx, member: Member):
     '''メンバーのタイムアウトを解除'''
-    role = ctx.guild.get_role(modrole)
+    role = ctx.guild.get_role(adminrole)
     kakuninmsg = f'【untimeout実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})'
     exemsg = f'{member.mention}のタイムアウトの解除をしました。'
     nonexemsg = f'{member.mention}のタイムアウトの解除をキャンセルしました。'
