@@ -401,11 +401,11 @@ async def user(ctx,id:int):
 @permissions.has_role(modrole)
 async def _newuser(
     ctx,
-    id: Option(str, '対象のIDを入力してください。'),
+    member: Option(Member, '対象のIDや名前を入力してください。'),
 ):
     '''ユーザー情報を取得できます。'''
-    guild = ctx.guild
-    member = guild.get_member(int(id))
+    # guild = ctx.guild
+    # member = guild.get_member(int(id))
     # この先表示する用
     memberifbot = member.bot
     memberregdate = member.created_at.astimezone(jst)
