@@ -64,6 +64,7 @@ errorlogchannel = 924142068484440084
 alertchannel = 924744385902575616
 membercheckchannel = 926777825925677096
 threadlogchannel = 927110282675884082
+joinlogchannel = 929015822272299038
 countvc = 925256795491012668
 siikuinrole = 915915792275632139
 modrole = 916726433445986334
@@ -81,6 +82,7 @@ errorlogchannel = 924141910321426452
 alertchannel = 924744469327257602
 membercheckchannel = 926777719964987412
 threadlogchannel = 927110073996693544
+joinlogchannel = 929015770539761715
 countvc = 925249967478673519
 siikuinrole = 923719282360188990
 modrole = 924355349308383252
@@ -1333,6 +1335,33 @@ async def _newcreateevent(ctx,
                                        location=streamurl,
                                        )
     await ctx.respond('配信を登録しました。')
+    return
+
+# Member-join-or-leave-log
+
+
+@bot.listen('on_member_join')
+async def on_join(member):
+    status = '参加'
+    await _send_member_log(member, status)
+    return
+
+
+@bot.listen('on_member_remove')
+async def on_leave(member):
+    status = '退出'
+    await _send_member_log(member, status)
+    return
+
+
+# send-join-leave-log
+async def _send_member_log(member, status):
+    channel = bot.get_channel(joinlogchannel)
+    now = discord.utils.utcnow().astimezone(jst)
+    send_time = datetime.strftime(now, '%Y/%m/%d %H:%M:%S')
+    count = member.guild.member_count
+    send_msg = f"時刻: {send_time}\n{status}メンバー名: {member.name} (ID:{member.id})\nメンション: {member.mention}\nアカウント作成時刻: {member.created_at.astimezone(jst)}\n現在のメンバー数:{count}\n"
+    await channel.send(send_msg)
     return
 
 
