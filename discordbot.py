@@ -1360,7 +1360,7 @@ async def _send_member_log(member, status):
     now = discord.utils.utcnow().astimezone(jst)
     send_time = datetime.strftime(now, '%Y/%m/%d %H:%M:%S')
     count = member.guild.member_count
-    send_msg = f"時刻: {send_time}\n{status}メンバー名: {member.name} (ID:{member.id})\nメンション: {member.mention}\nアカウント作成時刻: {member.created_at.astimezone(jst):'%Y/%m/%d %H:%M:%S'}\n現在のメンバー数:{count}\n"
+    send_msg = f"時刻: {send_time}\n{status}メンバー名: {member.name} (ID:{member.id})\nメンション: {member.mention}\nアカウント作成時刻: {member.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}\n現在のメンバー数:{count}\n"
     await channel.send(send_msg)
     return
 
