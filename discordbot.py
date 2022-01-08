@@ -106,6 +106,7 @@ class MemberConfView(View):
     right_style = state('right_style')
     right_click = state('right_click')
     left_button = state('left_button')
+    right_button = state('right_button')
 
     def __init__(self, future, ctx):
         super().__init__()
