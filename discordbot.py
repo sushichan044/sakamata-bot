@@ -1147,7 +1147,7 @@ async def _update_member(ctx, *update_member: Member):
     confirm_msg = f'【DM送信確認】\nメンバーシップ更新DMを\n{update_member_str}\nへ送信します。'
     exe_msg = f'{update_member_str}にメンバーシップ更新DMを送信しました。'
     non_exe_msg = f'{update_member_str}へのメンバーシップ更新DM送信をキャンセルしました。'
-    DM_content = '【メンバーシップ更新のご案内】\n沙花叉のメンバーシップの更新時期が近づいた方にDMを送信させていただいております。\nお支払いが完了して次回支払日が更新され次第、以前と同じように\n`/check`\nで再認証を行ってください。\nメンバーシップを継続しない場合は\n`/remove-member`\nと送信してください。'
+    DM_content = '【メンバーシップ更新のご案内】\n沙花叉のメンバーシップの更新時期が近づいた方にDMを送信させていただいております。\nお支払いが完了して次回支払日が更新され次第、以前と同じように\n`/check`\nで再認証を行ってください。\n\nメンバーシップを継続しない場合は\n`/remove-member`\nと送信してください。(__**メンバー限定チャンネルの閲覧ができなくなります。**__)'
     confirm_arg = f'\n{DM_content}\n------------------------'
     turned = await confirm(ctx, confirm_arg, role, confirm_msg)
     if turned:
