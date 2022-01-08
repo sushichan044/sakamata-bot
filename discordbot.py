@@ -1019,6 +1019,18 @@ async def _check_member(ctx):
                 return
 
 
+# member-update-dm
+@bot.command(name='update-member')
+async def _update_member(ctx, *update_member: Member):
+    DM_content = '【メンバーシップ更新のご案内】\n沙花叉のメンバーシップの更新時期が近づいた方にDMを送信させていただいております。\n支払いが完了して次回支払日が更新され次第、以前と同じように\n`/check`\nで再認証を行ってください。\nメンバーシップを継続しない場合は\n`/member-remove`\nと送信してください。'
+    for x in update_member:
+        await x.send(DM_content)
+    msg = 'メンバーシップ更新案内を送信しました。'
+    desc_url = ctx.jump_url
+    await send_exe_log(ctx, msg, desc_url)
+    return
+
+
 # save-img
 
 
