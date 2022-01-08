@@ -169,6 +169,66 @@ class MemberConfView(View):
         )
 
 
+class MemberRemoveView(View):
+    status = state('status')
+    que = state('que')
+    sheet = state('sheet')
+    complete = state('complete')
+
+    def __init__(self, future, ctx):
+        super().__init__()
+        self.future = future
+        self.ctx = ctx
+        self.status = None
+        self.que = 'スプレッドシートを更新してください。'
+        self.sheet = 'スプレッドシート'
+        self.complete = '更新完了'
+
+    async def done(self, interaction: discord.Interaction):
+        self.future.set_result(True)
+        self.status = True
+        self.que = '更新済み'
+        self.complete = '更新されました'
+        await interaction.response.defer()
+        return
+
+    async def body(self) -> Message:
+        embed_list = []
+        embed = discord.Embed(
+            title=self.que,
+            description='メンバー継続停止が通知されました。',
+            color=15767485,
+            url=self.ctx.message.jump_url,
+            timestamp=self.ctx.message.created_at
+        )
+        embed.set_author(
+            name=self.ctx.message.author.display_name,
+            icon_url=self.ctx.message.author.avatar.url
+        )
+        embed.add_field(
+            name='送信者',
+            value=f'{self.ctx.message.author.mention}'
+        )
+        embed.add_field(
+            name='受信日時',
+            value=f'{self.ctx.message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
+        )
+        embed_list.append(embed)
+        return Message(
+            embeds=embed_list,
+            components=[
+                Button(self.sheet)
+                .style(discord.ButtonStyle.link)
+                .disabled(self.status is not None)
+                .url(os.environ['MEMBERSHIP_SPREADSHEET']),
+                Button(self.complete)
+                .style(discord.ButtonStyle.green)
+                .disabled(self.status is not None)
+                .on_click(self.done),
+            ]
+        )
+
+
 # emoji
 maru_emoji = "\N{Heavy Large Circle}"
 batu_emoji = "\N{Cross Mark}"
@@ -372,17 +432,17 @@ async def test(ctx):
     await ctx.send('hello')
     return
 '''
-#user-info-command
+# user-info-command
 @bot.command()
 @commands.has_role(mod_role)
 async def user(ctx,id:int):
     """ユーザー情報取得"""
     guild = bot.get_guild(guild_id)
     member = guild.get_member(id)
-    #この先表示する用
+    # この先表示する用
     member_if_bot = member.bot
     member_reg_date = member.created_at.astimezone(jst)
-    #NickNameあるか？
+    # NickNameあるか？
     if member.display_name == member.name :
         member_if_nickname = 'None'
     else:
@@ -391,10 +451,10 @@ async def user(ctx,id:int):
     member_join_date = member.joined_at.astimezone(jst)
     membermention = member.mention
     roles = [[x.name,x.id] for x in member.roles]
-#[[name,id],[name,id]...]
+# [[name,id],[name,id]...]
     x = ['/ID: '.join(str(y) for y in x) for x in roles]
     z = '\n'.join(x)
-    #Message成形-途中
+    # Message成形-途中
     user_info_msg = f'```ユーザー名:{member} (ID:{member_id})\nBot?:{member_if_bot}\nニックネーム:{member_if_nickname}\nアカウント作成日時:{member_reg_date:%Y/%m/%d %H:%M:%S}\n参加日時:{member_join_date:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
     await ctx.send(user_info_msg)
 '''
@@ -458,19 +518,19 @@ async def user(ctx,id:int):
     else:
         pass
     targetregdate =target.created_at + timedelta(hours=9)
-    #Message成形-途中
+    # Message成形-途中
     targetinfomsg = f'```ユーザー名:{target} (ID:{target.id})\nBot?:{target.bot}\nin server?:{targetin}\nニックネーム:{targetifnick}\nアカウント作成日時:{targetregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{targetjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{targetroles}```'
     await ctx.send(targetinfomsg)
     return
 '''
 '''
-    #サーバーメンバー判定
+    # サーバーメンバー判定
     targetregdate =target.created_at + timedelta(hours=9)
     if ctx.guild.id in target.mutual_guilds == True:
         targetinserver = 'True'
     else:
         targetinserver = 'False'
-    #同サーバー内のみ判定
+    # 同サーバー内のみ判定
     targetjoindate = 'None'
     targetroles = 'None'
     targetifnickname = 'None'
@@ -1019,6 +1079,61 @@ async def _check_member(ctx):
                 return
 
 
+# remove-member
+
+
+@bot.command(name='member-remove')
+@commands.dm_only()
+async def _remove_member(ctx):
+    channel = bot.get_channel(member_check_channel)
+    guild = bot.get_guild(guild_id)
+    exe_msg = f'{ctx.message.author.mention}のメンバーシップ継続停止を反映しました。'
+    future = asyncio.Future()
+    view = MemberRemoveView(future, ctx)
+    tracker = ViewTracker(view, timeout=None)
+    await tracker.track(MessageProvider(channel))
+    await future
+    if future.done():
+        if future.result():
+            msg = exe_msg
+            desc_url = tracker.message.jump_url
+            member = guild.get_member(ctx.message.author.id)
+            membership_role_object = guild.get_role(yt_membership_role)
+            await member.remove_roles(membership_role_object)
+            await ctx.reply(content='メンバーシップ継続停止を反映しました。\nメンバーシップに再度登録された際は`/check`で再登録してください。', mention_author=False)
+            log_channel_object = bot.get_channel(log_channel)
+            embed = discord.Embed(
+                title='実行ログ',
+                color=3447003,
+                description=msg,
+                url=f'{desc_url}',
+                timestamp=discord.utils.utcnow()
+            )
+            embed.set_author(
+                name=bot.user,
+                icon_url=bot.user.display_avatar.url
+            )
+            embed.add_field(
+                name='実行日時',
+                value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
+            )
+            await log_channel_object.send(embed=embed)
+            return
+
+# member-update-dm
+
+
+@bot.command(name='update-member')
+async def _update_member(ctx, *update_member: Member):
+    DM_content = '【メンバーシップ更新のご案内】\n沙花叉のメンバーシップの更新時期が近づいた方にDMを送信させていただいております。\n支払いが完了して次回支払日が更新され次第、以前と同じように\n`/check`\nで再認証を行ってください。\nメンバーシップを継続しない場合は\n`/member-remove`\nと送信してください。'
+    for x in update_member:
+        await x.send(DM_content)
+    msg = 'メンバーシップ更新案内を送信しました。'
+    desc_url = ctx.jump_url
+    await send_exe_log(ctx, msg, desc_url)
+    return
+
+
 # save-img
 
 
@@ -1215,7 +1330,7 @@ YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
 '''
-#create-event
+# create-event
 @bot.command(name='make-event')
 @commands.has_role(mod_role)
 async def _createevent(ctx,event_name,stream_url:str,start_time:str,duration:int,):
