@@ -505,27 +505,28 @@ async def on_message_dm(message):
     if type(message.channel) == DMChannel and bot.user == message.channel.me:
         if message.author.bot:
             return
-        if message.type == MessageType.default or MessageType.reply:
-            if message.content == '/check':
-                return
-            channel = bot.get_channel(dm_box_channel)
-            sent_messages = []
-            if message.content or message.attachments:
-                # Send the second and subsequent attachments with embed (named 'embed') respectively:
-                embed = await compose_embed(message)
-                sent_messages.append(embed)
-                for attachment in message.attachments[1:]:
-                    embed = discord.Embed()
-                    embed.set_image(
-                        url=attachment.proxy_url
-                    )
-                    sent_messages.append(embed)
-            for embed in message.embeds:
-                sent_messages.append(embed)
-            await channel.send(embeds=sent_messages)
-            return
         else:
-            return
+            if message.type == MessageType.default or MessageType.reply:
+                if message.content == '/check':
+                    return
+                channel = bot.get_channel(dm_box_channel)
+                sent_messages = []
+                if message.content or message.attachments:
+                    # Send the second and subsequent attachments with embed (named 'embed') respectively:
+                    embed = await compose_embed(message)
+                    sent_messages.append(embed)
+                    for attachment in message.attachments[1:]:
+                        embed = discord.Embed()
+                        embed.set_image(
+                            url=attachment.proxy_url
+                        )
+                        sent_messages.append(embed)
+                for embed in message.embeds:
+                    sent_messages.append(embed)
+                await channel.send(embeds=sent_messages)
+                return
+            else:
+                return
     else:
         return
 
