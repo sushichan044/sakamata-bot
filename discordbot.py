@@ -1124,16 +1124,34 @@ async def _remove_member(ctx):
 
 
 @bot.command(name='update-member')
+@commands.has_role(admin_role)
 async def _update_member(ctx, *update_member: Member):
-    DM_content = '【メンバーシップ更新のご案内】\n沙花叉のメンバーシップの更新時期が近づいた方にDMを送信させていただいております。\n支払いが完了して次回支払日が更新され次第、以前と同じように\n`/check`\nで再認証を行ってください。\nメンバーシップを継続しない場合は\n`/member-remove`\nと送信してください。'
-    for x in update_member:
-        await x.send(DM_content)
-    msg = 'メンバーシップ更新案内を送信しました。'
-    desc_url = ctx.message.jump_url
-    await ctx.reply(content='Sended!', mention_author=False)
-    await send_exe_log(ctx, msg, desc_url)
-    return
-
+    role = ctx.guild.get_role(admin_role)
+    update_member_mention = [x.mention for x in update_member]
+    update_member_str = '\n'.join(update_member_mention)
+    confirm_msg = f'【DM送信確認】\nメンバーシップ更新DMを\n{update_member_str}\nへ送信します。'
+    exe_msg = f'{update_member_str}にメンバーシップ更新DMを送信しました。'
+    non_exe_msg = f'{update_member_str}へのメンバーシップ更新DM送信をキャンセルしました。'
+    DM_content = '【メンバーシップ更新のご案内】\n沙花叉のメンバーシップの更新時期が近づいた方にDMを送信させていただいております。\nお支払いが完了して次回支払日が更新され次第、以前と同じように\n`/check`\nで再認証を行ってください。\nメンバーシップを継続しない場合は\n`/member-remove`\nと送信してください。'
+    confirm_arg = f'\n{DM_content}\n------------------------'
+    turned = await confirm(ctx, confirm_arg, role, confirm_msg)
+    if turned == 'ok':
+        for x in update_member:
+            await x.send(DM_content)
+        await ctx.send('Sended!')
+        msg = exe_msg
+        desc_url = ''
+        await ctx.reply(content='Sended!', mention_author=False)
+        await send_exe_log(ctx, msg, desc_url)
+        return
+    elif turned == 'cancel':
+        msg = non_exe_msg
+        desc_url = ''
+        await send_exe_log(ctx, msg, desc_url)
+        await ctx.send('Cancelled!')
+        return
+    else:
+        return
 
 # save-img
 
