@@ -5,10 +5,8 @@ import re
 from datetime import datetime, timedelta, timezone
 
 import discord
-from discord.ui.button import button
 import requests
 from discord import Member
-from discord.message import MessageType
 from discord.channel import DMChannel
 from discord.commands import Option, permissions
 from discord.ext import commands, pages, tasks
