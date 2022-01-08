@@ -172,6 +172,7 @@ class MemberConfView(View):
 class MemberRemoveView(View):
     status = state('status')
     que = state('que')
+    sheet = state('sheet')
     complete = state('complete')
 
     def __init__(self, future, ctx):
@@ -180,7 +181,8 @@ class MemberRemoveView(View):
         self.ctx = ctx
         self.status = None
         self.que = 'スプレッドシートを更新してください。'
-        self.complete = 'スプレッドシートを更新しました'
+        self.sheet = 'スプレッドシート'
+        self.complete = '更新完了'
 
     async def done(self, interaction: discord.Interaction):
         self.future.set_result(True)
@@ -215,11 +217,14 @@ class MemberRemoveView(View):
         return Message(
             embeds=embed_list,
             components=[
-                Button(self.complete)
+                Button(self.sheet)
                 .style(discord.ButtonStyle.link)
                 .disabled(self.status is not None)
-                .on_click(self.done)
-                .url(os.environ['MEMBERSHIP_SPREADSHEET'])
+                .url(os.environ['MEMBERSHIP_SPREADSHEET']),
+                Button(self.complete)
+                .style(discord.ButtonStyle.green)
+                .disabled(self.status is not None)
+                .on_click(self.done),
             ]
         )
 
