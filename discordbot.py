@@ -1130,6 +1130,7 @@ async def _update_member(ctx, *update_member: Member):
         await x.send(DM_content)
     msg = 'メンバーシップ更新案内を送信しました。'
     desc_url = ctx.message.jump_url
+    await ctx.reply(content='Sended!', mention_author=False)
     await send_exe_log(ctx, msg, desc_url)
     return
 
