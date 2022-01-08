@@ -1141,7 +1141,6 @@ async def _update_member(ctx, *update_member: Member):
         await ctx.send('Sended!')
         msg = exe_msg
         desc_url = ''
-        await ctx.reply(content='Sended!', mention_author=False)
         await send_exe_log(ctx, msg, desc_url)
         return
     elif turned == 'cancel':
