@@ -991,7 +991,7 @@ async def _check_member(ctx):
                 return
             else:
                 msg = non_exe_msg
-                desc_url = ''
+                desc_url = tracker.message.jump_url
                 await tracker.message.reply(content='DMで送信する不承認理由を入力してください。', mention_author=False)
 
                 def check(message):
