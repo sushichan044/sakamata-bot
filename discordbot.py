@@ -124,7 +124,6 @@ class MemberConfView(View):
         self.right_button = Button(self.right_str).style(self.right_style).disabled(self.status is not None).on_click(self.right_click)
 
     async def ok(self, interaction: discord.Interaction):
-        self.future.set_result(True)
         self.que = '承認済み'
         self.left_str = 'スプレッドシート'
         self.right_str = '更新完了'
@@ -133,7 +132,6 @@ class MemberConfView(View):
         self.right_style = discord.ButtonStyle.green
         self.left_button = Button(self.left_str).style(self.left_style).disabled(self.status is not None).url(os.environ['MEMBERSHIP_SPREADSHEET'])
         self.right_button = Button(self.right_str).style(self.right_style).disabled(self.status is not None).on_click(self.right_click)
-        await interaction.response.defer()
         return
 
     async def ng(self, interaction: discord.Interaction):
@@ -149,6 +147,7 @@ class MemberConfView(View):
         self.right_str = '更新済み'
         self.status = True
         self.left_button = Button('承認済み').style(discord.ButtonStyle.green).disabled(self.status is not None)
+        self.future.set_result(True)
         await interaction.response.defer()
         return
 
