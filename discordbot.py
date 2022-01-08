@@ -966,7 +966,7 @@ async def _check_member(ctx):
         if future.done():
             if future.result():
                 msg = exe_msg
-                desc_url = ''
+                desc_url = tracker.message.jump_url
                 member = guild.get_member(ctx.message.author.id)
                 membership_role_object = guild.get_role(yt_membership_role)
                 await member.add_roles(membership_role_object)
