@@ -524,6 +524,8 @@ async def on_message_dm(message):
                 sent_messages.append(embed)
             await channel.send(embeds=sent_messages)
             return
+        else:
+            return
     else:
         return
 
