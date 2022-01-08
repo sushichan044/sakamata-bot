@@ -1089,7 +1089,7 @@ async def _check_member(ctx):
 @bot.command(name='remove-member')
 @commands.dm_only()
 async def _remove_member(ctx):
-    await ctx.reply(content='メンバーシップ継続停止を受理しました。\nしばらくお待ちください。')
+    await ctx.reply(content='メンバーシップ継続停止を受理しました。\nしばらくお待ちください。', mention_author=False)
     channel = bot.get_channel(member_check_channel)
     guild = bot.get_guild(guild_id)
     exe_msg = f'{ctx.message.author.mention}のメンバーシップ継続停止を反映しました。'
