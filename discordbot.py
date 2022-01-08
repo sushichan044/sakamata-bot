@@ -952,37 +952,6 @@ async def _check_member(ctx):
         return
     else:
         await ctx.reply(content='認証要求を受理しました。\nしばらくお待ちください。', mention_author=False)
-        """
-        image_url = [x.url for x in ctx.message.attachments]
-        embedimg = []
-        embed = discord.Embed(
-            title='メンバー認証コマンドを受信しました。',
-            url=ctx.message.jump_url,
-            color=3447003,
-            description=ctx.message.content,
-            timestamp=ctx.message.created_at
-        )
-        embed.set_author(
-            name=ctx.message.author.display_name,
-            icon_url=ctx.message.author.avatar.url
-        )
-        embed.add_field(
-            name='送信者',
-            value=f'{ctx.message.author.mention}'
-        )
-        embed.add_field(
-            name='受信日時',
-            value=f'{ctx.message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
-        )
-        embedimg.append(embed)
-        for x in image_url:
-            embed = discord.Embed()
-            embed.set_image(
-                url=x
-            )
-            embedimg.append(embed)
-        await channel.send(embeds=embedimg)
-        """
         channel = bot.get_channel(member_check_channel)
         guild = bot.get_guild(guild_id)
         exe_msg = f'{ctx.message.author.mention}のメンバーシップ認証を承認しました。'
@@ -1047,40 +1016,6 @@ async def _check_member(ctx):
                 await log_channel_object.send(embed=embed)
                 return
 
-
-'''
-        m = await channel.send(send_confirm_msg)
-        await m.add_reaction(maru_emoji)
-        await m.add_reaction(batu_emoji)
-        valid_reactions = [maru_emoji,batu_emoji]
-        #wait-for-reaction
-        def checkmember(payload):
-            return role in payload.member.roles and str(payload.emoji) in valid_reactions and payload.message_id == m.id
-        payload = await bot.wait_for('raw_reaction_add',check = checkmember)
-        #exe
-        if str(payload.emoji) == maru_emoji:
-            msg = exe_msg
-            desc_url = ''
-            member = guild.get_member(ctx.message.author.id)
-            addmemberrole = guild.get_role(yt_membership_role)
-            await member.add_roles(addmemberrole)
-            await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!',mention_author=False)
-            await m.reply('Accepted!')
-            await send_exe_log(ctx,msg,desc_url)
-            return
-        else:
-            msg=non_exe_msg
-            desc_url = ''
-            await channel.send('DMで送信する不承認理由を入力してください。')
-            def check(message):
-                return message.content is not None and message.channel == channel
-            message = await bot.wait_for('message',check=check)
-            reply_msg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
-            await ctx.reply(content=reply_msg,mention_author=False)
-            await channel.send('Cancelled!')
-            await send_exe_log(ctx,msg,desc_url)
-            return
-'''
 
 # save-img
 
