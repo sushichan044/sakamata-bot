@@ -104,6 +104,7 @@ class MemberConfView(View):
     left_click = state('left_click')
     right_style = state('right_style')
     right_click = state('right_click')
+    left_button = state('left_button')
 
     def __init__(self, future, ctx):
         super().__init__()
@@ -118,6 +119,7 @@ class MemberConfView(View):
         self.left_click = self.ok
         self.right_click = self.ng
         self.right_style = discord.ButtonStyle.red
+        self.left_button = Button(self.left_str).style(self.left_style).disabled(self.status is not None).on_click(self.left_click)
 
     async def ok(self, interaction: discord.Interaction):
         self.future.set_result(True)
@@ -127,6 +129,7 @@ class MemberConfView(View):
         self.left_url = os.environ['MEMBERSHIP_SPREADSHEET']
         self.right_str = '更新完了'
         self.right_click = self.done
+        self.left_button = Button(self.left_str).style(self.left_style).disabled(self.status is not None).on_click(self.left_click).url(self.left_url)
         await interaction.response.defer()
         return
 
@@ -179,11 +182,7 @@ class MemberConfView(View):
         return Message(
             embeds=embedimg,
             components=[
-                Button(self.left_str)
-                .style(self.left_style)
-                .disabled(self.status is not None)
-                .on_click(self.left_click)
-                .url(self.left_url),
+                self.left_button,
                 Button(self.right_str)
                 .style(self.right_style)
                 .disabled(self.status is not None)
