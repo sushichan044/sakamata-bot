@@ -123,13 +123,10 @@ class MemberConfView(View):
 
     async def ok(self, interaction: discord.Interaction):
         self.future.set_result(True)
-        self.left_style = discord.ButtonStyle.link
         self.que = '承認済み'
-        self.left_str = 'スプレッドシート'
-        self.left_url = os.environ['MEMBERSHIP_SPREADSHEET']
         self.right_str = '更新完了'
         self.right_click = self.done
-        self.left_button = Button(self.left_str).style(self.left_style).disabled(self.status is not None).on_click(self.left_click).url(self.left_url)
+        self.left_button = Button('スプレッドシート').style(discord.ButtonStyle.link).disabled(self.status is not None).url(os.environ['MEMBERSHIP_SPREADSHEET'])
         await interaction.response.defer()
         return
 
@@ -142,11 +139,10 @@ class MemberConfView(View):
         return
 
     async def done(self, interaction: discord.Interaction):
-        self.left_style = discord.ButtonStyle.green
-        self.left_str = '承認済み'
         self.right_style = discord.ButtonStyle.red
         self.right_str = '更新済み'
         self.status = True
+        self.left_button = Button('承認済み').style(discord.ButtonStyle.green).disabled(self.status is not None)
         await interaction.response.defer()
         return
 
@@ -186,7 +182,7 @@ class MemberConfView(View):
                 Button(self.right_str)
                 .style(self.right_style)
                 .disabled(self.status is not None)
-                .on_click(self.left_click)
+                .on_click(self.right_click)
             ]
         )
 
