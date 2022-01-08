@@ -992,7 +992,7 @@ async def _check_member(ctx):
             else:
                 msg = non_exe_msg
                 desc_url = ''
-                await channel.send('DMで送信する不承認理由を入力してください。')
+                await tracker.message.reply(content='DMで送信する不承認理由を入力してください。', mention_author=False)
 
                 def check(message):
                     return message.content is not None and message.channel == channel and message.author != bot.user
