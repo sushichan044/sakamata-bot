@@ -136,6 +136,8 @@ class MemberConfView(View):
         self.status = False
         self.que = '否認済み'
         self.ng_str = '否認されました'
+        self.left_button = Button('承認').style(discord.ButtonStyle.green).disabled(True).on_click(self.ok)
+        self.right_button = Button(self.ng_str).style(discord.ButtonStyle.red).disabled(True)
         await interaction.response.defer()
         return
 
