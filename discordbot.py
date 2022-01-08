@@ -610,14 +610,14 @@ async def _messagesend(ctx, channel_id: int, *, arg):
     non_exe_msg = f'{channel.mention}へのメッセージ送信をキャンセルしました。'
     confirm_arg = f'\n{arg}\n------------------------'
     turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-    if turned == 'ok':
+    if turned:
         msg = exe_msg
         m = await channel.send(arg)
         desc_url = m.jump_url
         await ctx.send('Sended!')
         await send_exe_log(ctx, msg, desc_url)
         return
-    elif turned == 'cancel':
+    elif turned is False:
         msg = non_exe_msg
         desc_url = ''
         await send_exe_log(ctx, msg, desc_url)
@@ -639,14 +639,14 @@ async def _dmsend(ctx, user: Member, *, arg):
     non_exe_msg = f'{user.mention}へのDM送信をキャンセルしました。'
     confirm_arg = f'\n{arg}\n------------------------'
     turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-    if turned == 'ok':
+    if turned:
         msg = exe_msg
         m = await user.send(arg)
         desc_url = m.jump_url
         await ctx.send('Sended!')
         await send_exe_log(ctx, msg, desc_url)
         return
-    elif turned == 'cancel':
+    elif turned is False:
         msg = non_exe_msg
         desc_url = ''
         await send_exe_log(ctx, msg, desc_url)
@@ -671,14 +671,14 @@ async def _editmessage(ctx, channel_id: int, message_id: int, *, arg):
     non_exe_msg = f'{channel.mention}のメッセージの編集をキャンセルしました。'
     confirm_arg = f'\n{arg}\n------------------------'
     turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-    if turned == 'ok':
+    if turned:
         msg = exe_msg
         await edit_target.edit(content=arg)
         desc_url = msg_url
         await ctx.send('Edited!')
         await send_exe_log(ctx, msg, desc_url)
         return
-    elif turned == 'cancel':
+    elif turned is False:
         msg = non_exe_msg
         desc_url = ''
         await send_exe_log(ctx, msg, desc_url)
@@ -794,7 +794,7 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
         non_exe_msg = f'{member.mention}のタイムアウトをキャンセルしました。'
         confirm_arg = ''
         turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-        if turned == 'ok':
+        if turned:
             msg = exe_msg
             if if_dm == 'True':
                 m = await member.send(DM_content)
@@ -811,7 +811,7 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
                 return
             else:
                 return
-        elif turned == 'cancel':
+        elif turned is False:
             msg = non_exe_msg
             desc_url = ''
             await send_exe_log(ctx, msg, desc_url)
@@ -833,14 +833,14 @@ async def _untimeout(ctx, member: Member):
     non_exe_msg = f'{member.mention}のタイムアウトの解除をキャンセルしました。'
     confirm_arg = ''
     turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-    if turned == 'ok':
+    if turned:
         msg = exe_msg
         desc_url = ''
         await member.timeout(None, reason=None)
         await ctx.send('untimeouted!')
         await send_exe_log(ctx, msg, desc_url)
         return
-    elif turned == 'cancel':
+    elif turned is False:
         msg = non_exe_msg
         desc_url = ''
         await send_exe_log(ctx, msg, desc_url)
@@ -878,7 +878,7 @@ async def _kickuser(ctx, member: Member, if_dm: str = 'True'):
         non_exe_msg = f'{member.mention}のキックをキャンセルしました。'
         confirm_arg = ''
         turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-        if turned == 'ok':
+        if turned:
             msg = exe_msg
             if if_dm == 'True':
                 m = await member.send(DM_content)
@@ -895,7 +895,7 @@ async def _kickuser(ctx, member: Member, if_dm: str = 'True'):
                 return
             else:
                 return
-        elif turned == 'cancel':
+        elif turned is False:
             msg = non_exe_msg
             desc_url = ''
             await send_exe_log(ctx, msg, desc_url)
@@ -938,7 +938,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
         non_exe_msg = f'{member.mention}のBANをキャンセルしました。'
         confirm_arg = ''
         turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-        if turned == 'ok':
+        if turned:
             msg = exe_msg
             if if_dm == 'True':
                 m = await member.send(DM_content)
@@ -955,7 +955,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
                 return
             else:
                 return
-        elif turned == 'cancel':
+        elif turned is False:
             msg = non_exe_msg
             desc_url = ''
             await ctx.send('Cancelled!')
@@ -981,14 +981,14 @@ async def _unbanuser(ctx, id: int):
             non_exe_msg = f'{user.mention}のBANの解除をキャンセルしました。'
             confirm_arg = ''
             turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-            if turned == 'ok':
+            if turned:
                 msg = exe_msg
                 desc_url = ''
                 await ctx.guild.unban(user)
                 await ctx.send('Unbaned!')
                 await send_exe_log(ctx, msg, desc_url)
                 return
-            elif turned == 'cancel':
+            elif turned is False:
                 msg = non_exe_msg
                 desc_url = ''
                 await ctx.send('Cancelled!')
@@ -1140,7 +1140,7 @@ async def _update_member(ctx, *update_member: Member):
     DM_content = '【メンバーシップ更新のご案内】\n沙花叉のメンバーシップの更新時期が近づいた方にDMを送信させていただいております。\nお支払いが完了して次回支払日が更新され次第、以前と同じように\n`/check`\nで再認証を行ってください。\nメンバーシップを継続しない場合は\n`/member-remove`\nと送信してください。'
     confirm_arg = f'\n{DM_content}\n------------------------'
     turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-    if turned == 'ok':
+    if turned:
         for x in update_member:
             await x.send(DM_content)
         await ctx.send('Sended!')
@@ -1148,7 +1148,7 @@ async def _update_member(ctx, *update_member: Member):
         desc_url = ''
         await send_exe_log(ctx, msg, desc_url)
         return
-    elif turned == 'cancel':
+    elif turned is False:
         msg = non_exe_msg
         desc_url = ''
         await send_exe_log(ctx, msg, desc_url)
@@ -1181,7 +1181,7 @@ async def makedealdm(ctx, deal, add_dm):
 # confirm-system
 
 
-async def confirm(ctx, confirm_arg, role, confirm_msg):
+async def confirm(ctx, confirm_arg, role, confirm_msg) -> bool:
     send_confirm_msg = f'{confirm_msg}\n------------------------{confirm_arg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
     m = await ctx.send(send_confirm_msg)
     await m.add_reaction(maru_emoji)
@@ -1194,9 +1194,9 @@ async def confirm(ctx, confirm_arg, role, confirm_msg):
     payload = await bot.wait_for('raw_reaction_add', check=checkconf)
     # exe
     if str(payload.emoji) == maru_emoji:
-        return 'ok'
+        return True
     else:
-        return 'cancel'
+        return False
 
 # send-exe-log
 
