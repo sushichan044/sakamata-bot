@@ -5,6 +5,7 @@ import re
 from datetime import datetime, timedelta, timezone
 
 import discord
+from discord.ui.button import button
 import requests
 from discord import Member
 from discord.message import MessageType
@@ -99,6 +100,10 @@ class MemberConfView(View):
     ok_str = state('ok_str')
     ng_str = state('ng_str')
     que = state('que')
+    ng_url = state('ng_url')
+    ng_style = state('ng_style')
+    left_button = state('left_button')
+    right_button = state('right_button')
 
     def __init__(self, future, ctx):
         super().__init__()
@@ -106,6 +111,10 @@ class MemberConfView(View):
         self.status = None
         self.ok_str = '承認'
         self.ng_str = '否認'
+        self.ng_style = discord.ButtonStyle.red
+        self.left_button = Button(self.ok_str).style(discord.ButtonStyle.green).disabled(self.status is not None).on_click(self.ok)
+        self.right_button = Button(self.ng_str).style(self.ng_style).disabled(self.status is False).on_click(self.ng)
+        self.ng_url = ''
         self.ctx = ctx
         self.que = '承認しますか？'
 
@@ -114,6 +123,11 @@ class MemberConfView(View):
         self.status = True
         self.que = '承認済み'
         self.ok_str = '承認されました'
+        self.ng_str = 'スプレッドシート'
+        self.ng_style = discord.ButtonStyle.link
+        self.ng_url = os.environ['MEMBERSHIP_SPREADSHEET']
+        self.left_button = Button(self.ok_str).style(discord.ButtonStyle.green).disabled(self.status is not None).on_click(self.ok)
+        self.right_button = Button(self.ng_str).style(self.ng_style).disabled(self.status is False).on_click(self.ng).url(self.ng_url)
         await interaction.response.defer()
         return
 
@@ -122,6 +136,8 @@ class MemberConfView(View):
         self.status = False
         self.que = '否認済み'
         self.ng_str = '否認されました'
+        self.left_button = Button(self.ng_str).style(discord.ButtonStyle.red).disabled(True)
+        self.right_button = Button('承認').style(discord.ButtonStyle.green).disabled(True).on_click(self.ok)
         await interaction.response.defer()
         return
 
@@ -157,14 +173,8 @@ class MemberConfView(View):
         return Message(
             embeds=embedimg,
             components=[
-                Button(self.ok_str)
-                .style(discord.ButtonStyle.green)
-                .disabled(self.status is not None)
-                .on_click(self.ok),
-                Button(self.ng_str)
-                .style(discord.ButtonStyle.red)
-                .disabled(self.status is not None)
-                .on_click(self.ng)
+                self.left_button,
+                self.right_button
             ]
         )
 
@@ -384,15 +394,18 @@ async def send_ng_log(message, m):
 
 @bot.listen('on_message')
 async def on_message_dispand(message):
+    avoid_word_list_head = ['/send-message', '/edit-message', '/send-dm']
     if type(message.channel) == DMChannel:
         return
-    elif message.content.startswith(('/send-message', '/edit-message', '/send-dm')):
-        return
-    elif message.content.endswith('中止に必要な承認人数: 1'):
-        return
     else:
-        await dispand(message)
-        return
+        for x in avoid_word_list_head:
+            if message.content.startswith(x):
+                return
+        if message.content.endswith('中止に必要な承認人数: 1'):
+            return
+        else:
+            await dispand(message)
+            return
 
 '''
 デフォルトで提供されている on_message をオーバーライドすると、コマンドが実行されなくなります。
@@ -562,31 +575,32 @@ async def ping(ctx):
 
 @bot.listen('on_message')
 async def on_message_dm(message):
+    avoid_dm_list = ['/check', '/remove-member']
     if type(message.channel) == DMChannel and bot.user == message.channel.me:
         if message.author.bot:
             return
         else:
-            if message.type == MessageType.default or MessageType.reply:
-                if message.content == '/check':
+            for x in avoid_dm_list:
+                if message.content.startswith(x):
                     return
-                channel = bot.get_channel(dm_box_channel)
-                sent_messages = []
-                if message.content or message.attachments:
-                    # Send the second and subsequent attachments with embed (named 'embed') respectively:
-                    embed = await compose_embed(message)
-                    sent_messages.append(embed)
-                    for attachment in message.attachments[1:]:
-                        embed = discord.Embed()
-                        embed.set_image(
-                            url=attachment.proxy_url
-                        )
-                        sent_messages.append(embed)
-                for embed in message.embeds:
-                    sent_messages.append(embed)
-                await channel.send(embeds=sent_messages)
+            if message.content == '/check':
                 return
-            else:
-                return
+            channel = bot.get_channel(dm_box_channel)
+            sent_messages = []
+            if message.content or message.attachments:
+                # Send the second and subsequent attachments with embed (named 'embed') respectively:
+                embed = await compose_embed(message)
+                sent_messages.append(embed)
+                for attachment in message.attachments[1:]:
+                    embed = discord.Embed()
+                    embed.set_image(
+                        url=attachment.proxy_url
+                    )
+                    sent_messages.append(embed)
+            for embed in message.embeds:
+                sent_messages.append(embed)
+            await channel.send(embeds=sent_messages)
+            return
     else:
         return
 
@@ -606,14 +620,14 @@ async def _messagesend(ctx, channel_id: int, *, arg):
     non_exe_msg = f'{channel.mention}へのメッセージ送信をキャンセルしました。'
     confirm_arg = f'\n{arg}\n------------------------'
     turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-    if turned == 'ok':
+    if turned:
         msg = exe_msg
         m = await channel.send(arg)
         desc_url = m.jump_url
         await ctx.send('Sended!')
         await send_exe_log(ctx, msg, desc_url)
         return
-    elif turned == 'cancel':
+    elif turned is False:
         msg = non_exe_msg
         desc_url = ''
         await send_exe_log(ctx, msg, desc_url)
@@ -635,14 +649,14 @@ async def _dmsend(ctx, user: Member, *, arg):
     non_exe_msg = f'{user.mention}へのDM送信をキャンセルしました。'
     confirm_arg = f'\n{arg}\n------------------------'
     turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-    if turned == 'ok':
+    if turned:
         msg = exe_msg
         m = await user.send(arg)
         desc_url = m.jump_url
         await ctx.send('Sended!')
         await send_exe_log(ctx, msg, desc_url)
         return
-    elif turned == 'cancel':
+    elif turned is False:
         msg = non_exe_msg
         desc_url = ''
         await send_exe_log(ctx, msg, desc_url)
@@ -667,14 +681,14 @@ async def _editmessage(ctx, channel_id: int, message_id: int, *, arg):
     non_exe_msg = f'{channel.mention}のメッセージの編集をキャンセルしました。'
     confirm_arg = f'\n{arg}\n------------------------'
     turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-    if turned == 'ok':
+    if turned:
         msg = exe_msg
         await edit_target.edit(content=arg)
         desc_url = msg_url
         await ctx.send('Edited!')
         await send_exe_log(ctx, msg, desc_url)
         return
-    elif turned == 'cancel':
+    elif turned is False:
         msg = non_exe_msg
         desc_url = ''
         await send_exe_log(ctx, msg, desc_url)
@@ -790,7 +804,7 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
         non_exe_msg = f'{member.mention}のタイムアウトをキャンセルしました。'
         confirm_arg = ''
         turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-        if turned == 'ok':
+        if turned:
             msg = exe_msg
             if if_dm == 'True':
                 m = await member.send(DM_content)
@@ -807,7 +821,7 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
                 return
             else:
                 return
-        elif turned == 'cancel':
+        elif turned is False:
             msg = non_exe_msg
             desc_url = ''
             await send_exe_log(ctx, msg, desc_url)
@@ -829,14 +843,14 @@ async def _untimeout(ctx, member: Member):
     non_exe_msg = f'{member.mention}のタイムアウトの解除をキャンセルしました。'
     confirm_arg = ''
     turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-    if turned == 'ok':
+    if turned:
         msg = exe_msg
         desc_url = ''
         await member.timeout(None, reason=None)
         await ctx.send('untimeouted!')
         await send_exe_log(ctx, msg, desc_url)
         return
-    elif turned == 'cancel':
+    elif turned is False:
         msg = non_exe_msg
         desc_url = ''
         await send_exe_log(ctx, msg, desc_url)
@@ -874,7 +888,7 @@ async def _kickuser(ctx, member: Member, if_dm: str = 'True'):
         non_exe_msg = f'{member.mention}のキックをキャンセルしました。'
         confirm_arg = ''
         turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-        if turned == 'ok':
+        if turned:
             msg = exe_msg
             if if_dm == 'True':
                 m = await member.send(DM_content)
@@ -891,7 +905,7 @@ async def _kickuser(ctx, member: Member, if_dm: str = 'True'):
                 return
             else:
                 return
-        elif turned == 'cancel':
+        elif turned is False:
             msg = non_exe_msg
             desc_url = ''
             await send_exe_log(ctx, msg, desc_url)
@@ -934,7 +948,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
         non_exe_msg = f'{member.mention}のBANをキャンセルしました。'
         confirm_arg = ''
         turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-        if turned == 'ok':
+        if turned:
             msg = exe_msg
             if if_dm == 'True':
                 m = await member.send(DM_content)
@@ -951,7 +965,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
                 return
             else:
                 return
-        elif turned == 'cancel':
+        elif turned is False:
             msg = non_exe_msg
             desc_url = ''
             await ctx.send('Cancelled!')
@@ -977,14 +991,14 @@ async def _unbanuser(ctx, id: int):
             non_exe_msg = f'{user.mention}のBANの解除をキャンセルしました。'
             confirm_arg = ''
             turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-            if turned == 'ok':
+            if turned:
                 msg = exe_msg
                 desc_url = ''
                 await ctx.guild.unban(user)
                 await ctx.send('Unbaned!')
                 await send_exe_log(ctx, msg, desc_url)
                 return
-            elif turned == 'cancel':
+            elif turned is False:
                 msg = non_exe_msg
                 desc_url = ''
                 await ctx.send('Cancelled!')
@@ -1082,9 +1096,10 @@ async def _check_member(ctx):
 # remove-member
 
 
-@bot.command(name='member-remove')
+@bot.command(name='remove-member')
 @commands.dm_only()
 async def _remove_member(ctx):
+    await ctx.reply(content='メンバーシップ継続停止を受理しました。\nしばらくお待ちください。', mention_author=False)
     channel = bot.get_channel(member_check_channel)
     guild = bot.get_guild(guild_id)
     exe_msg = f'{ctx.message.author.mention}のメンバーシップ継続停止を反映しました。'
@@ -1124,15 +1139,33 @@ async def _remove_member(ctx):
 
 
 @bot.command(name='update-member')
+@commands.has_role(admin_role)
 async def _update_member(ctx, *update_member: Member):
-    DM_content = '【メンバーシップ更新のご案内】\n沙花叉のメンバーシップの更新時期が近づいた方にDMを送信させていただいております。\n支払いが完了して次回支払日が更新され次第、以前と同じように\n`/check`\nで再認証を行ってください。\nメンバーシップを継続しない場合は\n`/member-remove`\nと送信してください。'
-    for x in update_member:
-        await x.send(DM_content)
-    msg = 'メンバーシップ更新案内を送信しました。'
-    desc_url = ctx.jump_url
-    await send_exe_log(ctx, msg, desc_url)
-    return
-
+    role = ctx.guild.get_role(admin_role)
+    update_member_mention = [x.mention for x in update_member]
+    update_member_str = '\n'.join(update_member_mention)
+    confirm_msg = f'【DM送信確認】\nメンバーシップ更新DMを\n{update_member_str}\nへ送信します。'
+    exe_msg = f'{update_member_str}にメンバーシップ更新DMを送信しました。'
+    non_exe_msg = f'{update_member_str}へのメンバーシップ更新DM送信をキャンセルしました。'
+    DM_content = '【メンバーシップ更新のご案内】\n沙花叉のメンバーシップの更新時期が近づいた方にDMを送信させていただいております。\nお支払いが完了して次回支払日が更新され次第、以前と同じように\n`/check`\nで再認証を行ってください。\nメンバーシップを継続しない場合は\n`/remove-member`\nと送信してください。'
+    confirm_arg = f'\n{DM_content}\n------------------------'
+    turned = await confirm(ctx, confirm_arg, role, confirm_msg)
+    if turned:
+        for x in update_member:
+            await x.send(DM_content)
+        await ctx.send('Sended!')
+        msg = exe_msg
+        desc_url = ''
+        await send_exe_log(ctx, msg, desc_url)
+        return
+    elif turned is False:
+        msg = non_exe_msg
+        desc_url = ''
+        await send_exe_log(ctx, msg, desc_url)
+        await ctx.send('Cancelled!')
+        return
+    else:
+        return
 
 # save-img
 
@@ -1158,7 +1191,7 @@ async def makedealdm(ctx, deal, add_dm):
 # confirm-system
 
 
-async def confirm(ctx, confirm_arg, role, confirm_msg):
+async def confirm(ctx, confirm_arg, role, confirm_msg) -> bool:
     send_confirm_msg = f'{confirm_msg}\n------------------------{confirm_arg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
     m = await ctx.send(send_confirm_msg)
     await m.add_reaction(maru_emoji)
@@ -1171,9 +1204,9 @@ async def confirm(ctx, confirm_arg, role, confirm_msg):
     payload = await bot.wait_for('raw_reaction_add', check=checkconf)
     # exe
     if str(payload.emoji) == maru_emoji:
-        return 'ok'
+        return True
     else:
-        return 'cancel'
+        return False
 
 # send-exe-log
 
