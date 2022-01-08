@@ -961,7 +961,7 @@ async def _check_member(ctx):
         future = asyncio.Future()
         view = MemberConfView(future, ctx)
         tracker = ViewTracker(view, timeout=None)
-        tracker.message = await tracker.track(MessageProvider(channel))
+        await tracker.track(MessageProvider(channel))
         await future
         if future.done():
             if future.result():
