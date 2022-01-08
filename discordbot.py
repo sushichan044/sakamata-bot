@@ -5,6 +5,7 @@ import re
 from datetime import datetime, timedelta, timezone
 
 import discord
+from discord.ui.button import button
 import requests
 from discord import Member
 from discord.message import MessageType
@@ -120,13 +121,18 @@ class MemberConfView(View):
         self.right_click = self.ng
         self.right_style = discord.ButtonStyle.red
         self.left_button = Button(self.left_str).style(self.left_style).disabled(self.status is not None).on_click(self.left_click)
+        self.right_button = Button(self.right_str).style(self.right_style).disabled(self.status is not None).on_click(self.right_click)
 
     async def ok(self, interaction: discord.Interaction):
         self.future.set_result(True)
         self.que = '承認済み'
+        self.left_str = 'スプレッドシート'
         self.right_str = '更新完了'
+        self.left_style = discord.ButtonStyle.link
         self.right_click = self.done
-        self.left_button = Button('スプレッドシート').style(discord.ButtonStyle.link).disabled(self.status is not None).url(os.environ['MEMBERSHIP_SPREADSHEET'])
+        self.right_style = discord.ButtonStyle.green
+        self.left_button = Button(self.left_str).style(self.left_style).disabled(self.status is not None).url(os.environ['MEMBERSHIP_SPREADSHEET'])
+        self.right_button = Button(self.right_str).style(self.right_style).disabled(self.status is not None).on_click(self.right_click)
         await interaction.response.defer()
         return
 
@@ -179,10 +185,7 @@ class MemberConfView(View):
             embeds=embedimg,
             components=[
                 self.left_button,
-                Button(self.right_str)
-                .style(self.right_style)
-                .disabled(self.status is not None)
-                .on_click(self.right_click)
+                self.right_button
             ]
         )
 
