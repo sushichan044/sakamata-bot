@@ -96,32 +96,54 @@ yt_membership_role = 926268230417408010
 
 class MemberConfView(View):
     status = state('status')
-    ok_str = state('ok_str')
-    ng_str = state('ng_str')
+    left_str = state('left_str')
+    right_str = state('right_str')
     que = state('que')
+    left_style = state('left_style')
+    left_url = state('left_url')
+    left_click = state('left_click')
+    right_style = state('right_style')
+    right_click = state('right_click')
 
     def __init__(self, future, ctx):
         super().__init__()
         self.future = future
         self.status = None
-        self.ok_str = '承認'
-        self.ng_str = '否認'
+        self.left_str = '承認'
+        self.right_str = '否認'
         self.ctx = ctx
         self.que = '承認しますか？'
+        self.left_style = discord.ButtonStyle.green
+        self.left_url = ''
+        self.left_click = self.ok
+        self.right_click = self.ng
+        self.right_style = discord.ButtonStyle.red
 
     async def ok(self, interaction: discord.Interaction):
         self.future.set_result(True)
-        self.status = True
+        self.left_style = discord.ButtonStyle.link
         self.que = '承認済み'
-        self.ok_str = '承認されました'
+        self.left_str = 'スプレッドシート'
+        self.left_url = os.environ['MEMBERSHIP_SPREADSHEET']
+        self.right_str = '更新完了'
+        self.right_click = self.done
         await interaction.response.defer()
         return
 
     async def ng(self, interaction: discord.Interaction):
         self.future.set_result(False)
-        self.status = False
         self.que = '否認済み'
-        self.ng_str = '否認されました'
+        self.right_str = '否認されました'
+        self.status = False
+        await interaction.response.defer()
+        return
+
+    async def done(self, interaction: discord.Interaction):
+        self.left_style = discord.ButtonStyle.green
+        self.left_str = '承認済み'
+        self.right_style = discord.ButtonStyle.red
+        self.right_str = '更新済み'
+        self.status = True
         await interaction.response.defer()
         return
 
@@ -157,14 +179,15 @@ class MemberConfView(View):
         return Message(
             embeds=embedimg,
             components=[
-                Button(self.ok_str)
-                .style(discord.ButtonStyle.green)
+                Button(self.left_str)
+                .style(self.left_style)
                 .disabled(self.status is not None)
-                .on_click(self.ok),
-                Button(self.ng_str)
-                .style(discord.ButtonStyle.red)
+                .on_click(self.left_click)
+                .url(self.left_url),
+                Button(self.right_str)
+                .style(self.right_style)
                 .disabled(self.status is not None)
-                .on_click(self.ng)
+                .on_click(self.left_click)
             ]
         )
 
