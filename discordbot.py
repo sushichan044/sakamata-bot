@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 import discord
 import requests
 from discord import Member
-from discord.channel import DMChannel
+from discord.channel import DMChannel, TextChannel
 from discord.commands import Option, permissions
 from discord.ext import commands, pages, tasks
 from discord.ext.ui import (
@@ -244,8 +244,8 @@ class MemberRemoveView(View):
 
 
 # emoji
-maru_emoji = "\N{Heavy Large Circle}"
-batu_emoji = "\N{Cross Mark}"
+accept_emoji = "\N{Heavy Large Circle}"
+reject_emoji = "\N{Cross Mark}"
 
 # Boot-log
 
@@ -532,13 +532,10 @@ async def on_message_dm(message):
             for x in avoid_dm_list:
                 if message.content.startswith(x):
                     return
-            if message.content == '/check':
-                return
             channel = bot.get_channel(dm_box_channel)
             sent_messages = []
             if message.content or message.attachments:
-                # Send the second and subsequent attachments with embed (named 'embed') respectively:
-                embed = await compose_embed(message)
+                embed = await compose_embed_dm_box(message)
                 sent_messages.append(embed)
                 for attachment in message.attachments[1:]:
                     embed = discord.Embed()
@@ -579,8 +576,8 @@ async def _messagesend(ctx, channel_id: int, *, arg):
     elif turned is False:
         msg = non_exe_msg
         desc_url = ''
-        await send_exe_log(ctx, msg, desc_url)
         await ctx.send('Cancelled!')
+        await send_exe_log(ctx, msg, desc_url)
         return
     else:
         return
@@ -608,8 +605,8 @@ async def _send_dm(ctx, user: Member, *, arg):
     elif turned is False:
         msg = non_exe_msg
         desc_url = ''
-        await send_exe_log(ctx, msg, desc_url)
         await ctx.send('Cancelled!')
+        await send_exe_log(ctx, msg, desc_url)
         return
     else:
         return
@@ -640,8 +637,8 @@ async def _editmessage(ctx, channel_id: int, message_id: int, *, arg):
     elif turned is False:
         msg = non_exe_msg
         desc_url = ''
-        await send_exe_log(ctx, msg, desc_url)
         await ctx.send('Cancelled!')
+        await send_exe_log(ctx, msg, desc_url)
         return
     else:
         return
@@ -814,7 +811,7 @@ async def _untimeout(ctx, member: Member):
 
 @bot.command(name='kick')
 @commands.has_role(admin_role)
-async def _kickuser(ctx, member: Member, if_dm: str = 'True'):
+async def _kick_user(ctx, member: Member, if_dm: str = 'True'):
     '''メンバーをキック'''
     role = ctx.guild.get_role(admin_role)
     valid_if_dm_list = ['True', 'False']
@@ -868,7 +865,7 @@ async def _kickuser(ctx, member: Member, if_dm: str = 'True'):
 
 @bot.command(name='ban')
 @commands.has_role(admin_role)
-async def _banuser(ctx, member: Member, if_dm: str = 'True'):
+async def _ban_user(ctx, member: Member, if_dm: str = 'True'):
     '''メンバーをBAN'''
     role = ctx.guild.get_role(admin_role)
     valid_if_dm_list = ['True', 'False']
@@ -1116,15 +1113,6 @@ async def _update_member(ctx, *update_member: Member):
     else:
         return
 
-# save-img
-
-
-async def download_img(url, file_name):
-    r = requests.get(url, stream=True)
-    if r.status_code == 200:
-        with open(file_name, 'wb') as f:
-            f.write(r.content)
-
 
 # Deal-DM
 
@@ -1143,22 +1131,23 @@ async def make_deal_dm(ctx, deal, add_dm):
 async def confirm(ctx, confirm_arg, role, confirm_msg) -> bool:
     send_confirm_msg = f'{confirm_msg}\n------------------------{confirm_arg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
     m = await ctx.send(send_confirm_msg)
-    await m.add_reaction(maru_emoji)
-    await m.add_reaction(batu_emoji)
-    valid_reactions = [maru_emoji, batu_emoji]
+    await m.add_reaction(accept_emoji)
+    await m.add_reaction(reject_emoji)
+    valid_reactions = [accept_emoji, reject_emoji]
     # wait-for-reaction
 
-    def checkconf(payload):
+    def check_confirm(payload):
         return role in payload.member.roles and str(payload.emoji) in valid_reactions and payload.message_id == m.id
-    payload = await bot.wait_for('raw_reaction_add', check=checkconf)
+    payload = await bot.wait_for('raw_reaction_add', check=check_confirm)
     # exe
-    if str(payload.emoji) == maru_emoji:
+    if str(payload.emoji) == accept_emoji:
         return True
     else:
         return False
 
 
 # create_log_send_embed_base
+
 
 async def create_base_log_embed(ctx, msg, desc_url):
     embed = discord.Embed(
@@ -1203,7 +1192,7 @@ async def send_timeout_log(ctx, msg, desc_url, until_str):
     embed = await create_base_log_embed(ctx, msg, desc_url)
     channel = bot.get_channel(log_channel)
     embed.insert_field_at(
-        3,
+        2,
         name='解除日時',
         value=f'{until_str}'
     )
@@ -1214,7 +1203,7 @@ async def send_timeout_log(ctx, msg, desc_url, until_str):
 # compose-embed
 
 
-async def compose_embed(message):
+async def compose_embed_dm_box(message):
     embed = discord.Embed(
         title='DMを受信しました。',
         url=message.jump_url,
@@ -1240,43 +1229,51 @@ async def compose_embed(message):
         )
     return embed
 
+
+# compose-thread-create-log-embed
+
+
+async def compose_thread_create_log(thread):
+    embed = discord.Embed(
+        title='スレッドが作成されました。',
+        url='',
+        color=3447003,
+        description='',
+        timestamp=discord.utils.utcnow()
+    )
+    embed.set_author(
+        name=thread.owner.display_name,
+        icon_url=thread.owner.display_avatar.url,
+    )
+    embed.add_field(
+        name='作成元チャンネル',
+        value=f'{thread.parent.mention}'
+    )
+    embed.add_field(
+        name='作成スレッド',
+        value=f'{thread.mention}'
+    )
+    embed.add_field(
+        name='作成者',
+        value=f'{thread.owner.mention}'
+    )
+    embed.add_field(
+        name='作成日時',
+        value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
+    )
+    return embed
+
 # notice-thread/send-log
 
 
 @bot.listen('on_thread_join')
 async def detect_thread(thread):
-    channel = bot.get_channel(thread_log_channel)
     thread_member_list = await thread.fetch_members()
     if bot.user.id in [x.id for x in thread_member_list]:
         return
     else:
-        embed = discord.Embed(
-            title='スレッドが作成されました。',
-            url='',
-            color=3447003,
-            description='',
-            timestamp=discord.utils.utcnow()
-        )
-        embed.set_author(
-            name=thread.owner.display_name,
-            icon_url=thread.owner.display_avatar.url,
-        )
-        embed.add_field(
-            name='作成元チャンネル',
-            value=f'{thread.parent.mention}'
-        )
-        embed.add_field(
-            name='作成スレッド',
-            value=f'{thread.mention}'
-        )
-        embed.add_field(
-            name='作成者',
-            value=f'{thread.owner.mention}'
-        )
-        embed.add_field(
-            name='作成日時',
-            value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
-        )
+        channel = bot.get_channel(thread_log_channel)
+        embed = await compose_thread_create_log((thread))
         await channel.send(embed=embed)
         return
 
@@ -1298,32 +1295,6 @@ API_KEY = os.environ['GOOGLE_API_KEY']
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
-'''
-# create-event
-@bot.command(name='make-event')
-@commands.has_role(mod_role)
-async def _createevent(ctx,event_name,stream_url:str,start_time:str,duration:int,):
-    guild = ctx.guild
-    if len(start_time)==4:
-        todate = datetime.now(timezone.utc).astimezone(jst)
-        starttime = datetime.strptime(start_time,'%H%M')
-        true_start_jst = datetime.replace(starttime,year=todate.year,month=todate.month,day=todate.day,tzinfo=jst)
-    elif len(start_time)==12:
-        true_start = datetime.strptime(start_time,'%Y%m%d%H%M')
-        true_start_jst = datetime.replace(true_start,tzinfo=jst)
-    else:
-        await ctx.reply(content='正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```',mention_author=False)
-        return
-    true_duration = timedelta(hours=duration)
-    true_end = true_start_jst + true_duration
-    await guild.create_scheduled_event(name = f'【配信】{event_name}',
-                                       description='',
-                                       start_time = true_start_jst.astimezone(utc),
-                                       end_time = true_end,
-                                       location = stream_url,
-                                       )
-    return
-'''
 
 # create-event-slash
 
