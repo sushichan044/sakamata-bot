@@ -141,7 +141,7 @@ class MemberConfView(View):
 
     async def body(self) -> Message:
         image_url = [x.url for x in self.ctx.message.attachments]
-        embedimg = []
+        embed_list = []
         embed = discord.Embed(
             title=self.que,
             description='メンバー認証コマンドを受信しました。',
@@ -161,15 +161,15 @@ class MemberConfView(View):
             name='受信日時',
             value=f'{self.ctx.message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
         )
-        embedimg.append(embed)
+        embed_list.append(embed)
         for x in image_url:
             embed = discord.Embed()
             embed.set_image(
                 url=x
             )
-            embedimg.append(embed)
+            embed_list.append(embed)
         return Message(
-            embeds=embedimg,
+            embeds=embed_list,
             components=[
                 self.left_button,
                 self.right_button
@@ -323,11 +323,11 @@ async def on_command_error(ctx, error):
 async def errortest(ctx):
     prin()
 
-# Detect-NGword
+# Detect_NG_word
 
 
 @bot.listen('on_message')
-async def detect_NGword(message):
+async def detect_NG_word(message):
     word_list = ['@everyone', '@here', '@飼育員たち']
     if message.author == bot.user:
         return
@@ -352,7 +352,7 @@ async def detect_NGword(message):
         else:
             return
 
-# send-nglog
+# send_ng_log
 
 
 async def send_ng_log(message, m):
@@ -501,61 +501,6 @@ async def _newuser(
     return
 
 
-# new-user-info-command
-'''
-@bot.command()
-@commands.has_role(mod_role)
-async def user(ctx,id:int):
-    """ユーザー情報取得"""
-    target: Optional[Member,User]
-    target = ctx.guild.get_member(id)
-    if target is None:
-        target = await bot.fetch_user(id)
-    else:
-        pass
-    if isinstance(target,Member):
-        targetin = 'True'
-        targetjoindate = target.joined_at + timedelta(hours=9)
-        targetroles = target.roles
-        if target.display_name == target.name :
-            targetifnick = 'None'
-        else:
-            targetifnick = target.display_name
-    elif isinstance(target,User):
-        targetifnick = 'None'
-        targetin = 'False'
-        targetjoindate = 'None'
-        targetroles = 'None'
-    else:
-        pass
-    targetregdate =target.created_at + timedelta(hours=9)
-    # Message成形-途中
-    targetinfomsg = f'```ユーザー名:{target} (ID:{target.id})\nBot?:{target.bot}\nin server?:{targetin}\nニックネーム:{targetifnick}\nアカウント作成日時:{targetregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{targetjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{targetroles}```'
-    await ctx.send(targetinfomsg)
-    return
-'''
-'''
-    # サーバーメンバー判定
-    targetregdate =target.created_at + timedelta(hours=9)
-    if ctx.guild.id in target.mutual_guilds == True:
-        targetinserver = 'True'
-    else:
-        targetinserver = 'False'
-    # 同サーバー内のみ判定
-    targetjoindate = 'None'
-    targetroles = 'None'
-    targetifnickname = 'None'
-    if targetinserver == 'True':
-        targetjoindate = target.joined_at + timedelta(hours=9)
-        targetroles = target.roles
-        if target.display_name == target.name :
-            pass
-        else:
-            targetifnickname = target.display_name
-    else:
-        pass
-    '''
-
 # ping-test
 
 
@@ -639,7 +584,7 @@ async def _messagesend(ctx, channel_id: int, *, arg):
 
 @bot.command(name='send-dm')
 @commands.has_role(admin_role)
-async def _dmsend(ctx, user: Member, *, arg):
+async def _send_dm(ctx, user: Member, *, arg):
     """DM送信用"""
     role = ctx.guild.get_role(admin_role)
     confirm_msg = f'【DM送信確認】\n以下のDMを{user.mention}へ送信します。'
@@ -792,7 +737,7 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
     else:
         deal = 'timeout'
         add_dm = f'あなたは{until_str}までサーバーでの発言とボイスチャットへの接続を制限されます。'
-        DM_content = await makedealdm(ctx, deal, add_dm)
+        DM_content = await make_deal_dm(ctx, deal, add_dm)
         if if_dm == 'False':
             DM_content = ''
         else:
@@ -809,13 +754,13 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
                 desc_url = m.jump_url
                 await member.timeout(until_jst.astimezone(utc), reason=None)
                 await ctx.send('timeouted!')
-                await sendtolog(ctx, msg, desc_url, until_str)
+                await send_timeout_log(ctx, msg, desc_url, until_str)
                 return
             elif if_dm == 'False':
                 desc_url = ''
                 await member.timeout(until_jst + timedelta(hours=-9), reason=None)
                 await ctx.send('timeouted!')
-                await sendtolog(ctx, msg, desc_url, until_str)
+                await send_timeout_log(ctx, msg, desc_url, until_str)
                 return
             else:
                 return
@@ -876,7 +821,7 @@ async def _kickuser(ctx, member: Member, if_dm: str = 'True'):
     else:
         deal = 'kick'
         add_dm = ''
-        DM_content = await makedealdm(ctx, deal, add_dm)
+        DM_content = await make_deal_dm(ctx, deal, add_dm)
         if if_dm == 'False':
             DM_content = ''
         else:
@@ -936,7 +881,7 @@ BANの解除を希望する場合は以下のフォームをご利用くださ�
 クロヱ水族館BAN解除申請フォーム
 https://forms.gle/mR1foEyd9JHbhYdCA
 '''
-        DM_content = await makedealdm(ctx, deal, add_dm)
+        DM_content = await make_deal_dm(ctx, deal, add_dm)
         if if_dm == 'False':
             DM_content = ''
         else:
@@ -977,7 +922,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
 
 @bot.command(name='unban')
 @commands.has_role(admin_role)
-async def _unbanuser(ctx, id: int):
+async def _unban_user(ctx, id: int):
     '''ユーザーのBANを解除'''
     user = await bot.fetch_user(id)
     banned_users = await ctx.guild.bans()
@@ -1178,7 +1123,7 @@ async def download_img(url, file_name):
 # Deal-DM
 
 
-async def makedealdm(ctx, deal, add_dm):
+async def make_deal_dm(ctx, deal, add_dm):
     DM_content = f'''【あなたは{deal}されました】
 クロヱ水族館/Chloeriumの管理者です。
 
@@ -1240,7 +1185,7 @@ async def send_exe_log(ctx, msg, desc_url):
 # send-timeout-log
 
 
-async def sendtolog(ctx, msg, desc_url, until_str):
+async def send_timeout_log(ctx, msg, desc_url, until_str):
     channel = bot.get_channel(log_channel)
     embed = discord.Embed(
         title='実行ログ',
