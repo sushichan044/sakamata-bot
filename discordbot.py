@@ -52,7 +52,14 @@ class JapaneseHelpCommand(commands.DefaultHelpCommand):
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='/', intents=intents,
                    help_command=JapaneseHelpCommand())
-bot.load_extension('poll')
+
+
+START_EXTENSION_LIST = [
+    'poll',
+]
+
+for cog in START_EXTENSION_LIST:
+    bot.load_extension(cog)
 
 
 # 本番鯖IDなど

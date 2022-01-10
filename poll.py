@@ -79,4 +79,4 @@ class Poll(commands.Cog):
 
 
 def setup(bot):
-    return bot.add_cog(Poll(bot))
+    bot.add_cog(Poll(bot))
