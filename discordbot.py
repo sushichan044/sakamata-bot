@@ -54,12 +54,13 @@ bot = commands.Bot(command_prefix='/', intents=intents,
                    help_command=JapaneseHelpCommand())
 
 
-START_EXTENSION_LIST = [
+INIT_EXTENSION_LIST = [
     'Cog.poll',
-    'Cog.thread'
+    'Cog.thread',
+    'Cog.entrance'
 ]
 
-for cog in START_EXTENSION_LIST:
+for cog in INIT_EXTENSION_LIST:
     bot.load_extension(cog)
 
 
@@ -529,7 +530,7 @@ async def ping(ctx):
     await ctx.send(f'Pong!\nPing is {ping}ms')
     return
 
-# recieve-dm
+# receive-dm
 
 
 @bot.listen('on_message')
@@ -1211,33 +1212,6 @@ async def _newcreateevent(ctx,
                                        location=stream_url,
                                        )
     await ctx.respond('配信を登録しました。')
-    return
-
-# Member-join-or-leave-log
-
-
-@bot.listen('on_member_join')
-async def on_join(member):
-    status = '参加'
-    await _send_member_log(member, status)
-    return
-
-
-@bot.listen('on_member_remove')
-async def on_leave(member):
-    status = '退出'
-    await _send_member_log(member, status)
-    return
-
-
-# send-join-leave-log
-async def _send_member_log(member, status):
-    channel = bot.get_channel(join_log_channel)
-    now = discord.utils.utcnow().astimezone(jst)
-    send_time = datetime.strftime(now, '%Y/%m/%d %H:%M:%S')
-    count = member.guild.member_count
-    send_msg = f"時刻: {send_time}\n{status}メンバー名: {member.name} (ID:{member.id})\nメンション: {member.mention}\nアカウント作成時刻: {member.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}\n現在のメンバー数:{count}\n"
-    await channel.send(send_msg)
     return
 
 
