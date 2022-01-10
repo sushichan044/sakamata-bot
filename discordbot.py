@@ -1033,8 +1033,8 @@ async def get_stream_method(ctx):
             live_start = datetime.fromisoformat(
                 fixed_start_scheduled).astimezone(jst)
             live_start_timestamp = int(live_start.timestamp())
-            live_start_str_date = datetime.strftime(live_start, '%Y/%m/%d')
-            live_start_str_time = datetime.strftime(live_start, '%H:%M')
+            live_start_str_date = datetime.strftime(live_start, '%Y年%m月%d日')
+            live_start_str_time = datetime.strftime(live_start, '%H時%M分')
             weekday = datetime.date(live_start).weekday()
             weekday_dic = {0: '月', 1: '火', 2: '水',
                            3: '木', 4: '金', 5: '土', 6: '日'}
