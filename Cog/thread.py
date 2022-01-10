@@ -2,7 +2,7 @@ import os
 from datetime import timedelta, timezone
 
 import discord
-from discord import commands
+from discord.ext import commands
 
 thread_log_channel = os.environ['THREAD_LOG_CHANNEL']
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
