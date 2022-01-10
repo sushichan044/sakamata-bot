@@ -1024,11 +1024,18 @@ headers = {
 async def get_stream_method(ctx):
     async with HolodexClient(aiohttp.ClientSession(headers=headers)) as client:
         lives = await client.live_streams(channel_id='UC6eWCld0KwmyHFbAqK3V-Rw')
-        lives_list = [x.id for x in lives.contents if x.status ==
+        lives_list = [x for x in lives.contents if x.status ==
                       'upcoming' and 'live']
         for x in lives_list:
-            live_url = '待機所が作成されました。\nhttps://youtu.be/' + x
-            await ctx.send(live_url)
+            live_url = '待機所が作成されました。\nhttps://youtu.be/' + x.id
+            live_title = x.title
+            embed = discord.Embed(
+                title=f'{live_title}',
+                description='待機所が作成されました',
+                url=f'{live_url}'
+                color=16711680
+            )
+            await ctx.send(embed=embed)
         print(lives_list)
         return
 
