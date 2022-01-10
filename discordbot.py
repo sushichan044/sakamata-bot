@@ -19,6 +19,7 @@ from newdispanderfixed import dispand
 from holodex.client import HolodexClient
 
 import Components.member_button as membership_button
+import connect
 
 logging.basicConfig(level=logging.INFO)
 
@@ -34,7 +35,7 @@ Bot起動時に実行：      on_ready(message)
 新規メンバー参加時に実行： on_member_join(member)
 ボイスチャンネル出入に実行： on_voice_state_update(member, before, after)'''
 
-
+conn = connect.connect()
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
 
@@ -1039,6 +1040,57 @@ async def get_stream_method():
         lives_list = [x for x in lives.contents if x.status ==
                       'upcoming' and 'live']
         for x in lives_list:
+            result = conn.get(x.id)
+            if result is not None:
+                print('配信が重複していたためスキップします。')
+                return
+            else:
+                set_data = conn.set(f'{x.id}', 'notified', ex=86400)
+                if set_data:
+                    fixed_start_scheduled = x.start_scheduled.replace(
+                        'Z', '+00:00')
+                    live_start = datetime.fromisoformat(
+                        fixed_start_scheduled).astimezone(jst)
+                    live_url = 'https://youtu.be/' + x.id
+                    live_title = x.title
+                    live_start_timestamp = int(live_start.timestamp())
+                    live_start_str_date = datetime.strftime(
+                        live_start, '%Y年%m月%d日')
+                    live_start_str_time = datetime.strftime(
+                        live_start, '%H時%M分')
+                    weekday = datetime.date(live_start).weekday()
+                    weekday_dic = {0: '月', 1: '火', 2: '水',
+                                   3: '木', 4: '金', 5: '土', 6: '日'}
+                    weekday_str = weekday_dic[weekday]
+                    embed = discord.Embed(
+                        title=f'{live_title}',
+                        description='待機所が作成されました',
+                        url=f'{live_url}',
+                        color=16711680,
+                    )
+                    embed.add_field(
+                        name='**配信予定日(JST)**',
+                        value=f'{live_start_str_date}({weekday_str})',
+                    )
+                    embed.add_field(
+                        name='**配信予定時刻(JST)**',
+                        value=f'{live_start_str_time}',
+                    )
+                    embed.add_field(
+                        name='**配信予定時刻(Timestamp)**',
+                        value=f'<t:{live_start_timestamp}:f>',
+                        inline=False
+                    )
+                    embed.set_image(
+                        url=f'https://avatar-resolver.vercel.app/youtube-thumbnail/q?url={live_url}'
+                    )
+                    channel = bot.get_channel(stream_channel)
+                    await channel.send(embed=embed)
+                    await channel.send(x.published_at)
+                print(lives_list)
+                return
+
+            '''
             # 時間差計算
             time1 = discord.utils.utcnow().astimezone(jst)
             time2_sub = x.published_at.replace('Z', '+00:00')
@@ -1047,45 +1099,7 @@ async def get_stream_method():
             delta = time1 - time2
             if delta.seconds > 120:
                 return
-            fixed_start_scheduled = x.start_scheduled.replace('Z', '+00:00')
-            live_start = datetime.fromisoformat(
-                fixed_start_scheduled).astimezone(jst)
-            live_url = 'https://youtu.be/' + x.id
-            live_title = x.title
-            live_start_timestamp = int(live_start.timestamp())
-            live_start_str_date = datetime.strftime(live_start, '%Y年%m月%d日')
-            live_start_str_time = datetime.strftime(live_start, '%H時%M分')
-            weekday = datetime.date(live_start).weekday()
-            weekday_dic = {0: '月', 1: '火', 2: '水',
-                           3: '木', 4: '金', 5: '土', 6: '日'}
-            weekday_str = weekday_dic[weekday]
-            embed = discord.Embed(
-                title=f'{live_title}',
-                description='待機所が作成されました',
-                url=f'{live_url}',
-                color=16711680,
-            )
-            embed.add_field(
-                name='**配信予定日(JST)**',
-                value=f'{live_start_str_date}({weekday_str})',
-            )
-            embed.add_field(
-                name='**配信予定時刻(JST)**',
-                value=f'{live_start_str_time}',
-            )
-            embed.add_field(
-                name='**配信予定時刻(Timestamp)**',
-                value=f'<t:{live_start_timestamp}:f>',
-                inline=False
-            )
-            embed.set_image(
-                url=f'https://avatar-resolver.vercel.app/youtube-thumbnail/q?url={live_url}'
-            )
-            channel = bot.get_channel(stream_channel)
-            await channel.send(embed=embed)
-            await channel.send(x.published_at)
-        print(lives_list)
-        return
+            '''
 
 
 start_count.start()
