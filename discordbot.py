@@ -1,11 +1,9 @@
 import asyncio
 import logging
 import os
-import re
 from datetime import datetime, timedelta, timezone
 
 import discord
-import requests
 from discord import Member
 from discord.channel import DMChannel
 from discord.commands import Option, permissions
@@ -13,6 +11,8 @@ from discord.ext import commands, pages, tasks
 from discord.ext.ui import (
     Button, Message, MessageProvider, View, ViewTracker, state)
 from newdispanderfixed import dispand
+
+import Components.member_button as membership_button
 
 logging.basicConfig(level=logging.INFO)
 
@@ -54,6 +54,17 @@ bot = commands.Bot(command_prefix='/', intents=intents,
                    help_command=JapaneseHelpCommand())
 
 
+INIT_EXTENSION_LIST = [
+    'Cog.entrance',
+    'Cog.ng_word',
+    'Cog.poll',
+    'Cog.thread',
+]
+
+for cog in INIT_EXTENSION_LIST:
+    bot.load_extension(cog)
+
+
 # 本番鯖IDなど
 
 guild_id = 915910043461890078
@@ -63,10 +74,7 @@ dm_box_channel = 921781301101613076
 error_log_channel = 924142068484440084
 alert_channel = 924744385902575616
 member_check_channel = 926777825925677096
-thread_log_channel = 927110282675884082
-join_log_channel = 929015822272299038
 count_vc = 925256795491012668
-server_member_role = 915915792275632139
 mod_role = 916726433445986334
 admin_role = 915954009343422494
 everyone = 915910043461890078
@@ -81,165 +89,23 @@ dm_box_channel = 918101377958436954
 error_log_channel = 924141910321426452
 alert_channel = 924744469327257602
 member_check_channel = 926777719964987412
-thread_log_channel = 927110073996693544
-join_log_channel = 929015770539761715
 count_vc = 925249967478673519
-server_member_role = 923719282360188990
 mod_role = 924355349308383252
 admin_role = 917332284582031390
 everyone = 916965252896260117
 yt_membership_role = 926268230417408010
 '''
-# Classes
 
-
-class MemberConfView(View):
-    status = state('status')
-    ok_str = state('ok_str')
-    ng_str = state('ng_str')
-    que = state('que')
-    ng_url = state('ng_url')
-    ng_style = state('ng_style')
-    left_button = state('left_button')
-    right_button = state('right_button')
-
-    def __init__(self, future, ctx):
-        super().__init__()
-        self.future = future
-        self.status = None
-        self.ok_str = '承認'
-        self.ng_str = '否認'
-        self.ng_style = discord.ButtonStyle.red
-        self.left_button = Button(self.ok_str).style(discord.ButtonStyle.green).disabled(self.status is not None).on_click(self.ok)
-        self.right_button = Button(self.ng_str).style(self.ng_style).disabled(self.status is False).on_click(self.ng)
-        self.ng_url = ''
-        self.ctx = ctx
-        self.que = '承認しますか？'
-
-    async def ok(self, interaction: discord.Interaction):
-        self.future.set_result(True)
-        self.status = True
-        self.que = '承認済み'
-        self.ok_str = '承認されました'
-        self.ng_str = 'スプレッドシート'
-        self.ng_style = discord.ButtonStyle.link
-        self.ng_url = os.environ['MEMBERSHIP_SPREADSHEET']
-        self.left_button = Button(self.ok_str).style(discord.ButtonStyle.green).disabled(self.status is not None).on_click(self.ok)
-        self.right_button = Button(self.ng_str).style(self.ng_style).disabled(self.status is False).on_click(self.ng).url(self.ng_url)
-        await interaction.response.defer()
-        return
-
-    async def ng(self, interaction: discord.Interaction):
-        self.future.set_result(False)
-        self.status = False
-        self.que = '否認済み'
-        self.ng_str = '否認されました'
-        self.left_button = Button(self.ng_str).style(discord.ButtonStyle.red).disabled(True)
-        self.right_button = Button('承認').style(discord.ButtonStyle.green).disabled(True).on_click(self.ok)
-        await interaction.response.defer()
-        return
-
-    async def body(self) -> Message:
-        image_url = [x.url for x in self.ctx.message.attachments]
-        embedimg = []
-        embed = discord.Embed(
-            title=self.que,
-            description='メンバー認証コマンドを受信しました。',
-            color=15767485,
-            url=self.ctx.message.jump_url,
-            timestamp=self.ctx.message.created_at
-        )
-        embed.set_author(
-            name=self.ctx.message.author.display_name,
-            icon_url=self.ctx.message.author.avatar.url
-        )
-        embed.add_field(
-            name='送信者',
-            value=f'{self.ctx.message.author.mention}'
-        )
-        embed.add_field(
-            name='受信日時',
-            value=f'{self.ctx.message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
-        )
-        embedimg.append(embed)
-        for x in image_url:
-            embed = discord.Embed()
-            embed.set_image(
-                url=x
-            )
-            embedimg.append(embed)
-        return Message(
-            embeds=embedimg,
-            components=[
-                self.left_button,
-                self.right_button
-            ]
-        )
-
-
-class MemberRemoveView(View):
-    status = state('status')
-    que = state('que')
-    sheet = state('sheet')
-    complete = state('complete')
-
-    def __init__(self, future, ctx):
-        super().__init__()
-        self.future = future
-        self.ctx = ctx
-        self.status = None
-        self.que = 'スプレッドシートを更新してください。'
-        self.sheet = 'スプレッドシート'
-        self.complete = '更新完了'
-
-    async def done(self, interaction: discord.Interaction):
-        self.future.set_result(True)
-        self.status = True
-        self.que = '更新済み'
-        self.complete = '更新されました'
-        await interaction.response.defer()
-        return
-
-    async def body(self) -> Message:
-        embed_list = []
-        embed = discord.Embed(
-            title=self.que,
-            description='メンバー継続停止が通知されました。',
-            color=15767485,
-            url=self.ctx.message.jump_url,
-            timestamp=self.ctx.message.created_at
-        )
-        embed.set_author(
-            name=self.ctx.message.author.display_name,
-            icon_url=self.ctx.message.author.avatar.url
-        )
-        embed.add_field(
-            name='送信者',
-            value=f'{self.ctx.message.author.mention}'
-        )
-        embed.add_field(
-            name='受信日時',
-            value=f'{self.ctx.message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
-        )
-        embed_list.append(embed)
-        return Message(
-            embeds=embed_list,
-            components=[
-                Button(self.sheet)
-                .style(discord.ButtonStyle.link)
-                .disabled(self.status is not None)
-                .url(os.environ['MEMBERSHIP_SPREADSHEET']),
-                Button(self.complete)
-                .style(discord.ButtonStyle.green)
-                .disabled(self.status is not None)
-                .on_click(self.done),
-            ]
-        )
+# ID-env
+server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
+thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
+join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
+alert_channel = int(os.environ['ALERT_CHANNEL'])
 
 
 # emoji
-maru_emoji = "\N{Heavy Large Circle}"
-batu_emoji = "\N{Cross Mark}"
+accept_emoji = "\N{Heavy Large Circle}"
+reject_emoji = "\N{Cross Mark}"
 
 # Boot-log
 
@@ -323,69 +189,6 @@ async def on_command_error(ctx, error):
 async def errortest(ctx):
     prin()
 
-# Detect-NGword
-
-
-@bot.listen('on_message')
-async def detect_NGword(message):
-    word_list = ['@everyone', '@here', '@飼育員たち']
-    if message.author == bot.user:
-        return
-    elif type(message.channel) == DMChannel:
-        return
-    else:
-        m = [x for x in word_list if x in message.content]
-        prog = re.compile(r'discord.gg/[\w]*')
-        n = prog.findall(message.content)
-#        print(n)
-        invites_list = await message.guild.invites()
-        invites_url = [x.url for x in invites_list]
-        replaced_invites = [item.replace('https://', '')
-                            for item in invites_url]
-#        print(f'{replaced_invites}')
-        n = [x for x in n if x not in replaced_invites]
-        if m != [] or n != []:
-            m = m + n
-            m = '\n'.join(m)
-            await send_ng_log(message, m)
-            return
-        else:
-            return
-
-# send-nglog
-
-
-async def send_ng_log(message, m):
-    channel = bot.get_channel(alert_channel)
-    embed = discord.Embed(
-        title='NGワードを検知しました。',
-        url=message.jump_url,
-        color=16711680,
-        description=message.content,
-        timestamp=message.created_at
-    )
-    embed.set_author(
-        name=message.author.display_name,
-        icon_url=message.author.avatar.url
-    )
-    embed.add_field(
-        name='検知ワード',
-        value=f'{m}'
-    )
-    embed.add_field(
-        name='送信者',
-        value=f'{message.author.mention}'
-    )
-    embed.add_field(
-        name='送信先',
-        value=f'{message.channel.mention}'
-    )
-    embed.add_field(
-        name='送信日時',
-        value=f'{message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
-    )
-    await channel.send(embed=embed)
-    return
 
 # Dispander-All
 
@@ -501,61 +304,6 @@ async def _newuser(
     return
 
 
-# new-user-info-command
-'''
-@bot.command()
-@commands.has_role(mod_role)
-async def user(ctx,id:int):
-    """ユーザー情報取得"""
-    target: Optional[Member,User]
-    target = ctx.guild.get_member(id)
-    if target is None:
-        target = await bot.fetch_user(id)
-    else:
-        pass
-    if isinstance(target,Member):
-        targetin = 'True'
-        targetjoindate = target.joined_at + timedelta(hours=9)
-        targetroles = target.roles
-        if target.display_name == target.name :
-            targetifnick = 'None'
-        else:
-            targetifnick = target.display_name
-    elif isinstance(target,User):
-        targetifnick = 'None'
-        targetin = 'False'
-        targetjoindate = 'None'
-        targetroles = 'None'
-    else:
-        pass
-    targetregdate =target.created_at + timedelta(hours=9)
-    # Message成形-途中
-    targetinfomsg = f'```ユーザー名:{target} (ID:{target.id})\nBot?:{target.bot}\nin server?:{targetin}\nニックネーム:{targetifnick}\nアカウント作成日時:{targetregdate:%Y/%m/%d %H:%M:%S}\n参加日時:{targetjoindate:%Y/%m/%d %H:%M:%S}\n所持ロール:{targetroles}```'
-    await ctx.send(targetinfomsg)
-    return
-'''
-'''
-    # サーバーメンバー判定
-    targetregdate =target.created_at + timedelta(hours=9)
-    if ctx.guild.id in target.mutual_guilds == True:
-        targetinserver = 'True'
-    else:
-        targetinserver = 'False'
-    # 同サーバー内のみ判定
-    targetjoindate = 'None'
-    targetroles = 'None'
-    targetifnickname = 'None'
-    if targetinserver == 'True':
-        targetjoindate = target.joined_at + timedelta(hours=9)
-        targetroles = target.roles
-        if target.display_name == target.name :
-            pass
-        else:
-            targetifnickname = target.display_name
-    else:
-        pass
-    '''
-
 # ping-test
 
 
@@ -568,7 +316,7 @@ async def ping(ctx):
     await ctx.send(f'Pong!\nPing is {ping}ms')
     return
 
-# recieve-dm
+# receive-dm
 
 
 @bot.listen('on_message')
@@ -581,13 +329,10 @@ async def on_message_dm(message):
             for x in avoid_dm_list:
                 if message.content.startswith(x):
                     return
-            if message.content == '/check':
-                return
             channel = bot.get_channel(dm_box_channel)
             sent_messages = []
             if message.content or message.attachments:
-                # Send the second and subsequent attachments with embed (named 'embed') respectively:
-                embed = await compose_embed(message)
+                embed = await compose_embed_dm_box(message)
                 sent_messages.append(embed)
                 for attachment in message.attachments[1:]:
                     embed = discord.Embed()
@@ -628,8 +373,8 @@ async def _messagesend(ctx, channel_id: int, *, arg):
     elif turned is False:
         msg = non_exe_msg
         desc_url = ''
-        await send_exe_log(ctx, msg, desc_url)
         await ctx.send('Cancelled!')
+        await send_exe_log(ctx, msg, desc_url)
         return
     else:
         return
@@ -639,7 +384,7 @@ async def _messagesend(ctx, channel_id: int, *, arg):
 
 @bot.command(name='send-dm')
 @commands.has_role(admin_role)
-async def _dmsend(ctx, user: Member, *, arg):
+async def _send_dm(ctx, user: Member, *, arg):
     """DM送信用"""
     role = ctx.guild.get_role(admin_role)
     confirm_msg = f'【DM送信確認】\n以下のDMを{user.mention}へ送信します。'
@@ -657,8 +402,8 @@ async def _dmsend(ctx, user: Member, *, arg):
     elif turned is False:
         msg = non_exe_msg
         desc_url = ''
-        await send_exe_log(ctx, msg, desc_url)
         await ctx.send('Cancelled!')
+        await send_exe_log(ctx, msg, desc_url)
         return
     else:
         return
@@ -689,81 +434,12 @@ async def _editmessage(ctx, channel_id: int, message_id: int, *, arg):
     elif turned is False:
         msg = non_exe_msg
         desc_url = ''
-        await send_exe_log(ctx, msg, desc_url)
         await ctx.send('Cancelled!')
+        await send_exe_log(ctx, msg, desc_url)
         return
     else:
         return
 
-# PollEmoji
-poll_emoji_list = [
-    '\N{Large Red Circle}',
-    '\N{Large Green Circle}',
-    '\N{Large Orange Circle}',
-    '\N{Large Blue Circle}',
-    # '\N{Large Yellow Circle}',
-    '\N{Large Brown Circle}',
-    '\N{Large Purple Circle}',
-    # '\N{Medium Black Circle}',
-    # '\N{Medium White Circle}',
-    '\N{Large Red Square}',
-    '\N{Large Green Square}',
-    '\N{Large Orange Square}',
-    '\N{Large Blue Square}',
-    # '\N{Large Yellow Square}',
-    '\N{Large Brown Square}',
-    '\N{Large Purple Square}',
-    # '\N{Black Large Square}',
-    # '\N{White Large Square}',
-    '\N{Large Orange Diamond}',
-    '\N{Large Blue Diamond}',
-    '\N{Heavy Black Heart}',
-    '\N{Green Heart}',
-    '\N{Orange Heart}',
-    '\N{Blue Heart}',
-    '\N{Brown Heart}',
-    '\N{Purple Heart}',
-]
-# Poll
-
-
-@bot.command(name='poll')
-@commands.has_role(server_member_role)
-async def _poll(ctx, title, *select):
-    if select == ():
-        embed = discord.Embed(
-            title=title,
-            description="\N{Large Green Circle}Yes\n\N{Large Red Circle}No",
-            color=3447003,
-        )
-        poll_yes_emoji = '\N{Large Green Circle}'
-        poll_no_emoji = '\N{Large Red Circle}'
-        m = await ctx.send(embed=embed)
-        await m.add_reaction(poll_yes_emoji)
-        await m.add_reaction(poll_no_emoji)
-        return
-    elif len(select) > 20:
-        embed = discord.Embed(
-            title='選択肢が多すぎます。',
-            color=16098851,
-        )
-        await ctx.send(embed=embed)
-        return
-    else:
-        send_desc_list = []
-        for num in range(len(select)):
-            element = f'{poll_emoji_list[num]}{select[num]}'
-            send_desc_list.append(element)
-        send_desc = '\n'.join(send_desc_list)
-        embed = discord.Embed(
-            title=title,
-            description=send_desc,
-            color=3447003,
-        )
-        m = await ctx.send(embed=embed)
-        for x in range(len(select)):
-            await m.add_reaction(poll_emoji_list[x])
-        return
 
 # deal-member
 # deal:対処。ban/kick
@@ -792,7 +468,7 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
     else:
         deal = 'timeout'
         add_dm = f'あなたは{until_str}までサーバーでの発言とボイスチャットへの接続を制限されます。'
-        DM_content = await makedealdm(ctx, deal, add_dm)
+        DM_content = await make_deal_dm(ctx, deal, add_dm)
         if if_dm == 'False':
             DM_content = ''
         else:
@@ -809,13 +485,13 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
                 desc_url = m.jump_url
                 await member.timeout(until_jst.astimezone(utc), reason=None)
                 await ctx.send('timeouted!')
-                await sendtolog(ctx, msg, desc_url, until_str)
+                await send_timeout_log(ctx, msg, desc_url, until_str)
                 return
             elif if_dm == 'False':
                 desc_url = ''
                 await member.timeout(until_jst + timedelta(hours=-9), reason=None)
                 await ctx.send('timeouted!')
-                await sendtolog(ctx, msg, desc_url, until_str)
+                await send_timeout_log(ctx, msg, desc_url, until_str)
                 return
             else:
                 return
@@ -863,7 +539,7 @@ async def _untimeout(ctx, member: Member):
 
 @bot.command(name='kick')
 @commands.has_role(admin_role)
-async def _kickuser(ctx, member: Member, if_dm: str = 'True'):
+async def _kick_user(ctx, member: Member, if_dm: str = 'True'):
     '''メンバーをキック'''
     role = ctx.guild.get_role(admin_role)
     valid_if_dm_list = ['True', 'False']
@@ -876,7 +552,7 @@ async def _kickuser(ctx, member: Member, if_dm: str = 'True'):
     else:
         deal = 'kick'
         add_dm = ''
-        DM_content = await makedealdm(ctx, deal, add_dm)
+        DM_content = await make_deal_dm(ctx, deal, add_dm)
         if if_dm == 'False':
             DM_content = ''
         else:
@@ -917,7 +593,7 @@ async def _kickuser(ctx, member: Member, if_dm: str = 'True'):
 
 @bot.command(name='ban')
 @commands.has_role(admin_role)
-async def _banuser(ctx, member: Member, if_dm: str = 'True'):
+async def _ban_user(ctx, member: Member, if_dm: str = 'True'):
     '''メンバーをBAN'''
     role = ctx.guild.get_role(admin_role)
     valid_if_dm_list = ['True', 'False']
@@ -936,7 +612,7 @@ BANの解除を希望する場合は以下のフォームをご利用くださ�
 クロヱ水族館BAN解除申請フォーム
 https://forms.gle/mR1foEyd9JHbhYdCA
 '''
-        DM_content = await makedealdm(ctx, deal, add_dm)
+        DM_content = await make_deal_dm(ctx, deal, add_dm)
         if if_dm == 'False':
             DM_content = ''
         else:
@@ -977,7 +653,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
 
 @bot.command(name='unban')
 @commands.has_role(admin_role)
-async def _unbanuser(ctx, id: int):
+async def _unban_user(ctx, id: int):
     '''ユーザーのBANを解除'''
     user = await bot.fetch_user(id)
     banned_users = await ctx.guild.bans()
@@ -1031,7 +707,7 @@ async def _check_member(ctx):
         exe_msg = f'{ctx.message.author.mention}のメンバーシップ認証を承認しました。'
         non_exe_msg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
         future = asyncio.Future()
-        view = MemberConfView(future, ctx)
+        view = membership_button.MemberConfView(future, ctx)
         tracker = ViewTracker(view, timeout=None)
         await tracker.track(MessageProvider(channel))
         await future
@@ -1102,7 +778,7 @@ async def _remove_member(ctx):
     guild = bot.get_guild(guild_id)
     exe_msg = f'{ctx.message.author.mention}のメンバーシップ継続停止を反映しました。'
     future = asyncio.Future()
-    view = MemberRemoveView(future, ctx)
+    view = membership_button.MemberRemoveView(future, ctx)
     tracker = ViewTracker(view, timeout=None)
     await tracker.track(MessageProvider(channel))
     await future
@@ -1165,20 +841,11 @@ async def _update_member(ctx, *update_member: Member):
     else:
         return
 
-# save-img
-
-
-async def download_img(url, file_name):
-    r = requests.get(url, stream=True)
-    if r.status_code == 200:
-        with open(file_name, 'wb') as f:
-            f.write(r.content)
-
 
 # Deal-DM
 
 
-async def makedealdm(ctx, deal, add_dm):
+async def make_deal_dm(ctx, deal, add_dm):
     DM_content = f'''【あなたは{deal}されました】
 クロヱ水族館/Chloeriumの管理者です。
 
@@ -1192,25 +859,25 @@ async def makedealdm(ctx, deal, add_dm):
 async def confirm(ctx, confirm_arg, role, confirm_msg) -> bool:
     send_confirm_msg = f'{confirm_msg}\n------------------------{confirm_arg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
     m = await ctx.send(send_confirm_msg)
-    await m.add_reaction(maru_emoji)
-    await m.add_reaction(batu_emoji)
-    valid_reactions = [maru_emoji, batu_emoji]
+    await m.add_reaction(accept_emoji)
+    await m.add_reaction(reject_emoji)
+    valid_reactions = [accept_emoji, reject_emoji]
     # wait-for-reaction
 
-    def checkconf(payload):
+    def check_confirm(payload):
         return role in payload.member.roles and str(payload.emoji) in valid_reactions and payload.message_id == m.id
-    payload = await bot.wait_for('raw_reaction_add', check=checkconf)
+    payload = await bot.wait_for('raw_reaction_add', check=check_confirm)
     # exe
-    if str(payload.emoji) == maru_emoji:
+    if str(payload.emoji) == accept_emoji:
         return True
     else:
         return False
 
-# send-exe-log
+
+# create_log_send_embed_base
 
 
-async def send_exe_log(ctx, msg, desc_url):
-    channel = bot.get_channel(log_channel)
+async def create_base_log_embed(ctx, msg, desc_url):
     embed = discord.Embed(
         title='実行ログ',
         color=3447003,
@@ -1234,40 +901,28 @@ async def send_exe_log(ctx, msg, desc_url):
         name='実行日時',
         value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
     )
+    return embed.copy()
+
+
+# send-exe-log
+
+
+async def send_exe_log(ctx, msg, desc_url):
+    embed = await create_base_log_embed(ctx, msg, desc_url)
+    channel = bot.get_channel(log_channel)
     await channel.send(embed=embed)
     return
 
 # send-timeout-log
 
 
-async def sendtolog(ctx, msg, desc_url, until_str):
+async def send_timeout_log(ctx, msg, desc_url, until_str):
+    embed = await create_base_log_embed(ctx, msg, desc_url)
     channel = bot.get_channel(log_channel)
-    embed = discord.Embed(
-        title='実行ログ',
-        color=3447003,
-        description=msg,
-        url=f'{desc_url}',
-        timestamp=discord.utils.utcnow()
-    )
-    embed.set_author(
-        name=bot.user,
-        icon_url=bot.user.display_avatar.url
-    )
-    embed.add_field(
-        name='実行者',
-        value=f'{ctx.author.mention}'
-    )
-    embed.add_field(
-        name='実行コマンド',
-        value=f'[コマンドリンク]({ctx.message.jump_url})'
-    )
-    embed.add_field(
+    embed.insert_field_at(
+        2,
         name='解除日時',
         value=f'{until_str}'
-    )
-    embed.add_field(
-        name='実行日時',
-        value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
     )
     await channel.send(embed=embed)
     return
@@ -1276,7 +931,7 @@ async def sendtolog(ctx, msg, desc_url, until_str):
 # compose-embed
 
 
-async def compose_embed(message):
+async def compose_embed_dm_box(message):
     embed = discord.Embed(
         title='DMを受信しました。',
         url=message.jump_url,
@@ -1302,90 +957,12 @@ async def compose_embed(message):
         )
     return embed
 
-# notice-thread/send-log
-
-
-@bot.listen('on_thread_join')
-async def detect_thread(thread):
-    channel = bot.get_channel(thread_log_channel)
-    thread_member_list = await thread.fetch_members()
-    if bot.user.id in [x.id for x in thread_member_list]:
-        return
-    else:
-        embed = discord.Embed(
-            title='スレッドが作成されました。',
-            url='',
-            color=3447003,
-            description='',
-            timestamp=discord.utils.utcnow()
-        )
-        embed.set_author(
-            name=thread.owner.display_name,
-            icon_url=thread.owner.display_avatar.url,
-        )
-        embed.add_field(
-            name='作成元チャンネル',
-            value=f'{thread.parent.mention}'
-        )
-        embed.add_field(
-            name='作成スレッド',
-            value=f'{thread.mention}'
-        )
-        embed.add_field(
-            name='作成者',
-            value=f'{thread.owner.mention}'
-        )
-        embed.add_field(
-            name='作成日時',
-            value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
-        )
-        await channel.send(embed=embed)
-        return
-
-# detect-thread-archive
-
-
-@bot.listen('on_thread_update')
-async def detect_archive(before, after):
-    if after.locked and not before.locked:
-        return
-    elif after.archived and not before.archived:
-        await after.edit(archived=False)
-        return
-    else:
-        return
 
 # YoutubeAPI
 API_KEY = os.environ['GOOGLE_API_KEY']
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
-'''
-# create-event
-@bot.command(name='make-event')
-@commands.has_role(mod_role)
-async def _createevent(ctx,event_name,stream_url:str,start_time:str,duration:int,):
-    guild = ctx.guild
-    if len(start_time)==4:
-        todate = datetime.now(timezone.utc).astimezone(jst)
-        starttime = datetime.strptime(start_time,'%H%M')
-        true_start_jst = datetime.replace(starttime,year=todate.year,month=todate.month,day=todate.day,tzinfo=jst)
-    elif len(start_time)==12:
-        true_start = datetime.strptime(start_time,'%Y%m%d%H%M')
-        true_start_jst = datetime.replace(true_start,tzinfo=jst)
-    else:
-        await ctx.reply(content='正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```',mention_author=False)
-        return
-    true_duration = timedelta(hours=duration)
-    true_end = true_start_jst + true_duration
-    await guild.create_scheduled_event(name = f'【配信】{event_name}',
-                                       description='',
-                                       start_time = true_start_jst.astimezone(utc),
-                                       end_time = true_end,
-                                       location = stream_url,
-                                       )
-    return
-'''
 
 # create-event-slash
 
@@ -1423,33 +1000,8 @@ async def _newcreateevent(ctx,
     await ctx.respond('配信を登録しました。')
     return
 
-# Member-join-or-leave-log
-
-
-@bot.listen('on_member_join')
-async def on_join(member):
-    status = '参加'
-    await _send_member_log(member, status)
-    return
-
-
-@bot.listen('on_member_remove')
-async def on_leave(member):
-    status = '退出'
-    await _send_member_log(member, status)
-    return
-
-
-# send-join-leave-log
-async def _send_member_log(member, status):
-    channel = bot.get_channel(join_log_channel)
-    now = discord.utils.utcnow().astimezone(jst)
-    send_time = datetime.strftime(now, '%Y/%m/%d %H:%M:%S')
-    count = member.guild.member_count
-    send_msg = f"時刻: {send_time}\n{status}メンバー名: {member.name} (ID:{member.id})\nメンション: {member.mention}\nアカウント作成時刻: {member.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}\n現在のメンバー数:{count}\n"
-    await channel.send(send_msg)
-    return
-
 
 start_count.start()
+
+
 bot.run(token)
