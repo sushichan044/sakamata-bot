@@ -1029,7 +1029,8 @@ async def get_stream_method(ctx):
         for x in lives_list:
             live_url = 'https://youtu.be/' + x.id
             live_title = x.title
-            live_start = datetime.fromisoformat(x.start_scheduled)
+            fixed_start_scheduled = x.start_scheduled.replace('Z', '+00:00')
+            live_start = datetime.fromisoformat(fixed_start_scheduled).astimezone(jst)
             live_start_str = datetime.strftime(live_start, '%Y/%m/%d %H:%M')
             embed = discord.Embed(
                 title=f'{live_title}',
