@@ -55,7 +55,8 @@ bot = commands.Bot(command_prefix='/', intents=intents,
 
 
 START_EXTENSION_LIST = [
-    'poll',
+    'Cog.poll',
+    'Cog.thread'
 ]
 
 for cog in START_EXTENSION_LIST:
@@ -71,7 +72,6 @@ dm_box_channel = 921781301101613076
 error_log_channel = 924142068484440084
 alert_channel = 924744385902575616
 member_check_channel = 926777825925677096
-thread_log_channel = 927110282675884082
 join_log_channel = 929015822272299038
 count_vc = 925256795491012668
 server_member_role = os.environ['SERVER_MEMBER_ROLE']
@@ -89,7 +89,6 @@ dm_box_channel = 918101377958436954
 error_log_channel = 924141910321426452
 alert_channel = 924744469327257602
 member_check_channel = 926777719964987412
-thread_log_channel = 927110073996693544
 join_log_channel = 929015770539761715
 count_vc = 925249967478673519
 server_member_role = os.environ['SERVER_MEMBER_ROLE']
@@ -1168,66 +1167,6 @@ async def compose_embed_dm_box(message):
         )
     return embed
 
-
-# compose-thread-create-log-embed
-
-
-async def compose_thread_create_log(thread):
-    embed = discord.Embed(
-        title='スレッドが作成されました。',
-        url='',
-        color=3447003,
-        description='',
-        timestamp=discord.utils.utcnow()
-    )
-    embed.set_author(
-        name=thread.owner.display_name,
-        icon_url=thread.owner.display_avatar.url,
-    )
-    embed.add_field(
-        name='作成元チャンネル',
-        value=f'{thread.parent.mention}'
-    )
-    embed.add_field(
-        name='作成スレッド',
-        value=f'{thread.mention}'
-    )
-    embed.add_field(
-        name='作成者',
-        value=f'{thread.owner.mention}'
-    )
-    embed.add_field(
-        name='作成日時',
-        value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
-    )
-    return embed
-
-# notice-thread/send-log
-
-
-@bot.listen('on_thread_join')
-async def detect_thread(thread):
-    thread_member_list = await thread.fetch_members()
-    if bot.user.id in [x.id for x in thread_member_list]:
-        return
-    else:
-        channel = bot.get_channel(thread_log_channel)
-        embed = await compose_thread_create_log((thread))
-        await channel.send(embed=embed)
-        return
-
-# detect-thread-archive
-
-
-@bot.listen('on_thread_update')
-async def detect_archive(before, after):
-    if after.locked and not before.locked:
-        return
-    elif after.archived and not before.archived:
-        await after.edit(archived=False)
-        return
-    else:
-        return
 
 # YoutubeAPI
 API_KEY = os.environ['GOOGLE_API_KEY']
