@@ -1027,7 +1027,7 @@ async def get_stream_method(ctx):
         lives_list = [x for x in lives.contents if x.status ==
                       'upcoming' and 'live']
         for x in lives_list:
-            live_url = '待機所が作成されました。\nhttps://youtu.be/' + x.id
+            live_url = 'https://youtu.be/' + x.id
             live_title = x.title
             embed = discord.Embed(
                 title=f'{live_title}',
