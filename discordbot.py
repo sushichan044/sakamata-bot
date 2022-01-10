@@ -1041,7 +1041,7 @@ async def get_stream_method():
                 print('配信が重複していたためスキップします。')
                 return
             else:
-                set_data = conn.set(f'{x.id}', 'notified', ex=86400)
+                set_data = conn.set(f'{x.id}', 'notified', ex=604800)
                 if set_data:
                     fixed_start_scheduled = x.start_scheduled.replace(
                         'Z', '+00:00')
