@@ -40,9 +40,9 @@ class PollCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-        @commands.command(name='poll')
+        @commands.command()
         @commands.has_role(server_member_role)
-        async def _poll(self, ctx, title, *select):
+        async def poll(self, ctx, title, *select):
             if select == ():
                 embed = discord.Embed(
                     title=title,
