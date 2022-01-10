@@ -1031,6 +1031,7 @@ async def get_stream_method(ctx):
             live_title = x.title
             fixed_start_scheduled = x.start_scheduled.replace('Z', '+00:00')
             live_start = datetime.fromisoformat(fixed_start_scheduled).astimezone(jst)
+            live_start_timestamp = live_start.timestamp()
             live_start_str = datetime.strftime(live_start, '%Y/%m/%d %H:%M')
             embed = discord.Embed(
                 title=f'{live_title}',
@@ -1041,6 +1042,10 @@ async def get_stream_method(ctx):
             embed.add_field(
                 name='**配信予定時刻**',
                 value=f'{live_start_str}',
+            )
+            embed.add_field(
+                name='**配信予定時刻(Timestamp)**',
+                value=f'<t:{live_start_timestamp}:f>',
             )
             embed.set_image(
                 url=f'https://avatar-resolver.vercel.app/youtube-thumbnail/q?url={live_url}'
