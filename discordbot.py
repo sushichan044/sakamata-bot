@@ -1041,7 +1041,7 @@ async def get_stream_method():
         for x in lives_list:
             result = conn.get(x.id)
             if result is not None:
-                # print('配信が重複していたためスキップします。')
+                print('配信が重複していたためスキップします。')
                 return
             else:
                 set_data = conn.set(f'{x.id}', 'notified', ex=86400)
