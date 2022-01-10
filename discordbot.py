@@ -2,21 +2,18 @@ import asyncio
 import logging
 import os
 from datetime import datetime, timedelta, timezone
-from typing import Optional
 
-from discord.ext.commands.core import CommandT
 import aiohttp
-
 import discord
 from discord import Member
 from discord.channel import DMChannel
 from discord.commands import Option, permissions
 from discord.ext import commands, pages, tasks
-from discord.ext.ui import (
-    Button, Message, MessageProvider, View, ViewTracker, state)
+from discord.ext.ui import (Button, Message, MessageProvider, View,
+                            ViewTracker, state)
 from discord.utils import resolve_template
-from newdispanderfixed import dispand
 from holodex.client import HolodexClient
+from newdispanderfixed import dispand
 
 import Components.member_button as membership_button
 import connect
@@ -25,9 +22,9 @@ logging.basicConfig(level=logging.INFO)
 
 '''bot招待リンク
 https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=1403113958646&scope=bot%20applications.commands
-'''
 
-'''イベントハンドラ一覧(client)
+
+イベントハンドラ一覧(client)
 async def の後を変えるだけで実行されるイベンドが変わる
 メッセージ受信時に実行：   on_message(message)
 Bot起動時に実行：      on_ready(message)
