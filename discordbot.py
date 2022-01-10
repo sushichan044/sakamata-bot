@@ -1009,11 +1009,11 @@ async def _newcreateevent(ctx,
 
 @bot.command(name='stream')
 @commands.has_role(admin_role)
-async def _main(ctx):
-    lives = await HolodexClient().live_streams(channel_id=chloe_youtube_id, status=upcoming, type=stream)
-    lives_list = ['https://youtu.be/'+x.id for x in lives.contents]
-    send_live = '\n'.join(lives_list)
-    ctx.send(send_live)
+async def main():
+    async with HolodexClient() as client:
+        lives = await client.live_streams(channel_id='UC6eWCld0KwmyHFbAqK3V-Rw')
+        lives_list = [x.id for x in lives.contents]
+        print(lives_list)
 
 
 start_count.start()
