@@ -1029,7 +1029,7 @@ async def get_stream_method(ctx):
         for x in lives_list:
             live_url = 'https://youtu.be/' + x.id
             live_title = x.title
-            live_start = x.start_scheduled.astimezone(jst)
+            live_start = x.start_scheduled
             embed = discord.Embed(
                 title=f'{live_title}',
                 description='待機所が作成されました',
