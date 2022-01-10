@@ -40,43 +40,43 @@ class Poll(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-        @commands.command()
-        async def poll(self, ctx, title, *select):
-            if select == ():
-                embed = discord.Embed(
-                    title=title,
-                    description="\N{Large Green Circle}Yes\n\N{Large Red Circle}No",
-                    color=3447003,
-                )
-                poll_yes_emoji = '\N{Large Green Circle}'
-                poll_no_emoji = '\N{Large Red Circle}'
-                m = await ctx.send(embed=embed)
-                await m.add_reaction(poll_yes_emoji)
-                await m.add_reaction(poll_no_emoji)
-                return
-            elif len(select) > 20:
-                embed = discord.Embed(
-                    title='選択肢が多すぎます。',
-                    color=16098851,
-                )
-                await ctx.send(embed=embed)
-                return
-            else:
-                send_desc_list = []
-                for num in range(len(select)):
-                    element = f'{poll_emoji_list[num]}{select[num]}'
-                    send_desc_list.append(element)
-                send_desc = '\n'.join(send_desc_list)
-                embed = discord.Embed(
-                    title=title,
-                    description=send_desc,
-                    color=3447003,
-                )
-                m = await ctx.send(embed=embed)
-                for x in range(len(select)):
-                    await m.add_reaction(poll_emoji_list[x])
-                return
+    @commands.command()
+    async def poll(self, ctx, title, *select):
+        if select == ():
+            embed = discord.Embed(
+                title=title,
+                description="\N{Large Green Circle}Yes\n\N{Large Red Circle}No",
+                color=3447003,
+            )
+            poll_yes_emoji = '\N{Large Green Circle}'
+            poll_no_emoji = '\N{Large Red Circle}'
+            m = await ctx.send(embed=embed)
+            await m.add_reaction(poll_yes_emoji)
+            await m.add_reaction(poll_no_emoji)
+            return
+        elif len(select) > 20:
+            embed = discord.Embed(
+                title='選択肢が多すぎます。',
+                color=16098851,
+            )
+            await ctx.send(embed=embed)
+            return
+        else:
+            send_desc_list = []
+            for num in range(len(select)):
+                element = f'{poll_emoji_list[num]}{select[num]}'
+                send_desc_list.append(element)
+            send_desc = '\n'.join(send_desc_list)
+            embed = discord.Embed(
+                title=title,
+                description=send_desc,
+                color=3447003,
+            )
+            m = await ctx.send(embed=embed)
+            for x in range(len(select)):
+                await m.add_reaction(poll_emoji_list[x])
+            return
 
 
 def setup(bot):
-    bot.add_cog(Poll(bot))
+    return bot.add_cog(Poll(bot))
