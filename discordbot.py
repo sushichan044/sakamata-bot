@@ -2,6 +2,9 @@ import asyncio
 import logging
 import os
 from datetime import datetime, timedelta, timezone
+from typing import Optional
+
+from discord.ext.commands.core import CommandT
 import aiohttp
 
 import discord
@@ -11,6 +14,7 @@ from discord.commands import Option, permissions
 from discord.ext import commands, pages, tasks
 from discord.ext.ui import (
     Button, Message, MessageProvider, View, ViewTracker, state)
+from discord.utils import resolve_template
 from newdispanderfixed import dispand
 from holodex.client import HolodexClient
 
@@ -76,6 +80,7 @@ dm_box_channel = 921781301101613076
 error_log_channel = 924142068484440084
 alert_channel = 924744385902575616
 member_check_channel = 926777825925677096
+stream_channel = 916337386277969921
 count_vc = 925256795491012668
 mod_role = 916726433445986334
 admin_role = 915954009343422494
@@ -91,6 +96,7 @@ dm_box_channel = 918101377958436954
 error_log_channel = 924141910321426452
 alert_channel = 924744469327257602
 member_check_channel = 926777719964987412
+stream_channel = 930020966350876673
 count_vc = 925249967478673519
 mod_role = 924355349308383252
 admin_role = 917332284582031390
@@ -1010,8 +1016,14 @@ async def _newcreateevent(ctx,
 @bot.command(name='stream')
 @commands.has_role(admin_role)
 async def get_stream(ctx):
-    await get_stream_method(ctx)
+    await get_stream_method()
     return
+
+
+@tasks.loop(minutes=2)
+async def _get_stream():
+    await bot.wait_until_ready()
+    await get_stream_method()
 
 # stream-body
 
@@ -1021,17 +1033,22 @@ headers = {
 }
 
 
-async def get_stream_method(ctx):
+async def get_stream_method():
     async with HolodexClient(aiohttp.ClientSession(headers=headers)) as client:
         lives = await client.live_streams(channel_id='UC6eWCld0KwmyHFbAqK3V-Rw')
         lives_list = [x for x in lives.contents if x.status ==
                       'upcoming' and 'live']
         for x in lives_list:
-            live_url = 'https://youtu.be/' + x.id
-            live_title = x.title
+            # 時間差計算
+            time1 = discord.utils.utcnow().astimezone(jst)
             fixed_start_scheduled = x.start_scheduled.replace('Z', '+00:00')
             live_start = datetime.fromisoformat(
                 fixed_start_scheduled).astimezone(jst)
+            delta = time1 - live_start
+            if delta.seconds > 120:
+                return
+            live_url = 'https://youtu.be/' + x.id
+            live_title = x.title
             live_start_timestamp = int(live_start.timestamp())
             live_start_str_date = datetime.strftime(live_start, '%Y年%m月%d日')
             live_start_str_time = datetime.strftime(live_start, '%H時%M分')
@@ -1061,12 +1078,13 @@ async def get_stream_method(ctx):
             embed.set_image(
                 url=f'https://avatar-resolver.vercel.app/youtube-thumbnail/q?url={live_url}'
             )
-            await ctx.send(embed=embed)
+            channel = bot.get_channel(stream_channel)
+            await channel.send(embed=embed)
         print(lives_list)
         return
 
 
 start_count.start()
-
+_get_stream.start()
 
 bot.run(token)
