@@ -1047,7 +1047,7 @@ async def get_stream_method(ctx):
             )
             embed.add_field(
                 name='**配信予定日(JST)**',
-                value=f'{live_start_str_date}+{weekday_str}',
+                value=f'{live_start_str_date}({weekday_str})',
             )
             embed.add_field(
                 name='**配信予定時刻(JST)**',
@@ -1056,6 +1056,7 @@ async def get_stream_method(ctx):
             embed.add_field(
                 name='**配信予定時刻(Timestamp)**',
                 value=f'<t:{live_start_timestamp}:f>',
+                inline=False
             )
             embed.set_image(
                 url=f'https://avatar-resolver.vercel.app/youtube-thumbnail/q?url={live_url}'
