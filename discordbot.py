@@ -5,7 +5,6 @@ from datetime import datetime, timedelta, timezone
 
 import discord
 from discord import Member
-from discord import channel
 from discord.channel import DMChannel
 from discord.commands import Option, permissions
 from discord.ext import commands, pages, tasks
@@ -1009,11 +1008,12 @@ async def _newcreateevent(ctx,
 
 @bot.command(name='stream')
 @commands.has_role(admin_role)
-async def main():
+async def main(ctx):
     async with HolodexClient() as client:
         lives = await client.live_streams(channel_id='UC6eWCld0KwmyHFbAqK3V-Rw')
         lives_list = [x.id for x in lives.contents]
         print(lives_list)
+        return
 
 
 start_count.start()
