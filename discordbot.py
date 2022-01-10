@@ -2,6 +2,7 @@ import asyncio
 import logging
 import os
 from datetime import datetime, timedelta, timezone
+import aiohttp
 
 import discord
 from discord import Member
@@ -1008,10 +1009,26 @@ async def _newcreateevent(ctx,
 
 @bot.command(name='stream')
 @commands.has_role(admin_role)
-async def main(ctx):
-    async with HolodexClient() as client:
+async def get_stream(ctx):
+    await get_stream_method(ctx)
+    return
+
+# stream-body
+
+api_key = os.environ['HOLODEX_KEY']
+headers = {
+    'X-APIKEY': f'{api_key}'
+}
+
+
+async def get_stream_method(ctx):
+    async with HolodexClient(aiohttp.ClientSession(headers=headers)) as client:
         lives = await client.live_streams(channel_id='UC6eWCld0KwmyHFbAqK3V-Rw')
-        lives_list = [x.id for x in lives.contents]
+        lives_list = [x.id for x in lives.contents if x.status ==
+                      'upcoming' and 'live']
+        for x in lives_list:
+            live_url = x.replace('待機所が作成されました。\nhttps://youtu.be/', '')
+            ctx.send(live_url)
         print(lives_list)
         return
 
