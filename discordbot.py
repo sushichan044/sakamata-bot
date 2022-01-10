@@ -1041,7 +1041,7 @@ async def get_stream_method():
         for x in lives_list:
             result = conn.get(x.id)
             if result is not None:
-                print('配信が重複していたためスキップします。')
+                # print('配信が重複していたためスキップします。')
                 return
             else:
                 set_data = conn.set(f'{x.id}', 'notified', ex=86400)
@@ -1063,7 +1063,7 @@ async def get_stream_method():
                     weekday_str = weekday_dic[weekday]
                     embed = discord.Embed(
                         title=f'{live_title}',
-                        description='待機所が作成されました',
+                        description='**待機所が作成されました**',
                         url=f'{live_url}',
                         color=16711680,
                     )
@@ -1085,20 +1085,9 @@ async def get_stream_method():
                     )
                     channel = bot.get_channel(stream_channel)
                     await channel.send(embed=embed)
-                    await channel.send(x.published_at)
-                print(lives_list)
-                return
-
-            '''
-            # 時間差計算
-            time1 = discord.utils.utcnow().astimezone(jst)
-            time2_sub = x.published_at.replace('Z', '+00:00')
-            time2 = datetime.fromisoformat(
-                time2_sub).astimezone(jst)
-            delta = time1 - time2
-            if delta.seconds > 120:
-                return
-            '''
+                    # await channel.send(x.published_at)
+                # print(lives_list)
+                    return
 
 
 start_count.start()
