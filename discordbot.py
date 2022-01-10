@@ -1027,7 +1027,7 @@ async def get_stream_method(ctx):
         lives_list = [x.id for x in lives.contents if x.status ==
                       'upcoming' and 'live']
         for x in lives_list:
-            live_url = x.replace('待機所が作成されました。\nhttps://youtu.be/', '')
+            live_url = '待機所が作成されました。\nhttps://youtu.be/' + x
             await ctx.send(live_url)
         print(lives_list)
         return
