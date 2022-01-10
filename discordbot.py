@@ -1040,13 +1040,15 @@ async def get_stream_method():
                       'upcoming' and 'live']
         for x in lives_list:
             # 時間差計算
-            time1 = discord.utils.utcnow().astimezone(jst)
+            # time1 = discord.utils.utcnow().astimezone(jst)
+            # time2_str = x.published_at
+            # time2 = datetime.strptime(time2_str, '%m/%d-%H:%M:%S').astimezone(jst)
+            # delta = time1 - time2
+            # if delta.seconds > 120:
+            #     return
             fixed_start_scheduled = x.start_scheduled.replace('Z', '+00:00')
             live_start = datetime.fromisoformat(
                 fixed_start_scheduled).astimezone(jst)
-            delta = time1 - live_start
-            if delta.seconds > 120:
-                return
             live_url = 'https://youtu.be/' + x.id
             live_title = x.title
             live_start_timestamp = int(live_start.timestamp())
@@ -1080,11 +1082,12 @@ async def get_stream_method():
             )
             channel = bot.get_channel(stream_channel)
             await channel.send(embed=embed)
+            await channel.send(x.published_at)
         print(lives_list)
         return
 
 
 start_count.start()
-_get_stream.start()
+# _get_stream.start()
 
 bot.run(token)
