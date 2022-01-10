@@ -2,7 +2,7 @@ import os
 import discord
 from discord.ext import commands
 
-server_member_role = os.environ['SERVER_MEMBER_ROLE']
+server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
 
 
 # PollEmoji

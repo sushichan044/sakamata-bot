@@ -74,7 +74,6 @@ alert_channel = 924744385902575616
 member_check_channel = 926777825925677096
 join_log_channel = 929015822272299038
 count_vc = 925256795491012668
-server_member_role = os.environ['SERVER_MEMBER_ROLE']
 mod_role = 916726433445986334
 admin_role = 915954009343422494
 everyone = 915910043461890078
@@ -91,11 +90,15 @@ alert_channel = 924744469327257602
 member_check_channel = 926777719964987412
 join_log_channel = 929015770539761715
 count_vc = 925249967478673519
-server_member_role = os.environ['SERVER_MEMBER_ROLE']
 mod_role = 924355349308383252
 admin_role = 917332284582031390
 everyone = 916965252896260117
 yt_membership_role = 926268230417408010
+
+
+# ID-env
+server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
+thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 
 # Classes
 
