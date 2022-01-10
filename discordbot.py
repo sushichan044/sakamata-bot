@@ -1032,8 +1032,8 @@ async def get_stream_method(ctx):
             embed = discord.Embed(
                 title=f'{live_title}',
                 description='待機所が作成されました',
-                url=f'{live_url}'
-                color=16711680
+                url=f'{live_url}',
+                color=16711680,
             )
             await ctx.send(embed=embed)
         print(lives_list)
