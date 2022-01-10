@@ -1041,8 +1041,9 @@ async def get_stream_method():
         for x in lives_list:
             # 時間差計算
             time1 = discord.utils.utcnow().astimezone(jst)
+            time2_sub = x.published_at.replace('Z', '+00:00')
             time2 = datetime.fromisoformat(
-                x.published_at).astimezone(jst)
+                time2_sub).astimezone(jst)
             delta = time1 - time2
             if delta.seconds > 120:
                 return
