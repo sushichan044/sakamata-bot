@@ -1029,7 +1029,8 @@ async def get_stream_method(ctx):
         for x in lives_list:
             live_url = 'https://youtu.be/' + x.id
             live_title = x.title
-            live_start = x.start_scheduled
+            live_start = datetime.strptime(x.start_scheduled, '%Y/%m/%d/%H:%M').astimezone(jst)
+            live_start_str = datetime.strftime(live_start, '%Y/%m/%d/%H:%M')
             embed = discord.Embed(
                 title=f'{live_title}',
                 description='待機所が作成されました',
@@ -1038,7 +1039,7 @@ async def get_stream_method(ctx):
             )
             embed.add_field(
                 name='**配信予定時刻**',
-                value=f'{live_start}',
+                value=f'{live_start_str}',
             )
             embed.set_image(
                 url=f'https://avatar-resolver.vercel.app/youtube-thumbnail/q?url={live_url}'
