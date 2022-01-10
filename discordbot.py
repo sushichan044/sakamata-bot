@@ -5,12 +5,14 @@ from datetime import datetime, timedelta, timezone
 
 import discord
 from discord import Member
+from discord import channel
 from discord.channel import DMChannel
 from discord.commands import Option, permissions
 from discord.ext import commands, pages, tasks
 from discord.ext.ui import (
     Button, Message, MessageProvider, View, ViewTracker, state)
 from newdispanderfixed import dispand
+from holodex.client import HolodexClient
 
 import Components.member_button as membership_button
 
@@ -101,6 +103,8 @@ server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
 thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
 alert_channel = int(os.environ['ALERT_CHANNEL'])
+
+chloe_youtube_id = os.environ['CHLOE_YT_ID']
 
 
 # emoji
@@ -999,6 +1003,17 @@ async def _newcreateevent(ctx,
                                        )
     await ctx.respond('配信を登録しました。')
     return
+
+# get_stream
+
+
+@bot.command(name='stream')
+@commands.has_role(admin_role)
+async def _main(ctx):
+    lives = await HolodexClient().live_streams(channel_id=chloe_youtube_id, status=upcoming, type=stream)
+    lives_list = ['https://youtu.be/'+x.id for x in lives.contents]
+    send_live = '\n'.join(lives_list)
+    ctx.send(send_live)
 
 
 start_count.start()
