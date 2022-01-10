@@ -1030,9 +1030,15 @@ async def get_stream_method(ctx):
             live_url = 'https://youtu.be/' + x.id
             live_title = x.title
             fixed_start_scheduled = x.start_scheduled.replace('Z', '+00:00')
-            live_start = datetime.fromisoformat(fixed_start_scheduled).astimezone(jst)
+            live_start = datetime.fromisoformat(
+                fixed_start_scheduled).astimezone(jst)
             live_start_timestamp = int(live_start.timestamp())
-            live_start_str = datetime.strftime(live_start, '%Y/%m/%d %H:%M')
+            live_start_str_date = datetime.strftime(live_start, '%Y/%m/%d')
+            live_start_str_time = datetime.strftime(live_start, '%H:%M')
+            weekday = datetime.date(live_start).weekday()
+            weekday_dic = {0: '月', 1: '火', 2: '水',
+                           3: '木', 4: '金', 5: '土', 6: '日'}
+            weekday_str = weekday_dic[weekday]
             embed = discord.Embed(
                 title=f'{live_title}',
                 description='待機所が作成されました',
@@ -1040,8 +1046,12 @@ async def get_stream_method(ctx):
                 color=16711680,
             )
             embed.add_field(
-                name='**配信予定時刻**',
-                value=f'{live_start_str}',
+                name='**配信予定日(JST)**',
+                value=f'{live_start_str_date}+{weekday_str}',
+            )
+            embed.add_field(
+                name='**配信予定時刻(JST)**',
+                value=f'{live_start_str_time}',
             )
             embed.add_field(
                 name='**配信予定時刻(Timestamp)**',
