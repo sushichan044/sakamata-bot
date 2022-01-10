@@ -36,7 +36,7 @@ poll_emoji_list = [
 ]
 
 
-class PollCog(commands.Cog):
+class Poll(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -80,4 +80,4 @@ class PollCog(commands.Cog):
 
 
 def setup(bot):
-    return bot.add_cog(PollCog(bot))
+    return bot.add_cog(Poll(bot))

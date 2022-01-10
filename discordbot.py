@@ -1290,8 +1290,8 @@ async def _send_member_log(member, status):
     await channel.send(send_msg)
     return
 
-
+bot.load_extension('poll')
 start_count.start()
 
-bot.load_extension('poll')
+
 bot.run(token)
