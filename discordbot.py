@@ -1293,5 +1293,5 @@ async def _send_member_log(member, status):
 
 start_count.start()
 
-bot.load_extension("Cog.poll")
+bot.load_extension('poll')
 bot.run(token)
