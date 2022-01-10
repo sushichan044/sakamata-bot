@@ -111,7 +111,6 @@ thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
 alert_channel = int(os.environ['ALERT_CHANNEL'])
 
-chloe_youtube_id = os.environ['CHLOE_YT_ID']
 
 
 # emoji
