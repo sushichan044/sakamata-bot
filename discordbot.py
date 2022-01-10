@@ -55,9 +55,10 @@ bot = commands.Bot(command_prefix='/', intents=intents,
 
 
 INIT_EXTENSION_LIST = [
+    'Cog.entrance',
+    'Cog.ng_word',
     'Cog.poll',
     'Cog.thread',
-    'Cog.entrance'
 ]
 
 for cog in INIT_EXTENSION_LIST:
@@ -73,7 +74,6 @@ dm_box_channel = 921781301101613076
 error_log_channel = 924142068484440084
 alert_channel = 924744385902575616
 member_check_channel = 926777825925677096
-join_log_channel = 929015822272299038
 count_vc = 925256795491012668
 mod_role = 916726433445986334
 admin_role = 915954009343422494
@@ -89,7 +89,6 @@ dm_box_channel = 918101377958436954
 error_log_channel = 924141910321426452
 alert_channel = 924744469327257602
 member_check_channel = 926777719964987412
-join_log_channel = 929015770539761715
 count_vc = 925249967478673519
 mod_role = 924355349308383252
 admin_role = 917332284582031390
@@ -100,6 +99,8 @@ yt_membership_role = 926268230417408010
 # ID-env
 server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
 thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
+join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
+alert_channel = int(os.environ['ALERT_CHANNEL'])
 
 # Classes
 
@@ -340,69 +341,6 @@ async def on_command_error(ctx, error):
 async def errortest(ctx):
     prin()
 
-# Detect_NG_word
-
-
-@bot.listen('on_message')
-async def detect_NG_word(message):
-    word_list = ['@everyone', '@here', '@飼育員たち']
-    if message.author == bot.user:
-        return
-    elif type(message.channel) == DMChannel:
-        return
-    else:
-        m = [x for x in word_list if x in message.content]
-        prog = re.compile(r'discord.gg/[\w]*')
-        n = prog.findall(message.content)
-#        print(n)
-        invites_list = await message.guild.invites()
-        invites_url = [x.url for x in invites_list]
-        replaced_invites = [item.replace('https://', '')
-                            for item in invites_url]
-#        print(f'{replaced_invites}')
-        n = [x for x in n if x not in replaced_invites]
-        if m != [] or n != []:
-            m = m + n
-            m = '\n'.join(m)
-            await send_ng_log(message, m)
-            return
-        else:
-            return
-
-# send_ng_log
-
-
-async def send_ng_log(message, m):
-    channel = bot.get_channel(alert_channel)
-    embed = discord.Embed(
-        title='NGワードを検知しました。',
-        url=message.jump_url,
-        color=16711680,
-        description=message.content,
-        timestamp=message.created_at
-    )
-    embed.set_author(
-        name=message.author.display_name,
-        icon_url=message.author.avatar.url
-    )
-    embed.add_field(
-        name='検知ワード',
-        value=f'{m}'
-    )
-    embed.add_field(
-        name='送信者',
-        value=f'{message.author.mention}'
-    )
-    embed.add_field(
-        name='送信先',
-        value=f'{message.channel.mention}'
-    )
-    embed.add_field(
-        name='送信日時',
-        value=f'{message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}'
-    )
-    await channel.send(embed=embed)
-    return
 
 # Dispander-All
 
