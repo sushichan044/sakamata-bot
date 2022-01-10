@@ -6,6 +6,7 @@
 [![PyPI](https://img.shields.io/badge/pycord-2.0.0a-orange?style=flat-square)](https://github.com/Pycord-Development/pycord)
 [![iroiro](https://img.shields.io/badge/discord--ext--ui-3.1.1-orange?style=flat-square)](https://github.com/sizumita/discord-ext-ui)
 [![PyPI](https://img.shields.io/badge/newdispanderfixed-0.1.4-orange?style=flat-square)](https://pypi.org/project/newdispanderfixed/)
+![PyPI](https://img.shields.io/pypi/v/holodex?label=holodex&style=flat-square)
 ![Discord](https://img.shields.io/discord/915910043461890078?color=blueviolet&label=Discord&logo=Discord&logoColor=white&style=flat-square)
 
 ### このリポジトリは？
@@ -17,6 +18,7 @@ Python 3.10.0<br>
 [pycord](https://github.com/Pycord-Development/pycord) 2.0.0a<br>
 [discord-ext-ui](https://pypi.org/project/discord-ext-ui/) 3.1.1<br>
 [newdispanderfixed](https://pypi.org/project/newdispanderfixed/) 0.1.4([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
+[holodex](https://pypi.org/project/holodex/0.9.7/) 0.9.7<br>
 
 ### 各ブランチ
 Mainブランチ:クロヱ水族館の本番環境<br>
@@ -26,13 +28,21 @@ alpha-buttonブランチ:大規模改修を行うときに最初に書くブラ�
 
 ### 機能追加履歴
 
+> v1.2.0(2022.01.10)
+
+[holodex](https://pypi.org/project/holodex/0.9.7/) 0.9.7を利用した配信枠検知<br>
+メンバーシップの継続や継続停止の際のメンバーシップコマンド<br>
+timeoutへの対応<br>
+配信のイベント登録の簡略化<br>
+投票機能<br>
+
 > v1.1.1(2022.01.03)
 
 [pycord](https://github.com/Pycord-Development/pycord)へ移行<br>
 [newdispanderfixed](https://pypi.org/project/newdispanderfixed/)へ移行<br>
 [discord-ext-ui](https://pypi.org/project/discord-ext-ui/)を導入<br>
-メンバーシップ認証機能をブラッシュアップ
-ユーザー情報取得機能をブラッシュアップ
+メンバーシップ認証機能をブラッシュアップ<br>
+ユーザー情報取得機能をブラッシュアップ<br>
 
 > v1.1.0(2022.01.02)
 
