@@ -41,7 +41,6 @@ class Poll(commands.Cog):
         self.bot = bot
 
         @commands.command()
-        @commands.has_role(server_member_role)
         async def poll(self, ctx, title, *select):
             if select == ():
                 embed = discord.Embed(

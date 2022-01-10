@@ -52,6 +52,7 @@ class JapaneseHelpCommand(commands.DefaultHelpCommand):
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='/', intents=intents,
                    help_command=JapaneseHelpCommand())
+bot.load_extension('poll')
 
 
 # 本番鯖IDなど
@@ -1290,7 +1291,7 @@ async def _send_member_log(member, status):
     await channel.send(send_msg)
     return
 
-bot.load_extension('poll')
+
 start_count.start()
 
 
