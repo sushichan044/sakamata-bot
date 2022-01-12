@@ -291,7 +291,7 @@ async def _newuser(
     # guild = ctx.guild
     # member = guild.get_member(int(id))
     # この先表示する用
-    avatar_url = member.display_avatar.url
+    avatar_url = member.display_avatar.url.replace(static_format='webp').url
     if member.avatar is None:
         avatar_url = 'DefaultAvatar'
     member_reg_date = member.created_at.astimezone(jst)
