@@ -309,7 +309,7 @@ async def _newuser(
     x = ['/ID: '.join(str(y) for y in x) for x in roles]
     z = '\n'.join(x)
     # Message成形-途中
-    user_info_msg = f'```ユーザー名:{member} (ID:{member_id})\nBot?:{member_if_bot}\nDefaultavatar?:{ava}\nニックネーム:{member_if_nickname}\nアカウント作成日時:{member_reg_date:%Y/%m/%d %H:%M:%S}\n参加日時:{member_join_date:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
+    user_info_msg = f'```ユーザー名:{member} (ID:{member_id})\nBot?:{member_if_bot}\nDefaultavatar?:{avatar_url}\nニックネーム:{member_if_nickname}\nアカウント作成日時:{member_reg_date:%Y/%m/%d %H:%M:%S}\n参加日時:{member_join_date:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
     await ctx.respond(user_info_msg)
     return
 
