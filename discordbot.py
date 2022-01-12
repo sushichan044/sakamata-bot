@@ -11,7 +11,6 @@ from discord.commands import Option, permissions
 from discord.ext import commands, pages, tasks
 from discord.ext.ui import (Button, Message, MessageProvider, View,
                             ViewTracker, state)
-from discord.utils import get
 from holodex.client import HolodexClient
 from newdispanderfixed import dispand
 
@@ -1194,7 +1193,6 @@ async def get_stream_method():
                     await channel.send(embed=embed)
                     return
         return
-
 
 
 start_count.start()
