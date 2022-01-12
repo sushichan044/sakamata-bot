@@ -291,14 +291,15 @@ async def _newuser(
     # guild = ctx.guild
     # member = guild.get_member(int(id))
     # この先表示する用
-    member_if_bot = member.bot
+    avatar_url = member.display_avatar.replace(size=1024,static_format='webp').url
+    if member.avatar is None:
+        avatar_url = 'DefaultAvatar'
     member_reg_date = member.created_at.astimezone(jst)
     # NickNameあるか？
     if member.display_name == member.name:
-        member_if_nickname = 'None'
+        member_nickname = 'None'
     else:
-        member_if_nickname = member.display_name
-    member_id = member.id
+        member_nickname = member.display_name
     member_join_date = member.joined_at.astimezone(jst)
     # membermention = member.mention
     roles = [[x.name, x.id] for x in member.roles]
@@ -306,7 +307,7 @@ async def _newuser(
     x = ['/ID: '.join(str(y) for y in x) for x in roles]
     z = '\n'.join(x)
     # Message成形-途中
-    user_info_msg = f'```ユーザー名:{member} (ID:{member_id})\nBot?:{member_if_bot}\nニックネーム:{member_if_nickname}\nアカウント作成日時:{member_reg_date:%Y/%m/%d %H:%M:%S}\n参加日時:{member_join_date:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
+    user_info_msg = f'```ユーザー名:{member} (ID:{member.id})\nBot?:{member.bot}\nAvatar url:{avatar_url}\nニックネーム:{member_nickname}\nアカウント作成日時:{member_reg_date:%Y/%m/%d %H:%M:%S}\n参加日時:{member_join_date:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
     await ctx.respond(user_info_msg)
     return
 
