@@ -291,9 +291,9 @@ async def _newuser(
     # guild = ctx.guild
     # member = guild.get_member(int(id))
     # この先表示する用
-    ava = 'False'
+    avatar_url = member.dispaly_avatar.url
     if member.avatar is None:
-        ava = 'True'
+        avatar_url = 'DefaultAvatar'
     member_if_bot = member.bot
     member_reg_date = member.created_at.astimezone(jst)
     # NickNameあるか？
