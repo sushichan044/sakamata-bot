@@ -11,7 +11,7 @@ from discord.commands import Option, permissions
 from discord.ext import commands, pages, tasks
 from discord.ext.ui import (Button, Message, MessageProvider, View,
                             ViewTracker, state)
-from discord.utils import resolve_template
+from discord.utils import get
 from holodex.client import HolodexClient
 from newdispanderfixed import dispand
 
@@ -109,7 +109,6 @@ join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
 alert_channel = int(os.environ['ALERT_CHANNEL'])
 
 
-
 # emoji
 accept_emoji = "\N{Heavy Large Circle}"
 reject_emoji = "\N{Cross Mark}"
@@ -149,6 +148,7 @@ async def on_ready():
 async def _manual(ctx):
     await membercount()
     return
+
 
 # Membercount本体
 
@@ -291,7 +291,8 @@ async def _newuser(
     # guild = ctx.guild
     # member = guild.get_member(int(id))
     # この先表示する用
-    avatar_url = member.display_avatar.replace(size=1024,static_format='webp').url
+    avatar_url = member.display_avatar.replace(
+        size=1024, static_format='webp').url
     if member.avatar is None:
         avatar_url = 'DefaultAvatar'
     member_reg_date = member.created_at.astimezone(jst)
@@ -1033,9 +1034,17 @@ headers = {
 
 async def get_stream_method():
     async with HolodexClient(aiohttp.ClientSession(headers=headers)) as client:
-        lives = await client.live_streams(channel_id=os.environ['STREAM_YT_ID'])
-        lives_list = [x for x in lives.contents if x.status ==
-                      'upcoming' and 'live']
+        ch_id = os.environ['STREAM_YT_ID']
+        lives = await client.live_streams(channel_id=ch_id)
+        channel = await client.channel(channel_id=ch_id)
+        lives_list = [x for x in lives.contents if x.type == 'stream' and x.status ==
+                      'upcoming']
+        nowgoing_list = [x for x in lives.contents if x.type ==
+                         'stream' and x.status == 'live']
+        ended_list = [x for x in lives.contents if x.type ==
+                      'stream' and x.status == 'past']
+        weekday_dic = {0: '月', 1: '火', 2: '水',
+                       3: '木', 4: '金', 5: '土', 6: '日'}
         for x in lives_list:
             result = conn.get(x.id)
             if result is not None:
@@ -1044,26 +1053,33 @@ async def get_stream_method():
             else:
                 set_data = conn.set(f'{x.id}', 'notified', ex=604800)
                 if set_data:
+                    live_created_stamp = x.published_at.replace(
+                        'Z', '+00:00')
+                    live_created = datetime.fromisoformat(
+                        live_created_stamp).astimezone(jst)
+                    created_str = live_created.strftime(
+                        '%Y/%m/%d %H:%M:%S')
                     fixed_start_scheduled = x.start_scheduled.replace(
                         'Z', '+00:00')
                     live_start = datetime.fromisoformat(
                         fixed_start_scheduled).astimezone(jst)
                     live_url = 'https://youtu.be/' + x.id
-                    live_title = x.title
                     live_start_timestamp = int(live_start.timestamp())
                     live_start_str_date = datetime.strftime(
                         live_start, '%Y年%m月%d日')
                     live_start_str_time = datetime.strftime(
                         live_start, '%H時%M分')
                     weekday = datetime.date(live_start).weekday()
-                    weekday_dic = {0: '月', 1: '火', 2: '水',
-                                   3: '木', 4: '金', 5: '土', 6: '日'}
                     weekday_str = weekday_dic[weekday]
                     embed = discord.Embed(
-                        title=f'{live_title}',
+                        title=f'{x.title}',
                         description='**待機所が作成されました**',
                         url=f'{live_url}',
                         color=16711680,
+                    )
+                    embed.set_author(
+                        name=f'{channel.name}',
+                        url=f'https://www.youtube.com/channel/{ch_id}'
                     )
                     embed.add_field(
                         name='**配信予定日(JST)**',
@@ -1079,13 +1095,106 @@ async def get_stream_method():
                         inline=False
                     )
                     embed.set_image(
-                        url=f'https://avatar-resolver.vercel.app/youtube-thumbnail/q?url={live_url}'
+                        url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
+                    )
+                    embed.set_footer(
+                        text=f'{channel.name} ({created_str})',
+                        icon_url=f'{channel.photo}'
                     )
                     channel = bot.get_channel(stream_channel)
                     await channel.send(embed=embed)
                     # await channel.send(x.published_at)
                 # print(lives_list)
                     return
+        for x in nowgoing_list:
+            result = conn.get(x.id)
+            if result == 'notified':
+                reset_data = conn.set(f'{x.id}', 'started', ex=604800)
+                if reset_data:
+                    stamp_actual_start = x.start_actual.replace(
+                        'Z', '+00:00')
+                    actual_start = datetime.fromisoformat(
+                        stamp_actual_start).astimezone(jst)
+                    actual_start_str = actual_start.strftime(
+                        '%Y/%m/%d %H:%M:%S')
+                    embed = discord.Embed(
+                        title=f'{x.title}',
+                        description='**ライブストリーミングが開始されました**',
+                        url=f'https://youtu.be/{x.id}',
+                        color=16711680,
+                    )
+                    embed.set_author(
+                        name=f'{channel.name}',
+                        url=f'https://www.youtube.com/channel/{ch_id}'
+                    )
+                    embed.set_footer(
+                        text=f'{channel.name} ({actual_start_str})',
+                        icon_url=f'{channel.photo}'
+                    )
+                    embed.set_image(
+                        url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
+                    )
+                    channel = bot.get_channel(stream_channel)
+                    await channel.send(embed=embed)
+                    return
+            else:
+                return
+        for x in ended_list:
+            result = conn.get(x.id)
+            if result == 'started':
+                end_date = conn.set(f'{x.id}', 'ended', ex=604800)
+                if end_date:
+                    stamp_actual_start = x.start_actual.replace(
+                        'Z', '+00:00')
+                    actual_start = datetime.fromisoformat(
+                        stamp_actual_start).astimezone(jst)
+                    stamp_actual_end = x.end_actual.replace(
+                        'Z', '+00:00')
+                    actual_end = datetime.fromisoformat(
+                        stamp_actual_end).astimezone(jst)
+                    end_date_str = actual_end.strftime('%Y年%m月%d日')
+                    end_date_time_str = actual_end.strftime('%H時%M分')
+                    actual_end_str = actual_end.strftime('%Y/%m/%d %H:%M:%S')
+                    ast = actual_end - actual_start
+                    ast_m, ast_s = divmod(ast.seconds, 60)
+                    ast_h, ast_m = divmod(ast_m, 60)
+                    time_str = f'{ast_h}時間{ast_m}分{ast_s}秒'
+                    weekday = datetime.date(actual_end).weekday()
+                    weekday_str = weekday_dic[weekday]
+                    embed = discord.Embed(
+                        title=f'{x.title}',
+                        description='**ライブストリーミングが終了しました**',
+                        url=f'https://youtu.be/{x.id}',
+                        color=16711680,
+                    )
+                    embed.set_author(
+                        name=f'{channel.name}',
+                        url=f'https://www.youtube.com/channel/{ch_id}'
+                    )
+                    embed.set_footer(
+                        text=f'{channel.name} ({actual_end_str})',
+                        icon_url=f'{channel.photo}'
+                    )
+                    embed.add_field(
+                        name='**配信終了日(JST)**',
+                        value=f'{end_date_str}({weekday_str})',
+                    )
+                    embed.add_field(
+                        name='**配信終了時刻(JST)**',
+                        value=f'{end_date_time_str}',
+                    )
+                    embed.add_field(
+                        name='**総配信時間**',
+                        value=f'{time_str}',
+                    )
+                    embed.set_image(
+                        url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
+                    )
+                    channel = bot.get_channel(stream_channel)
+                    await channel.send(embed=embed)
+                    return
+        return
+
 
 
 start_count.start()
