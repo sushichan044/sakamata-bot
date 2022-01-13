@@ -1035,10 +1035,14 @@ async def get_stream_method():
     async with HolodexClient(aiohttp.ClientSession(headers=headers)) as client:
         ch_id = os.environ['STREAM_YT_ID']
         lives = await client.live_streams(channel_id=ch_id)
+        archives = await client.videos_from_channel(channel_id=ch_id, type='videos')
         yt_channel = await client.channel(channel_id=ch_id)
-        lives_list = [x for x in lives.contents if x.status == 'upcoming' and x.type == 'stream']
-        nowgoing_list = [x for x in lives.contents if x.status == 'live' and x.type == 'stream']
-        ended_list = [x for x in lives.contents if x.status == 'past' and x.type == 'stream']
+        lives_list = [x for x in lives.contents if x.status ==
+                      'upcoming' and x.type == 'stream']
+        nowgoing_list = [x for x in lives.contents if x.status ==
+                         'live' and x.type == 'stream']
+        ended_list = [x for x in archives.contents if x.status ==
+                      'past' and x.type == 'stream']
         weekday_dic = {0: '月', 1: '火', 2: '水',
                        3: '木', 4: '金', 5: '土', 6: '日'}
         for x in lives_list:
@@ -1133,10 +1137,6 @@ async def get_stream_method():
             if result == 'started':
                 end_date = conn.set(f'{x.id}', 'ended', ex=604800)
                 if end_date:
-                    stamp_actual_start = x.start_actual.replace(
-                        'Z', '+00:00')
-                    actual_start = datetime.fromisoformat(
-                        stamp_actual_start).astimezone(jst)
                     stamp_actual_end = x.end_actual.replace(
                         'Z', '+00:00')
                     actual_end = datetime.fromisoformat(
@@ -1144,8 +1144,7 @@ async def get_stream_method():
                     end_date_str = actual_end.strftime('%Y年%m月%d日')
                     end_date_time_str = actual_end.strftime('%H時%M分')
                     actual_end_str = actual_end.strftime('%Y/%m/%d %H:%M:%S')
-                    ast = actual_end - actual_start
-                    ast_m, ast_s = divmod(ast.seconds, 60)
+                    ast_m, ast_s = divmod(x.duration, 60)
                     ast_h, ast_m = divmod(ast_m, 60)
                     time_str = f'{ast_h}時間{ast_m}分{ast_s}秒'
                     weekday = datetime.date(actual_end).weekday()
