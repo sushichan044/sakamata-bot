@@ -1035,17 +1035,16 @@ async def get_stream_method():
     async with HolodexClient(aiohttp.ClientSession(headers=headers)) as client:
         ch_id = os.environ['STREAM_YT_ID']
         lives = await client.live_streams(channel_id=ch_id)
-        channel = await client.channel(channel_id=ch_id)
-        lives_list = [x for x in lives.contents if x.status == 'upcoming']
-        nowgoing_list = [x for x in lives.contents if x.status == 'live']
-        ended_list = [x for x in lives.contents if x.status == 'past']
+        yt_channel = await client.channel(channel_id=ch_id)
+        lives_list = [x for x in lives.contents if x.status == 'upcoming' and x.type == 'stream']
+        nowgoing_list = [x for x in lives.contents if x.status == 'live' and x.type == 'stream']
+        ended_list = [x for x in lives.contents if x.status == 'past' and x.type == 'stream']
         weekday_dic = {0: '月', 1: '火', 2: '水',
                        3: '木', 4: '金', 5: '土', 6: '日'}
         for x in lives_list:
             result = conn.get(x.id)
             if result is not None:
                 print('配信が重複していたためスキップします。')
-                return
             else:
                 set_data = conn.set(f'{x.id}', 'notified', ex=604800)
                 if set_data:
@@ -1074,7 +1073,7 @@ async def get_stream_method():
                         color=16711680,
                     )
                     embed.set_author(
-                        name=f'{channel.name}',
+                        name=f'{yt_channel.name}',
                         url=f'https://www.youtube.com/channel/{ch_id}'
                     )
                     embed.add_field(
@@ -1094,14 +1093,12 @@ async def get_stream_method():
                         url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
                     )
                     embed.set_footer(
-                        text=f'{channel.name} ({created_str})',
-                        icon_url=f'{channel.photo}'
+                        text=f'{yt_channel.name} ({created_str})',
+                        icon_url=f'{yt_channel.photo}'
                     )
                     channel = bot.get_channel(stream_channel)
                     await channel.send(embed=embed)
-                    # await channel.send(x.published_at)
-                # print(lives_list)
-                    return
+                print(lives_list)
         for x in nowgoing_list:
             result = conn.get(x.id)
             if result == 'notified':
@@ -1120,21 +1117,18 @@ async def get_stream_method():
                         color=16711680,
                     )
                     embed.set_author(
-                        name=f'{channel.name}',
+                        name=f'{yt_channel.name}',
                         url=f'https://www.youtube.com/channel/{ch_id}'
                     )
                     embed.set_footer(
-                        text=f'{channel.name} ({actual_start_str})',
-                        icon_url=f'{channel.photo}'
+                        text=f'{yt_channel.name} ({actual_start_str})',
+                        icon_url=f'{yt_channel.photo}'
                     )
                     embed.set_image(
                         url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
                     )
                     channel = bot.get_channel(stream_channel)
                     await channel.send(embed=embed)
-                    return
-            else:
-                return
         for x in ended_list:
             result = conn.get(x.id)
             if result == 'started':
@@ -1164,12 +1158,12 @@ async def get_stream_method():
                         color=16711680,
                     )
                     embed.set_author(
-                        name=f'{channel.name}',
+                        name=f'{yt_channel.name}',
                         url=f'https://www.youtube.com/channel/{ch_id}'
                     )
                     embed.set_footer(
-                        text=f'{channel.name} ({actual_end_str})',
-                        icon_url=f'{channel.photo}'
+                        text=f'{yt_channel.name} ({actual_end_str})',
+                        icon_url=f'{yt_channel.photo}'
                     )
                     embed.add_field(
                         name='**配信終了日(JST)**',
@@ -1188,7 +1182,6 @@ async def get_stream_method():
                     )
                     channel = bot.get_channel(stream_channel)
                     await channel.send(embed=embed)
-                    return
 
 
 start_count.start()
