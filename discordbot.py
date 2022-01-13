@@ -1035,7 +1035,7 @@ async def get_stream_method():
     async with HolodexClient(aiohttp.ClientSession(headers=headers)) as client:
         ch_id = os.environ['STREAM_YT_ID']
         lives = await client.live_streams(channel_id=ch_id)
-        # channel = await client.channel(channel_id=ch_id)
+        channel = await client.channel(channel_id=ch_id)
         lives_list = [x for x in lives.contents if x.status == 'upcoming']
         nowgoing_list = [x for x in lives.contents if x.status == 'live']
         ended_list = [x for x in lives.contents if x.status == 'past']
@@ -1043,7 +1043,7 @@ async def get_stream_method():
                        3: '木', 4: '金', 5: '土', 6: '日'}
         for x in lives_list:
             result = conn.get(x.id)
-            if result == 'notified':
+            if result is not None:
                 print('配信が重複していたためスキップします。')
                 return
             else:
@@ -1189,7 +1189,6 @@ async def get_stream_method():
                     channel = bot.get_channel(stream_channel)
                     await channel.send(embed=embed)
                     return
-        return
 
 
 start_count.start()
