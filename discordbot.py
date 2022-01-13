@@ -1043,7 +1043,7 @@ async def get_stream_method():
                        3: '木', 4: '金', 5: '土', 6: '日'}
         for x in lives_list:
             result = conn.get(x.id)
-            if result is not None:
+            if result == 'notified':
                 print('配信が重複していたためスキップします。')
                 return
             else:
