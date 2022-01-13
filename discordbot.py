@@ -1035,7 +1035,7 @@ async def get_stream_method():
     async with HolodexClient(aiohttp.ClientSession(headers=headers)) as client:
         lives = await client.live_streams(channel_id=os.environ['STREAM_YT_ID'])
         lives_list = [x for x in lives.contents if x.status ==
-                      'upcoming' and 'live']
+                      'upcoming']
         for x in lives_list:
             result = conn.get(x.id)
             if result is not None:
