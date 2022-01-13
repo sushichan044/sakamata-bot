@@ -1058,7 +1058,6 @@ async def get_stream_method():
                         'Z', '+00:00')
                     live_start = datetime.fromisoformat(
                         fixed_start_scheduled).astimezone(jst)
-                    live_url = 'https://youtu.be/' + x.id
                     live_start_timestamp = int(live_start.timestamp())
                     live_start_str_date = datetime.strftime(
                         live_start, '%Y年%m月%d日')
@@ -1069,7 +1068,7 @@ async def get_stream_method():
                     embed = discord.Embed(
                         title=f'{x.title}',
                         description='**待機所が作成されました**',
-                        url=f'{live_url}',
+                        url=f'https://youtu.be/{x.id}',
                         color=16711680,
                     )
                     embed.set_author(
