@@ -1018,7 +1018,7 @@ async def get_stream(ctx):
     return
 
 
-@tasks.loop(minutes=2)
+@tasks.loop(minutes=1)
 async def _get_stream():
     await bot.wait_until_ready()
     await get_stream_method()
