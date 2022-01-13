@@ -1036,12 +1036,9 @@ async def get_stream_method():
         ch_id = os.environ['STREAM_YT_ID']
         lives = await client.live_streams(channel_id=ch_id)
         channel = await client.channel(channel_id=ch_id)
-        lives_list = [x for x in lives.contents if x.type == 'stream' and x.status ==
-                      'upcoming']
-        nowgoing_list = [x for x in lives.contents if x.type ==
-                         'stream' and x.status == 'live']
-        ended_list = [x for x in lives.contents if x.type ==
-                      'stream' and x.status == 'past']
+        lives_list = [x for x in lives.contents if x.status == 'upcoming']
+        nowgoing_list = [x for x in lives.contents if x.status == 'live']
+        ended_list = [x for x in lives.contents if x.status == 'past']
         weekday_dic = {0: '月', 1: '火', 2: '水',
                        3: '木', 4: '金', 5: '土', 6: '日'}
         for x in lives_list:
