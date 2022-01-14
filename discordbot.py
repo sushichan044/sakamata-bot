@@ -905,10 +905,6 @@ async def create_base_log_embed(ctx, msg, desc_url):
         url=f'{desc_url}',
         timestamp=discord.utils.utcnow()
     )
-    embed.set_author(
-        name=bot.user,
-        icon_url=bot.user.display_avatar.url
-    )
     embed.add_field(
         name='実行者',
         value=f'{ctx.author.mention}'
@@ -956,10 +952,6 @@ async def create_base_context_log_embed(ctx, msg, desc_url):
         description=msg,
         url=f'{desc_url}',
         timestamp=discord.utils.utcnow()
-    )
-    embed.set_author(
-        name=bot.user,
-        icon_url=bot.user.display_avatar.url
     )
     embed.add_field(
         name='実行者',
