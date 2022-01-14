@@ -1191,20 +1191,18 @@ async def get_stream_method():
             if result == 'started':
                 end_date = conn.set(f'{x.id}', 'ended', ex=604800)
                 if end_date:
-                    '''
-                    stamp_actual_end = x.end_actual.replace(
+                    stamp_actual_start = x.available_at.replace(
                         'Z', '+00:00')
                     actual_end = datetime.fromisoformat(
-                        stamp_actual_end).astimezone(jst)
+                        stamp_actual_start).astimezone(jst) + timedelta(seconds=x.duration)
                     end_date_str = actual_end.strftime('%Y年%m月%d日')
                     end_date_time_str = actual_end.strftime('%H時%M分')
                     actual_end_str = actual_end.strftime('%Y/%m/%d %H:%M:%S')
-                    '''
                     ast_m, ast_s = divmod(x.duration, 60)
                     ast_h, ast_m = divmod(ast_m, 60)
                     time_str = f'{ast_h}時間{ast_m}分{ast_s}秒'
-                    # weekday = datetime.date(actual_end).weekday()
-                    # weekday_str = weekday_dic[weekday]
+                    weekday = datetime.date(actual_end).weekday()
+                    weekday_str = weekday_dic[weekday]
                     embed = discord.Embed(
                         title=f'{x.title}',
                         description='**ライブストリーミングが終了しました**',
@@ -1219,7 +1217,6 @@ async def get_stream_method():
                         text=f'{yt_channel.name} ({actual_end_str})',
                         icon_url=f'{yt_channel.photo}'
                     )
-                    '''
                     embed.add_field(
                         name='**配信終了日(JST)**',
                         value=f'{end_date_str}({weekday_str})',
@@ -1228,7 +1225,6 @@ async def get_stream_method():
                         name='**配信終了時刻(JST)**',
                         value=f'{end_date_time_str}',
                     )
-                    '''
                     embed.add_field(
                         name='**総配信時間**',
                         value=f'{time_str}',
