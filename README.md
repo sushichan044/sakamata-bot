@@ -28,6 +28,10 @@ alpha-buttonブランチ:大規模改修を行うときに最初に書くブラ�
 
 ### 機能追加履歴
 
+> v1.2.1(2022.01.14)
+
+Discordによる破壊的変更に対応するためBotのPrefixを`//`へ変更<br>
+
 > v1.2.0(2022.01.10)
 
 [holodex](https://pypi.org/project/holodex/0.9.7/) 0.9.7を利用した配信枠検知<br>
