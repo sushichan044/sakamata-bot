@@ -18,6 +18,7 @@ class MemberConfView(View):
     ng_style = state('ng_style')
     left_button = state('left_button')
     right_button = state('right_button')
+    ctx = state('ctx')
 
     def __init__(self, future, ctx):
         super().__init__()
@@ -28,9 +29,9 @@ class MemberConfView(View):
         self.ng_str = '否認'
         self.ng_style = discord.ButtonStyle.red
         self.left_button = Button(self.ok_str).style(
-            discord.ButtonStyle.green).disabled(self.status is not None).on_click(self.ok).custom_id(self.ctx.message.id)
+            discord.ButtonStyle.green).disabled(self.status is not None).on_click(self.ok).custom_id(f'{self.ctx.message.id}-accept')
         self.right_button = Button(self.ng_str).style(
-            self.ng_style).disabled(self.status is False).on_click(self.ng).custom_id(self.ctx.message.id)
+            self.ng_style).disabled(self.status is False).on_click(self.ng).custom_id(f'{self.ctx.message.id}-reject')
         self.ng_url = ''
         self.que = '承認しますか？'
 
@@ -43,9 +44,9 @@ class MemberConfView(View):
         self.ng_style = discord.ButtonStyle.link
         self.ng_url = os.environ['MEMBERSHIP_SPREADSHEET']
         self.left_button = Button(self.ok_str).style(
-            discord.ButtonStyle.green).disabled(self.status is not None).on_click(self.ok).custom_id(self.ctx.message.id)
+            discord.ButtonStyle.green).disabled(self.status is not None).on_click(self.ok).custom_id(f'{self.ctx.message.id}-accept')
         self.right_button = Button(self.ng_str).style(self.ng_style).disabled(
-            self.status is False).on_click(self.ng).url(self.ng_url).custom_id(self.ctx.message.id)
+            self.status is False).on_click(self.ng).url(self.ng_url).custom_id(f'{self.ctx.message.id}-reject')
         await interaction.response.defer()
         return
 
@@ -55,9 +56,9 @@ class MemberConfView(View):
         self.que = '否認済み'
         self.ng_str = '否認されました'
         self.left_button = Button(self.ng_str).style(
-            discord.ButtonStyle.red).disabled(True).custom_id(self.ctx.message.id)
+            discord.ButtonStyle.red).disabled(True).custom_id(f'{self.ctx.message.id}-accept')
         self.right_button = Button('承認').style(
-            discord.ButtonStyle.green).disabled(True).on_click(self.ok).custom_id(self.ctx.message.id)
+            discord.ButtonStyle.green).disabled(True).on_click(self.ok).custom_id(f'{self.ctx.message.id}-reject')
         await interaction.response.defer()
         return
 
@@ -151,11 +152,11 @@ class MemberRemoveView(View):
                 .style(discord.ButtonStyle.link)
                 .disabled(self.status is not None)
                 .url(os.environ['MEMBERSHIP_SPREADSHEET'])
-                .custom_id(self.ctx.message.id),
+                .custom_id(f'{self.ctx.message.id}-accept'),
                 Button(self.complete)
                 .style(discord.ButtonStyle.green)
                 .disabled(self.status is not None)
                 .on_click(self.done)
-                .custom_id(self.ctx.message.id),
+                .custom_id(f'{self.ctx.message.id}-reject'),
             ]
         )
