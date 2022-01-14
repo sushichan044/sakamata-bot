@@ -1049,6 +1049,7 @@ async def get_stream_method():
             result = conn.get(x.id)
             if result is not None:
                 print('配信が重複していたためスキップします。')
+                continue
             else:
                 set_data = conn.set(f'{x.id}', 'notified', ex=604800)
                 if set_data:
@@ -1101,7 +1102,7 @@ async def get_stream_method():
                     )
                     channel = bot.get_channel(stream_channel)
                     await channel.send(embed=embed)
-                print(lives_list)
+                    continue
         for x in nowgoing_list:
             result = conn.get(x.id)
             if result == 'notified':
@@ -1132,6 +1133,8 @@ async def get_stream_method():
                     )
                     channel = bot.get_channel(stream_channel)
                     await channel.send(embed=embed)
+            else:
+                continue
         for x in ended_list:
             result = conn.get(x.id)
             if result == 'started':
@@ -1180,7 +1183,8 @@ async def get_stream_method():
                     )
                     channel = bot.get_channel(stream_channel)
                     await channel.send(embed=embed)
-
+            else:
+                continue
 
 start_count.start()
 _get_stream.start()
