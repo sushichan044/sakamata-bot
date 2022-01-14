@@ -16,6 +16,7 @@ from newdispanderfixed import dispand
 
 import Components.member_button as membership_button
 import connect
+from Process.holodex_process import TimeData as holodex
 
 logging.basicConfig(level=logging.INFO)
 
@@ -227,18 +228,17 @@ https://discordbot.jp/blog/17/
 async def on_voice_state_update(member, before, after):
     if member.guild.id == guild_id and (before.channel != after.channel):
         channel = bot.get_channel(vc_log_channel)
-        now = discord.utils.utcnow()
-        vc_log_mention = member.mention
+        now = discord.utils.utcnow().astimezone(jst)
         if before.channel is None:
-            msg = f'{now.astimezone(jst):%m/%d %H:%M:%S} : {vc_log_mention} が {after.channel.mention} に参加しました。'
+            msg = f'{now:%m/%d %H:%M:%S} : {member.mention} が {after.channel.mention} に参加しました。'
             await channel.send(msg)
             return
         elif after.channel is None:
-            msg = f'{now.astimezone(jst):%m/%d %H:%M:%S} : {vc_log_mention} が {before.channel.mention} から退出しました。'
+            msg = f'{now:%m/%d %H:%M:%S} : {member.mention} が {before.channel.mention} から退出しました。'
             await channel.send(msg)
             return
         else:
-            msg = f'{now.astimezone(jst):%m/%d %H:%M:%S} : {vc_log_mention} が {before.channel.mention} から {after.channel.mention} に移動しました。'
+            msg = f'{now:%m/%d %H:%M:%S} : {member.mention} が {before.channel.mention} から {after.channel.mention} に移動しました。'
             await channel.send(msg)
             return
 
@@ -1089,152 +1089,117 @@ async def get_stream_method():
         lives = await client.live_streams(channel_id=ch_id)
         archives = await client.videos_from_channel(channel_id=ch_id, type='videos')
         yt_channel = await client.channel(channel_id=ch_id)
-        lives_list = [x for x in lives.contents if x.status ==
-                      'upcoming' and x.type == 'stream']
-        nowgoing_list = [x for x in lives.contents if x.status ==
-                         'live' and x.type == 'stream']
-        ended_list = [x for x in archives.contents if x.status ==
-                      'past' and x.type == 'stream']
-        weekday_dic = {0: '月', 1: '火', 2: '水',
-                       3: '木', 4: '金', 5: '土', 6: '日'}
-        for x in lives_list:
+        lives_tuple = (x for x in lives.contents if x.status ==
+                       'upcoming' and x.type == 'stream')
+        nowgoing_tuple = (x for x in lives.contents if x.status ==
+                          'live' and x.type == 'stream')
+        ended_tuple = (x for x in archives.contents if x.status ==
+                       'past' and x.type == 'stream')
+        for x in lives_tuple:
             result = conn.get(x.id)
             if result is not None:
                 print('配信が重複していたためスキップします。')
                 continue
             else:
-                set_data = conn.set(f'{x.id}', 'notified', ex=604800)
-                if set_data:
-                    live_created_stamp = x.published_at.replace(
-                        'Z', '+00:00')
-                    live_created = datetime.fromisoformat(
-                        live_created_stamp).astimezone(jst)
-                    created_str = live_created.strftime(
-                        '%Y/%m/%d %H:%M:%S')
-                    fixed_start_scheduled = x.start_scheduled.replace(
-                        'Z', '+00:00')
-                    live_start = datetime.fromisoformat(
-                        fixed_start_scheduled).astimezone(jst)
-                    live_start_timestamp = int(live_start.timestamp())
-                    live_start_str_date = datetime.strftime(
-                        live_start, '%Y年%m月%d日')
-                    live_start_str_time = datetime.strftime(
-                        live_start, '%H時%M分')
-                    weekday = datetime.date(live_start).weekday()
-                    weekday_str = weekday_dic[weekday]
-                    embed = discord.Embed(
-                        title=f'{x.title}',
-                        description='**待機所が作成されました**',
-                        url=f'https://youtu.be/{x.id}',
-                        color=16711680,
-                    )
-                    embed.set_author(
-                        name=f'{yt_channel.name}',
-                        url=f'https://www.youtube.com/channel/{ch_id}'
-                    )
-                    embed.add_field(
-                        name='**配信予定日(JST)**',
-                        value=f'{live_start_str_date}({weekday_str})',
-                    )
-                    embed.add_field(
-                        name='**配信予定時刻(JST)**',
-                        value=f'{live_start_str_time}',
-                    )
-                    embed.add_field(
-                        name='**配信予定時刻(Timestamp)**',
-                        value=f'<t:{live_start_timestamp}:f>',
-                        inline=False
-                    )
-                    embed.set_image(
-                        url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
-                    )
-                    embed.set_footer(
-                        text=f'{yt_channel.name} ({created_str})',
-                        icon_url=f'{yt_channel.photo}'
-                    )
-                    channel = bot.get_channel(stream_channel)
-                    await channel.send(embed=embed)
-                    continue
-        for x in nowgoing_list:
+                conn.set(f'{x.id}', 'notified', ex=604800)
+                date, time, timestamp, weekday_str, created = holodex.time_schedule(
+                    x)
+                embed = discord.Embed(
+                    title=f'{x.title}',
+                    description='**待機所が作成されました**',
+                    url=f'https://youtu.be/{x.id}',
+                    color=16711680,
+                )
+                embed.set_author(
+                    name=f'{yt_channel.name}',
+                    url=f'https://www.youtube.com/channel/{ch_id}'
+                )
+                embed.add_field(
+                    name='**配信予定日(JST)**',
+                    value=f'{date}({weekday_str})',
+                )
+                embed.add_field(
+                    name='**配信予定時刻(JST)**',
+                    value=f'{time}',
+                )
+                embed.add_field(
+                    name='**配信予定時刻(Timestamp)**',
+                    value=f'<t:{timestamp}:f>',
+                    inline=False
+                )
+                embed.set_image(
+                    url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
+                )
+                embed.set_footer(
+                    text=f'{yt_channel.name} ({created})',
+                    icon_url=f'{yt_channel.photo}'
+                )
+                channel = bot.get_channel(stream_channel)
+                await channel.send(embed=embed)
+                continue
+        for x in nowgoing_tuple:
             result = conn.get(x.id)
             if result == 'notified':
-                reset_data = conn.set(f'{x.id}', 'started', ex=604800)
-                if reset_data:
-                    stamp_actual_start = x.start_actual.replace(
-                        'Z', '+00:00')
-                    actual_start = datetime.fromisoformat(
-                        stamp_actual_start).astimezone(jst)
-                    actual_start_str = actual_start.strftime(
-                        '%Y/%m/%d %H:%M:%S')
-                    embed = discord.Embed(
-                        title=f'{x.title}',
-                        description='**ライブストリーミングが開始されました**',
-                        url=f'https://youtu.be/{x.id}',
-                        color=16711680,
-                    )
-                    embed.set_author(
-                        name=f'{yt_channel.name}',
-                        url=f'https://www.youtube.com/channel/{ch_id}'
-                    )
-                    embed.set_footer(
-                        text=f'{yt_channel.name} ({actual_start_str})',
-                        icon_url=f'{yt_channel.photo}'
-                    )
-                    embed.set_image(
-                        url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
-                    )
-                    channel = bot.get_channel(stream_channel)
-                    await channel.send(embed=embed)
+                conn.set(f'{x.id}', 'started', ex=604800)
+                actual_start = holodex.time_going(x)
+                embed = discord.Embed(
+                    title=f'{x.title}',
+                    description='**ライブストリーミングが開始されました**',
+                    url=f'https://youtu.be/{x.id}',
+                    color=16711680,
+                )
+                embed.set_author(
+                    name=f'{yt_channel.name}',
+                    url=f'https://www.youtube.com/channel/{ch_id}'
+                )
+                embed.set_footer(
+                    text=f'{yt_channel.name} ({actual_start})',
+                    icon_url=f'{yt_channel.photo}'
+                )
+                embed.set_image(
+                    url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
+                )
+                channel = bot.get_channel(stream_channel)
+                await channel.send(embed=embed)
             else:
                 continue
-        for x in ended_list:
+        for x in ended_tuple:
             result = conn.get(x.id)
             if result == 'started':
-                end_date = conn.set(f'{x.id}', 'ended', ex=604800)
-                if end_date:
-                    stamp_actual_start = x.available_at.replace(
-                        'Z', '+00:00')
-                    actual_end = datetime.fromisoformat(
-                        stamp_actual_start).astimezone(jst) + timedelta(seconds=x.duration)
-                    end_date_str = actual_end.strftime('%Y年%m月%d日')
-                    end_date_time_str = actual_end.strftime('%H時%M分')
-                    actual_end_str = actual_end.strftime('%Y/%m/%d %H:%M:%S')
-                    ast_m, ast_s = divmod(x.duration, 60)
-                    ast_h, ast_m = divmod(ast_m, 60)
-                    time_str = f'{ast_h}時間{ast_m}分{ast_s}秒'
-                    weekday = datetime.date(actual_end).weekday()
-                    weekday_str = weekday_dic[weekday]
-                    embed = discord.Embed(
-                        title=f'{x.title}',
-                        description='**ライブストリーミングが終了しました**',
-                        url=f'https://youtu.be/{x.id}',
-                        color=16711680,
-                    )
-                    embed.set_author(
-                        name=f'{yt_channel.name}',
-                        url=f'https://www.youtube.com/channel/{ch_id}'
-                    )
-                    embed.set_footer(
-                        text=f'{yt_channel.name} ({actual_end_str})',
-                        icon_url=f'{yt_channel.photo}'
-                    )
-                    embed.add_field(
-                        name='**配信終了日(JST)**',
-                        value=f'{end_date_str}({weekday_str})',
-                    )
-                    embed.add_field(
-                        name='**配信終了時刻(JST)**',
-                        value=f'{end_date_time_str}',
-                    )
-                    embed.add_field(
-                        name='**総配信時間**',
-                        value=f'{time_str}',
-                    )
-                    embed.set_image(
-                        url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
-                    )
-                    channel = bot.get_channel(stream_channel)
-                    await channel.send(embed=embed)
+                conn.set(f'{x.id}', 'ended', ex=604800)
+                actual_end, end_date, end_time, duration_str, weekday_str = holodex.time_ended(
+                    x)
+                embed = discord.Embed(
+                    title=f'{x.title}',
+                    description='**ライブストリーミングが終了しました**',
+                    url=f'https://youtu.be/{x.id}',
+                    color=16711680,
+                )
+                embed.set_author(
+                    name=f'{yt_channel.name}',
+                    url=f'https://www.youtube.com/channel/{ch_id}'
+                )
+                embed.set_footer(
+                    text=f'{yt_channel.name} ({actual_end})',
+                    icon_url=f'{yt_channel.photo}'
+                )
+                embed.add_field(
+                    name='**配信終了日(JST)**',
+                    value=f'{end_date}({weekday_str})',
+                )
+                embed.add_field(
+                    name='**配信終了時刻(JST)**',
+                    value=f'{end_time}',
+                )
+                embed.add_field(
+                    name='**総配信時間**',
+                    value=f'{duration_str}',
+                )
+                embed.set_image(
+                    url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
+                )
+                channel = bot.get_channel(stream_channel)
+                await channel.send(embed=embed)
             else:
                 continue
 
@@ -1243,7 +1208,6 @@ async def get_stream_method():
 # @bot.user_command(guild_ids=[guild_id])
 # async def mention(ctx, member: Member):  # user commands return the member
 #     await ctx.respond(f"{ctx.author.name} just mentioned {member.mention}!")
-
 start_count.start()
 _get_stream.start()
 
