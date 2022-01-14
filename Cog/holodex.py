@@ -4,7 +4,7 @@ import aiohttp
 import discord
 from discord.ext import commands, tasks
 
-from connect import connect
+from .connect import connect
 from holodex.client import HolodexClient
 from holodex_process import TimeData as holodex
 
