@@ -810,7 +810,7 @@ async def _remove_member(ctx):
             member = guild.get_member(ctx.message.author.id)
             membership_role_object = guild.get_role(yt_membership_role)
             await member.remove_roles(membership_role_object)
-            await ctx.reply(content='メンバーシップ継続停止を反映しました。\nメンバーシップに再度登録された際は`/check`で再登録してください。', mention_author=False)
+            await ctx.reply(content='メンバーシップ継続停止を反映しました。\nメンバーシップに再度登録された際は`//check`で再登録してください。', mention_author=False)
             log_channel_object = bot.get_channel(log_channel)
             embed = discord.Embed(
                 title='実行ログ',
