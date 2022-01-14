@@ -65,6 +65,7 @@ INIT_EXTENSION_LIST = [
 
 for cog in INIT_EXTENSION_LIST:
     bot.load_extension(cog)
+print('extension is loaded!')
 
 
 # 本番鯖IDなど
