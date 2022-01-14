@@ -11,6 +11,7 @@ from discord.commands import Option, permissions
 from discord.ext import commands, pages, tasks
 from discord.ext.ui import (Button, Message, MessageProvider, View,
                             ViewTracker, state)
+from discord.mentions import A
 from holodex.client import HolodexClient
 from newdispanderfixed import dispand
 
@@ -458,6 +459,18 @@ add_dm = None
 # timeout-member
 
 
+@bot.user_command(guild_ids=[guild_id], name='緊急タイムアウト')
+# user commands return the member
+async def _emergency_timeout(ctx, member: Member):
+    await member.timeout_for(duration=timedelta(days=1), reason='Emergency Timeout')
+    await ctx.respond(f'{member.mention}を緊急タイムアウトしました。', ephemeral=True)
+    msg = f'{member.mention}を緊急タイムアウトしました。'
+    desc_url = ''
+    until = discord.utils.utcnow().astimezone(jst) + timedelta(days=1)
+    until_str = until.strftime('%Y/%m/%d/%H:%M')
+    await send_context_timeout_log(ctx, msg, desc_url, until_str)
+
+
 @bot.command(name='timeout')
 @commands.has_role(mod_role)
 async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
@@ -466,7 +479,7 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
     until_jst = until.replace(tzinfo=jst)
     role = ctx.guild.get_role(mod_role)
     valid_if_dm_list = ['True', 'False']
-    until_str = datetime.strftime(until_jst, '%Y/%m/%d/%H:%M')
+    until_str = until_jst.strftime('%Y/%m/%d/%H:%M')
     if if_dm not in valid_if_dm_list:
         await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。', mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
@@ -497,7 +510,7 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
                 return
             elif if_dm == 'False':
                 desc_url = ''
-                await member.timeout(until_jst + timedelta(hours=-9), reason=None)
+                await member.timeout(until_jst.astimezone(utc), reason=None)
                 await ctx.send('timeouted!')
                 await send_timeout_log(ctx, msg, desc_url, until_str)
                 return
@@ -936,6 +949,53 @@ async def send_timeout_log(ctx, msg, desc_url, until_str):
     return
 
 
+# context-embed
+async def create_base_context_log_embed(ctx, msg, desc_url):
+    embed = discord.Embed(
+        title='Context Menu 実行ログ',
+        color=3447003,
+        description=msg,
+        url=f'{desc_url}',
+        timestamp=discord.utils.utcnow()
+    )
+    embed.set_author(
+        name=bot.user,
+        icon_url=bot.user.display_avatar.url
+    )
+    embed.add_field(
+        name='実行者',
+        value=f'{ctx.author.mention}'
+    )
+    embed.add_field(
+        name='実行日時',
+        value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
+    )
+    return embed.copy()
+
+
+# send-context-log
+
+async def send_context_log(ctx, msg, desc_url):
+    embed = await create_base_context_log_embed(ctx, msg, desc_url)
+    channel = bot.get_channel(log_channel)
+    await channel.send(embed=embed)
+    return
+
+
+# send-context-tiemout-log
+
+async def send_context_timeout_log(ctx, msg, desc_url, until_str):
+    embed = await create_base_context_log_embed(ctx, msg, desc_url)
+    channel = bot.get_channel(log_channel)
+    embed.insert_field_at(
+        2,
+        name='解除日時',
+        value=f'{until_str}'
+    )
+    await channel.send(embed=embed)
+    return
+
+
 # compose-embed
 
 
@@ -1035,16 +1095,21 @@ async def get_stream_method():
     async with HolodexClient(aiohttp.ClientSession(headers=headers)) as client:
         ch_id = os.environ['STREAM_YT_ID']
         lives = await client.live_streams(channel_id=ch_id)
+        archives = await client.videos_from_channel(channel_id=ch_id, type='videos')
         yt_channel = await client.channel(channel_id=ch_id)
-        lives_list = [x for x in lives.contents if x.status == 'upcoming' and x.type == 'stream']
-        nowgoing_list = [x for x in lives.contents if x.status == 'live' and x.type == 'stream']
-        ended_list = [x for x in lives.contents if x.status == 'past' and x.type == 'stream']
+        lives_list = [x for x in lives.contents if x.status ==
+                      'upcoming' and x.type == 'stream']
+        nowgoing_list = [x for x in lives.contents if x.status ==
+                         'live' and x.type == 'stream']
+        ended_list = [x for x in archives.contents if x.status ==
+                      'past' and x.type == 'stream']
         weekday_dic = {0: '月', 1: '火', 2: '水',
                        3: '木', 4: '金', 5: '土', 6: '日'}
         for x in lives_list:
             result = conn.get(x.id)
             if result is not None:
                 print('配信が重複していたためスキップします。')
+                continue
             else:
                 set_data = conn.set(f'{x.id}', 'notified', ex=604800)
                 if set_data:
@@ -1097,7 +1162,7 @@ async def get_stream_method():
                     )
                     channel = bot.get_channel(stream_channel)
                     await channel.send(embed=embed)
-                print(lives_list)
+                    continue
         for x in nowgoing_list:
             result = conn.get(x.id)
             if result == 'notified':
@@ -1128,15 +1193,13 @@ async def get_stream_method():
                     )
                     channel = bot.get_channel(stream_channel)
                     await channel.send(embed=embed)
+            else:
+                continue
         for x in ended_list:
             result = conn.get(x.id)
             if result == 'started':
                 end_date = conn.set(f'{x.id}', 'ended', ex=604800)
                 if end_date:
-                    stamp_actual_start = x.start_actual.replace(
-                        'Z', '+00:00')
-                    actual_start = datetime.fromisoformat(
-                        stamp_actual_start).astimezone(jst)
                     stamp_actual_end = x.end_actual.replace(
                         'Z', '+00:00')
                     actual_end = datetime.fromisoformat(
@@ -1144,8 +1207,7 @@ async def get_stream_method():
                     end_date_str = actual_end.strftime('%Y年%m月%d日')
                     end_date_time_str = actual_end.strftime('%H時%M分')
                     actual_end_str = actual_end.strftime('%Y/%m/%d %H:%M:%S')
-                    ast = actual_end - actual_start
-                    ast_m, ast_s = divmod(ast.seconds, 60)
+                    ast_m, ast_s = divmod(x.duration, 60)
                     ast_h, ast_m = divmod(ast_m, 60)
                     time_str = f'{ast_h}時間{ast_m}分{ast_s}秒'
                     weekday = datetime.date(actual_end).weekday()
@@ -1181,7 +1243,14 @@ async def get_stream_method():
                     )
                     channel = bot.get_channel(stream_channel)
                     await channel.send(embed=embed)
+            else:
+                continue
 
+
+# create a user command for the supplied guilds
+# @bot.user_command(guild_ids=[guild_id])
+# async def mention(ctx, member: Member):  # user commands return the member
+#     await ctx.respond(f"{ctx.author.name} just mentioned {member.mention}!")
 
 start_count.start()
 _get_stream.start()
