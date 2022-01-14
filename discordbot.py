@@ -11,7 +11,6 @@ from discord.commands import Option, permissions
 from discord.ext import commands, pages, tasks
 from discord.ext.ui import (Button, Message, MessageProvider, View,
                             ViewTracker, state)
-from discord.mentions import A
 from holodex.client import HolodexClient
 from newdispanderfixed import dispand
 
