@@ -50,11 +50,11 @@ class JapaneseHelpCommand(commands.DefaultHelpCommand):
         self.command_attrs["help"] = "コマンド一覧と簡単な説明を表示"
 
     def get_ending_note(self):
-        return ('各コマンドの説明: /help <コマンド名>\n')
+        return ('各コマンドの説明: //help <コマンド名>\n')
 
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix='/', intents=intents,
+bot = commands.Bot(command_prefix='//', intents=intents,
                    help_command=JapaneseHelpCommand())
 
 
