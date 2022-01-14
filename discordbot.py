@@ -463,6 +463,7 @@ add_dm = None
 # user commands return the member
 async def _emergency_timeout(ctx, member: Member):
     await member.timeout_for(duration=timedelta(days=1), reason='Emergency Timeout')
+    await ctx.respond(f'{member.mention}を緊急タイムアウトしました。', ephemeral=True)
     msg = f'{member.mention}を緊急タイムアウトしました。'
     desc_url = ''
     until = discord.utils.utcnow().astimezone(jst) + timedelta(days=1)
