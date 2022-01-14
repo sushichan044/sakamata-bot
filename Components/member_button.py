@@ -21,6 +21,7 @@ class MemberConfView(View):
 
     def __init__(self, future, ctx):
         super().__init__()
+        self.ctx = ctx
         self.future = future
         self.status = None
         self.ok_str = '承認'
@@ -31,7 +32,6 @@ class MemberConfView(View):
         self.right_button = Button(self.ng_str).style(
             self.ng_style).disabled(self.status is False).on_click(self.ng).custom_id(self.ctx.message.id)
         self.ng_url = ''
-        self.ctx = ctx
         self.que = '承認しますか？'
 
     async def ok(self, interaction: discord.Interaction):
