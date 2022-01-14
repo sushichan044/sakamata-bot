@@ -459,6 +459,7 @@ add_dm = None
 
 
 @bot.user_command(guild_ids=[guild_id], name='緊急タイムアウト')
+@permissions.has_role(mod_role)
 # user commands return the member
 async def _emergency_timeout(ctx, member: Member):
     await member.timeout_for(duration=timedelta(days=1), reason='Emergency Timeout')
