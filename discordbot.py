@@ -3,7 +3,6 @@ import logging
 import os
 from datetime import datetime, timedelta, timezone
 
-import aiohttp
 import discord
 from discord import Member
 from discord.channel import DMChannel
@@ -11,12 +10,10 @@ from discord.commands import Option, permissions
 from discord.ext import commands, pages, tasks
 from discord.ext.ui import (Button, Message, MessageProvider, View,
                             ViewTracker, state)
-from holodex.client import HolodexClient
 from newdispanderfixed import dispand
 
 import Components.member_button as membership_button
-import connect
-from Process.holodex_process import TimeData as holodex
+from Cog.connect import connect
 
 logging.basicConfig(level=logging.INFO)
 
@@ -32,7 +29,7 @@ Bot起動時に実行：      on_ready(message)
 新規メンバー参加時に実行： on_member_join(member)
 ボイスチャンネル出入に実行： on_voice_state_update(member, before, after)'''
 
-conn = connect.connect()
+conn = connect()
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
 
@@ -63,6 +60,7 @@ INIT_EXTENSION_LIST = [
     'Cog.ng_word',
     'Cog.poll',
     'Cog.thread',
+    'Cog.holodex'
 ]
 
 for cog in INIT_EXTENSION_LIST:
@@ -78,10 +76,8 @@ dm_box_channel = 921781301101613076
 error_log_channel = 924142068484440084
 alert_channel = 924744385902575616
 member_check_channel = 926777825925677096
-stream_channel = 916337386277969921
 count_vc = 925256795491012668
 mod_role = 916726433445986334
-admin_role = 915954009343422494
 everyone = 915910043461890078
 yt_membership_role = 923789641159700500
 
@@ -94,19 +90,19 @@ dm_box_channel = 918101377958436954
 error_log_channel = 924141910321426452
 alert_channel = 924744469327257602
 member_check_channel = 926777719964987412
-stream_channel = 930020966350876673
 count_vc = 925249967478673519
 mod_role = 924355349308383252
-admin_role = 917332284582031390
 everyone = 916965252896260117
 yt_membership_role = 926268230417408010
 
 
 # ID-env
 server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
+admin_role = int(os.environ['ADMIN_ROLE'])
 thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
 alert_channel = int(os.environ['ALERT_CHANNEL'])
+stream_channel = int(os.environ['STREAM_CHANNEL'])
 
 
 # emoji
@@ -1060,155 +1056,11 @@ async def _newcreateevent(ctx,
     await ctx.respond('配信を登録しました。')
     return
 
-# get_stream
-
-
-@bot.command(name='stream')
-@commands.has_role(admin_role)
-async def get_stream(ctx):
-    await get_stream_method()
-    return
-
-
-@tasks.loop(minutes=1)
-async def _get_stream():
-    await bot.wait_until_ready()
-    await get_stream_method()
-
-# stream-body
-
-api_key = os.environ['HOLODEX_KEY']
-headers = {
-    'X-APIKEY': f'{api_key}'
-}
-
-
-async def get_stream_method():
-    async with HolodexClient(aiohttp.ClientSession(headers=headers)) as client:
-        ch_id = os.environ['STREAM_YT_ID']
-        lives = await client.live_streams(channel_id=ch_id)
-        archives = await client.videos_from_channel(channel_id=ch_id, type='videos')
-        yt_channel = await client.channel(channel_id=ch_id)
-        lives_tuple = (x for x in lives.contents if x.status ==
-                       'upcoming' and x.type == 'stream')
-        nowgoing_tuple = (x for x in lives.contents if x.status ==
-                          'live' and x.type == 'stream')
-        ended_tuple = (x for x in archives.contents if x.status ==
-                       'past' and x.type == 'stream')
-        for x in lives_tuple:
-            result = conn.get(x.id)
-            if result is not None:
-                print('配信が重複していたためスキップします。')
-                continue
-            else:
-                conn.set(f'{x.id}', 'notified', ex=604800)
-                date, time, timestamp, weekday_str, created = holodex.time_schedule(
-                    x)
-                embed = discord.Embed(
-                    title=f'{x.title}',
-                    description='**待機所が作成されました**',
-                    url=f'https://youtu.be/{x.id}',
-                    color=16711680,
-                )
-                embed.set_author(
-                    name=f'{yt_channel.name}',
-                    url=f'https://www.youtube.com/channel/{ch_id}'
-                )
-                embed.add_field(
-                    name='**配信予定日(JST)**',
-                    value=f'{date}({weekday_str})',
-                )
-                embed.add_field(
-                    name='**配信予定時刻(JST)**',
-                    value=f'{time}',
-                )
-                embed.add_field(
-                    name='**配信予定時刻(Timestamp)**',
-                    value=f'<t:{timestamp}:f>',
-                    inline=False
-                )
-                embed.set_image(
-                    url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
-                )
-                embed.set_footer(
-                    text=f'{yt_channel.name} ({created})',
-                    icon_url=f'{yt_channel.photo}'
-                )
-                channel = bot.get_channel(stream_channel)
-                await channel.send(embed=embed)
-                continue
-        for x in nowgoing_tuple:
-            result = conn.get(x.id)
-            if result == 'notified':
-                conn.set(f'{x.id}', 'started', ex=604800)
-                actual_start = holodex.time_going(x)
-                embed = discord.Embed(
-                    title=f'{x.title}',
-                    description='**ライブストリーミングが開始されました**',
-                    url=f'https://youtu.be/{x.id}',
-                    color=16711680,
-                )
-                embed.set_author(
-                    name=f'{yt_channel.name}',
-                    url=f'https://www.youtube.com/channel/{ch_id}'
-                )
-                embed.set_footer(
-                    text=f'{yt_channel.name} ({actual_start})',
-                    icon_url=f'{yt_channel.photo}'
-                )
-                embed.set_image(
-                    url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
-                )
-                channel = bot.get_channel(stream_channel)
-                await channel.send(embed=embed)
-            else:
-                continue
-        for x in ended_tuple:
-            result = conn.get(x.id)
-            if result == 'started':
-                conn.set(f'{x.id}', 'ended', ex=604800)
-                actual_end, end_date, end_time, duration_str, weekday_str = holodex.time_ended(
-                    x)
-                embed = discord.Embed(
-                    title=f'{x.title}',
-                    description='**ライブストリーミングが終了しました**',
-                    url=f'https://youtu.be/{x.id}',
-                    color=16711680,
-                )
-                embed.set_author(
-                    name=f'{yt_channel.name}',
-                    url=f'https://www.youtube.com/channel/{ch_id}'
-                )
-                embed.set_footer(
-                    text=f'{yt_channel.name} ({actual_end})',
-                    icon_url=f'{yt_channel.photo}'
-                )
-                embed.add_field(
-                    name='**配信終了日(JST)**',
-                    value=f'{end_date}({weekday_str})',
-                )
-                embed.add_field(
-                    name='**配信終了時刻(JST)**',
-                    value=f'{end_time}',
-                )
-                embed.add_field(
-                    name='**総配信時間**',
-                    value=f'{duration_str}',
-                )
-                embed.set_image(
-                    url=f'https://i.ytimg.com/vi/{x.id}/maxresdefault.jpg'
-                )
-                channel = bot.get_channel(stream_channel)
-                await channel.send(embed=embed)
-            else:
-                continue
-
 
 # create a user command for the supplied guilds
 # @bot.user_command(guild_ids=[guild_id])
 # async def mention(ctx, member: Member):  # user commands return the member
 #     await ctx.respond(f"{ctx.author.name} just mentioned {member.mention}!")
 start_count.start()
-_get_stream.start()
 
 bot.run(token)
