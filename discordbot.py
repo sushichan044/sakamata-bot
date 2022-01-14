@@ -1191,10 +1191,10 @@ async def get_stream_method():
             if result == 'started':
                 end_date = conn.set(f'{x.id}', 'ended', ex=604800)
                 if end_date:
-                    stamp_actual_end = x.end_actual.replace(
+                    stamp_actual_start = x.available_at.replace(
                         'Z', '+00:00')
                     actual_end = datetime.fromisoformat(
-                        stamp_actual_end).astimezone(jst)
+                        stamp_actual_start).astimezone(jst) + timedelta(seconds=x.duration)
                     end_date_str = actual_end.strftime('%Y年%m月%d日')
                     end_date_time_str = actual_end.strftime('%H時%M分')
                     actual_end_str = actual_end.strftime('%Y/%m/%d %H:%M:%S')
