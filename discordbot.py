@@ -11,6 +11,7 @@ from discord.commands import Option, permissions
 from discord.ext import commands, pages, tasks
 from discord.ext.ui import (Button, Message, MessageProvider, View,
                             ViewTracker, state)
+from discord.mentions import A
 from holodex.client import HolodexClient
 from newdispanderfixed import dispand
 
@@ -466,7 +467,7 @@ async def _emergency_timeout(ctx, member: Member):
     desc_url = ''
     until = discord.utils.utcnow().astimezone(jst) + timedelta(days=1)
     until_str = until.strftime('%Y/%m/%d/%H:%M')
-    await send_timeout_log(ctx, msg, desc_url, until_str)
+    await send_context_timeout_log(ctx, msg, desc_url, until_str)
 
 
 @bot.command(name='timeout')
@@ -937,6 +938,53 @@ async def send_exe_log(ctx, msg, desc_url):
 
 async def send_timeout_log(ctx, msg, desc_url, until_str):
     embed = await create_base_log_embed(ctx, msg, desc_url)
+    channel = bot.get_channel(log_channel)
+    embed.insert_field_at(
+        2,
+        name='解除日時',
+        value=f'{until_str}'
+    )
+    await channel.send(embed=embed)
+    return
+
+
+# context-embed
+async def create_base_context_log_embed(ctx, msg, desc_url):
+    embed = discord.Embed(
+        title='Context Menu 実行ログ',
+        color=3447003,
+        description=msg,
+        url=f'{desc_url}',
+        timestamp=discord.utils.utcnow()
+    )
+    embed.set_author(
+        name=bot.user,
+        icon_url=bot.user.display_avatar.url
+    )
+    embed.add_field(
+        name='実行者',
+        value=f'{ctx.author.mention}'
+    )
+    embed.add_field(
+        name='実行日時',
+        value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
+    )
+    return embed.copy()
+
+
+# send-context-log
+
+async def send_context_log(ctx, msg, desc_url):
+    embed = await create_base_context_log_embed(ctx, msg, desc_url)
+    channel = bot.get_channel(log_channel)
+    await channel.send(embed=embed)
+    return
+
+
+# send-context-tiemout-log
+
+async def send_context_timeout_log(ctx, msg, desc_url, until_str):
+    embed = await create_base_context_log_embed(ctx, msg, desc_url)
     channel = bot.get_channel(log_channel)
     embed.insert_field_at(
         2,
