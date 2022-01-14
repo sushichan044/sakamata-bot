@@ -458,6 +458,17 @@ add_dm = None
 # timeout-member
 
 
+@bot.user_command(guild_ids=[guild_id], name='緊急タイムアウト')
+# user commands return the member
+async def _emergency_timeout(ctx, member: Member):
+    await member.timeout_for(duration=timedelta(days=1), reason='Emergency Timeout')
+    msg = f'{member.mention}を緊急タイムアウトしました。'
+    desc_url = ''
+    until = discord.utils.utcnow().astimezone(jst) + timedelta(days=1)
+    until_str = until.strftime('%Y/%m/%d/%H:%M')
+    await send_timeout_log(ctx, msg, desc_url, until_str)
+
+
 @bot.command(name='timeout')
 @commands.has_role(mod_role)
 async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
@@ -466,7 +477,7 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
     until_jst = until.replace(tzinfo=jst)
     role = ctx.guild.get_role(mod_role)
     valid_if_dm_list = ['True', 'False']
-    until_str = datetime.strftime(until_jst, '%Y/%m/%d/%H:%M')
+    until_str = until_jst.strftime('%Y/%m/%d/%H:%M')
     if if_dm not in valid_if_dm_list:
         await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。', mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
@@ -497,7 +508,7 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
                 return
             elif if_dm == 'False':
                 desc_url = ''
-                await member.timeout(until_jst + timedelta(hours=-9), reason=None)
+                await member.timeout(until_jst.astimezone(utc), reason=None)
                 await ctx.send('timeouted!')
                 await send_timeout_log(ctx, msg, desc_url, until_str)
                 return
