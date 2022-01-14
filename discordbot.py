@@ -1248,9 +1248,9 @@ async def get_stream_method():
 
 
 # create a user command for the supplied guilds
-@bot.user_command(guild_ids=[guild_id])
-async def mention(ctx, member: Member):  # user commands return the member
-    await ctx.respond(f"{ctx.author.name} just mentioned {member.mention}!")
+# @bot.user_command(guild_ids=[guild_id])
+# async def mention(ctx, member: Member):  # user commands return the member
+#     await ctx.respond(f"{ctx.author.name} just mentioned {member.mention}!")
 
 start_count.start()
 _get_stream.start()
