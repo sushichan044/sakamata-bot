@@ -530,7 +530,7 @@ async def _untimeout(ctx, member: Member):
     '''メンバーのタイムアウトを解除'''
     role = ctx.guild.get_role(admin_role)
     confirm_msg = f'【untimeout実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})'
-    exe_msg = f'{member.mention}のタイムアウトの解除をしました。'
+    exe_msg = f'{member.mention}のタイムアウトを解除しました。'
     non_exe_msg = f'{member.mention}のタイムアウトの解除をキャンセルしました。'
     confirm_arg = ''
     turned = await confirm(ctx, confirm_arg, role, confirm_msg)
