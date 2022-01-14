@@ -47,11 +47,11 @@ class JapaneseHelpCommand(commands.DefaultHelpCommand):
         self.command_attrs["help"] = "コマンド一覧と簡単な説明を表示"
 
     def get_ending_note(self):
-        return ('各コマンドの説明: /help <コマンド名>\n')
+        return ('各コマンドの説明: //help <コマンド名>\n')
 
 
 intents = discord.Intents.all()
-bot = commands.Bot(command_prefix='/', intents=intents,
+bot = commands.Bot(command_prefix='//', intents=intents,
                    help_command=JapaneseHelpCommand())
 
 
@@ -198,7 +198,7 @@ async def errortest(ctx):
 
 @bot.listen('on_message')
 async def on_message_dispand(message):
-    avoid_word_list_head = ['/send-message', '/edit-message', '/send-dm']
+    avoid_word_list_head = ['//send-message', '//edit-message', '//send-dm']
     if type(message.channel) == DMChannel:
         return
     else:
@@ -325,7 +325,7 @@ async def ping(ctx):
 
 @bot.listen('on_message')
 async def on_message_dm(message):
-    avoid_dm_list = ['/check', '/remove-member']
+    avoid_dm_list = ['//check', '//remove-member']
     if type(message.channel) == DMChannel and bot.user == message.channel.me:
         if message.author.bot:
             return
@@ -806,7 +806,7 @@ async def _remove_member(ctx):
             member = guild.get_member(ctx.message.author.id)
             membership_role_object = guild.get_role(yt_membership_role)
             await member.remove_roles(membership_role_object)
-            await ctx.reply(content='メンバーシップ継続停止を反映しました。\nメンバーシップに再度登録された際は`/check`で再登録してください。', mention_author=False)
+            await ctx.reply(content='メンバーシップ継続停止を反映しました。\nメンバーシップに再度登録された際は`//check`で再登録してください。', mention_author=False)
             log_channel_object = bot.get_channel(log_channel)
             embed = discord.Embed(
                 title='実行ログ',
@@ -838,7 +838,7 @@ async def _update_member(ctx, *update_member: Member):
     confirm_msg = f'【DM送信確認】\nメンバーシップ更新DMを\n{update_member_str}\nへ送信します。'
     exe_msg = f'{update_member_str}にメンバーシップ更新DMを送信しました。'
     non_exe_msg = f'{update_member_str}へのメンバーシップ更新DM送信をキャンセルしました。'
-    DM_content = '【メンバーシップ更新のご案内】\n沙花叉のメンバーシップの更新時期が近づいた方にDMを送信させていただいております。\nお支払いが完了して次回支払日が更新され次第、以前と同じように\n`/check`\nで再認証を行ってください。\n\nメンバーシップを継続しない場合は\n`/remove-member`\nと送信してください。(__**メンバー限定チャンネルの閲覧ができなくなります。**__)'
+    DM_content = '【メンバーシップ更新のご案内】\n沙花叉のメンバーシップの更新時期が近づいた方にDMを送信させていただいております。\nお支払いが完了して次回支払日が更新され次第、以前と同じように\n`//check`\nで再認証を行ってください。\n\nメンバーシップを継続しない場合は\n`//remove-member`\nと送信してください。(__**メンバー限定チャンネルの閲覧ができなくなります。**__)'
     confirm_arg = f'\n{DM_content}\n------------------------'
     turned = await confirm(ctx, confirm_arg, role, confirm_msg)
     if turned:
