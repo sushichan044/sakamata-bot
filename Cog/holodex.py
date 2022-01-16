@@ -51,6 +51,7 @@ class StreamNotify(commands.Cog):
                               'live' and x.type == 'stream')
             ended_tuple = (x for x in archives.contents if x.status ==
                            'past' and x.type == 'stream')
+            holodex = TimeData()
             for x in lives_tuple:
                 result = conn.get(x.id)
                 if result is not None:
@@ -58,7 +59,6 @@ class StreamNotify(commands.Cog):
                     continue
                 else:
                     conn.set(f'{x.id}', 'notified', ex=604800)
-                    holodex = TimeData()
                     date, time, timestamp, weekday_str, created = holodex.time_schedule(x)
                     embed = discord.Embed(
                         title=f'{x.title}',
