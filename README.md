@@ -14,7 +14,7 @@
 テスト環境がクラウド上にあるため、Commitが多くなっています。
 
 ### 開発環境及び使用ライブラリ
-Python 3.10.0<br>
+Python 3.10.1<br>
 [pycord](https://github.com/Pycord-Development/pycord) 2.0.0a<br>
 [discord-ext-ui](https://pypi.org/project/discord-ext-ui/) 3.1.1<br>
 [newdispanderfixed](https://pypi.org/project/newdispanderfixed/) 0.1.4([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
