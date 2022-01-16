@@ -228,15 +228,18 @@ async def on_voice_state_update(member, before, after):
         now = discord.utils.utcnow().astimezone(jst)
         if before.channel is None:
             msg = f'{now:%m/%d %H:%M:%S} : {member.mention} が {after.channel.mention} に参加しました。'
-            await channel.send(msg)
+            escaped_msg = discord.utils.escape_mentions(msg)
+            await channel.send(escaped_msg)
             return
         elif after.channel is None:
             msg = f'{now:%m/%d %H:%M:%S} : {member.mention} が {before.channel.mention} から退出しました。'
-            await channel.send(msg)
+            escaped_msg = discord.utils.escape_mentions(msg)
+            await channel.send(escaped_msg)
             return
         else:
             msg = f'{now:%m/%d %H:%M:%S} : {member.mention} が {before.channel.mention} から {after.channel.mention} に移動しました。'
-            await channel.send(msg)
+            escaped_msg = discord.utils.escape_mentions(msg)
+            await channel.send(escaped_msg)
             return
 
 # hello?
