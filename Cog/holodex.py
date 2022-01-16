@@ -7,7 +7,7 @@ from discord.ext import commands, tasks
 from holodex.client import HolodexClient
 
 from .connect import connect
-from .holodex_process import TimeData as holodex
+from .holodex_process import TimeData
 
 conn = connect()
 admin_role = int(os.environ['ADMIN_ROLE'])
@@ -58,6 +58,7 @@ class StreamNotify(commands.Cog):
                     continue
                 else:
                     conn.set(f'{x.id}', 'notified', ex=604800)
+                    holodex = TimeData()
                     date, time, timestamp, weekday_str, created = holodex.time_schedule(x)
                     embed = discord.Embed(
                         title=f'{x.title}',
