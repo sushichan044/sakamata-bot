@@ -51,13 +51,13 @@ class StreamNotify(commands.Cog):
                               'live' and x.type == 'stream')
             ended_tuple = (x for x in archives.contents if x.status ==
                            'past' and x.type == 'stream')
-            holodex = TimeData()
             for x in lives_tuple:
                 result = conn.get(x.id)
                 if result is not None:
                     print('配信が重複していたためスキップします。')
                     continue
                 else:
+                    holodex = TimeData()
                     conn.set(f'{x.id}', 'notified', ex=604800)
                     date, time, timestamp, weekday_str, created = holodex.time_schedule(x)
                     embed = discord.Embed(
@@ -96,6 +96,7 @@ class StreamNotify(commands.Cog):
             for x in nowgoing_tuple:
                 result = conn.get(x.id)
                 if result == 'notified':
+                    holodex = TimeData()
                     conn.set(f'{x.id}', 'started', ex=604800)
                     actual_start = holodex.time_going(x)
                     embed = discord.Embed(
@@ -122,6 +123,7 @@ class StreamNotify(commands.Cog):
             for x in ended_tuple:
                 result = conn.get(x.id)
                 if result == 'started':
+                    holodex = TimeData()
                     conn.set(f'{x.id}', 'ended', ex=604800)
                     actual_end, end_date, end_time, duration_str, weekday_str = holodex.time_ended(x)
                     embed = discord.Embed(
