@@ -228,18 +228,15 @@ async def on_voice_state_update(member, before, after):
         now = discord.utils.utcnow().astimezone(jst)
         if before.channel is None:
             msg = f'{now:%m/%d %H:%M:%S} : {member.mention} が {after.channel.mention} に参加しました。'
-            escaped_msg = discord.utils.escape_mentions(msg)
-            await channel.send(escaped_msg)
+            await channel.send(msg)
             return
         elif after.channel is None:
             msg = f'{now:%m/%d %H:%M:%S} : {member.mention} が {before.channel.mention} から退出しました。'
-            escaped_msg = discord.utils.escape_mentions(msg)
-            await channel.send(escaped_msg)
+            await channel.send(msg)
             return
         else:
             msg = f'{now:%m/%d %H:%M:%S} : {member.mention} が {before.channel.mention} から {after.channel.mention} に移動しました。'
-            escaped_msg = discord.utils.escape_mentions(msg)
-            await channel.send(escaped_msg)
+            await channel.send(msg)
             return
 
 # hello?
@@ -541,15 +538,15 @@ async def _untimeout(ctx, member: Member):
     if turned:
         msg = exe_msg
         desc_url = ''
-        await member.timeout(None, reason=None)
+        await member.remove_timeout(reason=None)
         await ctx.send('untimeouted!')
         await send_exe_log(ctx, msg, desc_url)
         return
     elif turned is False:
         msg = non_exe_msg
         desc_url = ''
-        await send_exe_log(ctx, msg, desc_url)
         await ctx.send('Cancelled!')
+        await send_exe_log(ctx, msg, desc_url)
         return
     else:
         return
