@@ -11,6 +11,7 @@ class TimeData():
 
 # make time data
 
+    @staticmethod
     @lru_cache()
     def time_schedule(self, x):
         created_stamp = x.published_at.replace(
@@ -32,6 +33,7 @@ class TimeData():
         weekday_str = self.turn_weekday_str(weekday)
         return scheduled_date, scheduled_time, scheduled_timestamp, weekday_str, created_str
 
+    @staticmethod
     @lru_cache()
     def time_going(self, x):
         actual_start_stamp = x.start_actual.replace(
@@ -42,6 +44,7 @@ class TimeData():
             '%Y/%m/%d %H:%M:%S')
         return actual_start_str
 
+    @staticmethod
     @lru_cache()
     def time_ended(self, x):
         actual_start_stamp = x.available_at.replace(
@@ -58,6 +61,7 @@ class TimeData():
         weekday_str = self.turn_weekday_str(weekday)
         return actual_end_str, end_date, end_time, duration_str, weekday_str
 
+    @staticmethod
     @lru_cache()
     def turn_weekday_str(self, weekday):
         weekday_dic = {0: '月', 1: '火', 2: '水',
