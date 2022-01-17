@@ -19,7 +19,7 @@ googleapis-common-protos==1.54.0
 holodex==0.9.7
 httplib2==0.20.2
 idna==3.3
-importlib-metadata==4.8.2
+importlib-metadata==4.10.1
 multidict==5.2.0
 newdispanderfixed==0.1.5
 oauthlib==3.1.1
