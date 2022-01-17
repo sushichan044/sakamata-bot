@@ -13,10 +13,6 @@ from .holodex_process import TimeData
 
 conn = connect()
 admin_role = int(os.environ['ADMIN_ROLE'])
-api_key = os.environ['HOLODEX_KEY']
-headers = {
-    'X-APIKEY': f'{api_key}'
-}
 stream_channel = int(os.environ['STREAM_CHANNEL'])
 guild_id = int(os.environ['GUILD_ID'])
 
