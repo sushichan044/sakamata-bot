@@ -34,6 +34,7 @@ class StreamNotify(commands.Cog):
     @permissions.has_role(admin_role)
     async def get_stream(self, ctx):
         await self.get_stream_method(self.bot.holodex)
+        await ctx.respond('更新が完了しました。')
         return
 
     @tasks.loop(minutes=1.5)
@@ -41,7 +42,7 @@ class StreamNotify(commands.Cog):
         await self.bot.wait_until_ready()
         await self.get_stream_method(self.bot.holodex)
 
-    # stream-body
+    # stream-bodyconfirmation_complete
 
     async def get_stream_method(self, client: HolodexClient):
         ch_id = os.environ['STREAM_YT_ID']
@@ -54,6 +55,15 @@ class StreamNotify(commands.Cog):
                           'live' and x.type == 'stream')
         ended_tuple = (x for x in archives.contents if x.status ==
                        'past' and x.type == 'stream')
+        await self.confirm_upcoming_stream(lives_tuple, yt_channel)
+        print('今後の配信の処理を完了')
+        await self.confirm_nowgoing_stream(nowgoing_tuple, yt_channel)
+        print('現在の配信の処理を完了')
+        await self.confirm_ended_stream(ended_tuple, yt_channel)
+        print('終了した配信の処理を完了')
+        return
+
+    async def confirm_upcoming_stream(self, lives_tuple, yt_channel):
         for x in lives_tuple:
             result = conn.get(x.id)
             if result is not None:
@@ -97,6 +107,8 @@ class StreamNotify(commands.Cog):
                 channel = self.bot.get_channel(stream_channel)
                 await channel.send(embed=embed)
                 continue
+
+    async def confirm_nowgoing_stream(self, nowgoing_tuple, yt_channel):
         for x in nowgoing_tuple:
             result = conn.get(x.id)
             if result == 'notified':
@@ -124,6 +136,8 @@ class StreamNotify(commands.Cog):
                 await channel.send(embed=embed)
             else:
                 continue
+
+    async def confirm_ended_stream(self, ended_tuple, yt_channel):
         for x in ended_tuple:
             result = conn.get(x.id)
             if result == 'started':
