@@ -1,5 +1,7 @@
 import os
 
+from discord import permissions
+
 import discord
 from discord.ext import commands, tasks
 from discord.commands import slash_command
@@ -29,7 +31,7 @@ class StreamNotify(commands.Cog):
         self._get_stream.cancel()
 
     @slash_command(guild_ids=[guild_id], default_permission=False, name='stream')
-    @commands.has_role(admin_role)
+    @permissions.has_role(admin_role)
     async def get_stream(self, ctx):
         await self.get_stream_method(self.bot.holodex)
         return
