@@ -1,8 +1,8 @@
 import os
 
-import aiohttp
 import discord
 from discord.ext import commands, tasks
+from discord.commands import slash_command
 
 from holodex.client import HolodexClient
 
@@ -27,7 +27,7 @@ class StreamNotify(commands.Cog):
     def cog_unload(self):
         self._get_stream.cancel()
 
-    @commands.command(name='stream')
+    @slash_command(name='stream')
     @commands.has_role(admin_role)
     async def get_stream(self, ctx):
         await self.get_stream_method(self.bot.holodex)
