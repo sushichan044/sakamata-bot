@@ -11,7 +11,7 @@ charset-normalizer==2.0.10
 Deprecated==1.2.13
 git+https://github.com/sushi-chaaaan/discord-ext-ui-fork.git@sushi-fork
 docutils==0.18.1
-google-api-core==2.3.2
+google-api-core==2.4.0
 google-api-python-client==2.35.0
 google-auth==2.3.3
 google-auth-httplib2==0.1.0
