@@ -7,7 +7,7 @@ cachetools==4.2.4
 certifi==2021.10.8
 cffi==1.15.0
 chardet==4.0.0
-charset-normalizer==2.0.9
+charset-normalizer==2.0.10
 Deprecated==1.2.13
 git+https://github.com/sushi-chaaaan/discord-ext-ui-fork.git@sushi-fork
 docutils==0.18.1
