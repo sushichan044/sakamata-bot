@@ -1,6 +1,6 @@
 aiohttp==3.8.1
 async-timeout==3.0.1
-attrs==21.2.0
+attrs==21.4.0
 bleach==4.1.0
 Brotli==1.0.9
 cachetools==4.2.4
