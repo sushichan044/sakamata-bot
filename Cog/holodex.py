@@ -98,7 +98,7 @@ class StreamNotify(commands.Cog):
                 if result == 'notified':
                     conn.set(f'{x.id}', 'started', ex=604800)
                     holodex = TimeData(x)
-                    actual_start = holodex.time_schedule(x)
+                    actual_start = holodex.time_going(x)
                     embed = discord.Embed(
                         title=f'{x.title}',
                         description='**ライブストリーミングが開始されました**',
@@ -125,7 +125,7 @@ class StreamNotify(commands.Cog):
                 if result == 'started':
                     conn.set(f'{x.id}', 'ended', ex=604800)
                     holodex = TimeData(x)
-                    actual_end, end_date, end_time, duration_str, weekday_str = holodex.time_schedule(x)
+                    actual_end, end_date, end_time, duration_str, weekday_str = holodex.time_ended(x)
                     embed = discord.Embed(
                         title=f'{x.title}',
                         description='**ライブストリーミングが終了しました**',
