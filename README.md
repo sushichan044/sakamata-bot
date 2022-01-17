@@ -1,7 +1,7 @@
 # sakamatabot
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/sushi-chaaaan/sakamata-alpha-pycord?style=flat-square)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3ef4b53f7e7449d596a934beb74b768f)](https://app.codacy.com/gh/sushi-chaaaan/sakamata-alpha-pycord?utm_source=github.com&utm_medium=referral&utm_content=sushi-chaaaan/sakamata-alpha-pycord&utm_campaign=Badge_Grade_Settings)
+[![CodeFactor](https://www.codefactor.io/repository/github/sushi-chaaaan/sakamata-alpha-pycord/badge)](https://www.codefactor.io/repository/github/sushi-chaaaan/sakamata-alpha-pycord)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dispanderfixed?style=flat-square)](https://www.python.org/downloads/release/python-3101/)
 [![PyPI](https://img.shields.io/badge/pycord-2.0.0a-orange?style=flat-square)](https://github.com/Pycord-Development/pycord)
 [![iroiro](https://img.shields.io/badge/discord--ext--ui-3.1.1-orange?style=flat-square)](https://github.com/sizumita/discord-ext-ui)
