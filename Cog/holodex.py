@@ -16,6 +16,7 @@ headers = {
     'X-APIKEY': f'{api_key}'
 }
 stream_channel = int(os.environ['STREAM_CHANNEL'])
+guild_id = int(os.environ['GUILD_ID'])
 
 
 class StreamNotify(commands.Cog):
@@ -27,7 +28,7 @@ class StreamNotify(commands.Cog):
     def cog_unload(self):
         self._get_stream.cancel()
 
-    @slash_command(name='stream')
+    @slash_command(guild_ids=[guild_id], default_permission=False, name='stream')
     @commands.has_role(admin_role)
     async def get_stream(self, ctx):
         await self.get_stream_method(self.bot.holodex)

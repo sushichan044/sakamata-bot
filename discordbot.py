@@ -70,7 +70,6 @@ print('extension is loaded!')
 
 # 本番鯖IDなど
 '''
-guild_id = 915910043461890078
 log_channel = 917009541433016370
 vc_log_channel = 917009562383556678
 dm_box_channel = 921781301101613076
@@ -79,12 +78,10 @@ alert_channel = 924744385902575616
 member_check_channel = 926777825925677096
 count_vc = 925256795491012668
 mod_role = 916726433445986334
-everyone = 915910043461890078
 yt_membership_role = 923789641159700500
 
 '''
 # 実験鯖IDなど
-guild_id = 916965252896260117
 log_channel = 916971090042060830
 vc_log_channel = 916988601902989373
 dm_box_channel = 918101377958436954
@@ -93,11 +90,12 @@ alert_channel = 924744469327257602
 member_check_channel = 926777719964987412
 count_vc = 925249967478673519
 mod_role = 924355349308383252
-everyone = 916965252896260117
 yt_membership_role = 926268230417408010
 
 
 # ID-env
+guild_id = int(os.environ['GUILD_ID'])
+everyone = int(os.environ['GUILD_ID'])
 server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
 admin_role = int(os.environ['ADMIN_ROLE'])
 thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
