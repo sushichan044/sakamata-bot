@@ -18,7 +18,7 @@ Python 3.10.1<br>
 [pycord](https://github.com/Pycord-Development/pycord) 2.0.0a<br>
 [discord-ext-ui](https://pypi.org/project/discord-ext-ui/) 3.1.1<br>
 [newdispanderfixed](https://pypi.org/project/newdispanderfixed/) 0.1.4([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
-[holodex](https://pypi.org/project/holodex/0.9.7/) 0.9.7<br>
+[holodex](https://pypi.org/project/holodex/0.10.7/) 0.10.7<br>
 
 ### 各ブランチ
 Mainブランチ:クロヱ水族館の本番環境<br>
