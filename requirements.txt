@@ -1,4 +1,4 @@
-aiohttp==3.7.4.post0
+aiohttp==3.8.1
 async-timeout==3.0.1
 attrs==21.2.0
 bleach==4.1.0
@@ -12,11 +12,11 @@ Deprecated==1.2.13
 git+https://github.com/sushi-chaaaan/discord-ext-ui-fork.git@sushi-fork
 docutils==0.18.1
 google-api-core==2.3.2
-google-api-python-client==2.33.0
+google-api-python-client==2.35.0
 google-auth==2.3.3
 google-auth-httplib2==0.1.0
 googleapis-common-protos==1.54.0
-holodex==0.10.7
+holodex==0.9.7
 httplib2==0.20.2
 idna==3.3
 importlib-metadata==4.8.2
@@ -25,7 +25,7 @@ newdispanderfixed==0.1.5
 oauthlib==3.1.1
 orjson==3.6.5
 packaging==21.3
-protobuf==3.19.1
+protobuf==3.19.3
 git+https://github.com/Pycord-Development/pycord@45f4753ccf03289d3ff400b3edb5d4f0d8e66aee
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
@@ -44,7 +44,7 @@ rsa==4.8
 six==1.16.0
 typing_extensions==4.0.1
 uritemplate==4.1.1
-urllib3==1.26.7
+urllib3==1.26.8
 webencodings==0.5.1
 wrapt==1.13.3
 yarl==1.7.2
