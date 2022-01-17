@@ -60,6 +60,7 @@ class StreamNotify(commands.Cog):
         return
 
     async def confirm_upcoming_stream(self, lives_tuple, yt_channel):
+        ch_id = os.environ['STREAM_YT_ID']
         for x in lives_tuple:
             result = conn.get(x.id)
             if result is not None:
@@ -105,6 +106,7 @@ class StreamNotify(commands.Cog):
                 continue
 
     async def confirm_nowgoing_stream(self, nowgoing_tuple, yt_channel):
+        ch_id = os.environ['STREAM_YT_ID']
         for x in nowgoing_tuple:
             result = conn.get(x.id)
             if result == 'notified':
@@ -134,6 +136,7 @@ class StreamNotify(commands.Cog):
                 continue
 
     async def confirm_ended_stream(self, ended_tuple, yt_channel):
+        ch_id = os.environ['STREAM_YT_ID']
         for x in ended_tuple:
             result = conn.get(x.id)
             if result == 'started':
