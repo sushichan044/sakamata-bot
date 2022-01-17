@@ -81,7 +81,7 @@ class StreamNotify(commands.Cog):
                 )
                 embed.add_field(
                     name='**配信予定時刻(Timestamp)**',
-                    value=f'<t:{timestamp}:f>',
+                    value=f'{timestamp}',
                     inline=False
                 )
                 embed.set_image(

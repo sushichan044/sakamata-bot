@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+import discord
 
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
 
@@ -16,11 +17,11 @@ class TimeData():
             created_stamp).astimezone(jst)
         created_str = created.strftime(
             '%Y/%m/%d %H:%M:%S')
-        scheduled_timestamp = x.start_scheduled.replace(
+        scheduled_stamp = x.start_scheduled.replace(
             'Z', '+00:00')
         scheduled = datetime.fromisoformat(
-            scheduled_timestamp).astimezone(jst)
-        scheduled_timestamp = int(scheduled.timestamp())
+            scheduled_stamp).astimezone(jst)
+        scheduled_timestamp = discord.utils.format_dt(scheduled, style='f')
         scheduled_date = datetime.strftime(
             scheduled, '%Y年%m月%d日')
         scheduled_time = datetime.strftime(
