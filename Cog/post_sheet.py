@@ -33,5 +33,5 @@ class PostToSheet():
             print('処理を完了')
 
     def format_date(self):
-        sent_date = self.date[:3] + '/' + self.date[4:5] + '/' + self.date[6:7]
+        sent_date = self.date[:4] + '/' + self.date[4:6] + '/' + self.date[6:8]
         return sent_date

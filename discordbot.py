@@ -714,9 +714,9 @@ async def _check_member(ctx):
 
                 def check(message):
                     return len(message.content) == 8 and message.author != bot.user and message.reference and message.reference.message_id == ref_msg.id
-                next_date = await bot.wait_for('message', check=check)
+                date = await bot.wait_for('message', check=check)
                 await member.add_roles(membership_role_object)
-                status: Optional[str] = await sheet(member, next_date).check_status()
+                status: Optional[str] = await sheet(member, date).check_status()
                 if status is None:
                     await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!', mention_author=False)
                     log_channel_object = bot.get_channel(log_channel)
