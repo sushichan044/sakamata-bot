@@ -100,7 +100,7 @@ admin_role = int(os.environ['ADMIN_ROLE'])
 thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
 alert_channel = int(os.environ['ALERT_CHANNEL'])
-error_log_channel = os.environ['ERROR_CHANNEL']
+error_log_channel = int(os.environ['ERROR_CHANNEL'])
 stream_channel = int(os.environ['STREAM_CHANNEL'])
 count_vc = int(os.environ['COUNT_VC'])
 

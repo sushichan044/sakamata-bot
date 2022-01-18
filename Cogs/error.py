@@ -4,7 +4,7 @@ from datetime import timedelta, timezone
 import discord
 from discord.ext import commands
 
-error_log_channel = os.environ['ERROR_CHANNEL']
+error_log_channel = int(os.environ['ERROR_CHANNEL'])
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
 admin_role = int(os.environ['ADMIN_ROLE'])
 
