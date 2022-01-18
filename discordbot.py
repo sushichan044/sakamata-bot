@@ -2,6 +2,7 @@ import asyncio
 import logging
 import os
 from datetime import datetime, timedelta, timezone
+from typing import Union
 
 import discord
 from discord import Member
@@ -14,6 +15,7 @@ from newdispanderfixed import dispand
 
 import Components.member_button as membership_button
 from Cog.connect import connect
+from Cog.post_sheet import PostToSheet as sheet
 
 logging.basicConfig(level=logging.INFO)
 
@@ -708,25 +710,30 @@ async def _check_member(ctx):
                 member = guild.get_member(ctx.message.author.id)
                 membership_role_object = guild.get_role(yt_membership_role)
                 await member.add_roles(membership_role_object)
-                await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!', mention_author=False)
-                log_channel_object = bot.get_channel(log_channel)
-                embed = discord.Embed(
-                    title='実行ログ',
-                    color=3447003,
-                    description=msg,
-                    url=f'{desc_url}',
-                    timestamp=discord.utils.utcnow()
-                )
-                embed.set_author(
-                    name=bot.user,
-                    icon_url=bot.user.display_avatar.url
-                )
-                embed.add_field(
-                    name='実行日時',
-                    value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
-                )
-                await log_channel_object.send(embed=embed)
-                return
+                status: Union[bool, str] = await sheet(member).check_status()
+                if status:
+                    await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!', mention_author=False)
+                    log_channel_object = bot.get_channel(log_channel)
+                    embed = discord.Embed(
+                        title='実行ログ',
+                        color=3447003,
+                        description=msg,
+                        url=f'{desc_url}',
+                        timestamp=discord.utils.utcnow()
+                    )
+                    embed.set_author(
+                        name=bot.user,
+                        icon_url=bot.user.display_avatar.url
+                    )
+                    embed.add_field(
+                        name='実行日時',
+                        value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
+                    )
+                    await log_channel_object.send(embed=embed)
+                    return
+                else:
+                    channel = bot.get_channel(error_log_channel)
+                    channel.send(status)
             else:
                 msg = non_exe_msg
                 desc_url = tracker.message.jump_url
