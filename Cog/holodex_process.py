@@ -31,6 +31,8 @@ class TimeData():
         return scheduled_date, scheduled_time, scheduled_timestamp, weekday_str, created_str
 
     def time_going(self):
+        if self.x.start_actual is None:
+            return ''
         actual_start_stamp = self.x.start_actual.replace(
             'Z', '+00:00')
         actual_start = datetime.fromisoformat(
@@ -43,7 +45,7 @@ class TimeData():
         actual_start_stamp = self.x.available_at.replace(
             'Z', '+00:00')
         actual_end = datetime.fromisoformat(
-            actual_start_stamp).astimezone(jst) + timedelta(seconds=x.duration)
+            actual_start_stamp).astimezone(jst) + timedelta(seconds=self.x.duration)
         end_date = actual_end.strftime('%Y年%m月%d日')
         end_time = actual_end.strftime('%H時%M分')
         actual_end_str = actual_end.strftime('%Y/%m/%d %H:%M:%S')
