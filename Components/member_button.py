@@ -40,13 +40,10 @@ class MemberConfView(View):
         self.status = True
         self.que = '承認済み'
         self.ok_str = '承認されました'
-        self.ng_str = 'スプレッドシート'
-        self.ng_style = discord.ButtonStyle.link
-        self.ng_url = os.environ['MEMBERSHIP_SPREADSHEET']
         self.left_button = Button(self.ok_str).style(
             discord.ButtonStyle.green).disabled(self.status is not None).on_click(self.ok)
         self.right_button = Button(self.ng_str).style(self.ng_style).disabled(
-            self.status is False).on_click(self.ng).url(self.ng_url)
+            self.status is not None).on_click(self.ng)
         await interaction.response.defer()
         return
 

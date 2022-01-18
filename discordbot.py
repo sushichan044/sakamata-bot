@@ -531,12 +531,12 @@ async def _untimeout(ctx, member: Member):
 
 @bot.command(name='kick')
 @commands.has_role(admin_role)
-async def _kick_user(ctx, member: Member, if_dm: str = 'True'):
+async def _kick_user(ctx, member: Member, if_dm: str = 'dm:true'):
     '''メンバーをキック'''
     role = ctx.guild.get_role(admin_role)
-    valid_if_dm_list = ['True', 'False']
+    valid_if_dm_list = ['dm:true', 'dm:false']
     if if_dm not in valid_if_dm_list:
-        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。', mention_author=False)
+        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはdm:falseを指定してください。', mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
         desc_url = ''
         await send_exe_log(ctx, msg, desc_url)
@@ -585,12 +585,12 @@ async def _kick_user(ctx, member: Member, if_dm: str = 'True'):
 
 @bot.command(name='ban')
 @commands.has_role(admin_role)
-async def _ban_user(ctx, member: Member, if_dm: str = 'True'):
+async def _ban_user(ctx, member: Member, if_dm: str = 'dm:true'):
     '''メンバーをBAN'''
     role = ctx.guild.get_role(admin_role)
-    valid_if_dm_list = ['True', 'False']
+    valid_if_dm_list = ['dm:true', 'dm:false']
     if if_dm not in valid_if_dm_list:
-        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。', mention_author=False)
+        await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはdm:falseを指定してください。', mention_author=False)
         msg = '不明な引数を検知したため処理を終了しました。'
         desc_url = ''
         await send_exe_log(ctx, msg, desc_url)
@@ -708,7 +708,7 @@ async def _check_member(ctx):
                 btn_msg = tracker.message
                 msg = exe_msg
                 desc_url = tracker.message.jump_url
-                member: Optional[discord.Member] = guild.get_member(
+                member: Optional[Member] = guild.get_member(
                     ctx.message.author.id)
                 membership_role_object = guild.get_role(yt_membership_role)
                 ref_msg = await btn_msg.reply('次回支払日を入力してください。')
