@@ -44,7 +44,7 @@ class JapaneseHelpCommand(commands.DefaultHelpCommand):
     def __init__(self):
         super().__init__()
         self.commands_heading = "コマンド:"
-        self.no_category = "利用可能なコマンド"
+        self.no_category = "その他のコマンド"
         self.command_attrs["help"] = "コマンド一覧と簡単な説明を表示"
 
     def get_ending_note(self):
@@ -383,7 +383,7 @@ async def _editmessage(ctx, channel_id: int, message_id: int, *, arg):
 
 
 # deal-member
-# deal:対処。ban/kick
+# deal:対処。ban/kickなど
 deal = None
 # add_dm:デフォルトDMに追加で送信するコンテンツ
 add_dm = None
@@ -402,6 +402,7 @@ async def _emergency_timeout(ctx, member: Member):
     until = discord.utils.utcnow().astimezone(jst) + timedelta(days=1)
     until_str = until.strftime('%Y/%m/%d/%H:%M')
     await send_context_timeout_log(ctx, msg, desc_url, until_str)
+    return
 
 
 @bot.command(name='timeout')
