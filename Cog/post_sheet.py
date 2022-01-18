@@ -1,13 +1,16 @@
+from typing import Optional
 import discord
 import requests
 
 
 class PostToSheet():
-    def __init__(self, member: discord.Member, date: str) -> None:
+    def __init__(self, member: Optional[discord.Member], date: str) -> None:
         self.member = member
         self.date = date
 
     async def check_status(self):
+        if self.member is None:
+            return
         d = self.post_sheet()
         s = d.get('status')
         if s == 'ok':
