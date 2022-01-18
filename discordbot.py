@@ -715,6 +715,7 @@ async def _check_member(ctx):
                 def check(message):
                     return len(message.content) == 8 and message.author != bot.user and message.reference and message.reference.message_id == ref_msg.id
                 date = await bot.wait_for('message', check=check)
+                print(date)
                 await member.add_roles(membership_role_object)
                 status: Optional[str] = await sheet(member, date).check_status()
                 if status is None:
