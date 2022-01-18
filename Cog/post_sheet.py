@@ -1,4 +1,5 @@
 import requests
+from .format_date import FormatDate as date
 
 
 class PostToSheet():
@@ -17,7 +18,7 @@ class PostToSheet():
             return s['message']
 
     def post_sheet(self):
-        sent_date = self.format_date()
+        sent_date = date(self.date).format_date()
         data = {'id': f'{self.member.id}', 'name': f'{self.member}',
                 'billing_date': f'{sent_date}'}
         url = 'https://script.google.com/macros/s/AKfycbzKw-xqhzw_hurJSF_wmwxgmqHPt-05_hQPl8c4bFsSNCuIWp4AtW6oHVLzH4u6BlYwuQ/exec'
@@ -32,7 +33,3 @@ class PostToSheet():
             return r.json()
         finally:
             print('処理を完了')
-
-    def format_date(self):
-        sent_date = self.date[:4] + '/' + self.date[4:6] + '/' + self.date[6:8]
-        return sent_date
