@@ -13,7 +13,7 @@ server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
 class Translate(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
-        self.translator = deepl.Translator(os.environ['DEEPL_TOKEN'])
+        self.translator = deepl.Translator(auth_key=os.environ['DEEPL_TOKEN'])
 
     @message_command(guild_ids=[guild_id], name='日本語に翻訳')
     @permissions.has_role(server_member_role)
