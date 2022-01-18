@@ -57,6 +57,7 @@ bot = commands.Bot(command_prefix='//', intents=intents,
 
 
 INIT_EXTENSION_LIST = [
+    'Cogs.error',
     'Cogs.entrance',
     'Cogs.holodex',
     'Cogs.member_count',
