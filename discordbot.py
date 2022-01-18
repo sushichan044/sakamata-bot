@@ -57,10 +57,11 @@ bot = commands.Bot(command_prefix='//', intents=intents,
 
 INIT_EXTENSION_LIST = [
     'Cog.entrance',
+    'Cog.holodex',
+    'Cog.member_count',
     'Cog.ng_word',
     'Cog.poll',
     'Cog.thread',
-    'Cog.holodex'
 ]
 
 for cog in INIT_EXTENSION_LIST:
@@ -76,7 +77,6 @@ dm_box_channel = 921781301101613076
 error_log_channel = 924142068484440084
 alert_channel = 924744385902575616
 member_check_channel = 926777825925677096
-count_vc = 925256795491012668
 mod_role = 916726433445986334
 yt_membership_role = 923789641159700500
 
@@ -88,7 +88,6 @@ dm_box_channel = 918101377958436954
 error_log_channel = 924141910321426452
 alert_channel = 924744469327257602
 member_check_channel = 926777719964987412
-count_vc = 925249967478673519
 mod_role = 924355349308383252
 yt_membership_role = 926268230417408010
 
@@ -102,6 +101,7 @@ thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
 alert_channel = int(os.environ['ALERT_CHANNEL'])
 stream_channel = int(os.environ['STREAM_CHANNEL'])
+count_vc = int(os.environ['COUNT_VC'])
 
 
 # emoji
@@ -118,13 +118,7 @@ async def greet():
     await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
     return
 
-# Task-MemberCount
 
-
-@tasks.loop(minutes=30)
-async def start_count():
-    await bot.wait_until_ready()
-    await membercount()
 
 # 起動イベント
 
@@ -135,25 +129,7 @@ async def on_ready():
     await greet()
     return
 
-# manualcount
 
-
-@bot.command(name='manualcount')
-@commands.has_role(admin_role)
-async def _manual(ctx):
-    await membercount()
-    return
-
-
-# Membercount本体
-
-
-async def membercount():
-    guild = bot.get_guild(guild_id)
-    server_member_count = guild.member_count
-    vc = bot.get_channel(count_vc)
-    await vc.edit(name=f'Member Count: {server_member_count}')
-    return
 
 # error-log
 
@@ -1060,6 +1036,5 @@ async def _newcreateevent(ctx,
 # @bot.user_command(guild_ids=[guild_id])
 # async def mention(ctx, member: Member):  # user commands return the member
 #     await ctx.respond(f"{ctx.author.name} just mentioned {member.mention}!")
-start_count.start()
 
 bot.run(token)

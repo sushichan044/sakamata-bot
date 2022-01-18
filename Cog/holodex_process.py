@@ -10,14 +10,14 @@ class TimeData():
 
 # make time data
 
-    def time_schedule(self, x):
-        created_stamp = x.published_at.replace(
+    def time_schedule(self):
+        created_stamp = self.x.published_at.replace(
             'Z', '+00:00')
         created = datetime.fromisoformat(
             created_stamp).astimezone(jst)
         created_str = created.strftime(
             '%Y/%m/%d %H:%M:%S')
-        scheduled_stamp = x.start_scheduled.replace(
+        scheduled_stamp = self.x.start_scheduled.replace(
             'Z', '+00:00')
         scheduled = datetime.fromisoformat(
             scheduled_stamp).astimezone(jst)
@@ -30,8 +30,8 @@ class TimeData():
         weekday_str = self.turn_weekday_str(weekday)
         return scheduled_date, scheduled_time, scheduled_timestamp, weekday_str, created_str
 
-    def time_going(self, x):
-        actual_start_stamp = x.start_actual.replace(
+    def time_going(self):
+        actual_start_stamp = self.x.start_actual.replace(
             'Z', '+00:00')
         actual_start = datetime.fromisoformat(
             actual_start_stamp).astimezone(jst)
@@ -39,15 +39,15 @@ class TimeData():
             '%Y/%m/%d %H:%M:%S')
         return actual_start_str
 
-    def time_ended(self, x):
-        actual_start_stamp = x.available_at.replace(
+    def time_ended(self):
+        actual_start_stamp = self.x.available_at.replace(
             'Z', '+00:00')
         actual_end = datetime.fromisoformat(
             actual_start_stamp).astimezone(jst) + timedelta(seconds=x.duration)
         end_date = actual_end.strftime('%Y年%m月%d日')
         end_time = actual_end.strftime('%H時%M分')
         actual_end_str = actual_end.strftime('%Y/%m/%d %H:%M:%S')
-        ast_m, ast_s = divmod(x.duration, 60)
+        ast_m, ast_s = divmod(self.x.duration, 60)
         ast_h, ast_m = divmod(ast_m, 60)
         duration_str = f'{ast_h}時間{ast_m}分{ast_s}秒'
         weekday = datetime.date(actual_end).weekday()
