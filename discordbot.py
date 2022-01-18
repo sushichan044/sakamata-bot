@@ -713,7 +713,7 @@ async def _check_member(ctx):
                 await ref_msg.reply('次回支払日を入力してください。')
 
                 def check(message):
-                    return len(message.content) == 8 and message.author != bot.user and message.reference.message_id == ref_msg.id
+                    return len(message.content) == 8 and message.author != bot.user and message.reference and message.reference.message_id == ref_msg.id
                 next_date = await bot.wait_for('message', check=check)
                 await member.add_roles(membership_role_object)
                 status: Optional[str] = await sheet(member, next_date).check_status()
@@ -746,7 +746,7 @@ async def _check_member(ctx):
                 get_reason = await tracker.message.reply(content='DMで送信する不承認理由を入力してください。', mention_author=False)
 
                 def check(message):
-                    return message.content is not None and message.author != bot.user and message.reference.message_id == get_reason.id
+                    return message.content is not None and message.author != bot.user and message.reference and message.reference.message_id == get_reason.id
                 message = await bot.wait_for('message', check=check)
                 reply_msg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
                 await ctx.reply(content=reply_msg, mention_author=False)
