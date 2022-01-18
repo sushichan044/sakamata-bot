@@ -17,8 +17,9 @@ class PostToSheet():
 
     def post_sheet(self):
         sent_date = self.format_date()
-        data = {'id': f'{self.member.id}', 'name': f'{self.member}', }
-        url = 'https://script.google.com/macros/s/AKfycby0NjXb8ASm75Q4rZpEUsENpWXtIVUZc7ZkhTtojaq6Ppd8jxD6gUzIZ8-O7YwGqoLJgg/exec'
+        data = {'id': f'{self.member.id}', 'name': f'{self.member}',
+                'billing_date': f'{sent_date}'}
+        url = 'https://script.google.com/macros/s/AKfycbzKw-xqhzw_hurJSF_wmwxgmqHPt-05_hQPl8c4bFsSNCuIWp4AtW6oHVLzH4u6BlYwuQ/exec'
         try:
             r = requests.post(url, data=data)
             r.raise_for_status()
