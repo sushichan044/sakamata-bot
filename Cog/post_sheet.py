@@ -1,7 +1,7 @@
-import json
-import requests
+from __future__ import annotations
 
 import discord
+import requests
 
 
 class PostToSheet():
