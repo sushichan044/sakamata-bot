@@ -1,9 +1,10 @@
 import os
+from typing import Literal
 
 import deepl
 import discord
-from discord import permissions
-from discord.commands import message_command
+from discord import Option, permissions
+from discord.commands import message_command, slash_command
 from discord.ext import commands
 
 guild_id = int(os.environ['GUILD_ID'])
@@ -28,6 +29,24 @@ class Translate(commands.Cog):
         target = 'en-US'
         r = self.trans_request(message.content, target)
         await ctx.respond(content=r, ephemeral=True)
+
+    @slash_command(guild_ids=[guild_id], name='translate')
+    @permissions.has_role(server_member_role)
+    async def _trans_command(
+            self,
+            ctx,
+            language: Option(str, 'Choose Output Language', choices=['日本語', 'English']),
+            text: Option(str, 'Input text to translate'),
+    ):
+        target = self.select_language(language)
+        r = self.trans_request(text, target)
+        await ctx.respond(content=r, ephemeral=True)
+
+    def select_language(self, language: str) -> Literal['ja', 'en-US']:
+        if language == '日本語':
+            return 'ja'
+        else:
+            return 'en-US'
 
     def trans_request(self, text: str, target: str):
         result = self.translator.translate_text(text, target_lang=target)
