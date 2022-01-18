@@ -48,7 +48,7 @@ class Translate(commands.Cog):
         else:
             return 'en-US'
 
-    def trans_request(self, text: str, target: str):
+    def trans_request(self, text: str, target: Literal['ja', 'en-US']):
         result = self.translator.translate_text(text, target_lang=target)
         return result
 
