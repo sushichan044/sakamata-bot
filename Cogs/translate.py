@@ -22,8 +22,14 @@ class Translate(commands.Cog):
         r = self.trans_request(message.content, target)
         await ctx.respond(content=r, ephemeral=True)
 
-    def trans_request(self, text: str, target: str):
+    @message_command(guild_ids=[guild_id], name='Translate to English')
+    @permissions.has_role(server_member_role)
+    async def trans_to_en(self, ctx, message: discord.Message):
+        target = 'en-US'
+        r = self.trans_request(message.content, target)
+        await ctx.respond(content=r, ephemeral=True)
 
+    def trans_request(self, text: str, target: str):
         result = self.translator.translate_text(text, target_lang=target)
         return result
 
