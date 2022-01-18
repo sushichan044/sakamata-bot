@@ -108,17 +108,6 @@ count_vc = int(os.environ['COUNT_VC'])
 accept_emoji = "\N{Heavy Large Circle}"
 reject_emoji = "\N{Cross Mark}"
 
-# Boot-log
-
-
-async def greet():
-    channel = bot.get_channel(log_channel)
-#    now = discord.utils.utcnow() + timedelta(hours=9)
-    now = discord.utils.utcnow()
-    await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
-    return
-
-
 
 # 起動イベント
 
@@ -129,6 +118,15 @@ async def on_ready():
     await greet()
     return
 
+# Boot-log
+
+
+async def greet():
+    channel = bot.get_channel(log_channel)
+#    now = discord.utils.utcnow() + timedelta(hours=9)
+    now = discord.utils.utcnow()
+    await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
+    return
 
 
 # error-log
