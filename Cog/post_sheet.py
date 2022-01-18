@@ -10,7 +10,7 @@ class PostToSheet():
         return_status = self.post_sheet()
         s = return_status['status']
         if s == 'ok':
-            return True
+            return None
         else:
             return return_status['message']
 
