@@ -33,7 +33,7 @@ class StreamNotify(commands.Cog):
         await ctx.respond('更新が完了しました。')
         return
 
-    @tasks.loop(minutes=1.5)
+    @tasks.loop(minutes=2)
     async def _get_stream(self):
         await self.bot.wait_until_ready()
         await self.get_stream_method(self.bot.holodex)
