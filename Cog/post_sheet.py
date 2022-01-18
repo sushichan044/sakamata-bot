@@ -1,10 +1,8 @@
-from typing import Optional
-import discord
 import requests
 
 
 class PostToSheet():
-    def __init__(self, member: Optional[discord.Member], date: str) -> None:
+    def __init__(self, member, date: str) -> None:
         self.member = member
         self.date = date
 

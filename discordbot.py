@@ -708,7 +708,7 @@ async def _check_member(ctx):
                 btn_msg = tracker.message
                 msg = exe_msg
                 desc_url = tracker.message.jump_url
-                member: Optional[Member] = guild.get_member(
+                member = guild.get_member(
                     ctx.message.author.id)
                 membership_role_object = guild.get_role(yt_membership_role)
                 ref_msg = await btn_msg.reply('次回支払日を入力してください。')
