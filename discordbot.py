@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import asyncio
 import logging
 import os
@@ -712,7 +710,7 @@ async def _check_member(ctx):
                 member = guild.get_member(ctx.message.author.id)
                 membership_role_object = guild.get_role(yt_membership_role)
                 await member.add_roles(membership_role_object)
-                status: Union[bool, str] = await sheet(member).check_status()
+                status = await sheet(member).check_status()
                 if status:
                     await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!', mention_author=False)
                     log_channel_object = bot.get_channel(log_channel)
