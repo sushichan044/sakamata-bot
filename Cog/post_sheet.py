@@ -1,4 +1,7 @@
+import os
+
 import requests
+
 from .format_date import FormatDate as date
 
 
@@ -21,7 +24,7 @@ class PostToSheet():
         sent_date = date(self.date).format_date()
         data = {'id': f'{self.member.id}', 'name': f'{self.member}',
                 'billing_date': f'{sent_date}'}
-        url = 'https://script.google.com/macros/s/AKfycbzKw-xqhzw_hurJSF_wmwxgmqHPt-05_hQPl8c4bFsSNCuIWp4AtW6oHVLzH4u6BlYwuQ/exec'
+        url = os.environ['MEMBER_SHEET']
         try:
             r = requests.post(url, data=data)
             r.raise_for_status()
