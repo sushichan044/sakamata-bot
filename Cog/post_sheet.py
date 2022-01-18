@@ -7,12 +7,12 @@ class PostToSheet():
         self.member = member
 
     async def check_status(self):
-        return_status = self.post_sheet()
-        s = return_status['status']
+        d = self.post_sheet()
+        s = d.get('status')
         if s == 'ok':
             return None
         else:
-            return return_status['message']
+            return s['message']
 
     def post_sheet(self):
         data = {'id': f'{self.member.id}', 'name': f'{self.member}', }
@@ -25,6 +25,6 @@ class PostToSheet():
         else:
             print(r)
             print(r.text)
-            return r.json
+            return r.json()
         finally:
             print('処理を完了')
