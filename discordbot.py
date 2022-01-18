@@ -8,14 +8,13 @@ import discord
 from discord import Member
 from discord.channel import DMChannel
 from discord.commands import Option, permissions
-from discord.ext import commands, pages, tasks
-from discord.ext.ui import (Button, Message, MessageProvider, View,
-                            ViewTracker, state)
+from discord.ext import commands
+from discord.ext.ui import (MessageProvider, ViewTracker)
 from newdispanderfixed import dispand
 
 import Components.member_button as membership_button
-from Cog.connect import connect
-from Cog.post_sheet import PostToSheet as sheet
+from Cogs.connect import connect
+from Cogs.post_sheet import PostToSheet as sheet
 
 logging.basicConfig(level=logging.INFO)
 
@@ -58,12 +57,12 @@ bot = commands.Bot(command_prefix='//', intents=intents,
 
 
 INIT_EXTENSION_LIST = [
-    'Cog.entrance',
-    'Cog.holodex',
-    'Cog.member_count',
-    'Cog.ng_word',
-    'Cog.poll',
-    'Cog.thread',
+    'Cogs.entrance',
+    'Cogs.holodex',
+    'Cogs.member_count',
+    'Cogs.ng_word',
+    'Cogs.poll',
+    'Cogs.thread',
 ]
 
 for cog in INIT_EXTENSION_LIST:
@@ -76,7 +75,6 @@ print('extension is loaded!')
 log_channel = 917009541433016370
 vc_log_channel = 917009562383556678
 dm_box_channel = 921781301101613076
-error_log_channel = 924142068484440084
 alert_channel = 924744385902575616
 member_check_channel = 926777825925677096
 mod_role = 916726433445986334
@@ -87,7 +85,6 @@ yt_membership_role = 923789641159700500
 log_channel = 916971090042060830
 vc_log_channel = 916988601902989373
 dm_box_channel = 918101377958436954
-error_log_channel = 924141910321426452
 alert_channel = 924744469327257602
 member_check_channel = 926777719964987412
 mod_role = 924355349308383252
@@ -102,6 +99,7 @@ admin_role = int(os.environ['ADMIN_ROLE'])
 thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
 alert_channel = int(os.environ['ALERT_CHANNEL'])
+error_log_channel = os.environ['ERROR_CHANNEL']
 stream_channel = int(os.environ['STREAM_CHANNEL'])
 count_vc = int(os.environ['COUNT_VC'])
 
@@ -129,43 +127,6 @@ async def greet():
     now = discord.utils.utcnow()
     await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
     return
-
-
-# error-log
-
-
-@bot.event
-async def on_error(event, something):
-    channel = bot.get_channel(error_log_channel)
-    now = discord.utils.utcnow().astimezone(jst)
-    await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(event)}\n{str(something)}```')
-    return
-
-
-@bot.event
-async def on_command_error(ctx, error):
-    channel = bot.get_channel(error_log_channel)
-    now = discord.utils.utcnow().astimezone(jst)
-    await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}```')
-    if isinstance(error, commands.MissingRole):
-        await ctx.reply(content='このコマンドを実行する権限がありません。', mention_author=False)
-        return
-    elif isinstance(error, commands.CommandNotFound):
-        await ctx.reply(content='指定されたコマンドは存在しません。', mention_author=False)
-        return
-    elif isinstance(error, commands.BotMissingPermissions):
-        await ctx.reply(content='Botに必要な権限がありません。', mention_author=False)
-        return
-    else:
-        return
-
-# error-logtest
-
-
-@bot.command()
-@commands.has_role(admin_role)
-async def errortest(ctx):
-    prin()
 
 
 # Dispander-All
