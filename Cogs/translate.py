@@ -14,22 +14,18 @@ DeepL_key = os.environ['DEEPL_TOKEN']
 class Translate(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
+        self.translator = deepl.Translator(DeepL_key)
 
-    @message_command(guild_ids=[guild_id], name='EN→JP')
+    @message_command(guild_ids=[guild_id], name='日本語に翻訳')
     @permissions.has_role(server_member_role)
-    async def trans_en_to_jp(self, ctx, message: discord.Message):
-        source = 'EN'
-        target = 'JP'
-        self.trans_request(message.content, source, target)
+    async def trans_to_jp(self, ctx, message: discord.Message):
+        target = 'ja'
+        r = self.trans_request(message.content, target)
+        await ctx.respond(content=r, ephemeral=True)
 
-    def trans_request(self, text: str, source: str, target: str):
-        params = {
-            'auth_key': DeepL_key,
-            'text': f'{text}',
-            'source_lang': f'{source}',
-            'target_lang': f'{target}',
-        }
-        r = requests.post()
+    def trans_request(self, text: str, target: str):
+        result = self.translator.translate_text(text, target_lang=target)
+        return result
 
 
 def setup(bot):
