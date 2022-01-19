@@ -23,8 +23,6 @@ class Translate(commands.Cog):
     async def deepl_trans_to_jp(self, ctx, message: discord.Message):
         target = 'ja'
         r = self.deepl_trans_request(message.content, target)
-        if not isinstance(r, str):
-            return
         embeds = self.compose_embed(message.content, r, target, 'DeepL')
         await ctx.respond(embeds=embeds, ephemeral=True)
 
@@ -33,8 +31,6 @@ class Translate(commands.Cog):
     async def deepl_trans_to_en(self, ctx, message: discord.Message):
         target = 'en-US'
         r = self.deepl_trans_request(message.content, target)
-        if not isinstance(r, str):
-            return
         target = 'en'
         embeds = self.compose_embed(message.content, r, target, 'DeepL')
         await ctx.respond(embeds=embeds, ephemeral=True)
@@ -77,6 +73,7 @@ class Translate(commands.Cog):
     def deepl_trans_request(self, text: str, target: Literal['ja', 'en-US']):
         result = self.deepl_trans(auth_key=os.environ['DEEPL_TOKEN']).translate_text(
             text, target_lang=target)
+        print(result)
         return result
 
     def google_trans_request(self, text: str, target: Literal['ja', 'en']):
