@@ -28,9 +28,11 @@ class Translate(commands.Cog):
             pass
         target = 'ja'
         r = self.deepl_trans_request(message.content, target)
-        if not self.length_check_res(str(r)):
+        if self.length_check_res(str(r)):
             await ctx.respond('翻訳結果が1024文字を超過しました。', ephemeral=True)
             return
+        else:
+            pass
         embeds = self.compose_embed(message.content, r, target, 'DeepL')
         await ctx.respond(embeds=embeds, ephemeral=True)
 
@@ -41,12 +43,16 @@ class Translate(commands.Cog):
             await ctx.respond(
                 'The characters should be no more than 1024 characters.', ephemeral=True)
             return
+        else:
+            pass
         target = 'en-US'
         r = self.deepl_trans_request(message.content, target)
-        if not self.length_check_res(str(r)):
+        if self.length_check_res(str(r)):
             await ctx.respond(
                 'The translation result exceeded 1024 characters.', ephemeral=True)
             return
+        else:
+            pass
         target = 'en'
         embeds = self.compose_embed(message.content, r, target, 'DeepL')
         await ctx.respond(embeds=embeds, ephemeral=True)
