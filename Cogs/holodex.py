@@ -29,35 +29,36 @@ class StreamNotify(commands.Cog):
     @slash_command(guild_ids=[guild_id], default_permission=False, name='stream')
     @permissions.has_role(admin_role)
     async def get_stream(self, ctx):
-        await self.get_stream_method(self.bot.holodex)
+        await self.get_stream_method()
         await ctx.respond('更新が完了しました。')
         return
 
     @tasks.loop(minutes=2)
     async def _get_stream(self):
         await self.bot.wait_until_ready()
-        await self.get_stream_method(self.bot.holodex)
+        await self.get_stream_method()
 
     # stream-bodyconfirmation_complete
 
-    async def get_stream_method(self, client: HolodexClient):
-        ch_id = os.environ['STREAM_YT_ID']
-        lives = await client.live_streams(channel_id=ch_id)
-        archives = await client.videos_from_channel(channel_id=ch_id, type='videos')
-        yt_channel = await client.channel(channel_id=ch_id)
-        lives_tuple = (x for x in lives.contents if x.status ==
-                       'upcoming' and x.type == 'stream')
-        nowgoing_tuple = (x for x in lives.contents if x.status ==
-                          'live' and x.type == 'stream')
-        ended_tuple = (x for x in archives.contents if x.status ==
-                       'past' and x.type == 'stream')
-        await self.upcoming_stream(lives_tuple, yt_channel)
-        print('今後の配信の処理を完了')
-        await self.nowgoing_stream(nowgoing_tuple, yt_channel)
-        print('現在の配信の処理を完了')
-        await self.ended_stream(ended_tuple, yt_channel)
-        print('終了した配信の処理を完了')
-        return
+    async def get_stream_method(self):
+        async with self.bot.holodex as client:
+            ch_id = os.environ['STREAM_YT_ID']
+            lives = await client.live_streams(channel_id=ch_id)
+            archives = await client.videos_from_channel(channel_id=ch_id, type='videos')
+            yt_channel = await client.channel(channel_id=ch_id)
+            lives_tuple = (x for x in lives.contents if x.status ==
+                           'upcoming' and x.type == 'stream')
+            nowgoing_tuple = (x for x in lives.contents if x.status ==
+                              'live' and x.type == 'stream')
+            ended_tuple = (x for x in archives.contents if x.status ==
+                           'past' and x.type == 'stream')
+            await self.upcoming_stream(lives_tuple, yt_channel)
+            print('今後の配信の処理を完了')
+            await self.nowgoing_stream(nowgoing_tuple, yt_channel)
+            print('現在の配信の処理を完了')
+            await self.ended_stream(ended_tuple, yt_channel)
+            print('終了した配信の処理を完了')
+            return
 
     async def upcoming_stream(self, lives_tuple, yt_channel):
         ch_id = os.environ['STREAM_YT_ID']
