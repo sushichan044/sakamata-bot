@@ -64,6 +64,7 @@ INIT_EXTENSION_LIST = [
     'Cogs.ng_word',
     'Cogs.poll',
     'Cogs.thread',
+    'Cogs.translate'
 ]
 
 for cog in INIT_EXTENSION_LIST:

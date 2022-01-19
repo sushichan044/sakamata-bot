@@ -20,7 +20,6 @@ guild_id = int(os.environ['GUILD_ID'])
 class StreamNotify(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.bot.holodex = HolodexClient(key=os.environ['HOLODEX_KEY'])
         self._get_stream.start()
 
     def cog_unload(self):
@@ -41,7 +40,7 @@ class StreamNotify(commands.Cog):
     # stream-bodyconfirmation_complete
 
     async def get_stream_method(self):
-        async with self.bot.holodex as client:
+        async with HolodexClient(key=os.environ['HOLODEX_KEY']) as client:
             ch_id = os.environ['STREAM_YT_ID']
             lives = await client.live_streams(channel_id=ch_id)
             archives = await client.videos_from_channel(channel_id=ch_id, type='videos')
