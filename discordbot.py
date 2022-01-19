@@ -63,6 +63,7 @@ INIT_EXTENSION_LIST = [
     'Cogs.member_count',
     'Cogs.ng_word',
     'Cogs.poll',
+    'Cogs.starboard',
     'Cogs.thread',
     'Cogs.translate'
 ]
