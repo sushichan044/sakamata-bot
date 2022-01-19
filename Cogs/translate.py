@@ -25,8 +25,8 @@ class Translate(commands.Cog):
         r = self.deepl_trans_request(message.content, target)
         if not isinstance(r, str):
             return
-        embed = self.compose_embed(message.content, target, 'DeepL')
-        await ctx.respond(content=r, embed=embed, ephemeral=True)
+        embeds = self.compose_embed(message.content, r, target, 'DeepL')
+        await ctx.respond(embeds=embeds, ephemeral=True)
 
     @message_command(guild_ids=[guild_id], name='Translate to English')
     @permissions.has_role(server_member_role)
@@ -36,8 +36,8 @@ class Translate(commands.Cog):
         if not isinstance(r, str):
             return
         target = 'en'
-        embed = self.compose_embed(message.content, target, 'DeepL')
-        await ctx.respond(content=r, embed=embed, ephemeral=True)
+        embeds = self.compose_embed(message.content, r, target, 'DeepL')
+        await ctx.respond(embeds=embeds, ephemeral=True)
 
     @slash_command(guild_ids=[guild_id], name='translate')
     @permissions.has_role(server_member_role)
@@ -52,18 +52,20 @@ class Translate(commands.Cog):
         if service == 'DeepL':
             target = self.select_language(language)
             r = self.deepl_trans_request(text, target)
+            if not isinstance(r, str):
+                return
             if target == 'en-US':
                 target = 'en'
-            embed = self.compose_embed(text, target, service)
-            await ctx.respond(content=r, embed=embed, ephemeral=True)
+            embeds = self.compose_embed(text, r, target, service)
+            await ctx.respond(embeds=embeds, ephemeral=True)
         else:
             target = self.select_language(language)
             if target == 'en-US':
                 target = 'en'
             r = self.google_trans_request(text, target)
-            embed = self.compose_embed(
-                text, target, service)
-            await ctx.respond(content=r.text, embed=embed, ephemeral=True)
+            embeds = self.compose_embed(
+                text, r.text, target, service)
+            await ctx.respond(embeds=embeds, ephemeral=True)
             pass
 
     def select_language(self, language: str) -> Literal['ja', 'en-US']:
@@ -80,25 +82,38 @@ class Translate(commands.Cog):
         result = self.google_trans.translate(text, dest=target)
         return result
 
-    def compose_embed(self, origin: str, output: Literal['ja', 'en'], service: Literal['DeepL', 'GoogleTrans']):
+    def compose_embed(self, origin: str, result: str, output: Literal['ja', 'en'], service: Literal['DeepL', 'GoogleTrans']):
         if output == 'ja':
             _footer = f'{service}によって翻訳されました'
             _origin = '[翻訳元]'
+            _result = '[翻訳結果]'
         else:
             _footer = f'Translated by {service}'
             _origin = '[Origin Text]'
-        embed = discord.Embed(
+            _result = '[Result]'
+        embeds = []
+        origin_embed = discord.Embed(
             color=15767485,
         )
-        embed.set_footer(
-            text=_footer
-        )
-        embed.add_field(
+        origin_embed.add_field(
             inline=False,
             name=_origin,
             value=origin,
         )
-        return embed
+        embeds.append(origin_embed)
+        res_embed = discord.Embed(
+            color=3447003
+        )
+        res_embed.set_footer(
+            text=_footer
+        )
+        res_embed.add_field(
+            inline=False,
+            name=_result,
+            value=result,
+        )
+        embeds.append(res_embed)
+        return embeds
 
 
 def setup(bot):
