@@ -48,8 +48,6 @@ class Translate(commands.Cog):
         if service == 'DeepL':
             target = self.select_language(language)
             r = self.deepl_trans_request(text, target)
-            if not isinstance(r, str):
-                return
             if target == 'en-US':
                 target = 'en'
             embeds = self.compose_embed(text, r, target, service)
