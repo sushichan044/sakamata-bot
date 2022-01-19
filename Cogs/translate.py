@@ -21,9 +21,11 @@ class Translate(commands.Cog):
     @message_command(guild_ids=[guild_id], name='日本語に翻訳')
     @permissions.has_role(server_member_role)
     async def deepl_trans_to_jp(self, ctx, message: discord.Message):
-        if not self.length_check(message.content):
+        if self.length_check(message.content):
             await ctx.respond('翻訳する文字は1024文字以下にしてください。', ephemeral=True)
             return
+        else:
+            pass
         target = 'ja'
         r = self.deepl_trans_request(message.content, target)
         if not self.length_check_res(str(r)):
@@ -35,7 +37,7 @@ class Translate(commands.Cog):
     @message_command(guild_ids=[guild_id], name='Translate to English')
     @permissions.has_role(server_member_role)
     async def deepl_trans_to_en(self, ctx, message: discord.Message):
-        if not self.length_check(message.content):
+        if self.length_check(message.content):
             await ctx.respond(
                 'The characters should be no more than 1024 characters.', ephemeral=True)
             return
@@ -59,13 +61,13 @@ class Translate(commands.Cog):
             language: Option(str, 'Choose Output Language', choices=['日本語', 'English']),
             text: Option(str, 'Input text to translate'),
     ):
-        if not self.length_check(text):
+        if self.length_check(text):
             await ctx.respond('翻訳する文字は1024文字以下にしてください。', ephemeral=True)
             return
         if service == 'DeepL':
             target = self.select_language(language)
             r = self.deepl_trans_request(text, target)
-            if not self.length_check_res(str(r)):
+            if self.length_check_res(str(r)):
                 await ctx.respond('翻訳結果が1024文字を超過しました。', ephemeral=True)
                 return
             if target == 'en-US':
@@ -77,7 +79,7 @@ class Translate(commands.Cog):
             if target == 'en-US':
                 target = 'en'
             r = self.google_trans_request(text, target)
-            if not self.length_check_res(str(r)):
+            if self.length_check_res(str(r)):
                 await ctx.respond('翻訳結果が1024文字を超過しました。', ephemeral=True)
                 return
             embeds = self.compose_embed(
@@ -135,10 +137,14 @@ class Translate(commands.Cog):
 
     def length_check(self, text: str):
         if len(text) > 1024:
+            return True
+        else:
             return False
 
     def length_check_res(self, result: str):
         if len(result) > 1024:
+            return True
+        else:
             return False
 
 
