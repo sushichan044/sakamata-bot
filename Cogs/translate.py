@@ -52,7 +52,7 @@ class Translate(commands.Cog):
                 target = 'en'
             r = self.google_trans_request(text, target)
             embed = self.compose_embed(
-                ctx.message, text, r.text, target, service)
+                text, r.text, target, service)
             await ctx.respond(embed=embed, ephemeral=True)
             pass
 
@@ -70,7 +70,7 @@ class Translate(commands.Cog):
         result = self.google_trans.translate(text, dest=target)
         return result
 
-    def compose_embed(self, msg: discord.Message, origin: str, result: str, output: Literal['ja', 'en'], service: Literal['DeepL', 'GoogleTrans']):
+    def compose_embed(self, origin: str, result: str, output: Literal['ja', 'en'], service: Literal['DeepL', 'GoogleTrans']):
         if output == 'ja':
             _title = '翻訳完了'
             _footer = f'{service}によって翻訳されました'
@@ -84,7 +84,6 @@ class Translate(commands.Cog):
         embed = discord.Embed(
             title=_title,
             color=15767485,
-            url=msg.jump_url
         )
         embed.set_footer(
             text=_footer
