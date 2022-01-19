@@ -23,14 +23,21 @@ class Translate(commands.Cog):
     async def deepl_trans_to_jp(self, ctx, message: discord.Message):
         target = 'ja'
         r = self.deepl_trans_request(message.content, target)
-        await ctx.respond(content=r, ephemeral=True)
+        if not isinstance(r, str):
+            return
+        embed = self.compose_embed(message.content, r, target, 'DeepL')
+        await ctx.respond(embed=embed, ephemeral=True)
 
     @message_command(guild_ids=[guild_id], name='Translate to English')
     @permissions.has_role(server_member_role)
     async def deepl_trans_to_en(self, ctx, message: discord.Message):
         target = 'en-US'
         r = self.deepl_trans_request(message.content, target)
-        await ctx.respond(content=r, ephemeral=True)
+        if not isinstance(r, str):
+            return
+        target = 'en'
+        embed = self.compose_embed(message.content, r, target, 'DeepL')
+        await ctx.respond(embed=embed, ephemeral=True)
 
     @slash_command(guild_ids=[guild_id], name='translate')
     @permissions.has_role(server_member_role)
