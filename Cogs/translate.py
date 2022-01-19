@@ -35,6 +35,7 @@ class Translate(commands.Cog):
             pass
         embeds = self.compose_embed(message.content, r, target, 'DeepL')
         await ctx.respond(embeds=embeds, ephemeral=True)
+        return
 
     @message_command(guild_ids=[guild_id], name='Translate to English')
     @permissions.has_role(server_member_role)
@@ -56,6 +57,7 @@ class Translate(commands.Cog):
         target = 'en'
         embeds = self.compose_embed(message.content, r, target, 'DeepL')
         await ctx.respond(embeds=embeds, ephemeral=True)
+        return
 
     @slash_command(guild_ids=[guild_id], name='translate')
     @permissions.has_role(server_member_role)
@@ -84,6 +86,7 @@ class Translate(commands.Cog):
                 target = 'en'
             embeds = self.compose_embed(text, r, target, service)
             await ctx.respond(embeds=embeds, ephemeral=True)
+            return
         else:
             target = self.select_language(language)
             if target == 'en-US':
@@ -97,7 +100,7 @@ class Translate(commands.Cog):
             embeds = self.compose_embed(
                 text, r.text, target, service)
             await ctx.respond(embeds=embeds, ephemeral=True)
-            pass
+            return
 
     def select_language(self, language: str) -> Literal['ja', 'en-US']:
         if language == '日本語':
