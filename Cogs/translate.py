@@ -63,7 +63,7 @@ class Translate(commands.Cog):
             r = self.google_trans_request(text, target)
             embed = self.compose_embed(
                 text, target, service)
-            await ctx.respond(content=r, embed=embed, ephemeral=True)
+            await ctx.respond(content=r.text, embed=embed, ephemeral=True)
             pass
 
     def select_language(self, language: str) -> Literal['ja', 'en-US']:
@@ -76,7 +76,7 @@ class Translate(commands.Cog):
         result = self.deepl_trans.translate_text(text, target_lang=target)
         return result
 
-    def google_trans_request(self, text: str, target):
+    def google_trans_request(self, text: str, target: Literal['ja', 'en']):
         result = self.google_trans.translate(text, dest=target)
         return result
 
