@@ -71,7 +71,6 @@ class Translate(commands.Cog):
     def deepl_trans_request(self, text: str, target: Literal['ja', 'en-US']):
         result = self.deepl_trans.translate_text(
             text, target_lang=target)
-        print(result)
         return result
 
     def google_trans_request(self, text: str, target: Literal['ja', 'en']):
