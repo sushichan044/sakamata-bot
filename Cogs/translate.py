@@ -133,11 +133,11 @@ class Translate(commands.Cog):
         embeds.append(res_embed)
         return embeds
 
-    def length_check(self, text):
+    def length_check(self, text: str):
         if len(text) > 1024:
             return False
 
-    def length_check_res(self, result):
+    def length_check_res(self, result: str):
         if len(result) > 1024:
             return False
 
