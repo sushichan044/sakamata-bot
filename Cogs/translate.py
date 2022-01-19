@@ -51,7 +51,7 @@ class Translate(commands.Cog):
             if target == 'en-US':
                 target = 'en'
             r = self.google_trans_request(text, target)
-            await ctx.respond(content=r, ephemeral=True)
+            await ctx.respond(content=r.text, ephemeral=True)
             pass
 
     def select_language(self, language: str) -> Literal['ja', 'en-US']:
@@ -66,7 +66,7 @@ class Translate(commands.Cog):
 
     def google_trans_request(self, text: str, target):
         result = self.google_trans.translate(text, dest=target)
-        return result.text
+        return result
 
 
 def setup(bot):
