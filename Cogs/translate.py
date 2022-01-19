@@ -64,12 +64,16 @@ class Translate(commands.Cog):
         if self.length_check(text):
             await ctx.respond('翻訳する文字は1024文字以下にしてください。', ephemeral=True)
             return
+        else:
+            pass
         if service == 'DeepL':
             target = self.select_language(language)
             r = self.deepl_trans_request(text, target)
             if self.length_check_res(str(r)):
                 await ctx.respond('翻訳結果が1024文字を超過しました。', ephemeral=True)
                 return
+            else:
+                pass
             if target == 'en-US':
                 target = 'en'
             embeds = self.compose_embed(text, r, target, service)
@@ -82,6 +86,8 @@ class Translate(commands.Cog):
             if self.length_check_res(str(r)):
                 await ctx.respond('翻訳結果が1024文字を超過しました。', ephemeral=True)
                 return
+            else:
+                pass
             embeds = self.compose_embed(
                 text, r.text, target, service)
             await ctx.respond(embeds=embeds, ephemeral=True)
