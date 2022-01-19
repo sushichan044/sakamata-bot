@@ -65,7 +65,6 @@ class Translate(commands.Cog):
             service: Option(str, 'Choose Translation Service',
                             choices=['DeepL', 'GoogleTrans']),
             language: Option(str, 'Choose Output Language', choices=['日本語', 'English']),
-            *,
             text: Option(str, 'Input text to translate'),
     ):
         if self.length_check(text):
