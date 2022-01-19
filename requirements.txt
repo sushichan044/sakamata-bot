@@ -16,7 +16,7 @@ google-api-python-client==2.35.0
 google-auth==2.3.3
 google-auth-httplib2==0.1.0
 googleapis-common-protos==1.54.0
-holodex==0.9.7
+holodex==0.10.9
 httplib2==0.20.2
 idna==3.3
 importlib-metadata==4.10.1
