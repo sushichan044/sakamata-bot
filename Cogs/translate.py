@@ -15,7 +15,7 @@ server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
 class Translate(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
-        self.deepl_trans = deepl.Translator
+        self.deepl_trans = deepl.Translator(auth_key=os.environ['DEEPL_TOKEN'])
         self.google_trans = googletrans.Translator()
 
     @message_command(guild_ids=[guild_id], name='日本語に翻訳')
@@ -71,7 +71,7 @@ class Translate(commands.Cog):
             return 'en-US'
 
     def deepl_trans_request(self, text: str, target: Literal['ja', 'en-US']):
-        result = self.deepl_trans(auth_key=os.environ['DEEPL_TOKEN']).translate_text(
+        result = self.deepl_trans.translate_text(
             text, target_lang=target)
         print(result)
         return result
