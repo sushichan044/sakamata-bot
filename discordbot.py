@@ -9,7 +9,7 @@ from discord import Member
 from discord.channel import DMChannel
 from discord.commands import Option, permissions
 from discord.ext import commands
-from discord.ext.ui import (MessageProvider, ViewTracker)
+from discord.ext.ui import MessageProvider, ViewTracker
 from newdispanderfixed import dispand
 
 import Components.member_button as membership_button
