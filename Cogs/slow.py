@@ -16,7 +16,7 @@ class SlowMode(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
 
-    @message_command(guild_ids=[guild_id], name='スローモード')
+    @message_command(guild_ids=[guild_id], name='スローモード切り替え')
     @permissions.has_role(mod_role)
     async def _slow_mode(self, ctx, message: discord.Message):
         res = await self._slow(message.channel)
