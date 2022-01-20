@@ -20,9 +20,9 @@ class ContextPin(commands.Cog):
         try:
             await message.pin()
         except HTTPException as e:
-            if 'Cannot execute action on a system message' in e.text:
+            if e.code == 50021:
                 await ctx.respond('システムメッセージをピン留めすることはできません。', ephemeral=True)
-            elif 'Maximum number of pins reached' in e.text:
+            elif e.code == 30003:
                 await ctx.respond('このチャンネルのピン留め数が上限に達しています。', ephemeral=True)
             else:
                 return
