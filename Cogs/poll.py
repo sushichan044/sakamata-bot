@@ -1,6 +1,4 @@
 import os
-from typing import Optional
-from unicodedata import name
 import discord
 from discord.ext import commands
 from discord.commands import message_command
