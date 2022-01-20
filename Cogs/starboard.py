@@ -32,7 +32,9 @@ class StarBoard(commands.Cog):
             base_embed = self.make_embed(message, count)
             sent_embeds.append(base_embed)
             for attachment in message.attachments[1:]:
-                embed = discord.Embed()
+                embed = discord.Embed(
+                    color=3447003,
+                )
                 embed.set_image(
                     url=attachment.proxy_url
                 )
