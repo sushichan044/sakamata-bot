@@ -100,10 +100,10 @@ class Poll(commands.Cog):
         for value, count in d.items():
             embed.add_field(
                 name=value,
-                value=str(count-1)
+                value=f'{str(count-1)}票'
             )
         await message.reply(embed=embed)
-        await ctx.respond('集計完了', ephemeral=True)
+        await ctx.respond('集計完了')
         pass
 
 
