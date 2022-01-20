@@ -112,6 +112,8 @@ class Poll(commands.Cog):
                     name=value,
                     value=f'{str(count-1)}票'
                 )
+            if message.pinned:
+                await message.unpin()
             await message.reply(embed=embed)
             await ctx.respond('集計完了')
             return
