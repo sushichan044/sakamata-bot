@@ -15,12 +15,13 @@ class StarBoard(commands.Cog):
 
     @commands.Cog.listener(name='on_raw_reaction_add')
     async def board_add(self, payload):
-        if payload.emoji == star_emoji:
+        if str(payload.emoji) == star_emoji:
             channel = self.bot.get_channel(payload.channel_id)
             message = await channel.fetch_mesage(payload.message_id)
             reaction = discord.utils.get(message.reactions, emoji=star_emoji)
             if reaction and reaction.count >= 3:
                 count = reaction.count
+                print('Event Get Done')
                 await self.post_board(message, count)
                 return
 
