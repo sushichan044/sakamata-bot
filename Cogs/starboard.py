@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 star_emoji = '\N{Blue Heart}'
-#star_emoji = '<:c_Ofb4:926885084395606086>'
+# star_emoji = '<:c_Ofb4:926885084395606086>'
 emoji_url = 'https://cdn.discordapp.com/emojis/926885084395606086.webp?size=1024&quality=lossless'
 star_channel = int(os.environ['STAR_CHANNEL'])
 
@@ -50,7 +50,7 @@ class StarBoard(commands.Cog):
         )
         embed.set_author(
             name=f'{message.author} in #{message.channel.name}',
-            url={message.jump_url}
+            url=message.jump_url
         )
         embed.add_field(
             name='元のメッセージ',
