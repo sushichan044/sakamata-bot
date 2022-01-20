@@ -58,6 +58,7 @@ bot = commands.Bot(command_prefix='//', intents=intents,
 
 
 INIT_EXTENSION_LIST = [
+    'Cogs.dakuten',
     'Cogs.entrance',
     'Cogs.ng_word',
     'Cogs.pin',
