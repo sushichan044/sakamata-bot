@@ -16,9 +16,16 @@ class ContextPin(commands.Cog):
     @message_command(guild_ids=[guild_id], name='ピン留め')
     @permissions.has_role(server_member_role)
     async def _pin(self, ctx, message: discord.Message):
-        await message.pin()
-        await ctx.respond('ピン留めしました!', ephemeral=True)
-        return
+        if message.type != discord.MessageType.default:
+            await ctx.respond('システムメッセージをピン留めすることはできません！', ephemeral=True)
+            return
+        elif len(await message.channel.pins()) == 50:
+            await ctx.respond('このチャンネルのピン留め数が上限に達しています。', ephemeral=True)
+            return
+        else:
+            await message.pin()
+            await ctx.respond('ピン留めしました！', ephemeral=True)
+            return
 
 
 def setup(bot):
