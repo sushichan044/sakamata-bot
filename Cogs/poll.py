@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 from discord.commands import message_command
 
+guild_id = int(os.environ['GUILD_ID'])
 server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
 
 
@@ -87,7 +88,7 @@ class Poll(commands.Cog):
                 await m.add_reaction(poll_emoji_list[x])
             return
 
-    @message_command(name='投票集計')
+    @message_command(guild_ids=[guild_id], name='投票集計')
     async def _result_poll(self, ctx, message: discord.Message):
         counts = [reaction.count for reaction in message.reactions]
         values = [field.value for field in message.embeds[0].fields]
