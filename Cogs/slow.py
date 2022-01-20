@@ -1,4 +1,3 @@
-from email.policy import default
 import os
 from typing import Literal
 
@@ -36,7 +35,7 @@ class SlowMode(commands.Cog):
     async def _slash_slow(
         self,
         ctx,
-        channel: Option(discord.channel, 'Choose Channel'),
+        channel: Option(discord.TextChannel, 'Choose Channel'),
         switch: Option(str, 'Choose ON/OFF', choices=['ON,OFF'], default='ON')
     ):
         if self.on_or_off(switch):
