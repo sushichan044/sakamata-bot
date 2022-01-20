@@ -39,6 +39,7 @@ class SlowMode(commands.Cog):
         switch: Option(str, 'Choose ON/OFF',
                        choices=['ON', 'OFF'], default='ON')
     ):
+        channel: discord.TextChannel = channel
         if self.on_or_off(switch):
             delay = 60
             deal = 'ON'
