@@ -715,11 +715,11 @@ async def _check_member(ctx):
                 def check(message):
                     return bool(date_pattern.fullmatch(message.content)) and message.author != bot.user and message.reference and message.reference.message_id == ref_msg.id
                 date = await bot.wait_for('message', check=check)
-                await date.reply('入力を受け付けました。', mention_author=False)
-                add_role = guild.get_role(yt_membership_role)
-                await member.add_roles(add_role)
                 status: Optional[str] = await sheet(member, date.content).check_status()
                 if status is None:
+                    await date.reply('シートに反映されました。', mention_author=False)
+                    add_role = guild.get_role(yt_membership_role)
+                    await member.add_roles(add_role)
                     await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!', mention_author=False)
                     log_channel_object = bot.get_channel(log_channel)
                     embed = discord.Embed(
@@ -740,6 +740,7 @@ async def _check_member(ctx):
                     await log_channel_object.send(embed=embed)
                     return
                 else:
+                    await date.reply('予期せぬエラーによりシートに反映できませんでした。\nロールの付与は行われませんでした。', mention_author=False)
                     channel = bot.get_channel(error_log_channel)
                     channel.send(status)
             else:
