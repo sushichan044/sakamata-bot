@@ -104,7 +104,7 @@ class Poll(commands.Cog):
                 name=value,
                 value=str(count-1)
             )
-        await ctx.send(embed=embed)
+        await message.reply(embed=embed)
         await ctx.respond('集計完了', ephemeral=True)
         pass
 
