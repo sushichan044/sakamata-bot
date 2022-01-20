@@ -36,13 +36,14 @@ class SlowMode(commands.Cog):
         self,
         ctx,
         channel: Option(discord.TextChannel, 'Choose Channel'),
-        switch: Option(str, 'Choose ON/OFF', choices=['ON','OFF'], default='ON')
+        switch: Option(str, 'Choose ON/OFF',
+                       choices=['ON', 'OFF'], default='ON')
     ):
         if self.on_or_off(switch):
-            delay = 60,
+            delay = 60
             deal = 'ON'
         else:
-            delay = 0,
+            delay = 0
             deal = 'OFF'
         await channel.edit(slowmode_delay=delay)
         await ctx.respond(f'スローモードを{deal}にしました。', ephemeral=True)
