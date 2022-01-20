@@ -81,7 +81,6 @@ vc_log_channel = 917009562383556678
 dm_box_channel = 921781301101613076
 alert_channel = 924744385902575616
 member_check_channel = 926777825925677096
-mod_role = 916726433445986334
 yt_membership_role = 923789641159700500
 
 '''
@@ -91,7 +90,6 @@ vc_log_channel = 916988601902989373
 dm_box_channel = 918101377958436954
 alert_channel = 924744469327257602
 member_check_channel = 926777719964987412
-mod_role = 924355349308383252
 yt_membership_role = 926268230417408010
 
 
@@ -99,6 +97,7 @@ yt_membership_role = 926268230417408010
 guild_id = int(os.environ['GUILD_ID'])
 everyone = int(os.environ['GUILD_ID'])
 server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
+mod_role = int(os.environ['MOD_ROLE'])
 admin_role = int(os.environ['ADMIN_ROLE'])
 thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
