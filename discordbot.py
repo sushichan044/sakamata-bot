@@ -62,6 +62,7 @@ INIT_EXTENSION_LIST = [
     'Cogs.holodex',
     'Cogs.member_count',
     'Cogs.ng_word',
+    'Cogs.pin',
     'Cogs.poll',
     'Cogs.thread',
     'Cogs.translate'
