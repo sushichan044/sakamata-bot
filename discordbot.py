@@ -58,11 +58,11 @@ bot = commands.Bot(command_prefix='//', intents=intents,
 
 
 INIT_EXTENSION_LIST = [
-    'Cog.entrance',
-    'Cog.ng_word',
-    'Cog.pin',
-    'Cog.poll',
-    'Cog.thread',
+    'Cogs.entrance',
+    'Cogs.ng_word',
+    'Cogs.pin',
+    'Cogs.poll',
+    'Cogs.thread',
 ]
 
 for cog in INIT_EXTENSION_LIST:
