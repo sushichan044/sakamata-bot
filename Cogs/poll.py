@@ -66,7 +66,6 @@ class Poll(commands.Cog):
             m = await ctx.send(embed=embed)
             await m.add_reaction(poll_yes_emoji)
             await m.add_reaction(poll_no_emoji)
-            await m.pin()
             return
         elif len(select) > 20:
             embed = discord.Embed(
@@ -91,7 +90,6 @@ class Poll(commands.Cog):
             m = await ctx.send(embed=embed)
             for x in range(len(select)):
                 await m.add_reaction(poll_emoji_list[x])
-            await m.pin()
             return
 
     @message_command(guild_ids=[guild_id], name='投票集計')
@@ -114,7 +112,8 @@ class Poll(commands.Cog):
                     name=value,
                     value=f'{str(count-1)}票'
                 )
-            await message.unpin()
+            if message.pinned:
+                await message.unpin()
             await message.reply(embed=embed)
             await ctx.respond('集計完了')
             return
