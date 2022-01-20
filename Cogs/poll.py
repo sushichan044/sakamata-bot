@@ -94,7 +94,7 @@ class Poll(commands.Cog):
 
     @message_command(guild_ids=[guild_id], name='投票集計')
     async def _result_poll(self, ctx, message: discord.Message):
-        if message.embeds[0].footer.text != '[投票]':
+        if not message.embeds or message.embeds[0].footer.text != '[投票]':
             await ctx.respond('集計に対応していないメッセージです。', ephemeral=True)
             return
         else:
