@@ -58,8 +58,8 @@ class Poll(commands.Cog):
                 name='\N{Large Red Circle}',
                 value='No'
             )
-            embed.set_footer(
-                text='投票'
+            embed.set_author(
+                name='投票'
             )
             poll_yes_emoji = '\N{Large Green Circle}'
             poll_no_emoji = '\N{Large Red Circle}'
@@ -84,9 +84,9 @@ class Poll(commands.Cog):
                     name=poll_emoji_list[num],
                     value=select[num]
                 )
-                embed.set_footer(
-                    text='投票'
-                )
+            embed.set_author(
+                name='投票'
+            )
             m = await ctx.send(embed=embed)
             for x in range(len(select)):
                 await m.add_reaction(poll_emoji_list[x])
@@ -94,7 +94,7 @@ class Poll(commands.Cog):
 
     @message_command(guild_ids=[guild_id], name='投票集計')
     async def _result_poll(self, ctx, message: discord.Message):
-        if not message.embeds or message.embeds[0].footer.text != '投票':
+        if not message.embeds or message.embeds[0].author.name != '投票':
             await ctx.respond('集計に対応していないメッセージです。', ephemeral=True)
             return
         else:
