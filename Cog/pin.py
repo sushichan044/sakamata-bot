@@ -20,10 +20,14 @@ class ContextPin(commands.Cog):
             await message.pin()
             await ctx.respond('ピン留めしました!', ephemeral=True)
             return
-        except discord.HTTPException as e:
-            print(e.code)
-            await ctx.respond('システムメッセージをピン留めすることはできません。', ephemeral=True)
-            return
+        except discord.errors.ApplicationCommandInvokeError as e:
+            if e == 'Maximum number of pins reached (50)':
+                await ctx.respond('ピン留め数に上限に達しています。', ephemeral=True)
+            elif e == 'Cannot execute action on a system message':
+                await ctx.respond('システムメッセージをピン留めすることはできません。', ephemeral=True)
+            else:
+                await ctx.respond('予期せぬエラーが発生しました。', ephemeral=True)
+
 
 
 
