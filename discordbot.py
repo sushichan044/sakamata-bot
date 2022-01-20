@@ -3,7 +3,7 @@ import logging
 import os
 import re
 from datetime import datetime, timedelta, timezone
-from typing import Optional
+from typing import Literal, Optional
 
 import discord
 from discord import Member
@@ -444,12 +444,12 @@ async def _emergency_timeout(ctx, member: Member):
 
 @bot.command(name='timeout')
 @commands.has_role(mod_role)
-async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
+async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'dm:true'):
     '''メンバーをタイムアウト'''
     until = datetime.strptime(input_until, '%Y%m%d')
     until_jst = until.replace(tzinfo=jst)
     role = ctx.guild.get_role(mod_role)
-    valid_if_dm_list = ['True', 'False']
+    valid_if_dm_list = ['dm:true', 'dm:false']
     until_str = until_jst.strftime('%Y/%m/%d/%H:%M')
     if if_dm not in valid_if_dm_list:
         await ctx.reply(content='不明な引数を検知したため処理を終了しました。\nDM送信をOFFにするにはFalseを指定してください。', mention_author=False)
@@ -461,7 +461,7 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
         deal = 'timeout'
         add_dm = f'あなたは{until_str}までサーバーでの発言とボイスチャットへの接続を制限されます。'
         DM_content = await make_deal_dm(ctx, deal, add_dm)
-        if if_dm == 'False':
+        if if_dm == 'dm:false':
             DM_content = ''
         else:
             pass
@@ -472,14 +472,14 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'True'):
         turned = await confirm(ctx, confirm_arg, role, confirm_msg)
         if turned:
             msg = exe_msg
-            if if_dm == 'True':
+            if if_dm == 'dm:true':
                 m = await member.send(DM_content)
                 desc_url = m.jump_url
                 await member.timeout(until_jst.astimezone(utc), reason=None)
                 await ctx.send('timeouted!')
                 await send_timeout_log(ctx, msg, desc_url, until_str)
                 return
-            elif if_dm == 'False':
+            elif if_dm == 'dm:false':
                 desc_url = ''
                 await member.timeout(until_jst.astimezone(utc), reason=None)
                 await ctx.send('timeouted!')
@@ -545,7 +545,7 @@ async def _kick_user(ctx, member: Member, if_dm: str = 'dm:true'):
         deal = 'kick'
         add_dm = ''
         DM_content = await make_deal_dm(ctx, deal, add_dm)
-        if if_dm == 'False':
+        if if_dm == 'dm:false':
             DM_content = ''
         else:
             pass
@@ -556,14 +556,14 @@ async def _kick_user(ctx, member: Member, if_dm: str = 'dm:true'):
         turned = await confirm(ctx, confirm_arg, role, confirm_msg)
         if turned:
             msg = exe_msg
-            if if_dm == 'True':
+            if if_dm == 'dm:true':
                 m = await member.send(DM_content)
                 desc_url = m.jump_url
                 await member.kick(reason=None)
                 await ctx.send('kicked!')
                 await send_exe_log(ctx, msg, desc_url)
                 return
-            elif if_dm == 'False':
+            elif if_dm == 'dm:false':
                 desc_url = ''
                 await member.kick(reason=None)
                 await ctx.send('kicked!')
@@ -605,7 +605,7 @@ BANの解除を希望する場合は以下のフォームをご利用くださ�
 https://forms.gle/mR1foEyd9JHbhYdCA
 '''
         DM_content = await make_deal_dm(ctx, deal, add_dm)
-        if if_dm == 'False':
+        if if_dm == 'dm:false':
             DM_content = ''
         else:
             pass
@@ -616,14 +616,14 @@ https://forms.gle/mR1foEyd9JHbhYdCA
         turned = await confirm(ctx, confirm_arg, role, confirm_msg)
         if turned:
             msg = exe_msg
-            if if_dm == 'True':
+            if if_dm == 'dm:true':
                 m = await member.send(DM_content)
                 desc_url = m.jump_url
                 await member.ban(reason=None)
                 await ctx.send('baned!')
                 await send_exe_log(ctx, msg, desc_url)
                 return
-            elif if_dm == 'False':
+            elif if_dm == 'dm:false':
                 desc_url = ''
                 await member.ban(reason=None)
                 await ctx.send('baned!')
