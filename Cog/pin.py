@@ -23,6 +23,7 @@ class ContextPin(commands.Cog):
             await ctx.respond('このチャンネルのピン留め数が上限に達しています。', ephemeral=True)
             return
         else:
+            await message.pin()
             await ctx.respond('ピン留めしました！', ephemeral=True)
             return
 
