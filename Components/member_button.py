@@ -10,15 +10,11 @@ jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
 
 
 class MemberConfView(View):
+    ctx = state('ctx')
     status = state('status')
     ok_str = state('ok_str')
     ng_str = state('ng_str')
     que = state('que')
-    ng_url = state('ng_url')
-    ng_style = state('ng_style')
-    left_button = state('left_button')
-    right_button = state('right_button')
-    ctx = state('ctx')
 
     def __init__(self, future, ctx):
         super().__init__()
@@ -27,12 +23,6 @@ class MemberConfView(View):
         self.status = None
         self.ok_str = '承認'
         self.ng_str = '否認'
-        self.ng_style = discord.ButtonStyle.red
-        self.left_button = Button(self.ok_str).style(
-            discord.ButtonStyle.green).disabled(self.status is not None).on_click(self.ok)
-        self.right_button = Button(self.ng_str).style(
-            self.ng_style).disabled(self.status is False).on_click(self.ng)
-        self.ng_url = ''
         self.que = '承認しますか？'
 
     async def ok(self, interaction: discord.Interaction):
@@ -40,13 +30,6 @@ class MemberConfView(View):
         self.status = True
         self.que = '承認済み'
         self.ok_str = '承認されました'
-        self.ng_str = 'スプレッドシート'
-        self.ng_style = discord.ButtonStyle.link
-        self.ng_url = os.environ['MEMBERSHIP_SPREADSHEET']
-        self.left_button = Button(self.ok_str).style(
-            discord.ButtonStyle.green).disabled(self.status is not None).on_click(self.ok)
-        self.right_button = Button(self.ng_str).style(self.ng_style).disabled(
-            self.status is False).on_click(self.ng).url(self.ng_url)
         await interaction.response.defer()
         return
 
@@ -55,10 +38,6 @@ class MemberConfView(View):
         self.status = False
         self.que = '否認済み'
         self.ng_str = '否認されました'
-        self.left_button = Button(self.ng_str).style(
-            discord.ButtonStyle.red).disabled(True)
-        self.right_button = Button('承認').style(
-            discord.ButtonStyle.green).disabled(True).on_click(self.ok)
         await interaction.response.defer()
         return
 
@@ -86,7 +65,9 @@ class MemberConfView(View):
         )
         embed_list.append(embed)
         for x in image_url:
-            embed = discord.Embed()
+            embed = discord.Embed(
+                color=15767485,
+            )
             embed.set_image(
                 url=x
             )
@@ -94,8 +75,10 @@ class MemberConfView(View):
         return Message(
             embeds=embed_list,
             components=[
-                self.left_button,
-                self.right_button
+                Button(self.ok_str).style(
+                    discord.ButtonStyle.green).disabled(self.status is not None).on_click(self.ok),
+                Button(self.ng_str).style(
+                    discord.ButtonStyle.red).disabled(self.status is not None).on_click(self.ng)
             ]
         )
 
