@@ -2,8 +2,6 @@ import os
 
 import requests
 
-from .format_date import FormatDate as date
-
 
 class PostToSheet():
     def __init__(self, member, date: str) -> None:
