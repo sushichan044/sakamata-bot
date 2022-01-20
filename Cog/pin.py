@@ -21,12 +21,10 @@ class ContextPin(commands.Cog):
             await ctx.respond('ピン留めしました!', ephemeral=True)
             return
         except discord.HTTPException as e:
-            if e.code == 50021:
-                await ctx.respond('システムメッセージをピン留めすることはできません。', ephemeral=True)
-                return
-            else:
-                await ctx.respond('予期せぬエラーが発生しました。', ephemeral=True)
-                return
+            print(e.code)
+            await ctx.respond('システムメッセージをピン留めすることはできません。', ephemeral=True)
+            return
+
 
 
 def setup(bot):
