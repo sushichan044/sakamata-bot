@@ -1,7 +1,9 @@
 import os
 import discord
 from discord.ext import commands
+from discord.commands import message_command
 
+guild_id = int(os.environ['GUILD_ID'])
 server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
 
 
@@ -46,8 +48,15 @@ class Poll(commands.Cog):
         if select == ():
             embed = discord.Embed(
                 title=title,
-                description="\N{Large Green Circle}Yes\n\N{Large Red Circle}No",
                 color=3447003,
+            )
+            embed.add_field(
+                name='\N{Large Green Circle}',
+                value='Yes',
+            )
+            embed.add_field(
+                name='\N{Large Red Circle}',
+                value='No'
             )
             poll_yes_emoji = '\N{Large Green Circle}'
             poll_no_emoji = '\N{Large Red Circle}'
@@ -63,20 +72,39 @@ class Poll(commands.Cog):
             await ctx.send(embed=embed)
             return
         else:
-            send_desc_list = []
-            for num in range(len(select)):
-                element = f'{poll_emoji_list[num]}{select[num]}'
-                send_desc_list.append(element)
-            send_desc = '\n'.join(send_desc_list)
             embed = discord.Embed(
                 title=title,
-                description=send_desc,
                 color=3447003,
             )
+            for num in range(len(select)):
+                embed.add_field(
+                    name=poll_emoji_list[num],
+                    value=select[num]
+                )
             m = await ctx.send(embed=embed)
             for x in range(len(select)):
                 await m.add_reaction(poll_emoji_list[x])
             return
+
+    @message_command(guild_ids=[guild_id], name='投票集計')
+    async def _result_poll(self, ctx, message: discord.Message):
+        counts = [reaction.count for reaction in message.reactions]
+        values = [field.value for field in message.embeds[0].fields]
+        titles = [embed.title for embed in message.embeds]
+        d = dict(zip(values, counts))
+        embed = discord.Embed(
+            title='集計結果',
+            description=f'{titles[0]}',
+            color=3447003,
+        )
+        for value, count in d.items():
+            embed.add_field(
+                name=value,
+                value=str(count-1)
+            )
+        await message.reply(embed=embed)
+        await ctx.respond('集計完了', ephemeral=True)
+        pass
 
 
 def setup(bot):
