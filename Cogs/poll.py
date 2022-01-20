@@ -102,7 +102,7 @@ class Poll(commands.Cog):
         for value, count in d.items():
             embed.add_field(
                 name=value,
-                value=str(count)
+                value=str(count-1)
             )
         await ctx.send(embed=embed)
         await ctx.respond('集計完了', ephemeral=True)
