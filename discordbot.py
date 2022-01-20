@@ -307,7 +307,9 @@ async def on_message_dm(message):
                 embed = await compose_embed_dm_box(message)
                 sent_messages.append(embed)
                 for attachment in message.attachments[1:]:
-                    embed = discord.Embed()
+                    embed = discord.Embed(
+                        color=3447003,
+                    )
                     embed.set_image(
                         url=attachment.proxy_url
                     )
