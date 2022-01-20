@@ -104,7 +104,7 @@ class Poll(commands.Cog):
             )
         await message.reply(embed=embed)
         await ctx.respond('集計完了')
-        pass
+        return
 
 
 def setup(bot):
