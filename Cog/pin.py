@@ -21,7 +21,7 @@ class ContextPin(commands.Cog):
             await ctx.respond('ピン留めしました!', ephemeral=True)
             return
         except discord.errors.ApplicationCommandInvokeError as e:
-            print(e)
+            print(f'これはテストです。\n{e}')
             return
             '''
             if e == 'Maximum number of pins reached (50)':
