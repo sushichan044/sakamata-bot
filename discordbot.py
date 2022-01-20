@@ -60,6 +60,7 @@ bot = commands.Bot(command_prefix='//', intents=intents,
 INIT_EXTENSION_LIST = [
     'Cog.entrance',
     'Cog.ng_word',
+    'Cog.pin',
     'Cog.poll',
     'Cog.thread',
 ]
@@ -70,7 +71,6 @@ for cog in INIT_EXTENSION_LIST:
 
 # 本番鯖IDなど
 
-guild_id = 915910043461890078
 log_channel = 917009541433016370
 vc_log_channel = 917009562383556678
 dm_box_channel = 921781301101613076
@@ -86,7 +86,6 @@ yt_membership_role = 923789641159700500
 
 '''
 # 実験鯖IDなど
-guild_id = 916965252896260117
 log_channel = 916971090042060830
 vc_log_channel = 916988601902989373
 dm_box_channel = 918101377958436954
@@ -102,6 +101,7 @@ yt_membership_role = 926268230417408010
 '''
 
 # ID-env
+guild_id = int(os.environ['GUILD_ID'])
 server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
 thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
