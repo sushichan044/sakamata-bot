@@ -3,6 +3,7 @@ import os
 import discord
 from discord import permissions
 from discord.commands import message_command
+from discord.errors import HTTPException
 from discord.ext import commands
 
 guild_id = int(os.environ['GUILD_ID'])
@@ -18,19 +19,16 @@ class ContextPin(commands.Cog):
     async def _pin(self, ctx, message: discord.Message):
         try:
             await message.pin()
-        except discord.errors.ApplicationCommandInvokeError as e:
-            print(f'これはテストです。\n{e}')
+        except HTTPException as e:
+            if 'Cannot execute action on a system message' in e.text:
+                await ctx.respond('システムメッセージをピン留めすることはできません。', ephemeral=True)
+            elif 'Maximum number of pins reached' in e.text:
+                await ctx.respond('このチャンネルのピン留め数が上限に達しています。', ephemeral=True)
+            else:
+                return
         else:
             await ctx.respond('ピン留めしました!', ephemeral=True)
             return
-            '''
-            if e == 'Maximum number of pins reached (50)':
-                await ctx.respond('ピン留め数に上限に達しています。', ephemeral=True)
-            elif e == 'Cannot execute action on a system message':
-                await ctx.respond('システムメッセージをピン留めすることはできません。', ephemeral=True)
-            else:
-                await ctx.respond('予期せぬエラーが発生しました。', ephemeral=True)
-                '''
 
 
 def setup(bot):
