@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+import re
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -111,6 +112,9 @@ count_vc = int(os.environ['COUNT_VC'])
 accept_emoji = "\N{Heavy Large Circle}"
 reject_emoji = "\N{Cross Mark}"
 
+
+# pattern
+date_pattern = re.compile(r'^\d{4}/\d{2}/\d{2}')
 
 # 起動イベント
 
@@ -706,14 +710,14 @@ async def _check_member(ctx):
                 desc_url = tracker.message.jump_url
                 member = guild.get_member(
                     ctx.message.author.id)
-                membership_role_object = guild.get_role(yt_membership_role)
-                ref_msg = await btn_msg.reply('次回支払日を入力してください。')
+                ref_msg = await btn_msg.reply(f'{member.display_name}さんの次回支払日を入力してください。')
 
                 def check(message):
-                    return len(message.content) == 8 and message.author != bot.user and message.reference and message.reference.message_id == ref_msg.id
+                    return bool(date_pattern.fullmatch(message.content)) and message.author != bot.user and message.reference and message.reference.message_id == ref_msg.id
                 date = await bot.wait_for('message', check=check)
-                print(date)
-                await member.add_roles(membership_role_object)
+                await date.reply('入力を受け付けました。', mention_author=False)
+                add_role = guild.get_role(yt_membership_role)
+                await member.add_roles(add_role)
                 status: Optional[str] = await sheet(member, date.content).check_status()
                 if status is None:
                     await ctx.reply(content='メンバーシップ認証を承認しました。\nメンバー限定チャンネルをご利用いただけます!', mention_author=False)
