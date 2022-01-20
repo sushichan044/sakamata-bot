@@ -62,6 +62,7 @@ INIT_EXTENSION_LIST = [
     'Cogs.ng_word',
     'Cogs.pin',
     'Cogs.poll',
+    'Cogs.slow',
     'Cogs.thread',
 ]
 
