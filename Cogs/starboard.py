@@ -44,13 +44,14 @@ class StarBoard(commands.Cog):
 
     def make_embed(self, message: discord.Message, count: int) -> discord.Embed:
         embed = discord.Embed(
-            description={message.content},
+            description=message.content,
             color=3447003,
             timestamp=message.created_at
         )
         embed.set_author(
             name=f'{message.author} in #{message.channel.name}',
-            url=message.jump_url
+            url=message.jump_url,
+            icon_url=message.author.display_avatar.url
         )
         embed.add_field(
             name='元のメッセージ',
