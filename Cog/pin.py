@@ -18,10 +18,10 @@ class ContextPin(commands.Cog):
     async def _pin(self, ctx, message: discord.Message):
         try:
             await message.pin()
-            await ctx.respond('ピン留めしました!', ephemeral=True)
-            return
         except discord.errors.ApplicationCommandInvokeError as e:
             print(f'これはテストです。\n{e}')
+        else:
+            await ctx.respond('ピン留めしました!', ephemeral=True)
             return
             '''
             if e == 'Maximum number of pins reached (50)':
