@@ -221,7 +221,7 @@ async def _newuser(
     ctx,
     member: Option(Member, '対象のIDや名前を入力してください。'),
 ):
-    '''ユーザー情報を取得できます。'''
+    """ユーザー情報を取得できます。"""
     # guild = ctx.guild
     # member = guild.get_member(int(id))
     # この先表示する用
@@ -244,6 +244,35 @@ async def _newuser(
     # Message成形-途中
     user_info_msg = f'```ユーザー名:{member} (ID:{member.id})\nBot?:{member.bot}\nAvatar url:{avatar_url}\nニックネーム:{member_nickname}\nアカウント作成日時:{member_reg_date:%Y/%m/%d %H:%M:%S}\n参加日時:{member_join_date:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
     await ctx.respond(user_info_msg)
+    return
+
+
+@bot.command(name='user')
+@commands.has_role(mod_role)
+async def _new_user(ctx, member: Member):
+    """ユーザー情報を取得できます。"""
+    guild = ctx.guild
+    member = guild.get_member(member)
+    # この先表示する用
+    avatar_url = member.display_avatar.replace(
+        size=1024, static_format='webp').url
+    if member.avatar is None:
+        avatar_url = 'DefaultAvatar'
+    member_reg_date = member.created_at.astimezone(jst)
+    # NickNameあるか？
+    if member.display_name == member.name:
+        member_nickname = 'None'
+    else:
+        member_nickname = member.display_name
+    member_join_date = member.joined_at.astimezone(jst)
+    # membermention = member.mention
+    roles = [[x.name, x.id] for x in member.roles]
+    # [[name,id],[name,id]...]
+    x = ['/ID: '.join(str(y) for y in x) for x in roles]
+    z = '\n'.join(x)
+    # Message成形-途中
+    user_info_msg = f'```ユーザー名:{member} (ID:{member.id})\nBot?:{member.bot}\nAvatar url:{avatar_url}\nニックネーム:{member_nickname}\nアカウント作成日時:{member_reg_date:%Y/%m/%d %H:%M:%S}\n参加日時:{member_join_date:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
+    await ctx.reply(user_info_msg, mention_author=False)
     return
 
 
