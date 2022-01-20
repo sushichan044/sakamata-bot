@@ -94,17 +94,18 @@ class Poll(commands.Cog):
         values = [field.value for field in message.embeds[0].fields]
         titles = [embed.title for embed in message.embeds]
         d = dict(zip(values, counts))
+        embed = discord.Embed(
+            title='集計結果',
+            description=f'{titles[0]}',
+            color=3447003,
+        )
         for value, count in d.items():
-            embed = discord.Embed(
-                title='集計結果',
-                description=f'{titles[0]}',
-                color=3447003,
-            )
             embed.add_field(
                 name=value,
                 value=str(count)
             )
-        await ctx.respond()
+        await ctx.send(embed=embed)
+        await ctx.respond('集計完了', ephemeral=True)
         pass
 
 
