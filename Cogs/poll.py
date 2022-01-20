@@ -58,6 +58,9 @@ class Poll(commands.Cog):
                 name='\N{Large Red Circle}',
                 value='No'
             )
+            embed.set_footer(
+                text='[投票]'
+            )
             poll_yes_emoji = '\N{Large Green Circle}'
             poll_no_emoji = '\N{Large Red Circle}'
             m = await ctx.send(embed=embed)
@@ -81,6 +84,9 @@ class Poll(commands.Cog):
                     name=poll_emoji_list[num],
                     value=select[num]
                 )
+                embed.set_footer(
+                    text='[投票]'
+                )
             m = await ctx.send(embed=embed)
             for x in range(len(select)):
                 await m.add_reaction(poll_emoji_list[x])
@@ -88,23 +94,27 @@ class Poll(commands.Cog):
 
     @message_command(guild_ids=[guild_id], name='投票集計')
     async def _result_poll(self, ctx, message: discord.Message):
-        counts = [reaction.count for reaction in message.reactions]
-        values = [field.value for field in message.embeds[0].fields]
-        titles = [embed.title for embed in message.embeds]
-        d = dict(zip(values, counts))
-        embed = discord.Embed(
-            title='集計結果',
-            description=f'{titles[0]}',
-            color=3447003,
-        )
-        for value, count in d.items():
-            embed.add_field(
-                name=value,
-                value=f'{str(count-1)}票'
+        if message.embeds[0].footer.text != '[投票]':
+            await ctx.respond('集計に対応していないメッセージです。', ephemeral=True)
+            return
+        else:
+            counts = [reaction.count for reaction in message.reactions]
+            values = [field.value for field in message.embeds[0].fields]
+            titles = [embed.title for embed in message.embeds]
+            d = dict(zip(values, counts))
+            embed = discord.Embed(
+                title='集計結果',
+                description=f'{titles[0]}',
+                color=3447003,
             )
-        await message.reply(embed=embed)
-        await ctx.respond('集計完了')
-        return
+            for value, count in d.items():
+                embed.add_field(
+                    name=value,
+                    value=f'{str(count-1)}票'
+                )
+            await message.reply(embed=embed)
+            await ctx.respond('集計完了')
+            return
 
 
 def setup(bot):
