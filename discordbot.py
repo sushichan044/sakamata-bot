@@ -710,7 +710,7 @@ async def _check_member(ctx):
                 desc_url = tracker.message.jump_url
                 member = guild.get_member(
                     ctx.message.author.id)
-                ref_msg = await btn_msg.reply(f'{member.display_name}さんの次回支払日を入力してください。')
+                ref_msg = await btn_msg.reply(f'{ctx.message.author.display_name}さんの次回支払日を返信してください。')
 
                 def check(message):
                     return bool(date_pattern.fullmatch(message.content)) and message.author != bot.user and message.reference and message.reference.message_id == ref_msg.id
@@ -746,13 +746,14 @@ async def _check_member(ctx):
             else:
                 msg = non_exe_msg
                 desc_url = tracker.message.jump_url
-                get_reason = await tracker.message.reply(content='DMで送信する不承認理由を入力してください。', mention_author=False)
+                get_reason = await tracker.message.reply(content=f'DMで送信する{ctx.author.display_name}さんの不承認理由を返信してください。', mention_author=False)
 
                 def check(message):
                     return message.content and message.author != bot.user and message.reference and message.reference.message_id == get_reason.id
                 message = await bot.wait_for('message', check=check)
                 reply_msg = f'メンバーシップ認証を承認できませんでした。\n理由:\n　{message.content}'
                 await ctx.reply(content=reply_msg, mention_author=False)
+                await message.reply('否認理由を送信しました。', mention_author=False)
                 log_channel_object = bot.get_channel(log_channel)
                 embed = discord.Embed(
                     title='実行ログ',
