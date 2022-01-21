@@ -68,7 +68,7 @@ class StarBoard(commands.Cog):
             timestamp=message.created_at
         )
         embed.set_author(
-            name=f'{message.author} in #{message.channel.name}',
+            name=f'{message.author.display_name} in #{message.channel.name}',
             url=message.jump_url,
             icon_url=message.author.display_avatar.url
         )
