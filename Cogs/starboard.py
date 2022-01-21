@@ -131,7 +131,7 @@ class StarBoard(commands.Cog):
             print('could not find history')
             return
         target = [x
-                  for x in history if x.embeds[0].author.url == message.jump_url]
+                  for x in history if x.embeds and x.embeds[0].author.url == message.jump_url]
         if not target:
             return True
         else:
