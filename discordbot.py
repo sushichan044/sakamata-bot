@@ -67,6 +67,7 @@ INIT_EXTENSION_LIST = [
     'Cogs.pin',
     'Cogs.poll',
     'Cogs.slow',
+    'Cogs.starboard',
     'Cogs.thread',
     'Cogs.translate'
 ]
@@ -106,6 +107,7 @@ join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
 alert_channel = int(os.environ['ALERT_CHANNEL'])
 error_log_channel = int(os.environ['ERROR_CHANNEL'])
 stream_channel = int(os.environ['STREAM_CHANNEL'])
+star_channel = int(os.environ['STAR_CHANNEL'])
 count_vc = int(os.environ['COUNT_VC'])
 
 
