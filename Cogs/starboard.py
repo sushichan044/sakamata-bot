@@ -7,7 +7,7 @@ from discord.ext import commands
 from discord.errors import HTTPException
 
 # star_emoji = '\N{Blue Heart}'
-star_emoji = <:c_Ofb4:926885084395606086>
+star_emoji = '<:c_Ofb4:926885084395606086>'
 emoji_url = 'https://cdn.discordapp.com/emojis/926885084395606086.webp?size=1024&quality=lossless'
 star_channel = int(os.environ['STAR_CHANNEL'])
 
@@ -119,10 +119,11 @@ class StarBoard(commands.Cog):
             return history
 
     def _get_reaction(self, message: discord.Message):
-        reaction = discord.utils.get(message.reactions, emoji=star_emoji)
-        if not reaction:
+        reaction = [x for x in message.reactions if x.emoji == star_emoji]
+        # reaction = discord.utils.get(message.reactions, emoji=star_emoji)
+        if not reaction[0]:
             print('Reaction Buggy')
-        return reaction
+        return reaction[0]
 
     async def _get_history_post(self, message: discord.Message) -> Optional[bool]:
         channel = self.bot.get_channel(star_channel)
