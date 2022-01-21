@@ -23,7 +23,6 @@ class StarBoard(commands.Cog):
             channel = self.bot.get_channel(payload.channel_id)
             message = await channel.fetch_message(payload.message_id)
             reaction = self._get_reaction(message)
-            print(reaction.count)
             if reaction and reaction.count >= 3:
                 if await self._get_history_post(message):
                     await self.post_board(message, reaction.count)
@@ -121,6 +120,8 @@ class StarBoard(commands.Cog):
 
     def _get_reaction(self, message: discord.Message):
         reaction = discord.utils.get(message.reactions, emoji=star_emoji)
+        if not reaction:
+            print('Reaction Buggy')
         return reaction
 
     async def _get_history_post(self, message: discord.Message) -> Optional[bool]:
