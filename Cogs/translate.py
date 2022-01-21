@@ -121,12 +121,12 @@ class Translate(commands.Cog):
     def compose_embed(self, origin: str, result: str, output: Literal['ja', 'en'], service: Literal['DeepL', 'GoogleTrans']):
         if output == 'ja':
             _footer = f'{service}によって翻訳されました'
-            _origin = '[翻訳元]'
-            _result = '[翻訳結果]'
+            _origin = '[翻訳元/Origin]'
+            _result = '[翻訳結果/Result]'
         else:
             _footer = f'Translated by {service}'
-            _origin = '[Origin Text]'
-            _result = '[Result]'
+            _origin = '[翻訳元/Origin]'
+            _result = '[翻訳結果/Result]'
         embeds = []
         origin_embed = discord.Embed(
             color=15767485,
