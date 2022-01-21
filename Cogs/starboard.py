@@ -119,8 +119,7 @@ class StarBoard(commands.Cog):
             return history
 
     def _get_reaction(self, message: discord.Message):
-        reaction = [x for x in message.reactions if x.emoji == star_emoji]
-        # reaction = discord.utils.get(message.reactions, emoji=star_emoji)
+        reaction = [x for x in message.reactions if str(x.emoji) == star_emoji]
         if not reaction[0]:
             print('Reaction Buggy')
         return reaction[0]
