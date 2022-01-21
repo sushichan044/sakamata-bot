@@ -74,7 +74,7 @@ INIT_EXTENSION_LIST = [
 
 for cog in INIT_EXTENSION_LIST:
     bot.load_extension(cog)
-print('extension is loaded!')
+    print(f'extension [{cog}] is loaded!')
 
 
 # ID-guild
