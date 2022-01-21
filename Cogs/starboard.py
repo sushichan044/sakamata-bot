@@ -1,5 +1,8 @@
 import os
 from typing import Optional
+from unicodedata import name
+
+from discord import channel
 
 import discord
 from discord.ext import commands
@@ -43,7 +46,7 @@ class StarBoard(commands.Cog):
         channel = self.bot.get_channel(star_channel)
         sent_embeds = []
         if message.content or message.attachments:
-            base_embed = self.make_embed(message, count)
+            base_embed = await self.make_embed(message, count)
             sent_embeds.append(base_embed)
             for attachment in message.attachments[1:]:
                 embed = discord.Embed(
@@ -58,7 +61,7 @@ class StarBoard(commands.Cog):
         await channel.send(embeds=sent_embeds)
         return
 
-    def make_embed(self, message: discord.Message, count: int) -> discord.Embed:
+    async def make_embed(self, message: discord.Message, count: int) -> discord.Embed:
         embed = discord.Embed(
             description=message.content,
             color=3447003,
@@ -71,7 +74,7 @@ class StarBoard(commands.Cog):
         )
         embed.add_field(
             name='元のメッセージ',
-            value=f'[クリック/タップで移動]({message.jump_url})',
+            value=f'[クリックで移動]({message.jump_url})',
         )
         embed.set_footer(
             text=str(count),
@@ -80,6 +83,13 @@ class StarBoard(commands.Cog):
         if message.attachments and message.attachments[0].proxy_url:
             embed.set_image(
                 url=message.attachments[0].proxy_url
+            )
+        if message.reference:
+            ref_ch = self.bot.get_channel(message.reference.channel_id)
+            ref_msg = await ref_ch.fetch_message(message.reference.message_id)
+            embed.add_field(
+                name='返信先',
+                value=f'[クリックで移動]({ref_msg.jump_url})',
             )
         return embed
 
