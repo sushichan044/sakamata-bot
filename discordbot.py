@@ -67,7 +67,7 @@ INIT_EXTENSION_LIST = [
     'Cogs.pin',
     'Cogs.poll',
     'Cogs.slow',
-    #    'Cogs.starboard',
+    'Cogs.starboard',
     'Cogs.thread',
     'Cogs.translate'
 ]
