@@ -16,7 +16,7 @@ class MemberConfView(View):
     ng_str = state('ng_str')
     que = state('que')
 
-    def __init__(self, future, ctx):
+    def __init__(self, ctx, future):
         super().__init__()
         self.ctx = ctx
         self.future = future

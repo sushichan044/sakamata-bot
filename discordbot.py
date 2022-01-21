@@ -697,7 +697,7 @@ async def _check_member(ctx):
         exe_msg = f'{ctx.message.author.mention}のメンバーシップ認証を承認しました。'
         non_exe_msg = f'{ctx.message.author.mention}のメンバーシップ認証を否認しました。'
         future = asyncio.Future()
-        view = membership_button.MemberConfView(future, ctx)
+        view = membership_button.MemberConfView(ctx, future)
         tracker = ViewTracker(view, timeout=None)
         await tracker.track(MessageProvider(channel))
         await future
