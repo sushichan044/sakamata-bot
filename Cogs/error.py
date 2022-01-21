@@ -3,6 +3,7 @@ from datetime import timedelta, timezone
 
 import discord
 from discord.ext import commands
+from typing import Optional
 
 error_log_channel = int(os.environ['ERROR_CHANNEL'])
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
@@ -36,6 +37,14 @@ class ErrorNotify(commands.Cog):
             return
         else:
             return
+
+    @commands.Cog.listener(name='on_application_command_error')
+    async def _on_application_command_error(self, ctx, exception):
+        channel = self.bot.get_channel(error_log_channel)
+        now = discord.utils.utcnow().astimezone(jst)
+        url: Optional[str] = ctx.message.jump_url
+        await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{url}\n{str(exception)}```')
+        return
 
     @commands.command(name='errortest')
     @commands.has_role(admin_role)

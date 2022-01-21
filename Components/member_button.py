@@ -65,7 +65,9 @@ class MemberConfView(View):
         )
         embed_list.append(embed)
         for x in image_url:
-            embed = discord.Embed()
+            embed = discord.Embed(
+                color=15767485,
+            )
             embed.set_image(
                 url=x
             )

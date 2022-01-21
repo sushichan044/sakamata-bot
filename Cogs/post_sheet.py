@@ -2,8 +2,6 @@ import os
 
 import requests
 
-from .format_date import FormatDate as date
-
 
 class PostToSheet():
     def __init__(self, member, date: str) -> None:
@@ -21,9 +19,8 @@ class PostToSheet():
             return s['message']
 
     def post_sheet(self):
-        sent_date = date(self.date).format_date()
         data = {'id': f'{self.member.id}', 'name': f'{self.member}',
-                'billing_date': f'{sent_date}'}
+                'billing_date': f'{self.date}'}
         url = os.environ['MEMBER_SHEET']
         try:
             r = requests.post(url, data=data)
