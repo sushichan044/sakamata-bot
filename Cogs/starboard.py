@@ -33,10 +33,6 @@ class StarBoard(commands.Cog):
                         await self.refresh_board(message, reaction.count)
                         print('Complete Refresh')
                         return
-            else:
-                return
-        else:
-            return
 
     async def post_board(self, message: discord.Message, count: int):
         channel = self.bot.get_channel(star_channel)
