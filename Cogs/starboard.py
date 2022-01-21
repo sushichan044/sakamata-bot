@@ -1,8 +1,6 @@
 import os
 from typing import Optional
-from unicodedata import name
 
-from discord import channel
 
 import discord
 from discord.ext import commands
