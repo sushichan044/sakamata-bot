@@ -28,6 +28,7 @@ class StarBoard(commands.Cog):
                 return
             elif reaction and reaction.count > 4:
                 count = reaction.count
+                print(count)
                 await self.refresh_board(message, count)
                 print('Post Done')
                 return
@@ -83,6 +84,7 @@ class StarBoard(commands.Cog):
         history = await self._get_history(channel)
         if not history:
             return
+        print(history)
         target = [x
                   for x in history if x.embeds[0].author.url == message.jump_url]
         embed = target[0].embeds[0]
