@@ -18,6 +18,7 @@ class StarBoard(commands.Cog):
 
     @commands.Cog.listener(name='on_raw_reaction_add')
     async def board_add(self, payload):
+        print(str(payload.emoji))
         if str(payload.emoji) == star_emoji:
             channel = self.bot.get_channel(payload.channel_id)
             message = await channel.fetch_message(payload.message_id)
