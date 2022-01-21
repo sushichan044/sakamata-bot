@@ -77,37 +77,32 @@ for cog in INIT_EXTENSION_LIST:
 print('extension is loaded!')
 
 
-# 本番鯖IDなど
-'''
-log_channel = 917009541433016370
-vc_log_channel = 917009562383556678
-dm_box_channel = 921781301101613076
-alert_channel = 924744385902575616
-member_check_channel = 926777825925677096
-yt_membership_role = 923789641159700500
-
-'''
-# 実験鯖IDなど
-log_channel = 916971090042060830
-vc_log_channel = 916988601902989373
-dm_box_channel = 918101377958436954
-alert_channel = 924744469327257602
-member_check_channel = 926777719964987412
-yt_membership_role = 926268230417408010
-
-
-# ID-env
+# ID-guild
 guild_id = int(os.environ['GUILD_ID'])
+
+# ID-role
 everyone = int(os.environ['GUILD_ID'])
 server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
 mod_role = int(os.environ['MOD_ROLE'])
 admin_role = int(os.environ['ADMIN_ROLE'])
-thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
-join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
+yt_membership_role = int(os.environ['YT_MEMBER_ROLE'])
+
+# ID-channel
 alert_channel = int(os.environ['ALERT_CHANNEL'])
-error_log_channel = int(os.environ['ERROR_CHANNEL'])
 stream_channel = int(os.environ['STREAM_CHANNEL'])
 star_channel = int(os.environ['STAR_CHANNEL'])
+dm_box_channel = int(os.environ['DM_BOX_CHANNEL'])
+alert_channel = int(os.environ['ALERT_CHANNEL'])
+member_check_channel = int(os.environ['MEMBER_CHECK_CHANNEL'])
+
+# ID-log
+thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
+join_log_channel = int(os.environ['JOIN_LOG_CHANNEL'])
+log_channel = int(os.environ['LOG_CHANNEL'])
+vc_log_channel = int(os.environ['VC_LOG_CHANNEL'])
+error_log_channel = int(os.environ['ERROR_CHANNEL'])
+
+# Id-vc
 count_vc = int(os.environ['COUNT_VC'])
 
 

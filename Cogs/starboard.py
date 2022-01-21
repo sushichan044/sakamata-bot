@@ -1,7 +1,9 @@
 import os
+from typing import Optional
 
 import discord
 from discord.ext import commands
+from discord.errors import HTTPException
 
 star_emoji = '\N{Blue Heart}'
 # star_emoji = '<:c_Ofb4:926885084395606086>'
@@ -19,10 +21,17 @@ class StarBoard(commands.Cog):
             channel = self.bot.get_channel(payload.channel_id)
             message = await channel.fetch_message(payload.message_id)
             reaction = discord.utils.get(message.reactions, emoji=star_emoji)
-            if reaction and reaction.count >= 3:
+            if reaction and reaction.count == 3:
                 count = reaction.count
-                print('Event Get Done')
                 await self.post_board(message, count)
+                print('Post Done')
+                return
+            elif reaction and reaction.count > 4:
+                count = reaction.count
+                await self.refresh_board(message, count)
+                print('Post Done')
+                return
+            else:
                 return
 
     async def post_board(self, message: discord.Message, count: int):
@@ -68,6 +77,26 @@ class StarBoard(commands.Cog):
                 url=message.attachments[0].proxy_url
             )
         return embed
+
+    async def refresh_board(self, message: discord.Message, count: int):
+        channel = self.bot.get_channel(star_channel)
+        history = await self._get_history(channel)
+        if not history:
+            return
+        target = [x
+                  for x in history if x.embeds[0].author.url == message.jump_url]
+        embed = target[0].embeds[0]
+        embed.footer.text = str(count)
+        await target[0].edit(embed=embed)
+        return
+
+    async def _get_history(self, channel) -> Optional[list[discord.Message]]:
+        try:
+            history = await channel.history().flatten()
+            return history
+        except HTTPException as e:
+            print(f'{e.response}\n{e.text}')
+            return
 
 
 def setup(bot):
