@@ -109,6 +109,7 @@ count_vc = int(os.environ['COUNT_VC'])
 # emoji
 accept_emoji = "\N{Heavy Large Circle}"
 reject_emoji = "\N{Cross Mark}"
+star_emoji = os.environ['STAR_EMOJI']
 
 
 # pattern

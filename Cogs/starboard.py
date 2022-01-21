@@ -5,8 +5,9 @@ import discord
 from discord.ext import commands
 from discord.errors import HTTPException
 
-star_emoji = '\N{Blue Heart}'
-# star_emoji = '<:c_Ofb4:926885084395606086>'
+# 本番star_emoji = '\N{Blue Heart}'
+# テストstar_emoji = '<:c_Ofb4:926885084395606086>'
+star_emoji = os.environ['STAR_EMOJI']
 emoji_url = 'https://cdn.discordapp.com/emojis/926885084395606086.webp?size=1024&quality=lossless'
 star_channel = int(os.environ['STAR_CHANNEL'])
 
@@ -20,7 +21,7 @@ class StarBoard(commands.Cog):
         if str(payload.emoji) == star_emoji:
             channel = self.bot.get_channel(payload.channel_id)
             message = await channel.fetch_message(payload.message_id)
-            reaction = discord.utils.get(message.reactions, emoji=star_emoji)
+            reaction = self._get_reaction(message)
             if reaction and reaction.count == 3:
                 count = reaction.count
                 await self.post_board(message, count)
@@ -104,6 +105,9 @@ class StarBoard(commands.Cog):
             print(history)
             return history
 
+    def _get_reaction(self, message: discord.Message):
+        reaction = discord.utils.get(message.reactions, emoji=star_emoji)
+        return reaction
 
 
 def setup(bot):
