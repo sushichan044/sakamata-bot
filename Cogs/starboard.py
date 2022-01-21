@@ -22,21 +22,21 @@ class StarBoard(commands.Cog):
             channel = self.bot.get_channel(payload.channel_id)
             message = await channel.fetch_message(payload.message_id)
             reaction = self._get_reaction(message)
-            if reaction and reaction.count == 3:
-                if not await self._get_history_post(message):
+            if reaction and reaction.count >= 3:
+                if await self._get_history_post(message):
+                    await self.post_board(message, reaction.count)
                     return
-                count = reaction.count
-                await self.post_board(message, count)
-                print('Post Done')
-                return
-            elif reaction and reaction.count >= 4:
-                count = reaction.count
-                print(count)
-                await self.refresh_board(message, count)
-                print('Post Done')
-                return
+                else:
+                    if reaction.count == 3:
+                        return
+                    else:
+                        await self.refresh_board(message, reaction.count)
+                        print('Complete Refresh')
+                        return
             else:
                 return
+        else:
+            return
 
     async def post_board(self, message: discord.Message, count: int):
         channel = self.bot.get_channel(star_channel)
