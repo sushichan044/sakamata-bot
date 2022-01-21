@@ -23,15 +23,15 @@ class StarBoard(commands.Cog):
             channel = self.bot.get_channel(payload.channel_id)
             message = await channel.fetch_message(payload.message_id)
             reaction = self._get_reaction(message)
-            if reaction and reaction.count >= 3:
+            if reaction[0] and reaction[0].count >= 3:
                 if await self._get_history_post(message):
-                    await self.post_board(message, reaction.count)
+                    await self.post_board(message, reaction[0].count)
                     return
                 else:
                     if reaction.count == 3:
                         return
                     else:
-                        await self.refresh_board(message, reaction.count)
+                        await self.refresh_board(message, reaction[0].count)
                         print('Complete Refresh')
                         return
 
@@ -122,7 +122,7 @@ class StarBoard(commands.Cog):
         reaction = [x for x in message.reactions if str(x.emoji) == star_emoji]
         if not reaction[0]:
             print('Reaction Buggy')
-        return reaction[0]
+        return reaction
 
     async def _get_history_post(self, message: discord.Message) -> Optional[bool]:
         channel = self.bot.get_channel(star_channel)
