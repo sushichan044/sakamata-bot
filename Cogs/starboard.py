@@ -5,9 +5,8 @@ import discord
 from discord.ext import commands
 from discord.errors import HTTPException
 
-# 本番star_emoji = '\N{Blue Heart}'
-# テストstar_emoji = '<:c_Ofb4:926885084395606086>'
-star_emoji = os.environ['STAR_EMOJI']
+star_emoji = '\N{Blue Heart}'
+# 本番star_emoji = '<:c_Ofb4:926885084395606086>'
 emoji_url = 'https://cdn.discordapp.com/emojis/926885084395606086.webp?size=1024&quality=lossless'
 star_channel = int(os.environ['STAR_CHANNEL'])
 
