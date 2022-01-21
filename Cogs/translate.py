@@ -21,6 +21,9 @@ class Translate(commands.Cog):
     @message_command(guild_ids=[guild_id], name='日本語に翻訳')
     @permissions.has_role(server_member_role)
     async def deepl_trans_to_jp(self, ctx, message: discord.Message):
+        if not message.content and message.embeds:
+            await ctx.respond('現在埋め込みメッセージには対応しておりません。', ephemeral=True)
+            return
         if self.length_check(message.content):
             await ctx.respond('翻訳する文字は1024文字以下にしてください。', ephemeral=True)
             return
@@ -40,6 +43,9 @@ class Translate(commands.Cog):
     @message_command(guild_ids=[guild_id], name='Translate to English')
     @permissions.has_role(server_member_role)
     async def deepl_trans_to_en(self, ctx, message: discord.Message):
+        if not message.content and message.embeds:
+            await ctx.respond('Currently, embedded messages are not supported.', ephemeral=True)
+            return
         if self.length_check(message.content):
             await ctx.respond(
                 'The characters should be no more than 1024 characters.', ephemeral=True)
