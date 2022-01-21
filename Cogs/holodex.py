@@ -28,6 +28,7 @@ class StreamNotify(commands.Cog):
     @slash_command(guild_ids=[guild_id], default_permission=False, name='stream')
     @permissions.has_role(admin_role)
     async def get_stream(self, ctx):
+        """配信通知の手動更新を行います。"""
         await self.get_stream_method()
         await ctx.respond('更新が完了しました。')
         return

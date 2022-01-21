@@ -49,6 +49,7 @@ class ErrorNotify(commands.Cog):
     @commands.command(name='errortest')
     @commands.has_role(admin_role)
     async def _errortest(self, ctx):
+        """エラー出力テスト"""
         prin()
 
 

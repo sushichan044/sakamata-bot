@@ -443,7 +443,7 @@ async def _emergency_timeout(ctx, member: Member):
 @bot.command(name='timeout')
 @commands.has_role(mod_role)
 async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'dm:true'):
-    '''メンバーをタイムアウト'''
+    """メンバーをタイムアウト"""
     until = datetime.strptime(input_until, '%Y%m%d')
     until_jst = until.replace(tzinfo=jst)
     role = ctx.guild.get_role(mod_role)
@@ -500,7 +500,7 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'dm:true'
 @bot.command(name='untimeout')
 @commands.has_role(admin_role)
 async def _untimeout(ctx, member: Member):
-    '''メンバーのタイムアウトを解除'''
+    """メンバーのタイムアウトを解除"""
     role = ctx.guild.get_role(admin_role)
     confirm_msg = f'【untimeout実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})'
     exe_msg = f'{member.mention}のタイムアウトを解除しました。'
@@ -530,7 +530,7 @@ async def _untimeout(ctx, member: Member):
 @bot.command(name='kick')
 @commands.has_role(admin_role)
 async def _kick_user(ctx, member: Member, if_dm: str = 'dm:true'):
-    '''メンバーをキック'''
+    """メンバーをキック"""
     role = ctx.guild.get_role(admin_role)
     valid_if_dm_list = ['dm:true', 'dm:false']
     if if_dm not in valid_if_dm_list:
@@ -584,7 +584,7 @@ async def _kick_user(ctx, member: Member, if_dm: str = 'dm:true'):
 @bot.command(name='ban')
 @commands.has_role(admin_role)
 async def _ban_user(ctx, member: Member, if_dm: str = 'dm:true'):
-    '''メンバーをBAN'''
+    """メンバーをBAN"""
     role = ctx.guild.get_role(admin_role)
     valid_if_dm_list = ['dm:true', 'dm:false']
     if if_dm not in valid_if_dm_list:
@@ -644,7 +644,7 @@ https://forms.gle/mR1foEyd9JHbhYdCA
 @bot.command(name='unban')
 @commands.has_role(admin_role)
 async def _unban_user(ctx, id: int):
-    '''ユーザーのBANを解除'''
+    """ユーザーのBANを解除"""
     user = await bot.fetch_user(id)
     banned_users = await ctx.guild.bans()
     role = ctx.guild.get_role(admin_role)
@@ -683,7 +683,7 @@ async def _unban_user(ctx, id: int):
 @bot.command(name='check')
 @commands.dm_only()
 async def _check_member(ctx):
-    '''メンバーシップ認証用'''
+    """メンバーシップ認証用"""
     if ctx.message.attachments == []:
         await ctx.reply(content='画像が添付されていません。画像を添付して送り直してください。', mention_author=False)
         msg = 'メンバー認証コマンドに画像が添付されていなかったため処理を停止しました。'
@@ -778,6 +778,7 @@ async def _check_member(ctx):
 @bot.command(name='remove-member')
 @commands.dm_only()
 async def _remove_member(ctx):
+    """メンバーシップ継続停止時"""
     await ctx.reply(content='メンバーシップ継続停止を受理しました。\nしばらくお待ちください。', mention_author=False)
     channel = bot.get_channel(member_check_channel)
     guild = bot.get_guild(guild_id)
@@ -820,6 +821,7 @@ async def _remove_member(ctx):
 @bot.command(name='update-member')
 @commands.has_role(admin_role)
 async def _update_member(ctx, *update_member: Member):
+    """メンバーシップ更新案内"""
     role = ctx.guild.get_role(admin_role)
     update_member_mention = [x.mention for x in update_member]
     update_member_str = '\n'.join(update_member_mention)

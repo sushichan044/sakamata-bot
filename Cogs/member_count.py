@@ -24,6 +24,7 @@ class MemberCount(commands.Cog):
 
     @slash_command(guild_ids=[guild_id], default_permission=False, name='manualcount')
     @permissions.has_role(admin_role)
+    """メンバーカウントの手動更新用"""
     async def _manual(self, ctx):
         await self.membercount()
         await ctx.respond(content='更新が完了しました。', ephemeral=True)

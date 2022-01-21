@@ -64,11 +64,12 @@ class Translate(commands.Cog):
     async def _trans_command(
             self,
             ctx,
-            service: Option(str, 'Choose Translation Service',
+            service: Option(str, '翻訳サービスを選択してください。',
                             choices=['DeepL', 'GoogleTrans']),
-            language: Option(str, 'Choose Output Language', choices=['日本語', 'English']),
-            text: Option(str, 'Input text to translate'),
+            language: Option(str, '翻訳先の言語を選択してください。', choices=['日本語', 'English']),
+            text: Option(str, '翻訳するテキストを入力してください。(最大1024文字)'),
     ):
+        """翻訳機能"""
         if self.length_check(text):
             await ctx.respond('翻訳する文字は1024文字以下にしてください。', ephemeral=True)
             return

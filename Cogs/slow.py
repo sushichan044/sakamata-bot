@@ -31,8 +31,9 @@ class SlowMode(commands.Cog):
     async def _slash_slow(
         self,
         ctx,
-        channel: Option(discord.TextChannel, 'Choose Channel'),
+        channel: Option(discord.TextChannel, '対象のチャンネルを選択してください。'),
     ):
+        """指定したチャンネルのスローモードを切り替えます。"""
         res = await self._slow(channel)
         if res:
             deal = 'ON'
