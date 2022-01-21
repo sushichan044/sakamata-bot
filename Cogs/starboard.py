@@ -21,10 +21,6 @@ class StarBoard(commands.Cog):
         if str(payload.emoji) == star_emoji:
             channel = self.bot.get_channel(payload.channel_id)
             message = await channel.fetch_message(payload.message_id)
-            if message.type != discord.MessageType.default:
-                return
-            if message.author.bot and message.author != self.bot.user:
-                return
             reaction = self._get_reaction(message)
             if reaction and reaction.count == 3:
                 count = reaction.count
