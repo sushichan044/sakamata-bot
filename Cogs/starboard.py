@@ -18,6 +18,7 @@ class StarBoard(commands.Cog):
 
     @commands.Cog.listener(name='on_raw_reaction_add')
     async def board_add(self, payload):
+        print(str(payload.emoji))
         if str(payload.emoji) == star_emoji:
             channel = self.bot.get_channel(payload.channel_id)
             message = await channel.fetch_message(payload.message_id)
@@ -118,16 +119,18 @@ class StarBoard(commands.Cog):
             return history
 
     def _get_reaction(self, message: discord.Message):
-        reaction = discord.utils.get(message.reactions, emoji=star_emoji)
-        return reaction
+        reaction = [x for x in message.reactions if str(x.emoji) == star_emoji]
+        if not reaction[0]:
+            print('Reaction Buggy')
+        return reaction[0]
 
     async def _get_history_post(self, message: discord.Message) -> Optional[bool]:
         channel = self.bot.get_channel(star_channel)
         history = await self._get_history(channel)
         if not history:
-            return
+            return True
         target = [x
-                  for x in history if x.embeds[0].author.url == message.jump_url]
+                  for x in history if x.embeds and x.embeds[0].author.url == message.jump_url]
         if not target:
             return True
         else:
