@@ -48,10 +48,16 @@ class StarBoard(commands.Cog):
                     url=attachment.proxy_url
                 )
                 sent_embeds.append(embed)
-        for embed in message.embeds:
-            sent_embeds.append(embed)
-        await channel.send(embeds=sent_embeds)
-        return
+            for embed in message.embeds:
+                sent_embeds.append(embed)
+            await channel.send(embeds=sent_embeds)
+            return
+        elif message.embeds and not message.content and not message.attachments:
+            base_embed = await self.make_embed(message, count)
+            base_embed.description = '埋め込みメッセージのため表示できません。'
+            sent_embeds.append(base_embed)
+            await channel.send(embeds=sent_embeds)
+            return
 
     async def make_embed(self, message: discord.Message, count: int) -> discord.Embed:
         embed = discord.Embed(
