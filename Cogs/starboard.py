@@ -23,6 +23,8 @@ class StarBoard(commands.Cog):
             message = await channel.fetch_message(payload.message_id)
             reaction = self._get_reaction(message)
             if reaction and reaction.count == 3:
+                if not await self._get_history_post(message):
+                    return
                 count = reaction.count
                 await self.post_board(message, count)
                 print('Post Done')
@@ -109,12 +111,24 @@ class StarBoard(commands.Cog):
             print(f'{e.response}\n{e.text}')
             return
         else:
-            print(history)
+            # print(history)
             return history
 
     def _get_reaction(self, message: discord.Message):
         reaction = discord.utils.get(message.reactions, emoji=star_emoji)
         return reaction
+
+    async def _get_history_post(self, message: discord.Message) -> Optional[bool]:
+        channel = self.bot.get_channel(star_channel)
+        history = await self._get_history(channel)
+        if not history:
+            return
+        target = [x
+                  for x in history if x.embeds[0].author.url == message.jump_url]
+        if not target:
+            return True
+        else:
+            return False
 
 
 def setup(bot):
