@@ -1,7 +1,8 @@
 import os
+
 import discord
-from discord.ext import commands
 from discord.commands import message_command
+from discord.ext import commands
 
 guild_id = int(os.environ['GUILD_ID'])
 server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])

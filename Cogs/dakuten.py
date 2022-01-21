@@ -19,6 +19,7 @@ class Dakuten(commands.Cog):
         ctx,
         text: Option(str, '濁点をつけるテキストを入力してください。'),
     ):
+        """濁点を付けて自慢しよう！"""
         out_text = ''.join([text[num] + '゛' for num in range(len(text))])
         await ctx.respond(out_text, ephemeral=True)
         return
