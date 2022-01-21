@@ -26,7 +26,7 @@ class StarBoard(commands.Cog):
                 await self.post_board(message, count)
                 print('Post Done')
                 return
-            elif reaction and reaction.count > 4:
+            elif reaction and reaction.count >= 4:
                 count = reaction.count
                 print(count)
                 await self.refresh_board(message, count)
@@ -84,21 +84,26 @@ class StarBoard(commands.Cog):
         history = await self._get_history(channel)
         if not history:
             return
-        print(history)
         target = [x
                   for x in history if x.embeds[0].author.url == message.jump_url]
         embed = target[0].embeds[0]
-        embed.footer.text = str(count)
+        embed.set_footer(
+            text=str(count),
+            icon_url=emoji_url
+        )
         await target[0].edit(embed=embed)
         return
 
     async def _get_history(self, channel) -> Optional[list[discord.Message]]:
         try:
             history = await channel.history().flatten()
-            return history
         except HTTPException as e:
             print(f'{e.response}\n{e.text}')
             return
+        else:
+            print(history)
+            return history
+
 
 
 def setup(bot):
