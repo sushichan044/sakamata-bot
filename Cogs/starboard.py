@@ -54,7 +54,8 @@ class StarBoard(commands.Cog):
             return
         elif message.embeds and not message.content and not message.attachments:
             base_embed = await self.make_embed(message, count)
-            base_embed.description = '埋め込みメッセージのため表示できません。'
+            preview = message.embeds[0].title
+            base_embed.description = f'{preview}...(続きは元のメッセージへ)'
             sent_embeds.append(base_embed)
             await channel.send(embeds=sent_embeds)
             return
