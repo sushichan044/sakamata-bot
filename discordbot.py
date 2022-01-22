@@ -61,6 +61,7 @@ INIT_EXTENSION_LIST = [
     'Cogs.dakuten',
     'Cogs.error',
     'Cogs.entrance',
+    'Cogs.fun',
     'Cogs.holodex',
     'Cogs.member_count',
     'Cogs.ng_word',

@@ -36,3 +36,7 @@ class Fun(commands.Cog):
             str(random.random()) if name is None else name)
         login = session.post(url, data=params)
         return BS(login.text).find('span', id='shindanResult').text
+
+
+def setup(bot):
+    return bot.add_cog(Fun(bot))
