@@ -31,6 +31,8 @@ class TimeData():
         return scheduled_date, scheduled_time, scheduled_timestamp, weekday_str, created_str
 
     def time_going(self):
+        if not self.x.start_actual:
+            return
         actual_start_stamp = self.x.start_actual.replace(
             'Z', '+00:00')
         actual_start = datetime.fromisoformat(
