@@ -34,14 +34,13 @@ class Thread(commands.Cog):
         else:
             return
 
-    def _sort_channel(self, channel):
-        return channel.position
-
     @commands.command(name='thread_board')
     @commands.has_role(mod_role)
     async def _thread(self, ctx):
-        channels = [channel for channel in await ctx.guild.fetch_channels if channel.category.name == '🎮ゲームセンター/GAMING🎮']
-        sort_channels = sorted(channels, key=self._sort_channel)
+        guild_channels = await ctx.guild.fetch_channels
+        channels = [
+            channel for channel in guild_channels if channel.category.name == '🎮ゲームセンター/GAMING🎮']
+        sort_channels = sorted(channels, key=lambda channel: channel.position)
         print(sort_channels)
         thread_dic = {}
         threads = [thread for thread in ctx.guild.threads if thread.invitable and not thread.locked and thread.parent.category.name == '🎮ゲームセンター/GAMING🎮']
