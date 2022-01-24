@@ -16,9 +16,9 @@
 ### 開発環境及び使用ライブラリ
 Python 3.10.1<br>
 [pycord](https://github.com/Pycord-Development/pycord) 2.0.0a<br>
-[discord-ext-ui](https://pypi.org/project/discord-ext-ui/) 3.1.1<br>
-[newdispanderfixed](https://pypi.org/project/newdispanderfixed/) 0.1.4([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
-[holodex](https://pypi.org/project/holodex/0.10.7/) 0.10.7<br>
+[discord-ext-ui](https://pypi.org/project/discord-ext-ui/) 3.1.3<br>
+[dispander-fork](https://github.com/sushi-chaaaan/dispanderfixed/tree/for2.0)([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
+[holodex](https://pypi.org/project/holodex/0.10.7/) 0.10.9<br>
 
 ### 各ブランチ
 Mainブランチ:クロヱ水族館の本番環境<br>
@@ -27,6 +27,15 @@ alphaブランチ:バックアップ用。安定したコードしか上がり�
 
 
 ### 機能追加履歴
+
+> v1.3.0(2022.01.23)
+
+配信通知機能のアップデート<br>
+右クリックによる翻訳・ピン留めに対応<br>
+投票機能の更新<br>
+StarBoard機能のテスト<br>
+濁点を付けて自慢する機能の追加<br>
+スローモードの右クリックON/OFF<br>
 
 > v1.2.1(2022.01.14)
 
