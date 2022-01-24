@@ -37,11 +37,11 @@ class Thread(commands.Cog):
     @commands.command(name='thread_board')
     @commands.has_role(mod_role)
     async def _thread(self, ctx):
-        channels = [channel for channel in await ctx.guild.fetch_channels() if channel.category.name == '🎮ゲームセンター/GAMING🎮']
+        channels = [channel for channel in await ctx.guild.channels if channel.category.name == 'GAMING']
         sort_channels = sorted(channels, key=lambda channel: channel.position)
         print(sort_channels)
         thread_dic = {}
-        threads = [thread for thread in ctx.guild.threads if thread.invitable and not thread.locked and thread.parent.category.name == '🎮ゲームセンター/GAMING🎮']
+        threads = [thread for thread in ctx.guild.threads if thread.invitable and not thread.locked and thread.parent.category.name == 'GAMING']
         for thread in threads:
             thread_dic[thread] = thread.parent.position
         """
