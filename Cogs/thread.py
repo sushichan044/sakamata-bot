@@ -6,6 +6,7 @@ from discord.ext import commands
 
 thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
+mod_role = int(os.environ['MOD_ROLE'])
 
 
 class Thread(commands.Cog):
@@ -32,6 +33,16 @@ class Thread(commands.Cog):
             return
         else:
             return
+
+    @commands.command(name='thread_board')
+    @commands.has_role(mod_role)
+    async def _thread_update(self, ctx):
+        pub_threads = [thread for thread in ctx.guild.threads]
+        thread_dic = {}
+        for thread in pub_threads:
+            thread_dic[thread] = thread.parent
+        print(thread_dic)
+        return
 
     async def compose_thread_create_log(self, thread):
         embed = discord.Embed(
