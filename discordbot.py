@@ -70,7 +70,7 @@ INIT_EXTENSION_LIST = [
     'Cogs.slow',
     'Cogs.starboard',
     'Cogs.thread',
-    'Cogs.translate'
+    # 'Cogs.translate'
 ]
 
 for cog in INIT_EXTENSION_LIST:
