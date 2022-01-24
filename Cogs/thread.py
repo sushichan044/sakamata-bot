@@ -34,16 +34,34 @@ class Thread(commands.Cog):
         else:
             return
 
+    def _sort_channel(self, channel):
+        return channel.position
+
     @commands.command(name='thread_board')
     @commands.has_role(mod_role)
-    async def _thread_update(self, ctx):
+    async def _thread(self, ctx):
+        channels = [channel for channel in await self.bot.fetch_channels if channel.category.name == '🎮ゲームセンター/GAMING🎮']
+        sort_channels = sorted(channels, key=self._sort_channel)
+        print(sort_channels)
         thread_dic = {}
         threads = [thread for thread in ctx.guild.threads if thread.invitable and not thread.locked and thread.parent.category.name == '🎮ゲームセンター/GAMING🎮']
         for thread in threads:
             thread_dic[thread] = thread.parent.position
-        sort_thread = sorted(thread_dic.items(), key=lambda i: i[1])
-        print(sort_thread)
-        return
+        """
+        thread_dic:
+        {thread:pos,
+        thread:pos,
+        ...}
+        """
+        # sort_thread = sorted(thread_dic.items(), key=lambda i: i[1])
+        for channel in channels:
+            thread_board = []
+            thread_board.append(channel.mention)
+            child_thread = [
+                thread for thread, parent in thread_dic.items() if parent == channel.position]
+            for thread in child_thread:
+
+        pass
 
     async def compose_thread_create_log(self, thread):
         embed = discord.Embed(
