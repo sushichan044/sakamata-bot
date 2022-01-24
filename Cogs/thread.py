@@ -33,16 +33,23 @@ class Thread(commands.Cog):
             return
         else:
             return
+    """
+    Thread Board Parts
+    normal
+    ┣
 
+    bottom
+    ┗
+    """
     @commands.command(name='thread_board')
     @commands.has_role(mod_role)
     async def _thread(self, ctx):
         channels = [
             channel for channel in ctx.guild.channels if channel.category and channel.category.id == 935244993323479060]
-        print(channels)
+        # print(channels)
         thread_dic = {}
         threads = [thread for thread in ctx.guild.threads if thread.invitable and not thread.locked and thread.parent.category.id == 935244993323479060]
-        print(threads)
+        # print(threads)
         for thread in threads:
             thread_dic[thread] = thread.parent.position
         """
@@ -52,13 +59,17 @@ class Thread(commands.Cog):
         ...}
         """
         # sort_thread = sorted(thread_dic.items(), key=lambda i: i[1])
+        final_board = []
         for channel in channels:
-            thread_board = []
-            thread_board.append(channel.mention)
+            thread_board = [channel.mention]
             child_thread = [
                 thread for thread, parent in thread_dic.items() if parent == channel.position]
-            # for thread in child_thread:
-
+            board = thread_board + child_thread
+            board_text_draft = '\n┣'.join(board[:-2])
+            board_text = f'{board_text_draft}\n┗{board[-1]}'
+            final_board.append(board_text)
+        final_text = '\n'.join(final_board)
+        await ctx.send(final_text)
         return
 
     async def compose_thread_create_log(self, thread):
