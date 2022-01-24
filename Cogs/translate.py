@@ -116,7 +116,7 @@ class Translate(commands.Cog):
         await ctx.respond(embeds=embeds, ephemeral=True)
         return
 
-    @slash_command(name='translate')
+    @slash_command(guild_ids=[guild_id], name='translate')
     @permissions.has_role(server_member_role)
     async def _trans_command(
             self,
