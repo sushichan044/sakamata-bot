@@ -37,9 +37,7 @@ class Thread(commands.Cog):
     @commands.command(name='thread_board')
     @commands.has_role(mod_role)
     async def _thread(self, ctx):
-        guild_channels = await ctx.guild.fetch_channels
-        channels = [
-            channel for channel in guild_channels if channel.category.name == '🎮ゲームセンター/GAMING🎮']
+        channels = [channel for channel in await ctx.guild.fetch_channels() if channel.category.name == '🎮ゲームセンター/GAMING🎮']
         sort_channels = sorted(channels, key=lambda channel: channel.position)
         print(sort_channels)
         thread_dic = {}
@@ -60,7 +58,7 @@ class Thread(commands.Cog):
                 thread for thread, parent in thread_dic.items() if parent == channel.position]
             # for thread in child_thread:
 
-        pass
+        return
 
     async def compose_thread_create_log(self, thread):
         embed = discord.Embed(
