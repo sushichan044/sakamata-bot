@@ -37,7 +37,8 @@ class Thread(commands.Cog):
     @commands.command(name='thread_board')
     @commands.has_role(mod_role)
     async def _thread(self, ctx):
-        channels = [channel for channel in ctx.guild.channels if channel.category.name == 'GAMING']
+        channels = [channel for channel in ctx.guild.channels]
+        print(channels)
         sort_channels = sorted(channels, key=lambda channel: channel.position)
         print(sort_channels)
         thread_dic = {}
