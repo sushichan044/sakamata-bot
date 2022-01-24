@@ -37,11 +37,12 @@ class Thread(commands.Cog):
     @commands.command(name='thread_board')
     @commands.has_role(mod_role)
     async def _thread_update(self, ctx):
-        pub_threads = [thread for thread in ctx.guild.threads]
         thread_dic = {}
-        for thread in pub_threads:
-            thread_dic[thread] = thread.parent
-        print(thread_dic)
+        threads = [thread for thread in ctx.guild.threads if thread.invitable and not thread.locked and thread.parent.category.name == '🎮ゲームセンター/GAMING🎮']
+        for thread in threads:
+            thread_dic[thread] = thread.parent.position
+        sort_thread = sorted(thread_dic.items(), key=lambda i: i[1])
+        print(sort_thread)
         return
 
     async def compose_thread_create_log(self, thread):
