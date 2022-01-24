@@ -38,10 +38,11 @@ class Thread(commands.Cog):
     @commands.has_role(mod_role)
     async def _thread(self, ctx):
         channels = [
-            channel for channel in ctx.guild.channels if channel.category]
+            channel for channel in ctx.guild.channels if channel.category and channel.category.id == 935244993323479060]
         print(channels)
         thread_dic = {}
-        threads = [thread for thread in ctx.guild.threads if thread.invitable and not thread.locked and thread.parent.category.id == '935244993323479060']
+        threads = [thread for thread in ctx.guild.threads if thread.invitable and not thread.locked and thread.parent.category.id == 935244993323479060]
+        print(threads)
         for thread in threads:
             thread_dic[thread] = thread.parent.position
         """
