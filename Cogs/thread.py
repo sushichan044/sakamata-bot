@@ -59,7 +59,7 @@ class Thread(commands.Cog):
             thread_board.append(channel.mention)
             child_thread = [
                 thread for thread, parent in thread_dic.items() if parent == channel.position]
-            for thread in child_thread:
+            # for thread in child_thread:
 
         pass
 
