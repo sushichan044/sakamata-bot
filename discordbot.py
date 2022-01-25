@@ -256,6 +256,10 @@ async def _newuser(
         [role.name for role in member.roles if role.id in stop_list])
     if stops:
         deal.append(stops)
+    if not deal:
+        send_deal = 'なし'
+    else:
+        send_deal = '\n'.join(deal)
     embed = discord.Embed(
         title='ユーザー情報照会結果',
         description=desc,
@@ -280,11 +284,10 @@ async def _newuser(
         value=send_roles,
         inline=False
     )
-    if deal:
-        embed.add_field(
-            name='実行中措置',
-            value='\n'.join(deal),
-        )
+    embed.add_field(
+        name='実行中措置',
+        value=send_deal,
+    )
     await ctx.respond(embed=embed)
     return
 
