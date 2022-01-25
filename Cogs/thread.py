@@ -64,7 +64,8 @@ class Thread(commands.Cog):
     @commands.command(name='thread_board')
     @commands.has_role(mod_role)
     async def _thread(self, ctx):
-        await self._make_board(ctx, ctx.message.channel.category.id)
+        text = await self._make_board(ctx, ctx.message.channel.category.id)
+        await ctx.send(text)
         return
 
     async def _make_board(self, ctx, category_id: int) -> str:
