@@ -71,7 +71,7 @@ class Thread(commands.Cog):
                 final_board.append(board_text)
             else:
                 final_board.append(channel.mention)
-        final_text = '\n'.join(final_board)
+        final_text = '\n\n'.join(final_board)
         await ctx.send(final_text)
         return
 
