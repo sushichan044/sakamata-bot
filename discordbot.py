@@ -250,8 +250,8 @@ async def _newuser(
     if member.communication_disabled_until:
         until_jst: datetime = member.communication_disabled_until.astimezone(
             jst)
-        until = until_jst.strftime('%Y/%m/%d')
-        deal.append(f'Timeout: {until}')
+        until = until_jst.strftime('%Y/%m/%d %H:%M:%S')
+        deal.append(f'Timeout: {until}まで')
     stops = '\n'.join(
         [role.name for role in member.roles if role.id in stop_list])
     deal.append(stops)
@@ -286,7 +286,6 @@ async def _newuser(
     embed.add_field(
         name='実行中措置',
         value=send_deal,
-        inline=False
         )
     await ctx.respond(embed=embed)
     return
@@ -499,7 +498,7 @@ async def _emergency_timeout(ctx, member: Member):
     msg = f'{member.mention}を緊急タイムアウトしました。'
     desc_url = ''
     until = discord.utils.utcnow().astimezone(jst) + timedelta(days=1)
-    until_str = until.strftime('%Y/%m/%d/%H:%M')
+    until_str = until.strftime('%Y/%m/%d %H:%M:%S')
     await send_context_timeout_log(ctx, msg, desc_url, until_str)
     return
 
