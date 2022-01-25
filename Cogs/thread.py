@@ -140,6 +140,7 @@ class EscapeButton(View):
         self.text = text
         self.l_str = 'OK'
         self.r_str = '取り消し'
+        self.status = None
 
     async def _ok(self, interaction: discord.Interaction):
         self.status = True
