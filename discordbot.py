@@ -231,11 +231,11 @@ async def _newuser(
     await ctx.defer()
     now = discord.utils.utcnow().astimezone(jst)
     member_created: datetime = member.created_at.astimezone(jst)
-    created = member_created.strftime('%Y/%m/%d/%H:%M:%S')
+    created = member_created.strftime('%Y/%m/%d %H:%M:%S')
     member_joined: datetime = member.joined_at.astimezone(jst)
-    joined = member_joined.strftime('%Y/%m/%d/%H:%M:%S')
+    joined = member_joined.strftime('%Y/%m/%d %H:%M:%S')
     _footer = now.strftime('%Y/%m/%d/%H:%M:%S')
-    desc = f'対象ユーザー:{member.mention}\nID:`{member.id}`\nBot?{member.bot}'
+    desc = f'対象ユーザー:{member.mention}\nID:`{member.id}`\nBot:{member.bot}'
     roles = sorted([role for role in member.roles],
                    key=lambda role: role.position, reverse=True)
     send_roles = '\n'.join([role.mention for role in roles])
