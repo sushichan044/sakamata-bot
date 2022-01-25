@@ -3,7 +3,7 @@ import logging
 import os
 import re
 from datetime import datetime, timedelta, timezone
-from typing import Literal, Optional
+from typing import Optional
 
 import discord
 from discord import Member
@@ -144,12 +144,12 @@ async def greet():
 
 @bot.listen('on_message')
 async def on_message_dispand(message):
-    avoid_word_list_head = ['//send-message', '//edit-message', '//send-dm']
+    avoid_word_list_prefix = ['//send-message', '//edit-message', '//send-dm']
     if type(message.channel) == DMChannel:
         return
     else:
-        for x in avoid_word_list_head:
-            if message.content.startswith(x):
+        for word in avoid_word_list_prefix:
+            if message.content.startswith(word):
                 return
         if message.content.endswith('中止に必要な承認人数: 1'):
             return
@@ -172,16 +172,16 @@ async def on_voice_state_update(member, before, after):
         channel = bot.get_channel(vc_log_channel)
         now = discord.utils.utcnow().astimezone(jst)
         if before.channel is None:
-            msg = f'{now:%m/%d %H:%M:%S} : {member.mention} が {after.channel.mention} に参加しました。'
-            await channel.send(msg)
+            message = f'{now:%m/%d %H:%M:%S} : {member.mention} が {after.channel.mention} に参加しました。'
+            await channel.send(message)
             return
         elif after.channel is None:
-            msg = f'{now:%m/%d %H:%M:%S} : {member.mention} が {before.channel.mention} から退出しました。'
-            await channel.send(msg)
+            message = f'{now:%m/%d %H:%M:%S} : {member.mention} が {before.channel.mention} から退出しました。'
+            await channel.send(message)
             return
         else:
-            msg = f'{now:%m/%d %H:%M:%S} : {member.mention} が {before.channel.mention} から {after.channel.mention} に移動しました。'
-            await channel.send(msg)
+            message = f'{now:%m/%d %H:%M:%S} : {member.mention} が {before.channel.mention} から {after.channel.mention} に移動しました。'
+            await channel.send(message)
             return
 
 # hello?
@@ -323,13 +323,13 @@ async def _new_user(ctx, member: Member):
 # ping-test
 
 
-@bot.command()
-@commands.has_role(admin_role)
-async def ping(ctx):
+@bot.slash_command(guild_ids=[guild_id], name='ping')
+@permissions.has_role(admin_role)
+async def _ping(ctx):
     """生存確認用"""
     raw_ping = bot.latency
     ping = round(raw_ping * 1000)
-    await ctx.send(f'Pong!\nPing is {ping}ms')
+    await ctx.respond(f'Pong!\nPing is {ping}ms')
     return
 
 # receive-dm
@@ -342,14 +342,14 @@ async def on_message_dm(message):
         if message.author.bot:
             return
         else:
-            for x in avoid_dm_list:
-                if message.content.startswith(x):
+            for word in avoid_dm_list:
+                if message.content.startswith(word):
                     return
             channel = bot.get_channel(dm_box_channel)
-            sent_messages = []
+            embeds = []
             if message.content or message.attachments:
                 embed = await compose_embed_dm_box(message)
-                sent_messages.append(embed)
+                embeds.append(embed)
                 for attachment in message.attachments[1:]:
                     embed = discord.Embed(
                         color=3447003,
@@ -357,10 +357,10 @@ async def on_message_dm(message):
                     embed.set_image(
                         url=attachment.proxy_url
                     )
-                    sent_messages.append(embed)
+                    embeds.append(embed)
             for embed in message.embeds:
-                sent_messages.append(embed)
-            await channel.send(embeds=sent_messages)
+                embeds.append(embed)
+            await channel.send(embeds=embeds)
             return
     else:
         return
@@ -380,21 +380,19 @@ async def _messagesend(ctx, channel_id: int, *, arg):
     exe_msg = f'{channel.mention}にメッセージを送信しました。'
     non_exe_msg = f'{channel.mention}へのメッセージ送信をキャンセルしました。'
     confirm_arg = f'\n{arg}\n------------------------'
-    turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-    if turned:
+    result = await confirm(ctx, confirm_arg, role, confirm_msg)
+    if result:
         msg = exe_msg
-        m = await channel.send(arg)
-        desc_url = m.jump_url
+        message = await channel.send(arg)
+        desc_url = message.jump_url
         await ctx.send('Sended!')
         await send_exe_log(ctx, msg, desc_url)
         return
-    elif turned is False:
+    else:
         msg = non_exe_msg
         desc_url = ''
         await ctx.send('Cancelled!')
         await send_exe_log(ctx, msg, desc_url)
-        return
-    else:
         return
 
 # send-dm
@@ -409,21 +407,19 @@ async def _send_dm(ctx, user: Member, *, arg):
     exe_msg = f'{user.mention}にDMを送信しました。'
     non_exe_msg = f'{user.mention}へのDM送信をキャンセルしました。'
     confirm_arg = f'\n{arg}\n------------------------'
-    turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-    if turned:
+    result = await confirm(ctx, confirm_arg, role, confirm_msg)
+    if result:
         msg = exe_msg
-        m = await user.send(arg)
-        desc_url = m.jump_url
+        message = await user.send(arg)
+        desc_url = message.jump_url
         await ctx.send('Sended!')
         await send_exe_log(ctx, msg, desc_url)
         return
-    elif turned is False:
+    else:
         msg = non_exe_msg
         desc_url = ''
         await ctx.send('Cancelled!')
         await send_exe_log(ctx, msg, desc_url)
-        return
-    else:
         return
 
 # edit-message
@@ -435,27 +431,25 @@ async def _editmessage(ctx, channel_id: int, message_id: int, *, arg):
     """メッセージ編集用"""
     channel = bot.get_channel(channel_id)
     role = ctx.guild.get_role(admin_role)
-    edit_target = await channel.fetch_message(message_id)
+    target = await channel.fetch_message(message_id)
     msg_url = f'https://discord.com/channels/{ctx.guild.id}/{channel_id}/{message_id}'
     confirm_msg = f'【メッセージ編集確認】\n{channel.mention}のメッセージ\n{msg_url}\nを以下のように編集します。'
     exe_msg = f'{channel.mention}のメッセージを編集しました。'
     non_exe_msg = f'{channel.mention}のメッセージの編集をキャンセルしました。'
     confirm_arg = f'\n{arg}\n------------------------'
-    turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-    if turned:
+    result = await confirm(ctx, confirm_arg, role, confirm_msg)
+    if result:
         msg = exe_msg
-        await edit_target.edit(content=arg)
+        await target.edit(content=arg)
         desc_url = msg_url
         await ctx.send('Edited!')
         await send_exe_log(ctx, msg, desc_url)
         return
-    elif turned is False:
+    else:
         msg = non_exe_msg
         desc_url = ''
         await ctx.send('Cancelled!')
         await send_exe_log(ctx, msg, desc_url)
-        return
-    else:
         return
 
 
@@ -509,12 +503,12 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'dm:true'
         exe_msg = f'{member.mention}をタイムアウトしました。'
         non_exe_msg = f'{member.mention}のタイムアウトをキャンセルしました。'
         confirm_arg = ''
-        turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-        if turned:
+        result = await confirm(ctx, confirm_arg, role, confirm_msg)
+        if result:
             msg = exe_msg
             if if_dm == 'dm:true':
-                m = await member.send(DM_content)
-                desc_url = m.jump_url
+                sent_dm = await member.send(DM_content)
+                desc_url = sent_dm.jump_url
                 await member.timeout(until_jst.astimezone(utc), reason=None)
                 await ctx.send('timeouted!')
                 await send_timeout_log(ctx, msg, desc_url, until_str)
@@ -527,13 +521,11 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'dm:true'
                 return
             else:
                 return
-        elif turned is False:
+        else:
             msg = non_exe_msg
             desc_url = ''
             await send_exe_log(ctx, msg, desc_url)
             await ctx.send('Cancelled!')
-            return
-        else:
             return
 
 # untimeout-member
@@ -548,21 +540,19 @@ async def _untimeout(ctx, member: Member):
     exe_msg = f'{member.mention}のタイムアウトを解除しました。'
     non_exe_msg = f'{member.mention}のタイムアウトの解除をキャンセルしました。'
     confirm_arg = ''
-    turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-    if turned:
+    result = await confirm(ctx, confirm_arg, role, confirm_msg)
+    if result:
         msg = exe_msg
         desc_url = ''
         await member.remove_timeout(reason=None)
         await ctx.send('untimeouted!')
         await send_exe_log(ctx, msg, desc_url)
         return
-    elif turned is False:
+    else:
         msg = non_exe_msg
         desc_url = ''
         await ctx.send('Cancelled!')
         await send_exe_log(ctx, msg, desc_url)
-        return
-    else:
         return
 
 
@@ -593,12 +583,12 @@ async def _kick_user(ctx, member: Member, if_dm: str = 'dm:true'):
         exe_msg = f'{member.mention}をキックしました。'
         non_exe_msg = f'{member.mention}のキックをキャンセルしました。'
         confirm_arg = ''
-        turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-        if turned:
+        result = await confirm(ctx, confirm_arg, role, confirm_msg)
+        if result:
             msg = exe_msg
             if if_dm == 'dm:true':
-                m = await member.send(DM_content)
-                desc_url = m.jump_url
+                sent_dm = await member.send(DM_content)
+                desc_url = sent_dm.jump_url
                 await member.kick(reason=None)
                 await ctx.send('kicked!')
                 await send_exe_log(ctx, msg, desc_url)
@@ -611,13 +601,11 @@ async def _kick_user(ctx, member: Member, if_dm: str = 'dm:true'):
                 return
             else:
                 return
-        elif turned is False:
+        else:
             msg = non_exe_msg
             desc_url = ''
             await send_exe_log(ctx, msg, desc_url)
             await ctx.send('Cancelled!')
-            return
-        else:
             return
 
 # ban-member
@@ -653,12 +641,12 @@ https://forms.gle/mR1foEyd9JHbhYdCA
         exe_msg = f'{member.mention}をBANしました。'
         non_exe_msg = f'{member.mention}のBANをキャンセルしました。'
         confirm_arg = ''
-        turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-        if turned:
+        result = await confirm(ctx, confirm_arg, role, confirm_msg)
+        if result:
             msg = exe_msg
             if if_dm == 'dm:true':
-                m = await member.send(DM_content)
-                desc_url = m.jump_url
+                sent_dm = await member.send(DM_content)
+                desc_url = sent_dm.jump_url
                 await member.ban(reason=None)
                 await ctx.send('baned!')
                 await send_exe_log(ctx, msg, desc_url)
@@ -671,13 +659,11 @@ https://forms.gle/mR1foEyd9JHbhYdCA
                 return
             else:
                 return
-        elif turned is False:
+        else:
             msg = non_exe_msg
             desc_url = ''
             await ctx.send('Cancelled!')
             await send_exe_log(ctx, msg, desc_url)
-            return
-        else:
             return
 
 # Unban-member
@@ -688,34 +674,31 @@ https://forms.gle/mR1foEyd9JHbhYdCA
 async def _unban_user(ctx, id: int):
     """ユーザーのBANを解除"""
     user = await bot.fetch_user(id)
-    banned_users = await ctx.guild.bans()
     role = ctx.guild.get_role(admin_role)
-    for ban_entry in banned_users:
-        if ban_entry.user.id == user.id:
-            confirm_msg = f'【Unban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{user}(ID:{user.id})'
-            exe_msg = f'{user.mention}のBANを解除しました。'
-            non_exe_msg = f'{user.mention}のBANの解除をキャンセルしました。'
-            confirm_arg = ''
-            turned = await confirm(ctx, confirm_arg, role, confirm_msg)
-            if turned:
-                msg = exe_msg
-                desc_url = ''
-                await ctx.guild.unban(user)
-                await ctx.send('Unbaned!')
-                await send_exe_log(ctx, msg, desc_url)
-                return
-            elif turned is False:
-                msg = non_exe_msg
-                desc_url = ''
-                await ctx.send('Cancelled!')
-                await send_exe_log(ctx, msg, desc_url)
-                return
-            else:
-                return
-        else:
-            await ctx.reply('BANリストにないユーザーを指定したため処理を停止します。', mention_author=False)
-            msg = 'BANリストにないユーザーを指定したため処理を停止しました。'
+    target = [user for entry in await ctx.guild.bans() if entry.user.id == user.id]
+    if not target:
+        await ctx.reply('BANリストにないユーザーを指定したため処理を停止します。', mention_author=False)
+        msg = 'BANリストにないユーザーを指定したため処理を停止しました。'
+        desc_url = ''
+        await send_exe_log(ctx, msg, desc_url)
+        return
+    else:
+        confirm_msg = f'【Unban実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{user}(ID:{user.id})'
+        exe_msg = f'{user.mention}のBANを解除しました。'
+        non_exe_msg = f'{user.mention}のBANの解除をキャンセルしました。'
+        confirm_arg = ''
+        result = await confirm(ctx, confirm_arg, role, confirm_msg)
+        if result:
+            msg = exe_msg
             desc_url = ''
+            await ctx.guild.unban(user)
+            await ctx.send('Unbaned!')
+            await send_exe_log(ctx, msg, desc_url)
+            return
+        else:
+            msg = non_exe_msg
+            desc_url = ''
+            await ctx.send('Cancelled!')
             await send_exe_log(ctx, msg, desc_url)
             return
 
@@ -907,9 +890,9 @@ async def make_deal_dm(ctx, deal, add_dm):
 
 async def confirm(ctx, confirm_arg, role, confirm_msg) -> bool:
     send_confirm_msg = f'{confirm_msg}\n------------------------{confirm_arg}\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1'
-    m = await ctx.send(send_confirm_msg)
-    await m.add_reaction(accept_emoji)
-    await m.add_reaction(reject_emoji)
+    message = await ctx.send(send_confirm_msg)
+    await message.add_reaction(accept_emoji)
+    await message.add_reaction(reject_emoji)
     valid_reactions = [accept_emoji, reject_emoji]
     # wait-for-reaction
 

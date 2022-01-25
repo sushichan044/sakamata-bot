@@ -64,9 +64,9 @@ class Poll(commands.Cog):
             )
             poll_yes_emoji = '\N{Large Green Circle}'
             poll_no_emoji = '\N{Large Red Circle}'
-            m = await ctx.send(embed=embed)
-            await m.add_reaction(poll_yes_emoji)
-            await m.add_reaction(poll_no_emoji)
+            message = await ctx.send(embed=embed)
+            await message.add_reaction(poll_yes_emoji)
+            await message.add_reaction(poll_no_emoji)
             return
         elif len(select) > 20:
             embed = discord.Embed(
@@ -88,9 +88,9 @@ class Poll(commands.Cog):
             embed.set_author(
                 name='投票'
             )
-            m = await ctx.send(embed=embed)
-            for x in range(len(select)):
-                await m.add_reaction(poll_emoji_list[x])
+            message = await ctx.send(embed=embed)
+            for num in range(len(select)):
+                await message.add_reaction(poll_emoji_list[num])
             return
 
     @message_command(guild_ids=[guild_id], name='投票集計')

@@ -86,7 +86,6 @@ class Thread(commands.Cog):
         thread:pos,
         ...}
         """
-        # sort_thread = sorted(thread_dic.items(), key=lambda i: i[1])
         final_board = []
         for channel in sort_channels:
             thread_board = [f'<#{channel.id}>']
