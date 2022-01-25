@@ -254,8 +254,6 @@ async def _newuser(
     else:
         avatar_url = member.display_avatar.replace(
             size=1024, static_format='webp').url
-    if member.display_name != member.name:
-        desc = desc + f'\nニックネーム:{member.display_name}'
     desc = desc + f'\n[Avatar url]({avatar_url})'
     deal = []
     if member.communication_disabled_until:
