@@ -88,16 +88,16 @@ class Thread(commands.Cog):
         # sort_thread = sorted(thread_dic.items(), key=lambda i: i[1])
         final_board = []
         for channel in channels:
-            thread_board = [channel.mention]
+            thread_board = [f'<#{channel.id}>']
             child_thread = [
-                thread.mention for thread, parent in thread_dic.items() if parent == channel.position]
+                f'<#{thread.id}>' for thread, parent in thread_dic.items() if parent == channel.position]
             if child_thread:
                 board = thread_board + child_thread
                 board_text_draft = '\n┣'.join(board[:-1])
                 board_text = f'{board_text_draft}\n┗{board[-1]}'
                 final_board.append(board_text)
             else:
-                final_board.append(channel.mention)
+                final_board.append(f'<#{channel.id}>')
         final_text = '\n\n'.join(final_board)
         return final_text
 
@@ -144,14 +144,12 @@ class EscapeButton(View):
 
     async def _ok(self, interaction: discord.Interaction):
         self.status = True
-        escaped_text = discord.utils.escape_mentions(self.text)
-        await interaction.response.edit_message(content=escaped_text)
+        await interaction.response.edit_message(content=f'```{self.text}```')
         self.stop()
 
     async def _ng(self, interaction: discord.Interaction):
         self.status = False
-        target = await interaction.original_message()
-        await target.delete()
+        await interaction.delete_original_message()
         self.stop()
 
     async def body(self) -> Message:
