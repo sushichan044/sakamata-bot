@@ -150,7 +150,8 @@ class EscapeButton(View):
 
     async def _ng(self, interaction: discord.Interaction):
         self.status = False
-        await interaction.delete_original_message()
+        target = await interaction.original_message()
+        await target.delete()
         self.stop()
 
     async def body(self) -> Message:
