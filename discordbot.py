@@ -244,6 +244,9 @@ async def _newuser(
     send_roles = '\n'.join([role.mention for role in roles])
     avatar_url = member.display_avatar.replace(
         size=1024, static_format='webp').url
+    if not avatar_url:
+        avatar_url = member.default_avatar.replace(
+            size=1024, static_format='webp').url
     if member.display_name != member.name:
         desc = desc + f'\nニックネーム:{member.display_name}'
     desc = desc + f'\n[avatar url]({avatar_url})'
