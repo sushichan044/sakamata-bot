@@ -54,7 +54,8 @@ class Thread(commands.Cog):
                            category: Option(
                                discord.CategoryChannel, '対象のカテゴリを選択してください。'),
                            ):
-        board = await self._make_board(ctx, category.id)
+        board = await self._make_board(ctx.interaction, category.id)
+        print(board)
         # await ctx.respond('Done', ephemeral=True)
         view = EscapeButton(board)
         tracker = ViewTracker(view, timeout=None)
