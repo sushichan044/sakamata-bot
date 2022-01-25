@@ -4,8 +4,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/sushi-chaaaan/sakamata-alpha-pycord/badge)](https://www.codefactor.io/repository/github/sushi-chaaaan/sakamata-alpha-pycord)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dispanderfixed?style=flat-square)](https://www.python.org/downloads/release/python-3101/)
 [![PyPI](https://img.shields.io/badge/pycord-2.0.0a-orange?style=flat-square)](https://github.com/Pycord-Development/pycord)
-[![iroiro](https://img.shields.io/badge/discord--ext--ui-3.1.1-orange?style=flat-square)](https://github.com/sizumita/discord-ext-ui)
-[![PyPI](https://img.shields.io/badge/newdispanderfixed-0.1.4-orange?style=flat-square)](https://pypi.org/project/newdispanderfixed/)
+[![iroiro](https://img.shields.io/badge/discord--ext--ui-3.1.3-orange?style=flat-square)](https://github.com/sizumita/discord-ext-ui)
 ![PyPI](https://img.shields.io/pypi/v/holodex?label=holodex&style=flat-square)
 ![Discord](https://img.shields.io/discord/915910043461890078?color=blueviolet&label=Discord&logo=Discord&logoColor=white&style=flat-square)
 
@@ -14,7 +13,7 @@
 テスト環境がクラウド上にあるため、Commitが多くなっています。
 
 ### 開発環境及び使用ライブラリ
-Python 3.10.1<br>
+Python 3.10.2<br>
 [pycord](https://github.com/Pycord-Development/pycord) 2.0.0a<br>
 [discord-ext-ui](https://pypi.org/project/discord-ext-ui/) 3.1.3<br>
 [dispander-fork](https://github.com/sushi-chaaaan/dispanderfixed/tree/for2.0)([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
