@@ -252,11 +252,10 @@ async def _newuser(
             jst)
         until = until_jst.strftime('%Y/%m/%d %H:%M:%S')
         deal.append(f'Timeout: {until} に解除')
-    else:
-        pass
     stops = '\n'.join(
         [role.name for role in member.roles if role.id in stop_list])
-    deal.append(stops)
+    if stops:
+        deal.append(stops)
     embed = discord.Embed(
         title='ユーザー情報照会結果',
         description=desc,
