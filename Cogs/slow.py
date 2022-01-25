@@ -34,8 +34,8 @@ class SlowMode(commands.Cog):
         channel: Option(discord.TextChannel, '対象のチャンネルを選択してください。'),
     ):
         """指定したチャンネルのスローモードを切り替えます。"""
-        res = await self._slow(channel)
-        if res:
+        result = await self._slow(channel)
+        if result:
             deal = 'ON'
         else:
             deal = 'OFF'

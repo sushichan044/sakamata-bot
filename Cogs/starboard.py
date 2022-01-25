@@ -132,8 +132,8 @@ class StarBoard(commands.Cog):
         history = await self._get_history(channel)
         if not history:
             return True
-        target = [x
-                  for x in history if x.embeds and x.embeds[0].author.url == message.jump_url]
+        target = [
+            message for message in history if message.embeds and message.embeds[0].author.url == message.jump_url]
         if not target:
             return True
         else:
