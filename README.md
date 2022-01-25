@@ -61,8 +61,8 @@ timeoutへの対応<br>
 > v1.1.1(2022.01.03)
 
 [pycord](https://github.com/Pycord-Development/pycord)へ移行<br>
-[newdispanderfixed](https://pypi.org/project/newdispanderfixed/)へ移行<br>
 [discord-ext-ui](https://pypi.org/project/discord-ext-ui/)を導入<br>
+メッセージ展開の処理を改善<br>
 メンバーシップ認証機能をブラッシュアップ<br>
 ユーザー情報取得機能をブラッシュアップ<br>
 
@@ -70,7 +70,7 @@ timeoutへの対応<br>
 
 確認を必要とするコマンドの処理の最適化<br>
 メンバーシップ認証用コマンドを追加<br>
-[dispanderfixed 0.3.0](https://pypi.org/project/dispanderfixed/0.3.0/)に更新し、埋め込みメッセージの複数枚の画像の処理を最適化
+メッセージ展開の処理を改善
 
 > v1.0.7(2021.12.31)
 
@@ -101,8 +101,7 @@ DM送受信機能/ping機能/user情報取得機能の追加<br>
 
 > v1.0.2(2021.12.7)
 
-使用ライブラリをdispander->dispanderfixedへ。<br>
-メッセージリンク展開の仕様を変更<br>
+メッセージ展開の処理を改善<br>
 
 > v1.0.1(2021.12.5)
 
