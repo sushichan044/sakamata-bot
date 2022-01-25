@@ -262,7 +262,8 @@ async def _newuser(
     )
     embed.add_field(
         name=f'所持ロール({len(roles)})',
-        value=send_roles
+        value=send_roles,
+        inline=False
     )
     await ctx.respond(embed=embed)
     return
