@@ -75,7 +75,7 @@ class Thread(commands.Cog):
         # print(channels)
         thread_dic = {}
         threads = [
-            thread for thread in ctx.guild.threads if thread.invitable and not thread.locked and thread.parent.category.id == category_id]
+            thread for thread in ctx.guild.threads if not thread.is_private() and not thread.locked and thread.parent.category.id == category_id]
         # print(threads)
         for thread in threads:
             thread_dic[thread] = thread.parent.position
