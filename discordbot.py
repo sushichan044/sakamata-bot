@@ -251,7 +251,7 @@ async def _newuser(
         until_jst: datetime = member.communication_disabled_until.astimezone(
             jst)
         until = until_jst.strftime('%Y/%m/%d %H:%M:%S')
-        deal.append(f'Timeout: {until}まで')
+        deal.append(f'Timeout: {until} に解除')
     stops = '\n'.join(
         [role.name for role in member.roles if role.id in stop_list])
     deal.append(stops)
