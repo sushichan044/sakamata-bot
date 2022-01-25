@@ -248,7 +248,8 @@ async def _newuser(
     roles = sorted([role for role in member.roles],
                    key=lambda role: role.position, reverse=True)
     send_roles = '\n'.join([role.mention for role in roles])
-    if member.default_avatar == member.avatar or member.default_avatar == member.display_avatar:
+    avatars = [member.avatar, member.display_avatar]
+    if member.default_avatar in avatars:
         avatar_url = member.default_avatar.replace(
             size=1024, static_format='webp').url
     else:
