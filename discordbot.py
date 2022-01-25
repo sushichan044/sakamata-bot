@@ -62,7 +62,7 @@ INIT_EXTENSION_LIST = [
     'Cogs.error',
     'Cogs.entrance',
     # 'Cogs.fun',
-    'Cogs.holodex',
+    # 'Cogs.holodex',
     'Cogs.member_count',
     'Cogs.ng_word',
     'Cogs.pin',
