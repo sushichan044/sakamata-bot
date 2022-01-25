@@ -250,7 +250,7 @@ async def _newuser(
     send_roles = '\n'.join([role.mention for role in roles])
     avatars = [member.avatar, member.display_avatar]
     if member.default_avatar in avatars:
-        avatar_url = member.default_avatar.replace.url
+        avatar_url = member.default_avatar.url
     else:
         avatar_url = member.display_avatar.replace(
             size=1024, static_format='webp').url
