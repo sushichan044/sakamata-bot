@@ -87,6 +87,8 @@ server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
 mod_role = int(os.environ['MOD_ROLE'])
 admin_role = int(os.environ['ADMIN_ROLE'])
 yt_membership_role = int(os.environ['YT_MEMBER_ROLE'])
+stop_role = int(os.environ['STOP_ROLE'])
+vc_stop_role = int(os.environ['VC_STOP_ROLE'])
 
 # ID-channel
 alert_channel = int(os.environ['ALERT_CHANNEL'])
@@ -114,6 +116,9 @@ reject_emoji = "\N{Cross Mark}"
 
 # pattern
 date_pattern = re.compile(r'^\d{4}/\d{2}/\d{2}')
+
+# list
+stop_list = [stop_role, vc_stop_role]
 
 # 起動イベント
 
@@ -234,13 +239,26 @@ async def _newuser(
     created = member_created.strftime('%Y/%m/%d %H:%M:%S')
     member_joined: datetime = member.joined_at.astimezone(jst)
     joined = member_joined.strftime('%Y/%m/%d %H:%M:%S')
-    _footer = now.strftime('%Y/%m/%d/%H:%M:%S')
+    _footer = now.strftime('%Y/%m/%d %H:%M:%S')
     desc = f'対象ユーザー:{member.mention}\nID:`{member.id}`\nBot:{member.bot}'
     roles = sorted([role for role in member.roles],
                    key=lambda role: role.position, reverse=True)
     send_roles = '\n'.join([role.mention for role in roles])
     if member.display_name != member.name:
         desc = desc + f'\nニックネーム:{member.display_name}'
+    deal = []
+    if member.communication_disabled_until:
+        until_jst: datetime = member.communication_disabled_until.astimezone(
+            jst)
+        until = until_jst.strftime('%Y/%m/%d')
+        deal.append(f'Timeout: {until}')
+    stops = '\n'.join(
+        [role.name for role in member.roles if role.id in stop_list])
+    deal.append(stops)
+    if not deal:
+        send_deal = 'なし'
+    else:
+        send_deal = '\n'.join(deal)
     embed = discord.Embed(
         title='ユーザー情報照会結果',
         description=desc,
@@ -265,6 +283,11 @@ async def _newuser(
         value=send_roles,
         inline=False
     )
+    embed.add_field(
+        name='実行中措置',
+        value=send_deal,
+        inline=False
+        )
     await ctx.respond(embed=embed)
     return
 
