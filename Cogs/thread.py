@@ -135,7 +135,6 @@ class Thread(commands.Cog):
 class EscapeButton(View):
     status = state('status')
     text = state('text')
-    content = state('content')
 
     def __init__(self, text: str):
         super().__init__()
@@ -146,7 +145,7 @@ class EscapeButton(View):
 
     async def _ok(self, interaction: discord.Interaction):
         self.status = True
-        await interaction.response.edit_message(content=f'```\n{self.text}\n```', embed=None, view=None)
+        self.text = f'```{self.text}```'
         self.stop()
         return
 
