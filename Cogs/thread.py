@@ -144,7 +144,7 @@ class EscapeButton(View):
 
     async def _ok(self, interaction: discord.Interaction):
         self.status = True
-        await interaction.response.edit_message(content=f'```{self.text}```')
+        await interaction.message.edit(content=f'```{self.text}```')
         self.stop()
 
     async def _ng(self, interaction: discord.Interaction):
