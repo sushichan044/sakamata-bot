@@ -54,7 +54,7 @@ class Thread(commands.Cog):
                            category: Option(
                                discord.CategoryChannel, '対象のカテゴリを選択してください。'),
                            ):
-        board = await self._make_board(ctx.interaction, category.id)
+        board = self._make_board(ctx.interaction, category.id)
         print(board)
         # await ctx.respond('Done', ephemeral=True)
         view = EscapeButton(board)
@@ -65,11 +65,11 @@ class Thread(commands.Cog):
     @commands.command(name='thread_board')
     @commands.has_role(mod_role)
     async def _thread(self, ctx):
-        text = await self._make_board(ctx, ctx.message.channel.category.id)
+        text = self._make_board(ctx, ctx.message.channel.category.id)
         await ctx.send(text)
         return
 
-    async def _make_board(self, ctx, category_id: int) -> str:
+    def _make_board(self, ctx, category_id: int) -> str:
         channels = [
             channel for channel in ctx.guild.channels if channel.category and channel.category.id == category_id]
         # print(channels)
