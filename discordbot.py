@@ -87,6 +87,8 @@ server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
 mod_role = int(os.environ['MOD_ROLE'])
 admin_role = int(os.environ['ADMIN_ROLE'])
 yt_membership_role = int(os.environ['YT_MEMBER_ROLE'])
+stop_role = int(os.environ['STOP_ROLE'])
+vc_stop_role = int(os.environ['VC_STOP_ROLE'])
 
 # ID-channel
 alert_channel = int(os.environ['ALERT_CHANNEL'])
@@ -115,6 +117,15 @@ reject_emoji = "\N{Cross Mark}"
 # pattern
 date_pattern = re.compile(r'^\d{4}/\d{2}/\d{2}')
 
+# list
+stop_list = [stop_role, vc_stop_role]
+default_avatars = [
+    'https://cdn.discordapp.com/embed/avatars/0.webp?size=1024',
+    'https://cdn.discordapp.com/embed/avatars/1.webp?size=1024',
+    'https://cdn.discordapp.com/embed/avatars/2.webp?size=1024',
+    'https://cdn.discordapp.com/embed/avatars/3.webp?size=1024',
+    'https://cdn.discordapp.com/embed/avatars/4.webp?size=1024',
+]
 # 起動イベント
 
 
@@ -228,6 +239,65 @@ async def _newuser(
     # guild = ctx.guild
     # member = guild.get_member(int(id))
     # この先表示する用
+    await ctx.defer()
+    member_created: datetime = member.created_at.astimezone(jst)
+    created = member_created.strftime('%Y/%m/%d %H:%M:%S')
+    member_joined: datetime = member.joined_at.astimezone(jst)
+    joined = member_joined.strftime('%Y/%m/%d %H:%M:%S')
+    desc = f'対象ユーザー:{member.mention}\nID:`{member.id}`\nBot:{member.bot}'
+    roles = sorted([role for role in member.roles],
+                   key=lambda role: role.position, reverse=True)
+    send_roles = '\n'.join([role.mention for role in roles])
+    avatars = [member.avatar, member.display_avatar]
+    if member.default_avatar in avatars:
+        avatar_url = member.default_avatar.url
+    else:
+        avatar_url = member.display_avatar.replace(
+            size=1024, static_format='webp').url
+    desc = desc + f'\n[Avatar url]({avatar_url})'
+    deal = []
+    if member.communication_disabled_until:
+        until_jst: datetime = member.communication_disabled_until.astimezone(
+            jst)
+        until = until_jst.strftime('%Y/%m/%d %H:%M:%S')
+        deal.append(f'Timeout: {until} に解除')
+    stops = '\n'.join(
+        [role.name for role in member.roles if role.id in stop_list])
+    if stops:
+        deal.append(stops)
+    if not deal:
+        send_deal = 'なし'
+    else:
+        send_deal = '\n'.join(deal)
+    embed = discord.Embed(
+        title='ユーザー情報照会結果',
+        description=desc,
+        color=3983615,
+    )
+    embed.set_thumbnail(
+        url=avatar_url
+    )
+    embed.add_field(
+        name='アカウント作成日時',
+        value=created,
+    )
+    embed.add_field(
+        name='サーバー参加日時',
+        value=joined,
+    )
+    embed.add_field(
+        name=f'所持ロール({len(roles)})',
+        value=send_roles,
+        inline=False
+    )
+    embed.add_field(
+        name='実行中措置',
+        value=send_deal,
+    )
+    await ctx.respond(embed=embed)
+    return
+
+"""
     avatar_url = member.display_avatar.replace(
         size=1024, static_format='webp').url
     if member.avatar is None:
@@ -240,7 +310,7 @@ async def _newuser(
         member_nickname = member.display_name
     member_join_date = member.joined_at.astimezone(jst)
     # membermention = member.mention
-    roles = [[x.name, x.id] for x in member.roles]
+    roles = [[x.mention, x.id] for x in member.roles]
     # [[name,id],[name,id]...]
     x = ['/ID: '.join(str(y) for y in x) for x in roles]
     z = '\n'.join(x)
@@ -248,6 +318,7 @@ async def _newuser(
     user_info_msg = f'```ユーザー名:{member} (ID:{member.id})\nBot?:{member.bot}\nAvatar url:{avatar_url}\nニックネーム:{member_nickname}\nアカウント作成日時:{member_reg_date:%Y/%m/%d %H:%M:%S}\n参加日時:{member_join_date:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
     await ctx.respond(user_info_msg)
     return
+"""
 
 
 @bot.command(name='user')
@@ -436,7 +507,7 @@ async def _emergency_timeout(ctx, member: Member):
     msg = f'{member.mention}を緊急タイムアウトしました。'
     desc_url = ''
     until = discord.utils.utcnow().astimezone(jst) + timedelta(days=1)
-    until_str = until.strftime('%Y/%m/%d/%H:%M')
+    until_str = until.strftime('%Y/%m/%d %H:%M:%S')
     await send_context_timeout_log(ctx, msg, desc_url, until_str)
     return
 
