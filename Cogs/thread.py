@@ -11,6 +11,7 @@ from discord.ext.ui import (Button, InteractionProvider, Message, View,
 thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
 mod_role = int(os.environ['MOD_ROLE'])
+admin_role = int(os.environ['ADMIN_ROLE'])
 guild_id = int(os.environ['GUILD_ID'])
 
 
@@ -47,7 +48,7 @@ class Thread(commands.Cog):
     ┗
     """
     @slash_command(guild_ids=[guild_id], name='board')
-    @permissions.has_role(mod_role)
+    @permissions.has_role(admin_role)
     async def _board_slash(self,
                            ctx,
                            category: Option(
@@ -62,7 +63,7 @@ class Thread(commands.Cog):
         return
 
     @commands.command(name='thread_board')
-    @commands.has_role(mod_role)
+    @commands.has_role(admin_role)
     async def _thread(self, ctx):
         text = self._make_board(ctx, ctx.message.channel.category.id)
         await ctx.send(text)
