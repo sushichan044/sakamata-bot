@@ -234,12 +234,10 @@ async def _newuser(
     # member = guild.get_member(int(id))
     # この先表示する用
     await ctx.defer()
-    now = discord.utils.utcnow().astimezone(jst)
     member_created: datetime = member.created_at.astimezone(jst)
     created = member_created.strftime('%Y/%m/%d %H:%M:%S')
     member_joined: datetime = member.joined_at.astimezone(jst)
     joined = member_joined.strftime('%Y/%m/%d %H:%M:%S')
-    _footer = now.strftime('%Y/%m/%d %H:%M:%S')
     desc = f'対象ユーザー:{member.mention}\nID:`{member.id}`\nBot:{member.bot}'
     roles = sorted([role for role in member.roles],
                    key=lambda role: role.position, reverse=True)
@@ -268,9 +266,6 @@ async def _newuser(
     embed.set_thumbnail(
         url=member.display_avatar.replace(size=1024, static_format='webp').url
     )
-    embed.set_footer(
-        text=_footer
-    )
     embed.add_field(
         name='アカウント作成日時',
         value=created,
@@ -291,6 +286,7 @@ async def _newuser(
     await ctx.respond(embed=embed)
     return
 
+"""
     avatar_url = member.display_avatar.replace(
         size=1024, static_format='webp').url
     if member.avatar is None:
@@ -311,6 +307,7 @@ async def _newuser(
     user_info_msg = f'```ユーザー名:{member} (ID:{member.id})\nBot?:{member.bot}\nAvatar url:{avatar_url}\nニックネーム:{member_nickname}\nアカウント作成日時:{member_reg_date:%Y/%m/%d %H:%M:%S}\n参加日時:{member_join_date:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
     await ctx.respond(user_info_msg)
     return
+"""
 
 
 @bot.command(name='user')
