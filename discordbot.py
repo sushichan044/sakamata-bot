@@ -119,13 +119,6 @@ date_pattern = re.compile(r'^\d{4}/\d{2}/\d{2}')
 
 # list
 stop_list = [stop_role, vc_stop_role]
-default_avatars = [
-    'https://cdn.discordapp.com/embed/avatars/0.webp?size=1024',
-    'https://cdn.discordapp.com/embed/avatars/1.webp?size=1024',
-    'https://cdn.discordapp.com/embed/avatars/2.webp?size=1024',
-    'https://cdn.discordapp.com/embed/avatars/3.webp?size=1024',
-    'https://cdn.discordapp.com/embed/avatars/4.webp?size=1024',
-]
 # 起動イベント
 
 
