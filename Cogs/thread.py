@@ -1,12 +1,17 @@
+from optparse import Option
 import os
 from datetime import timedelta, timezone
 
+from discord import permissions
+
 import discord
+from discord.commands import slash_command
 from discord.ext import commands
 
 thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
 mod_role = int(os.environ['MOD_ROLE'])
+guild_id = int(os.environ['GUILD_ID'])
 
 
 class Thread(commands.Cog):
@@ -41,14 +46,27 @@ class Thread(commands.Cog):
     bottom
     ┗
     """
+    @slash_command(guild_ids=[guild_id], name='board')
+    @permissions.has_role(mod_role)
+    async def _board_slash(self,
+                           ctx,
+                           category: Option(discord.CategoryChannel, '対象のカテゴリを選択してください。')):
+        await self._make_board(ctx, category.id)
+        return
+
     @commands.command(name='thread_board')
     @commands.has_role(mod_role)
     async def _thread(self, ctx):
+        await self._make_board(ctx, ctx.message.channel.category.id)
+        return
+
+    async def _make_board(self, ctx, category_id: int):
         channels = [
-            channel for channel in ctx.guild.channels if channel.category and channel.category.id == 935244993323479060]
+            channel for channel in ctx.guild.channels if channel.category and channel.category.id == category_id]
         # print(channels)
         thread_dic = {}
-        threads = [thread for thread in ctx.guild.threads if thread.invitable and not thread.locked and thread.parent.category.id == 935244993323479060]
+        threads = [
+            thread for thread in ctx.guild.threads if thread.invitable and not thread.locked and thread.parent.category.id == category_id]
         # print(threads)
         for thread in threads:
             thread_dic[thread] = thread.parent.position
