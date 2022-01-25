@@ -2,7 +2,7 @@ import os
 from datetime import timedelta, timezone
 
 import discord
-from discord.ext.ui import (Button, Message, View, state)
+from discord.ext.ui import Button, Message, View, state
 
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
 

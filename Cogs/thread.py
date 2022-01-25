@@ -1,10 +1,13 @@
 import os
 from datetime import timedelta, timezone
 
+from discord import interactions
+
 import discord
 from discord import Option, permissions
 from discord.commands import slash_command
 from discord.ext import commands
+from discord.ext.ui import Button, Message, View, state, ViewTracker, InteractionProvider, MessageProvider
 
 thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
@@ -51,7 +54,11 @@ class Thread(commands.Cog):
                            category: Option(
                                discord.CategoryChannel, '対象のカテゴリを選択してください。'),
                            ):
-        await self._make_board(ctx, category.id)
+        board = await self._make_board(ctx, category.id)
+        view = EscapeButton(ctx, board)
+        tracker = ViewTracker(view, timeout=None)
+        await ctx.defer()
+        await tracker.track(MessageProvider(ctx.channel))
         return
 
     @commands.command(name='thread_board')
@@ -60,7 +67,7 @@ class Thread(commands.Cog):
         await self._make_board(ctx, ctx.message.channel.category.id)
         return
 
-    async def _make_board(self, ctx, category_id: int):
+    async def _make_board(self, ctx, category_id: int) -> str:
         channels = [
             channel for channel in ctx.guild.channels if channel.category and channel.category.id == category_id]
         # print(channels)
@@ -90,8 +97,7 @@ class Thread(commands.Cog):
             else:
                 final_board.append(channel.mention)
         final_text = '\n\n'.join(final_board)
-        await ctx.send(final_text)
-        return
+        return final_text
 
     async def compose_thread_create_log(self, thread):
         embed = discord.Embed(
@@ -122,6 +128,48 @@ class Thread(commands.Cog):
             value=f'{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}'
         )
         return embed
+
+
+class EscapeButton(View):
+    ctx = state('ctx')
+    status = state('status')
+    text = state('text')
+
+    def __init__(self, ctx, text: str):
+        super().__init__()
+        self.ctx = ctx
+        self.text = text
+        self.l_str = 'OK'
+        self.r_str = '取り消し'
+
+    async def _ok(self, interaction: discord.Interaction):
+        self.status = True
+        escaped_text = discord.utils.escape_mentions(self.text)
+        await interaction.edit_original_message(content=escaped_text)
+        return
+
+    async def _ng(self, interaction: discord.Interaction):
+        self.status = False
+        await interaction.delete_original_message()
+        return
+
+    async def body(self) -> Message:
+        return Message(
+            content=self.text,
+            embeds=[
+                discord.Embed(
+                    title='スレッド一覧プレビュー',
+                    description='この内容で更新用メッセージを送信しますか？',
+                    color=15767485,
+                ),
+            ],
+            components=[
+                Button(self.l_str).style(discord.ButtonStyle.green).disabled(
+                    self.status is not None).on_click(self._ok),
+                Button(self.r_str).style(discord.ButtonStyle.red).disabled(
+                    self.status is not None).on_click(self._ng)
+            ]
+        )
 
 
 def setup(bot):
