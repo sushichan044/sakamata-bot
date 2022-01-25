@@ -236,9 +236,9 @@ async def _newuser(
     joined = member_joined.strftime('%Y/%m/%d/%H:%M:%S')
     _footer = now.strftime('%Y/%m/%d/%H:%M:%S')
     desc = f'対象ユーザー:{member.mention}\nID:`{member.id}`\nBot?{member.bot}'
-    roles = sorted([role.mention for role in member.roles],
+    roles = sorted([role for role in member.roles],
                    key=lambda role: role.position, reverse=True)
-    send_roles = '\n'.join(roles)
+    send_roles = '\n'.join([role.mention for role in roles])
     if member.display_name != member.name:
         desc = desc + f'\nニックネーム:{member.display_name}'
     embed = discord.Embed(
