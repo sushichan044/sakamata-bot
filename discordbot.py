@@ -264,7 +264,7 @@ async def _newuser(
         name=f'所持ロール({len(roles)})',
         value=send_roles
     )
-    await ctx.respond(embed)
+    await ctx.respond(embed=embed)
     return
 
     avatar_url = member.display_avatar.replace(
