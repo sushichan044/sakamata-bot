@@ -63,7 +63,7 @@ class Translate(commands.Cog):
             return
         else:
             pass
-        embeds = self.compose_embed(message.content, r, target, 'DeepL')
+        embeds = self.compose_embed(message.content, r, 'DeepL')
         await ctx.respond(embeds=embeds, ephemeral=True)
         return
 
@@ -88,7 +88,7 @@ class Translate(commands.Cog):
         else:
             pass
         target = 'en'
-        embeds = self.compose_embed(message.content, r, target, 'DeepL')
+        embeds = self.compose_embed(message.content, r, 'DeepL')
         await ctx.respond(embeds=embeds, ephemeral=True)
         return
 
@@ -160,13 +160,14 @@ class Translate(commands.Cog):
             await ctx.respond(embeds=embeds, ephemeral=True)
             return
 
-    def select_language(self, language: str) -> Literal['ja', 'en-US', 'zh']:
-        if language == '日本語':
-            return 'ja'
-        elif language == 'English':
-            return 'en-US'
-        else:
-            return 'zh'
+    def select_language(self, language: Literal['日本語', 'English', '中文(简体)']) -> Literal['ja', 'en-US', 'zh']:
+        match language:
+            case '日本語':
+                return 'ja'
+            case 'English':
+                return 'en-US'
+            case '中文(简体)':
+                return 'zh'
 
     def deepl_trans_request(self, text: str, target: Literal['ja', 'en-US', 'zh']):
         result = self.deepl_trans.translate_text(
