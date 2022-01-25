@@ -244,7 +244,7 @@ async def _newuser(
     created = member_created.strftime('%Y/%m/%d %H:%M:%S')
     member_joined: datetime = member.joined_at.astimezone(jst)
     joined = member_joined.strftime('%Y/%m/%d %H:%M:%S')
-    desc = f'対象ユーザー:{member.mention}\nID:`{member.id}`\nBot:{member.bot}'
+    desc = f'対象ユーザー:{member.mention}\nユーザー名:{member}\nID:`{member.id}`\nBot:{member.bot}'
     roles = sorted([role for role in member.roles],
                    key=lambda role: role.position, reverse=True)
     send_roles = '\n'.join([role.mention for role in roles])
