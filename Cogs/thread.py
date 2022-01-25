@@ -57,8 +57,8 @@ class Thread(commands.Cog):
         board = await self._make_board(ctx, category.id)
         view = EscapeButton(ctx, board)
         tracker = ViewTracker(view, timeout=None)
-        await ctx.defer()
         await tracker.track(MessageProvider(ctx.channel))
+        await ctx.respond('Done', ephemeral=True)
         return
 
     @commands.command(name='thread_board')
