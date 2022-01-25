@@ -1,10 +1,8 @@
-from optparse import Option
 import os
 from datetime import timedelta, timezone
 
-from discord import permissions
-
 import discord
+from discord import Option, permissions
 from discord.commands import slash_command
 from discord.ext import commands
 
@@ -50,7 +48,9 @@ class Thread(commands.Cog):
     @permissions.has_role(mod_role)
     async def _board_slash(self,
                            ctx,
-                           category: Option(discord.CategoryChannel, '対象のカテゴリを選択してください。')):
+                           category: Option(
+                               discord.CategoryChannel, '対象のカテゴリを選択してください。'),
+                           ):
         await self._make_board(ctx, category.id)
         return
 
