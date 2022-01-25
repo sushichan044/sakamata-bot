@@ -58,7 +58,7 @@ class Thread(commands.Cog):
         # await ctx.respond('Done', ephemeral=True)
         view = EscapeButton(board)
         tracker = ViewTracker(view, timeout=None)
-        await tracker.track(InteractionProvider(ctx))
+        await tracker.track(InteractionProvider(ctx.interaction))
         return
 
     @commands.command(name='thread_board')
