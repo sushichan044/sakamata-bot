@@ -71,6 +71,7 @@ class Thread(commands.Cog):
     def _make_board(self, ctx, category_id: int) -> str:
         channels = [
             channel for channel in ctx.guild.channels if channel.category and channel.category.id == category_id]
+        sort_channels = sorted(channels, key=lambda channel: channel.position)
         # print(channels)
         thread_dic = {}
         threads = [
@@ -86,7 +87,7 @@ class Thread(commands.Cog):
         """
         # sort_thread = sorted(thread_dic.items(), key=lambda i: i[1])
         final_board = []
-        for channel in channels:
+        for channel in sort_channels:
             thread_board = [f'<#{channel.id}>']
             child_thread = [
                 f'<#{thread.id}>' for thread, parent in thread_dic.items() if parent == channel.position]
