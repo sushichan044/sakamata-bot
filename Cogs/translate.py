@@ -92,7 +92,7 @@ class Translate(commands.Cog):
         await ctx.respond(embeds=embeds, ephemeral=True)
         return
 
-    @message_command(name='翻译成中文')
+    @message_command(guild_ids=[guild_id], name='翻译成中文')
     @permissions.has_role(server_member_role)
     async def _deepl_trans_to_zh(self, ctx, message: discord.Message):
         if not message.content and message.embeds:
@@ -116,7 +116,7 @@ class Translate(commands.Cog):
         await ctx.respond(embeds=embeds, ephemeral=True)
         return
 
-    @slash_command(name='translate')
+    @slash_command(guild_ids=[guild_id], name='translate')
     @permissions.has_role(server_member_role)
     async def _trans_command(
             self,
