@@ -248,10 +248,11 @@ async def _newuser(
     roles = sorted([role for role in member.roles],
                    key=lambda role: role.position, reverse=True)
     send_roles = '\n'.join([role.mention for role in roles])
-    avatar_url = member.display_avatar.replace(
-        size=1024, static_format='webp').url
-    if avatar_url in default_avatars:
+    if member.default_avatar == member.avatar or member.display_avatar:
         avatar_url = member.default_avatar.replace(
+            size=1024, static_format='webp').url
+    else:
+        avatar_url = member.display_avatar.replace(
             size=1024, static_format='webp').url
     if member.display_name != member.name:
         desc = desc + f'\nニックネーム:{member.display_name}'
