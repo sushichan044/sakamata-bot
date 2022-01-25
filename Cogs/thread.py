@@ -63,11 +63,14 @@ class Thread(commands.Cog):
         for channel in channels:
             thread_board = [channel.mention]
             child_thread = [
-                thread for thread, parent in thread_dic.items() if parent == channel.position]
-            board = thread_board + child_thread
-            board_text_draft = '\n┣'.join(board[:-2])
-            board_text = f'{board_text_draft}\n┗{board[-1]}'
-            final_board.append(board_text)
+                thread.mention for thread, parent in thread_dic.items() if parent == channel.position]
+            if child_thread:
+                board = thread_board + child_thread
+                board_text_draft = '\n┣'.join(board[:-1])
+                board_text = f'{board_text_draft}\n┗{board[-1]}'
+                final_board.append(board_text)
+            else:
+                final_board.append(channel.mention)
         final_text = '\n'.join(final_board)
         await ctx.send(final_text)
         return
