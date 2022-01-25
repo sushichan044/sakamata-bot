@@ -249,7 +249,7 @@ async def _newuser(
             size=1024, static_format='webp').url
     if member.display_name != member.name:
         desc = desc + f'\nニックネーム:{member.display_name}'
-    desc = desc + f'\n[avatar url]({avatar_url})'
+    desc = desc + f'\n[Avatar url]({avatar_url})'
     deal = []
     if member.communication_disabled_until:
         until_jst: datetime = member.communication_disabled_until.astimezone(
