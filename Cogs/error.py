@@ -42,8 +42,7 @@ class ErrorNotify(commands.Cog):
     async def _on_application_command_error(self, ctx, exception):
         channel = self.bot.get_channel(error_log_channel)
         now = discord.utils.utcnow().astimezone(jst)
-        url: Optional[str] = ctx.message.jump_url
-        await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{url}\n{str(exception)}```')
+        await channel.send(f'```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(exception)}```')
         return
 
     @commands.command(name='errortest')
