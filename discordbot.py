@@ -255,7 +255,7 @@ async def _newuser(
     stops = '\n'.join(
         [role.name for role in member.roles if role.id in stop_list])
     deal.append(stops)
-    if not deal:
+    if deal == []:
         send_deal = 'なし'
     else:
         send_deal = '\n'.join(deal)
