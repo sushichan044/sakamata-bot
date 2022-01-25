@@ -242,8 +242,11 @@ async def _newuser(
     roles = sorted([role for role in member.roles],
                    key=lambda role: role.position, reverse=True)
     send_roles = '\n'.join([role.mention for role in roles])
+    avatar_url = member.display_avatar.replace(
+        size=1024, static_format='webp').url
     if member.display_name != member.name:
         desc = desc + f'\nニックネーム:{member.display_name}'
+    desc = desc + f'\n[avatar url]({avatar_url})'
     deal = []
     if member.communication_disabled_until:
         until_jst: datetime = member.communication_disabled_until.astimezone(
@@ -264,7 +267,7 @@ async def _newuser(
         color=3983615,
     )
     embed.set_thumbnail(
-        url=member.display_avatar.replace(size=1024, static_format='webp').url
+        url=avatar_url
     )
     embed.add_field(
         name='アカウント作成日時',
