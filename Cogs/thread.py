@@ -135,6 +135,7 @@ class Thread(commands.Cog):
 class EscapeButton(View):
     status = state('status')
     text = state('text')
+    content = state('content')
 
     def __init__(self, text: str):
         super().__init__()
