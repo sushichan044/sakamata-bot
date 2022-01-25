@@ -55,9 +55,9 @@ class Thread(commands.Cog):
                                discord.CategoryChannel, '対象のカテゴリを選択してください。'),
                            ):
         board = await self._make_board(ctx, category.id)
-        view = EscapeButton(ctx, board)
+        view = EscapeButton(board)
         tracker = ViewTracker(view, timeout=None)
-        await tracker.track(MessageProvider(ctx.channel))
+        await tracker.track(MessageProvider(ctx.message.channel))
         await ctx.respond('Done', ephemeral=True)
         return
 
@@ -131,13 +131,10 @@ class Thread(commands.Cog):
 
 
 class EscapeButton(View):
-    ctx = state('ctx')
     status = state('status')
-    text = state('text')
 
-    def __init__(self, ctx, text: str):
+    def __init__(self, text: str):
         super().__init__()
-        self.ctx = ctx
         self.text = text
         self.l_str = 'OK'
         self.r_str = '取り消し'
