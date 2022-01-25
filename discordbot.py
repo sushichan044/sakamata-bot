@@ -228,6 +228,45 @@ async def _newuser(
     # guild = ctx.guild
     # member = guild.get_member(int(id))
     # この先表示する用
+    await ctx.defer()
+    now = discord.utils.utcnow().astimezone(jst)
+    member_created: datetime = member.created_at.astimezone(jst)
+    created = member_created.strftime('%Y/%m/%d/%H:%M:%S')
+    member_joined: datetime = member.joined_at.astimezone(jst)
+    joined = member_joined.strftime('%Y/%m/%d/%H:%M:%S')
+    _footer = now.strftime('%Y/%m/%d/%H:%M:%S')
+    desc = f'対象ユーザー:{member.mention}\nID:`{member.id}`\nBot?{member.bot}'
+    roles = sorted([role.mention for role in member.roles],
+                   key=lambda role: role.position, reverse=True)
+    send_roles = '\n'.join(roles)
+    if member.display_name != member.name:
+        desc = desc + f'\nニックネーム:{member.display_name}'
+    embed = discord.Embed(
+        title='ユーザー情報照会結果',
+        description=desc,
+        color=3983615,
+    )
+    embed.set_thumbnail(
+        url=member.display_avatar.replace(size=1024, static_format='webp').url
+    )
+    embed.set_footer(
+        text=_footer
+    )
+    embed.add_field(
+        name='アカウント作成日時',
+        value=created,
+    )
+    embed.add_field(
+        name='サーバー参加日時',
+        value=joined,
+    )
+    embed.add_field(
+        name=f'所持ロール({len(roles)})',
+        value=send_roles
+    )
+    await ctx.respond(embed)
+    return
+
     avatar_url = member.display_avatar.replace(
         size=1024, static_format='webp').url
     if member.avatar is None:
@@ -240,7 +279,7 @@ async def _newuser(
         member_nickname = member.display_name
     member_join_date = member.joined_at.astimezone(jst)
     # membermention = member.mention
-    roles = [[x.name, x.id] for x in member.roles]
+    roles = [[x.mention, x.id] for x in member.roles]
     # [[name,id],[name,id]...]
     x = ['/ID: '.join(str(y) for y in x) for x in roles]
     z = '\n'.join(x)
