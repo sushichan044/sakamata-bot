@@ -286,7 +286,7 @@ async def _newuser(
     embed.add_field(
         name='実行中措置',
         value=send_deal,
-        )
+    )
     await ctx.respond(embed=embed)
     return
 
