@@ -297,6 +297,7 @@ async def _newuser(
     await ctx.respond(embed=embed)
     return
 
+
 @bot.command(name='user')
 @commands.has_role(mod_role)
 async def _new_user(ctx, member: Member):
