@@ -1,13 +1,12 @@
 import os
 from datetime import timedelta, timezone
 
-from discord import interactions
-
 import discord
 from discord import Option, permissions
 from discord.commands import slash_command
 from discord.ext import commands
-from discord.ext.ui import Button, Message, View, state, ViewTracker, InteractionProvider, MessageProvider
+from discord.ext.ui import (Button, InteractionProvider, Message, View,
+                            ViewTracker, state)
 
 thread_log_channel = int(os.environ['THREAD_LOG_CHANNEL'])
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
