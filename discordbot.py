@@ -1075,8 +1075,7 @@ async def _newcreateevent(ctx,
 @bot.command(name='private')
 async def _private(ctx):
     role = ctx.guild.get_role(server_member_role)
-    channels = await ctx.guild.fetch_channels
-    for channel in channels:
+    for channel in ctx.guild.channels:
         result = channel.permissions_for(role)
         print(result)
     return
