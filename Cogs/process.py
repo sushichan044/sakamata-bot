@@ -44,6 +44,7 @@ class Process(commands.Cog):
         """
         ids = conn.smembers(tracker.message.id)
         print(ids)
+        conn.delete(tracker.message.id)
         target = tracker.message.embeds[0]
         target.title = 'この募集は終了しました。'
         # await tracker.message.edit(embeds=[target], view=None)
