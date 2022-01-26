@@ -115,7 +115,7 @@ class JoinButton(View):
         if not interacton.response.is_done():
             await interacton.response.send_message('参加登録を行いました！\n開始までしばらくお待ちください！', ephemeral=True)
         else:
-            print(interacton.followup)
+            await interacton.followup.send()
         self.stop()
 
     async def body(self) -> Message:
