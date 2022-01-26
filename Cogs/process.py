@@ -102,6 +102,7 @@ class JoinButton(View):
 
     async def _ok(self, interacton: discord.Interaction):
         conn.sadd(str(interacton.message.id), str(interacton.user.id))
+        await interacton.response.send_message('参加登録を行いました！\n開始までしばらくお待ちください！', ephemeral=True)
         self.stop()
 
     async def body(self) -> Message:
@@ -118,7 +119,7 @@ class JoinButton(View):
         return Message(
             embeds=[embed],
             components=[
-                Button(self.text).style(discord.ButtonStyle.green).disabled(
+                Button(self.text).style(discord.ButtonStyle.blurple).disabled(
                     self.status is not None).on_click(self._ok),
             ]
         )
