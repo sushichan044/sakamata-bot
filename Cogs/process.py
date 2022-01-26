@@ -42,7 +42,7 @@ class Process(commands.Cog):
         """
         ids = conn.smembers(tracker.message.id)
         print(ids)
-        await JoinButton()._end()
+        await JoinButton(ctx, start_time, exp_time)._end()
         return
 
 
