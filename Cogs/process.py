@@ -2,6 +2,8 @@ import asyncio
 from datetime import datetime, timedelta, timezone
 import os
 
+from discord import Member
+
 import discord
 from discord.commands import slash_command
 from discord.ext import commands
@@ -27,10 +29,12 @@ class Process(commands.Cog):
         tracker = ViewTracker(view, timeout=None)
         await tracker.track(InteractionProvider(ctx.interaction, ephemeral=True))
         conn.set(f'{session_id}.status', 'open', ex=1200)
-        await self._send_invite(ctx, session_id)
+        players = await self._send_invite(ctx, session_id)
+        for player in players:
+            print(player)
         return
 
-    async def _send_invite(self, ctx: discord.ApplicationContext, session_id: int):
+    async def _send_invite(self, ctx: discord.ApplicationContext, session_id: int) -> list[Member]:
         print('launched')
         channel = ctx.interaction.channel
         start_time = discord.utils.utcnow()
@@ -48,11 +52,12 @@ class Process(commands.Cog):
         """
         ids = conn.smembers(str(tracker.message.id))
         print(ids)
+        players = [await ctx.interaction.guild.fetch_member(id) for id in ids]
         conn.delete(str(tracker.message.id))
         target = tracker.message.embeds[0]
         target.title = 'この募集は終了しました。'
         await tracker.message.edit(embeds=[target], view=None)
-        return
+        return players
 
 
 class CloseButton(View):
