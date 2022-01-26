@@ -74,7 +74,7 @@ class CloseButton(View):
         self.r_str = '取り消し'
         self.status = None
         self.title = '募集を開始しました。'
-        self.text = '締め切る際は締め切りボタンを押してください。\n募集を取り消す場合は取り消しボタンを押してください。'
+        self.text = '締め切る際は締め切りボタンを押してください。\n締め切りボタンが押されなかった場合、10分後に自動で締め切られます。'
         self.session_id = session_id
 
     async def _ok(self, interaction: discord.Interaction):
@@ -102,10 +102,14 @@ class CloseButton(View):
             components=[
                 Button(self.l_str).style(discord.ButtonStyle.blurple).disabled(
                     self.status is not None).on_click(self._ok),
-                Button(self.r_str).style(discord.ButtonStyle.red).disabled(
-                    self.status is not None).on_click(self._ng)
             ]
         )
+
+
+"""
+Button(self.r_str).style(discord.ButtonStyle.red).disabled(
+    self.status is not None).on_click(self._ng)
+"""
 
 
 class JoinButton(View):
