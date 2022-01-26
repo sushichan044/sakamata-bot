@@ -2,8 +2,6 @@ import asyncio
 from datetime import datetime, timedelta, timezone
 import os
 
-from discord import embeds
-
 import discord
 from discord.commands import slash_command
 from discord.ext import commands
@@ -27,10 +25,12 @@ class Process(commands.Cog):
         view = CloseButton(ctx)
         tracker = ViewTracker(view, timeout=None)
         await tracker.track(InteractionProvider(ctx.interaction, ephemeral=True))
-        await self._send_invite(ctx)
+        conn.set(f'{tracker.message.id}.status', 'open', ex=1200)
+        base_msg_id: int = tracker.message.id
+        await self._send_invite(ctx, base_msg_id)
         return
 
-    async def _send_invite(self, ctx: discord.ApplicationContext):
+    async def _send_invite(self, ctx: discord.ApplicationContext, base_msg_id: int):
         print('launched')
         channel = ctx.interaction.channel
         start_time = discord.utils.utcnow()
@@ -38,13 +38,17 @@ class Process(commands.Cog):
         view = JoinButton(ctx, start_time, exp_time)
         tracker = ViewTracker(view, timeout=30)
         await tracker.track(MessageProvider(channel))
-        await asyncio.sleep(30)
+        for i in range(30):
+            if conn.get(f'{base_msg_id}.status') == 'open':
+                await asyncio.sleep(1)
+            else:
+                break
         """
         message_id: [user_id, user_id...]
         """
-        ids = conn.smembers(tracker.message.id)
+        ids = conn.smembers(str(tracker.message.id))
         print(ids)
-        conn.delete(tracker.message.id)
+        conn.delete(str(tracker.message.id))
         target = tracker.message.embeds[0]
         target.title = 'この募集は終了しました。'
         await tracker.message.edit(embeds=[target], view=None)
@@ -71,6 +75,7 @@ class CloseButton(View):
         self.status = True
         self.title = '募集を締め切りました。'
         self.text = 'このメッセージを消去してスレッドでゲームを開始してください。'
+        conn.set(f'{interaction.message.id}.status', 'close', ex=1200)
         self.stop()
 
     async def _ng(self, interaction: discord.Interaction):
