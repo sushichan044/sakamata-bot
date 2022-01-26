@@ -1079,7 +1079,7 @@ async def _private(ctx):
                       key=lambda channel: channel.position)
     for channel in channels:
         result = channel.permissions_for(role).view_channel
-        print(result)
+        print(channel.name, result)
     return
 
 
