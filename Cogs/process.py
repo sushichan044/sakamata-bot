@@ -15,7 +15,7 @@ class Process(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(guild_ids=[guild_id], name='Process')
+    @slash_command(guild_ids=[guild_id], name='process')
     async def _start_game(self, ctx):
         view = JoinButton(ctx)
         tracker = ViewTracker(view, timeout=None)
