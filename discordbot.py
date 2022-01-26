@@ -1076,7 +1076,7 @@ async def _newcreateevent(ctx,
 async def _private(ctx):
     role = ctx.guild.get_role(server_member_role)
     for channel in ctx.guild.channels:
-        result = channel.permissions_for(role)
+        result = channel.permissions_for(role).view_channel
         print(result)
     return
 
