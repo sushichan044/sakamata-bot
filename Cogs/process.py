@@ -130,7 +130,7 @@ class JoinButton(View):
         return Message(
             embeds=[embed],
             components=[
-                Button(self.text).style(discord.ButtonStyle.blurple).disabled(
+                Button(self.label).style(discord.ButtonStyle.blurple).disabled(
                     self.status is not None).on_click(self._ok),
             ]
         )
