@@ -25,11 +25,11 @@ class Process(commands.Cog):
         view = CloseButton(ctx)
         tracker = ViewTracker(view, timeout=None)
         await tracker.track(InteractionProvider(ctx.interaction, ephemeral=True))
-        future = asyncio.Future()
-        await self._send_invite(ctx, future)
+        await self._send_invite(ctx)
         return
 
-    async def _send_invite(self, ctx: discord.ApplicationContext, future: asyncio.Future):
+    async def _send_invite(self, ctx: discord.ApplicationContext):
+        print('launched')
         channel = ctx.interaction.channel
         start_time = discord.utils.utcnow()
         exp_time = start_time + timedelta(minutes=10.0)
