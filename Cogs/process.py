@@ -111,11 +111,11 @@ class JoinButton(View):
         self.exp = exp
 
     async def _ok(self, interaction: discord.Interaction):
-        conn.sadd(str(interaction.message.id), str(interaction.user.id))
-        if not interaction.response.is_done():
-            await interaction.response.send_message('参加登録を行いました！\n開始までしばらくお待ちください！', ephemeral=True)
-        else:
+        if not str(interaction.user.id) in conn.smembers(str(interaction.message.id)):
+            conn.sadd(str(interaction.message.id), str(interaction.user.id))
             await interaction.followup.send(content='参加登録を行いました！\n開始までしばらくお待ちください！', ephemeral=True)
+        else:
+            await interaction.followup.send(content='既に参加登録したユーザーです。', ephemeral=True)
         return
 
     async def body(self) -> Message:
