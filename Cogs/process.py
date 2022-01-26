@@ -22,15 +22,15 @@ class Process(commands.Cog):
 
     @slash_command(guild_ids=[guild_id], name='process')
     async def _start_game(self, ctx: discord.ApplicationContext) -> None:
-        view = CloseButton(ctx)
+        session_id: int = ctx.interaction.id
+        view = CloseButton(ctx, session_id)
         tracker = ViewTracker(view, timeout=None)
         await tracker.track(InteractionProvider(ctx.interaction, ephemeral=True))
-        conn.set(f'{tracker.message.id}.status', 'open', ex=1200)
-        base_msg_id: int = tracker.message.id
-        await self._send_invite(ctx, base_msg_id)
+        conn.set(f'{session_id}.status', 'open', ex=1200)
+        await self._send_invite(ctx, session_id)
         return
 
-    async def _send_invite(self, ctx: discord.ApplicationContext, base_msg_id: int):
+    async def _send_invite(self, ctx: discord.ApplicationContext, session_id: int):
         print('launched')
         channel = ctx.interaction.channel
         start_time = discord.utils.utcnow()
@@ -39,7 +39,7 @@ class Process(commands.Cog):
         tracker = ViewTracker(view, timeout=30)
         await tracker.track(MessageProvider(channel))
         for i in range(30):
-            if conn.get(f'{base_msg_id}.status') == 'open':
+            if conn.get(f'{session_id}.status') == 'open':
                 await asyncio.sleep(1)
             else:
                 break
@@ -62,7 +62,7 @@ class CloseButton(View):
     text = state('text')
     title = state('title')
 
-    def __init__(self, ctx):
+    def __init__(self, ctx, session_id: int):
         super().__init__()
         self.ctx = ctx
         self.l_str = '締め切り'
@@ -70,12 +70,13 @@ class CloseButton(View):
         self.status = None
         self.title = '募集を開始しました。'
         self.text = '締め切る際は締め切りボタンを押してください。\n募集を取り消す場合は取り消しボタンを押してください。'
+        self.session_id = session_id
 
     async def _ok(self, interaction: discord.Interaction):
         self.status = True
         self.title = '募集を締め切りました。'
         self.text = 'このメッセージを消去してスレッドでゲームを開始してください。'
-        conn.set(f'{interaction.message.id}.status', 'close', ex=1200)
+        conn.set(f'{self.session_id}.status', 'close', ex=1200)
         self.stop()
 
     async def _ng(self, interaction: discord.Interaction):
