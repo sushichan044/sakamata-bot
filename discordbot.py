@@ -62,7 +62,6 @@ INIT_EXTENSION_LIST = [
     'Cogs.error',
     'Cogs.entrance',
     # 'Cogs.fun',
-    # 'Cogs.holodex',
     'Cogs.member_count',
     'Cogs.ng_word',
     'Cogs.pin',
@@ -70,7 +69,6 @@ INIT_EXTENSION_LIST = [
     'Cogs.slow',
     'Cogs.starboard',
     'Cogs.thread',
-    # 'Cogs.translate'
 ]
 
 for cog in INIT_EXTENSION_LIST:
