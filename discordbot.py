@@ -1072,6 +1072,16 @@ async def _newcreateevent(ctx,
     return
 
 
+@bot.command(name='private')
+async def _private(ctx):
+    role = ctx.guild.get_role(server_member_role)
+    channels = await ctx.guild.fetch_channels
+    for channel in channels:
+        result = channel.permissions_for(role)
+        print(result)
+    return
+
+
 # create a user command for the supplied guilds
 # @bot.user_command(guild_ids=[guild_id])
 # async def mention(ctx, member: Member):  # user commands return the member
