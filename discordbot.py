@@ -1075,7 +1075,9 @@ async def _newcreateevent(ctx,
 @bot.command(name='private')
 async def _private(ctx):
     role = ctx.guild.get_role(server_member_role)
-    for channel in ctx.guild.channels:
+    channels = sorted([channel for channel in ctx.guild.channels],
+                      key=lambda channel: channel.position)
+    for channel in channels:
         result = channel.permissions_for(role).view_channel
         print(result)
     return
