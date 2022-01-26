@@ -116,7 +116,7 @@ class JoinButton(View):
             await interaction.response.send_message('参加登録を行いました！\n開始までしばらくお待ちください！', ephemeral=True)
         else:
             await interaction.followup.send(content='参加登録を行いました！\n開始までしばらくお待ちください！', ephemeral=True)
-        self.stop()
+        return
 
     async def body(self) -> Message:
         exp_str = self.exp.astimezone(jst).strftime('%Y/%m/%d %H:%M:%S')
