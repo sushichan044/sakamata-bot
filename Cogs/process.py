@@ -37,8 +37,12 @@ class Process(commands.Cog):
         tracker = ViewTracker(view, timeout=None)
         await tracker.track(MessageProvider(channel))
         await asyncio.sleep(30)
+        """
+        message_id: [user_id, user_id...]
+        """
         ids = conn.smembers(tracker.message.id)
         print(ids)
+        await JoinButton()._end()
         return
 
 
@@ -90,25 +94,32 @@ class CloseButton(View):
 
 class JoinButton(View):
     status = state('status')
-    text = state('text')
+    title = state('title')
+    label = state('label')
 
     def __init__(self, ctx, start: datetime, exp: datetime):
         super().__init__()
         self.ctx = ctx
-        self.text = '参加'
+        self.label = '参加'
         self.status = None
         self.start = start
         self.exp = exp
+        self.title = '募集が開始されました。'
 
     async def _ok(self, interacton: discord.Interaction):
         conn.sadd(str(interacton.message.id), str(interacton.user.id))
         await interacton.response.send_message('参加登録を行いました！\n開始までしばらくお待ちください！', ephemeral=True)
         self.stop()
 
+    async def _end(self):
+        self.status = True
+        self.title = 'この募集は終了しました。'
+        pass
+
     async def body(self) -> Message:
         exp_str = self.exp.astimezone(jst).strftime('%Y/%m/%d %H:%M:%S')
         embed = discord.Embed(
-            title='募集が開始されました。',
+            title=self.title,
             description=f'有効期限:{exp_str}',
             color=15767485,
         )
