@@ -2,6 +2,8 @@ import asyncio
 from datetime import datetime, timedelta, timezone
 import os
 
+from discord import embeds
+
 import discord
 from discord.commands import slash_command
 from discord.ext import commands
@@ -34,7 +36,7 @@ class Process(commands.Cog):
         start_time = discord.utils.utcnow()
         exp_time = start_time + timedelta(minutes=10.0)
         view = JoinButton(ctx, start_time, exp_time)
-        tracker = ViewTracker(view, timeout=None)
+        tracker = ViewTracker(view, timeout=30)
         await tracker.track(MessageProvider(channel))
         await asyncio.sleep(30)
         """
@@ -42,7 +44,9 @@ class Process(commands.Cog):
         """
         ids = conn.smembers(tracker.message.id)
         print(ids)
-        await JoinButton(ctx, start_time, exp_time)._end()
+        target = tracker.message.embeds[0]
+        target.title = 'この募集は終了しました。'
+        # await tracker.message.edit(embeds=[target], view=None)
         return
 
 
@@ -104,22 +108,16 @@ class JoinButton(View):
         self.status = None
         self.start = start
         self.exp = exp
-        self.title = '募集が開始されました。'
 
     async def _ok(self, interacton: discord.Interaction):
         conn.sadd(str(interacton.message.id), str(interacton.user.id))
         await interacton.response.send_message('参加登録を行いました！\n開始までしばらくお待ちください！', ephemeral=True)
         self.stop()
 
-    async def _end(self):
-        self.status = True
-        self.title = 'この募集は終了しました。'
-        pass
-
     async def body(self) -> Message:
         exp_str = self.exp.astimezone(jst).strftime('%Y/%m/%d %H:%M:%S')
         embed = discord.Embed(
-            title=self.title,
+            title='募集が開始されました。',
             description=f'有効期限:{exp_str}',
             color=15767485,
         )
