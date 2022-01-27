@@ -36,7 +36,12 @@ class Concept(commands.Cog):
         # get all players
         all_players = await self._send_invite(ctx, session_id)
         # select master and players
-        master = random.choice(all_players)
+        try:
+            master = random.choice(all_players)
+        except IndexError as e:
+            print('Detect IndexError', e)
+            await ctx.interaction.followup.send('参加者が不足しているため募集を停止しました。', ephemeral=True)
+            return
         players = [player for player in all_players if player != master]
         # create game thread and invite all players
         if ctx.interaction.guild.premium_tier >= 2:
