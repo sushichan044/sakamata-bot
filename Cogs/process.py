@@ -2,6 +2,7 @@ import asyncio
 import os
 import random
 from datetime import datetime, timedelta, timezone
+from typing import Tuple
 
 from discord import User, embeds
 
@@ -84,19 +85,23 @@ class Process(commands.Cog):
         def detect_answer(message):
             return message.author.id != self.bot.user.id and message.author.id in [member.id for member in message.channel.members] and message.content == answer_word
         answer_msg: discord.Message = await self.bot.wait_for('message', check=detect_answer)
-        end_embed, end_text = _end_game_game_thread(
+        end_embed, master_embed = _end_game_game_thread(
             answer_word, answer_msg.author, master)
         end_game_game_thread = _set_session_id(end_embed, session_id)
         await game_thread.send(embed=end_game_game_thread)
-        await master_thread.send(end_text)
-        await game_thread.send('このスレッドは3分後にロックされます。')
-        await master_thread.send('このスレッドは3分後にロックされます。')
-        await asyncio.sleep(180)
+        await master_thread.send(embed=master_embed)
+        await game_thread.send('このスレッドは30秒後にロックされます。')
+        await master_thread.send('このスレッドは30秒後にロックされます。')
+        lock_time = discord.utils.utcnow() + timedelta(seconds=30)
+        for i in range(30):
+            if lock_time > discord.utils.utcnow():
+                await asyncio.sleep(1)
+            else:
+                break
         await game_thread.edit(locked=True)
         await master_thread.edit(locked=True)
         print(f'Completed Session: {str(session_id)}')
-        print(conn.get(f'{session_id}.status'))
-        # conn.delete(f'{session_id}.status')
+        conn.delete(f'{session_id}.status')
         return
 
     # set_answer
@@ -106,7 +111,7 @@ class Process(commands.Cog):
         await game_thread.send(embed=game_msg_1)
         master_msg_1 = _set_session_id(
             _start_embed(master), session_id)
-        word_target = await master_thread.send(master.mention, embed=master_msg_1)
+        word_target = await master_thread.send(embed=master_msg_1)
 
         def _catch_answer(message):
             return message.author.id != self.bot.user.id and message.author.id == master.id and message.reference and message.reference.message_id == word_target.id
@@ -157,25 +162,33 @@ def _set_answer_embed_game() -> Embed:
     return embed
 
 
-def _end_game_game_thread(answer_word: str, winner: Member | User, master: Member):
+def _end_game_game_thread(answer_word: str, winner: Member | User, master: Member) -> Tuple[Embed, Embed]:
     if winner.id == master.id:
         embed = Embed(
             title='ギブアップが行われました。',
             color=15767485,
         )
-        text = 'ギブアップが行われました。\n次はもっとわかりやすいお題に\nすると良いかもしれません。'
+        master_embed = Embed(
+            title='ギブアップが行われました。',
+            description='次はもっとわかりやすいお題に\nすると良いかもしれません。',
+            color=15767485,
+        )
     else:
         embed = Embed(
             title='回答が入力されました。',
             description=f'勝者は{winner.mention}さんです！',
             color=15767485,
         )
-        text = 'ゲームが完了しました！\n楽しんでいただけたなら幸いです！'
+        master_embed = Embed(
+            title='ゲームが完了しました。',
+            description='楽しんでいただけたなら幸いです！',
+            color=15767485,
+        )
     embed.add_field(
         name='回答',
         value=f'||{answer_word}||'
     )
-    return embed, text
+    return embed, master_embed
 
 
 def _set_session_id(embed: Embed, session_id: int) -> Embed:
