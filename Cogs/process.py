@@ -33,7 +33,7 @@ class Process(commands.Cog):
         players = await self._send_invite(ctx, session_id)
         master = random.choice(players)
         player = [player for player in players if player != master]
-        thread = await ctx.interaction.channel.create_thread(name=f'Process (ID:{session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.private_thread)
+        thread = await ctx.interaction.channel.create_thread(name=f'Process (ID:{session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.public_thread)
         for player in players:
             await thread.add_user(player)
         print('Invitation Completed')
