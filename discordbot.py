@@ -232,7 +232,6 @@ async def _newuser(
     # member = guild.get_member(int(id))
     # この先表示する用
     await ctx.defer()
-    member = await ctx.guild.fetch_member(member.id)
     member_created: datetime = member.created_at.astimezone(jst)
     created = member_created.strftime('%Y/%m/%d %H:%M:%S')
     member_joined: datetime = member.joined_at.astimezone(jst)
@@ -249,7 +248,7 @@ async def _newuser(
             size=1024, static_format='webp').url
     desc = desc + f'\n[Avatar url]({avatar_url})'
     deal = []
-    if member.communication_disabled_until:
+    if member.communication_disabled_until >= discord.utils.utcnow():
         until_jst: datetime = member.communication_disabled_until.astimezone(
             jst)
         until = until_jst.strftime('%Y/%m/%d %H:%M:%S')
