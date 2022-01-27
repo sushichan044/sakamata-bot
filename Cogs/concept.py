@@ -39,14 +39,14 @@ class Concept(commands.Cog):
         master = random.choice(all_players)
         players = [player for player in all_players if player != master]
         # create game thread and invite all players
-        if ctx.interaction.guild.premium_tier >=2:
+        if ctx.interaction.guild.premium_tier >= 2:
             game_thread = await ctx.interaction.channel.create_thread(name=f'Concept (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.private_thread)
         else:
             game_thread = await ctx.interaction.channel.create_thread(name=f'Concept (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.public_thread)
         for player in all_players:
             await game_thread.add_user(player)
         # create master thread and invite master
-        if ctx.interaction.guild.premium_tier >=2:
+        if ctx.interaction.guild.premium_tier >= 2:
             master_thread = await ctx.interaction.channel.create_thread(name=f'[親専用スレッド] Concept (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.private_thread)
         else:
             master_thread = await ctx.interaction.channel.create_thread(name=f'[親専用スレッド] Concept (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.public_thread)
