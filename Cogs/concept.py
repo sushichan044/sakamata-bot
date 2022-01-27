@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Tuple
 
 import discord
-from discord import Embed, Member, User
+from discord import Embed, Member, User, permissions
 from discord.commands import slash_command
 from discord.ext import commands
 from discord.ext.ui import (Button, InteractionProvider, Message,
@@ -17,6 +17,7 @@ guild_id = int(os.environ['GUILD_ID'])
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
 conn = connect()
+server_member_role = int(os.environ['SERVER_MEMBER_ROLE'])
 
 
 class Concept(commands.Cog):
@@ -24,6 +25,7 @@ class Concept(commands.Cog):
         self.bot = bot
 
     @slash_command(guild_ids=[guild_id], name='concept')
+    @permissions.has_role(server_member_role)
     async def _operate_game(self, ctx: discord.ApplicationContext) -> None:
         session_id: int = ctx.interaction.id
         print(f'Start Session: {session_id}')
