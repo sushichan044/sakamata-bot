@@ -28,6 +28,7 @@ class Process(commands.Cog):
     @slash_command(guild_ids=[guild_id], name='process')
     async def _operate_game(self, ctx: discord.ApplicationContext) -> None:
         session_id: int = ctx.interaction.id
+        print(f'Start Session: {session_id}')
         view = CloseButton(ctx, session_id)
         tracker = ViewTracker(view, timeout=None)
         await tracker.track(InteractionProvider(ctx.interaction, ephemeral=True))
@@ -38,11 +39,11 @@ class Process(commands.Cog):
         master = random.choice(all_players)
         players = [player for player in all_players if player != master]
         # create game thread and invite all players
-        game_thread = await ctx.interaction.channel.create_thread(name=f'Process (Session ID:{session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.public_thread)
+        game_thread = await ctx.interaction.channel.create_thread(name=f'Process (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.public_thread)
         for player in all_players:
             await game_thread.add_user(player)
         # create master thread and invite master
-        master_thread = await ctx.interaction.channel.create_thread(name=f'[親専用スレッド] Process (Session ID:{session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.public_thread)
+        master_thread = await ctx.interaction.channel.create_thread(name=f'[親専用スレッド] Process (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.public_thread)
         await master_thread.add_user(master)
         print('Invitation Completed')
         # start game
@@ -51,7 +52,6 @@ class Process(commands.Cog):
 
     # return player list
     async def _send_invite(self, ctx: discord.ApplicationContext, session_id: int) -> list[Member]:
-        print('launched')
         channel = ctx.interaction.channel
         start_time = discord.utils.utcnow()
         exp_time = start_time + timedelta(minutes=10.0)
@@ -63,6 +63,7 @@ class Process(commands.Cog):
                 await asyncio.sleep(1)
             else:
                 break
+        conn.set(f'{session_id}.status', 'ongoing', ex=10800)
         """
         message_id: [user_id, user_id...]
         """
@@ -81,32 +82,46 @@ class Process(commands.Cog):
         answer_word = await self.catch_answer(master, game_thread, master_thread, session_id)
 
         def detect_answer(message):
-            return message.author != self.bot.user and message.content == answer_word and message.author in players
+            return message.author.id != self.bot.user.id and message.author.id in [member.id for member in message.channel.members] and message.content == answer_word and message.author in players
         answer_msg: discord.Message = await self.bot.wait_for('message', check=detect_answer)
-        end_game_game_thread = _set_session_id(
-            _end_game_game_thread(answer_word, answer_msg.author), session_id)
-        await game_thread.send(embed=end_game_game_thread)
+        end_embed, end_text = _end_game_game_thread(
+            answer_word, answer_msg.author, master)
+        end_game_game_thread = _set_session_id(end_embed, session_id)
+        await game_thread.send('@here', embed=end_game_game_thread)
+        await master_thread.send(end_text)
+        await game_thread.send('このスレッドは3分後にロックされます。')
+        await master_thread.send('このスレッドは3分後にロックされます。')
+        await asyncio.sleep(180)
+        await game_thread.edit(locked=True)
+        await master_thread.edit(locked=True)
+        print(f'Completed Session: {str(session_id)}')
+        print(conn.get(f'{session_id}.status'))
+        # conn.delete(f'{session_id}.status')
         return
 
     # set_answer
 
     async def catch_answer(self, master: Member, game_thread: discord.Thread, master_thread: discord.Thread, session_id: int) -> str:
+        game_msg_1 = _set_session_id(_start_embed_game(master), session_id)
+        await game_thread.send('@here', embed=game_msg_1)
         master_msg_1 = _set_session_id(
-            _start_embed(master, game_thread), session_id)
+            _start_embed(master), session_id)
         word_target = await master_thread.send(master.mention, embed=master_msg_1)
 
         def _catch_answer(message):
-            return message.author != self.bot.user and message.reference and message.reference.message_id == word_target.id
-        answer_word_msg = await self.bot.wait_for('message', check=_catch_answer)
+            return message.author.id != self.bot.user.id and message.author.id == master.id and message.reference and message.reference.message_id == word_target.id
+        answer_word_msg: discord.Message = await self.bot.wait_for('message', check=_catch_answer)
         master_msg_2 = _set_session_id(_set_answer_embed(
-            game_thread, answer_word_msg.content), session_id)
+            game_thread, answer_word_msg.content, master), session_id)
         await master_thread.send(embed=master_msg_2)
+        game_msg_2 = _set_session_id(_set_answer_embed_game(), session_id)
+        await game_thread.send('@here', embed=game_msg_2)
         return answer_word_msg.content
 
 
 # 進行用Embeds
 
-def _start_embed(master: Member, game_thread: discord.Thread) -> Embed:
+def _start_embed(master: Member) -> Embed:
     embed = Embed(
         title='Processへようこそ。',
         description=f'{master.mention}さんは親に選ばれました。\n回答にする単語をこのメッセージに__返信__してください。',
@@ -115,34 +130,52 @@ def _start_embed(master: Member, game_thread: discord.Thread) -> Embed:
     return embed
 
 
-def _set_answer_embed(game_thread: discord.Thread, answer_word: str) -> Embed:
+def _start_embed_game(master: Member) -> Embed:
     embed = Embed(
-        title='回答をセットしました。',
-        description=f'セットされた回答: {answer_word}\n{game_thread.mention}でゲームを開始してください。',
+        title='Processへようこそ。',
+        description=f'{master.mention}が親に選ばれました。\n親が回答をセットするまで\nしばらくお待ちくさい。',
         color=15767485,
     )
     return embed
 
 
-def _rule_embed_player():
-    pass
-
-
-def _rule_embed_master():
-    pass
-
-
-def _end_game_game_thread(answer_word: str, winner: Member | User) -> Embed:
+def _set_answer_embed(game_thread: discord.Thread, answer_word: str, master: Member) -> Embed:
     embed = Embed(
-        title='回答が入力されました。',
-        description=f'勝者は{winner.mention}さんです！',
+        title='回答をセットしました。',
+        description=f'セットされた回答: {answer_word}\n{game_thread.mention}でゲームを開始してください。\n万が一回答に時間がかかりすぎた際は、\n{master.mention}さんが{game_thread.mention}に\n回答を送信することでゲームを終了できます。',
         color=15767485,
     )
+    return embed
+
+
+def _set_answer_embed_game() -> Embed:
+    embed = Embed(
+        title='親が回答をセットしました。',
+        description='親がゲームを開始するまでお待ちください。',
+        color=15767485,
+    )
+    return embed
+
+
+def _end_game_game_thread(answer_word: str, winner: Member | User, master: Member):
+    if winner.id == master.id:
+        embed = Embed(
+            title='ギブアップが行われました。',
+            color=15767485,
+        )
+        text = 'ギブアップが行われました。\n次はもっとわかりやすいお題に\nすると良いかもしれません。'
+    else:
+        embed = Embed(
+            title='回答が入力されました。',
+            description=f'勝者は{winner.mention}さんです！',
+            color=15767485,
+        )
+        text = 'ゲームが完了しました！\n楽しんでいただけたなら幸いです！'
     embed.add_field(
         name='回答',
         value=f'||{answer_word}||'
     )
-    return embed
+    return embed, text
 
 
 def _set_session_id(embed: Embed, session_id: int) -> Embed:
