@@ -39,7 +39,7 @@ class Concept(commands.Cog):
         try:
             master = random.choice(all_players)
         except IndexError as e:
-            print(e)
+            print('Detect IndexError', e)
             await ctx.interaction.followup.send('参加者が不足しているため募集を停止しました。', ephemeral=True)
             return
         players = [player for player in all_players if player != master]
