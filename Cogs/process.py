@@ -37,11 +37,11 @@ class Process(commands.Cog):
         master = random.choice(all_players)
         players = [player for player in all_players if player != master]
         # create game thread and invite all players
-        game_thread = await ctx.interaction.channel.create_thread(name=f'Process (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.public_thread)
+        game_thread = await ctx.interaction.channel.create_thread(name=f'Process (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.private_thread)
         for player in all_players:
             await game_thread.add_user(player)
         # create master thread and invite master
-        master_thread = await ctx.interaction.channel.create_thread(name=f'[親専用スレッド] Process (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.public_thread)
+        master_thread = await ctx.interaction.channel.create_thread(name=f'[親専用スレッド] Process (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.private_thread)
         await master_thread.add_user(master)
         print('Invitation Completed')
         # start game
