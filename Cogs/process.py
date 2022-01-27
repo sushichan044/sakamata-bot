@@ -3,8 +3,10 @@ import os
 import random
 from datetime import datetime, timedelta, timezone
 
+from discord import User, embeds
+
 import discord
-from discord import Member
+from discord import Member, Embed
 from discord.commands import slash_command
 from discord.ext import commands
 from discord.ext.ui import (Button, InteractionProvider, Message,
@@ -20,7 +22,7 @@ conn = connect()
 
 
 class Process(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @slash_command(guild_ids=[guild_id], name='process')
@@ -30,14 +32,21 @@ class Process(commands.Cog):
         tracker = ViewTracker(view, timeout=None)
         await tracker.track(InteractionProvider(ctx.interaction, ephemeral=True))
         conn.set(f'{session_id}.status', 'open', ex=1200)
-        players = await self._send_invite(ctx, session_id)
-        master = random.choice(players)
-        player = [player for player in players if player != master]
-        thread = await ctx.interaction.channel.create_thread(name=f'Process (ID:{session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.public_thread)
-        for player in players:
-            await thread.add_user(player)
+        # get all players
+        all_players = await self._send_invite(ctx, session_id)
+        # select master and players
+        master = random.choice(all_players)
+        players = [player for player in all_players if player != master]
+        # create game thread and invite all players
+        game_thread = await ctx.interaction.channel.create_thread(name=f'Process (Session ID:{session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.public_thread)
+        for player in all_players:
+            await game_thread.add_user(player)
+        # create master thread and invite master
+        master_thread = await ctx.interaction.channel.create_thread(name=f'[親専用スレッド] Process (Session ID:{session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.public_thread)
+        await master_thread.add_user(master)
         print('Invitation Completed')
-        await self._game_body(master, player)
+        # start game
+        await self._game_body(master, players, game_thread, master_thread, session_id)
         return
 
     # return player list
@@ -68,9 +77,79 @@ class Process(commands.Cog):
 
     # Game Body
 
-    async def _game_body(self, master: Member, player: list[Member]):
+    async def _game_body(self, master: Member, players: list[Member], game_thread: discord.Thread, master_thread: discord.Thread, session_id: int):
+        answer_word = await self.catch_answer(master, game_thread, master_thread, session_id)
 
-        pass
+        def detect_answer(message):
+            return message.author != self.bot.user and message.content == answer_word and message.author in players
+        answer_msg: discord.Message = await self.bot.wait_for('message', check=detect_answer)
+        end_game_game_thread = _set_session_id(
+            _end_game_game_thread(answer_word, answer_msg.author), session_id)
+        await game_thread.send(embed=end_game_game_thread)
+        return
+
+    # set_answer
+
+    async def catch_answer(self, master: Member, game_thread: discord.Thread, master_thread: discord.Thread, session_id: int) -> str:
+        master_msg_1 = _set_session_id(
+            _start_embed(master, game_thread), session_id)
+        word_target = await master_thread.send(master.mention, embed=master_msg_1)
+
+        def _catch_answer(message):
+            return message.author != self.bot.user and message.reference and message.reference.message_id == word_target.id
+        answer_word_msg = await self.bot.wait_for('message', check=_catch_answer)
+        master_msg_2 = _set_session_id(_set_answer_embed(
+            game_thread, answer_word_msg.content), session_id)
+        await master_thread.send(embed=master_msg_2)
+        return answer_word_msg.content
+
+
+# 進行用Embeds
+
+def _start_embed(master: Member, game_thread: discord.Thread) -> Embed:
+    embed = Embed(
+        title='Processへようこそ。',
+        description=f'{master.mention}さんは親に選ばれました。\n回答にする単語をこのメッセージに__返信__してください。',
+        color=15767485,
+    )
+    return embed
+
+
+def _set_answer_embed(game_thread: discord.Thread, answer_word: str) -> Embed:
+    embed = Embed(
+        title='回答をセットしました。',
+        description=f'セットされた回答: {answer_word}\n{game_thread.mention}でゲームを開始してください。',
+        color=15767485,
+    )
+    return embed
+
+
+def _rule_embed_player():
+    pass
+
+
+def _rule_embed_master():
+    pass
+
+
+def _end_game_game_thread(answer_word: str, winner: Member | User) -> Embed:
+    embed = Embed(
+        title='回答が入力されました。',
+        description=f'勝者は{winner.mention}さんです！',
+        color=15767485,
+    )
+    embed.add_field(
+        name='回答',
+        value=f'||{answer_word}||'
+    )
+    return embed
+
+
+def _set_session_id(embed: Embed, session_id: int) -> Embed:
+    embed.set_footer(
+        text=f'Session ID: {str(session_id)}'
+    )
+    return embed
 
 # 募集締め切り用ボタン
 
@@ -108,7 +187,7 @@ class CloseButton(View):
     async def body(self) -> Message:
         return Message(
             embeds=[
-                discord.Embed(
+                Embed(
                     title=self.title,
                     description=self.text,
                     color=15767485,
@@ -158,7 +237,7 @@ class JoinButton(View):
 
     async def body(self) -> Message:
         exp_str = self.exp.astimezone(jst).strftime('%Y/%m/%d %H:%M:%S')
-        embed = discord.Embed(
+        embed = Embed(
             title='募集が開始されました。',
             description=f'有効期限:{exp_str}',
             color=15767485,
