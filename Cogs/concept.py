@@ -19,11 +19,11 @@ jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
 conn = connect()
 
 
-class Process(commands.Cog):
+class Concept(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash_command(guild_ids=[guild_id], name='process')
+    @slash_command(guild_ids=[guild_id], name='concept')
     async def _operate_game(self, ctx: discord.ApplicationContext) -> None:
         session_id: int = ctx.interaction.id
         print(f'Start Session: {session_id}')
@@ -37,11 +37,11 @@ class Process(commands.Cog):
         master = random.choice(all_players)
         players = [player for player in all_players if player != master]
         # create game thread and invite all players
-        game_thread = await ctx.interaction.channel.create_thread(name=f'Process (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.private_thread)
+        game_thread = await ctx.interaction.channel.create_thread(name=f'Concept (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.private_thread)
         for player in all_players:
             await game_thread.add_user(player)
         # create master thread and invite master
-        master_thread = await ctx.interaction.channel.create_thread(name=f'[親専用スレッド] Process (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.private_thread)
+        master_thread = await ctx.interaction.channel.create_thread(name=f'[親専用スレッド] Concept (Session ID {session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.private_thread)
         await master_thread.add_user(master)
         print('Invitation Completed')
         # start game
@@ -125,7 +125,7 @@ class Process(commands.Cog):
 
 def _start_embed(master: Member) -> Embed:
     embed = Embed(
-        title='Processへようこそ。',
+        title='Conceptへようこそ。',
         description=f'{master.mention}さんは親に選ばれました。\n回答にする単語をこのメッセージに__返信__してください。',
         color=15767485,
     )
@@ -134,8 +134,8 @@ def _start_embed(master: Member) -> Embed:
 
 def _start_embed_game(master: Member) -> Embed:
     embed = Embed(
-        title='Processへようこそ。',
-        description=f'{master.mention}が親に選ばれました。\n親が回答をセットするまで\nしばらくお待ちくさい。',
+        title='Conceptへようこそ。',
+        description=f'{master.mention}さんが親に選ばれました。\n親が回答をセットするまで\nしばらくお待ちくさい。',
         color=15767485,
     )
     return embed
@@ -309,4 +309,4 @@ class JoinButton(View):
 
 
 def setup(bot):
-    return bot.add_cog(Process(bot))
+    return bot.add_cog(Concept(bot))
