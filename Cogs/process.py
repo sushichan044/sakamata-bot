@@ -1,14 +1,15 @@
 import asyncio
-from datetime import datetime, timedelta, timezone
 import os
-
-from discord import Member
+import random
+from datetime import datetime, timedelta, timezone
 
 import discord
+from discord import Member
 from discord.commands import slash_command
 from discord.ext import commands
-from discord.ext.ui import (Button, InteractionProvider, MessageProvider, Message, View,
-                            ViewTracker, state)
+from discord.ext.ui import (Button, InteractionProvider, Message,
+                            MessageProvider, View, ViewTracker, state)
+
 from Cogs.connect import connect
 
 guild_id = int(os.environ['GUILD_ID'])
@@ -23,17 +24,23 @@ class Process(commands.Cog):
         self.bot = bot
 
     @slash_command(guild_ids=[guild_id], name='process')
-    async def _start_game(self, ctx: discord.ApplicationContext) -> None:
+    async def _operate_game(self, ctx: discord.ApplicationContext) -> None:
         session_id: int = ctx.interaction.id
         view = CloseButton(ctx, session_id)
         tracker = ViewTracker(view, timeout=None)
         await tracker.track(InteractionProvider(ctx.interaction, ephemeral=True))
         conn.set(f'{session_id}.status', 'open', ex=1200)
         players = await self._send_invite(ctx, session_id)
+        master = random.choice(players)
+        player = [player for player in players if player != master]
+        thread = await ctx.interaction.channel.create_thread(name=f'Process (ID:{session_id})', message=None, auto_archive_duration=1440, type=discord.ChannelType.private_thread)
         for player in players:
-            print(player)
+            await thread.add_user(player)
+        print('Invitation Completed')
+        await self._game_body(master, player)
         return
 
+    # return player list
     async def _send_invite(self, ctx: discord.ApplicationContext, session_id: int) -> list[Member]:
         print('launched')
         channel = ctx.interaction.channel
@@ -58,6 +65,14 @@ class Process(commands.Cog):
         target.title = 'この募集は終了しました。'
         await tracker.message.edit(embeds=[target], view=None)
         return players
+
+    # Game Body
+
+    async def _game_body(self, master: Member, player: list[Member]):
+
+        pass
+
+# 募集締め切り用ボタン
 
 
 class CloseButton(View):
@@ -110,6 +125,8 @@ class CloseButton(View):
 Button(self.r_str).style(discord.ButtonStyle.red).disabled(
     self.status is not None).on_click(self._ng)
 """
+
+# 参加用ボタン
 
 
 class JoinButton(View):
