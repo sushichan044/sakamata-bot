@@ -82,7 +82,7 @@ class Process(commands.Cog):
         answer_word = await self.catch_answer(master, game_thread, master_thread, session_id)
 
         def detect_answer(message):
-            return message.author.id != self.bot.user.id and message.author.id in [member.id for member in message.channel.members] and message.content == answer_word and message.author in players
+            return message.author.id != self.bot.user.id and message.author.id in [member.id for member in message.channel.members] and message.content == answer_word
         answer_msg: discord.Message = await self.bot.wait_for('message', check=detect_answer)
         end_embed, end_text = _end_game_game_thread(
             answer_word, answer_msg.author, master)
