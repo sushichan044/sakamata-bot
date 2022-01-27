@@ -87,7 +87,7 @@ class Process(commands.Cog):
         end_embed, end_text = _end_game_game_thread(
             answer_word, answer_msg.author, master)
         end_game_game_thread = _set_session_id(end_embed, session_id)
-        await game_thread.send('@here', embed=end_game_game_thread)
+        await game_thread.send(embed=end_game_game_thread)
         await master_thread.send(end_text)
         await game_thread.send('このスレッドは3分後にロックされます。')
         await master_thread.send('このスレッドは3分後にロックされます。')
@@ -103,7 +103,7 @@ class Process(commands.Cog):
 
     async def catch_answer(self, master: Member, game_thread: discord.Thread, master_thread: discord.Thread, session_id: int) -> str:
         game_msg_1 = _set_session_id(_start_embed_game(master), session_id)
-        await game_thread.send('@here', embed=game_msg_1)
+        await game_thread.send(embed=game_msg_1)
         master_msg_1 = _set_session_id(
             _start_embed(master), session_id)
         word_target = await master_thread.send(master.mention, embed=master_msg_1)
@@ -115,7 +115,7 @@ class Process(commands.Cog):
             game_thread, answer_word_msg.content, master), session_id)
         await master_thread.send(embed=master_msg_2)
         game_msg_2 = _set_session_id(_set_answer_embed_game(), session_id)
-        await game_thread.send('@here', embed=game_msg_2)
+        await game_thread.send(embed=game_msg_2)
         return answer_word_msg.content
 
 
