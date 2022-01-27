@@ -295,7 +295,7 @@ class JoinButton(View):
         )
         embed.set_author(
             name=self.ctx.interaction.user,
-            icon_url=self.ctx.interaction.user.avatar.url
+            icon_url=self.ctx.interaction.user.display_avatar.url
         )
         return Message(
             embeds=[embed],
