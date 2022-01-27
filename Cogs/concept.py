@@ -135,7 +135,7 @@ def _start_embed(master: Member) -> Embed:
 def _start_embed_game(master: Member) -> Embed:
     embed = Embed(
         title='Conceptへようこそ。',
-        description=f'{master.mention}が親に選ばれました。\n親が回答をセットするまで\nしばらくお待ちくさい。',
+        description=f'{master.mention}さんが親に選ばれました。\n親が回答をセットするまで\nしばらくお待ちくさい。',
         color=15767485,
     )
     return embed
