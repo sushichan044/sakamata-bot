@@ -14,7 +14,6 @@ from discord.ext.ui import (Button, InteractionProvider, Message,
 from Cogs.connect import connect
 
 guild_id = int(os.environ['GUILD_ID'])
-process_channel = int(os.environ['PROCESS_CATEGORY'])
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), 'Asia/Tokyo')
 conn = connect()
@@ -53,11 +52,11 @@ class Process(commands.Cog):
     async def _send_invite(self, ctx: discord.ApplicationContext, session_id: int) -> list[Member]:
         channel = ctx.interaction.channel
         start_time = discord.utils.utcnow()
-        exp_time = start_time + timedelta(minutes=10.0)
+        exp_time = start_time + timedelta(minutes=5.0)
         view = JoinButton(ctx, start_time, exp_time)
-        tracker = ViewTracker(view, timeout=30)
+        tracker = ViewTracker(view, timeout=300)
         await tracker.track(MessageProvider(channel))
-        for i in range(30):
+        for i in range(300):
             if conn.get(f'{session_id}.status') == 'open':
                 await asyncio.sleep(1)
             else:
@@ -88,10 +87,10 @@ class Process(commands.Cog):
         end_game_game_thread = _set_session_id(end_embed, session_id)
         await game_thread.send(embed=end_game_game_thread)
         await master_thread.send(embed=master_embed)
-        await game_thread.send('このスレッドは30秒後にロックされます。')
-        await master_thread.send('このスレッドは30秒後にロックされます。')
+        await game_thread.send('このスレッドは2分後にロックされます。')
+        await master_thread.send('このスレッドは2分後にロックされます。')
         lock_time = discord.utils.utcnow() + timedelta(seconds=30)
-        for i in range(30):
+        for i in range(120):
             if lock_time > discord.utils.utcnow():
                 await asyncio.sleep(1)
             else:
