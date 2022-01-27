@@ -248,7 +248,7 @@ async def _newuser(
             size=1024, static_format='webp').url
     desc = desc + f'\n[Avatar url]({avatar_url})'
     deal = []
-    if member.communication_disabled_until >= discord.utils.utcnow():
+    if member.communication_disabled_until:
         until_jst: datetime = member.communication_disabled_until.astimezone(
             jst)
         until = until_jst.strftime('%Y/%m/%d %H:%M:%S')
