@@ -89,7 +89,7 @@ class Process(commands.Cog):
         await master_thread.send(embed=master_embed)
         await game_thread.send('このスレッドは2分後にロックされます。')
         await master_thread.send('このスレッドは2分後にロックされます。')
-        lock_time = discord.utils.utcnow() + timedelta(seconds=30)
+        lock_time = discord.utils.utcnow() + timedelta(seconds=120)
         for i in range(120):
             if lock_time > discord.utils.utcnow():
                 await asyncio.sleep(1)
@@ -144,7 +144,7 @@ def _start_embed_game(master: Member) -> Embed:
 def _set_answer_embed(game_thread: discord.Thread, answer_word: str, master: Member) -> Embed:
     embed = Embed(
         title='回答をセットしました。',
-        description=f'セットされた回答: {answer_word}\n{game_thread.mention}でゲームを開始してください。\n万が一回答に時間がかかりすぎた際は、\n{master.mention}さんが{game_thread.mention}に\n回答を送信することでゲームを終了できます。',
+        description=f'セットされた回答: {answer_word}\n\n{game_thread.mention}でゲームを開始してください。\n\n万が一回答に時間がかかりすぎた際は、\n{master.mention}さんが{game_thread.mention}に\n回答を送信することでゲームを終了できます。',
         color=15767485,
     )
     return embed
