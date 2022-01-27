@@ -4,10 +4,8 @@ import random
 from datetime import datetime, timedelta, timezone
 from typing import Tuple
 
-from discord import User, embeds
-
 import discord
-from discord import Member, Embed
+from discord import Embed, Member, User
 from discord.commands import slash_command
 from discord.ext import commands
 from discord.ext.ui import (Button, InteractionProvider, Message,
