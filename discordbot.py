@@ -555,6 +555,19 @@ async def _untimeout(ctx, member: Member):
         return
 
 
+@bot.listen('on_member_update')
+async def _on_member_untimeout(before: Member, after: Member):
+    if before.timed_out and not after.timed_out:
+        channel = bot.get_channel(log_channel)
+        embed = discord.Embed(
+            title='Timeout 解除通知',
+            color=3447003,
+            description=f'{after.mention}のタイムアウトが終了しました。',
+            timestamp=discord.utils.utcnow()
+        )
+        await channel.send(embed=embed)
+        return
+
 # kick-member
 
 
