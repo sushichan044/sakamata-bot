@@ -98,8 +98,8 @@ class Process(commands.Cog):
                 await asyncio.sleep(1)
             else:
                 break
-        await game_thread.edit(locked=True)
-        await master_thread.edit(locked=True)
+        await game_thread.archive(locked=True)
+        await master_thread.archive(locked=True)
         print(f'Completed Session: {str(session_id)}')
         conn.delete(f'{session_id}.status')
         return
