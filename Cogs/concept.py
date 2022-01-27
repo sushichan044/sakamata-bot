@@ -224,7 +224,7 @@ class CloseButton(View):
         self.r_str = '取り消し'
         self.status = None
         self.title = '募集を開始しました。'
-        self.text = '締め切る際は締め切りボタンを押してください。\n締め切りボタンが押されなかった場合、\n5分後に自動で締め切られます。\n\n募集をキャンセルする場合は\n参加者が0人の状態で\n締め切りボタンを押してください。'
+        self.text = '締め切る際は締め切りボタンを押してください。\n締め切りボタンが押されなかった場合、\n5分後に自動で締め切られます。\n\n募集をキャンセルする場合は\n参加者が0人か1人の状態で\n締め切りボタンを押してください。'
         self.session_id = session_id
 
     async def _ok(self, interaction: discord.Interaction):
