@@ -1,15 +1,17 @@
 import os
-from typing import Optional
-
+from typing import Literal, Optional
 
 import discord
-from discord.ext import commands
 from discord.errors import HTTPException
+from discord.ext import commands
+
+from ..Data.starboard_data import _return_exception
 
 # star_emoji = '\N{Blue Heart}'
 star_emoji = '<:c_Ofb4:926885084395606086>'
 emoji_url = 'https://cdn.discordapp.com/emojis/926885084395606086.webp?size=1024&quality=lossless'
 star_channel = int(os.environ['STAR_CHANNEL'])
+env: Literal['main', 'alpha'] = os.environ['ENV']  # main or alpha
 
 
 class StarBoard(commands.Cog):
@@ -21,7 +23,10 @@ class StarBoard(commands.Cog):
         # print(str(payload.emoji))
         if str(payload.emoji) == star_emoji:
             channel = self.bot.get_channel(payload.channel_id)
-            message = await channel.fetch_message(payload.message_id)
+            message: discord.Message = await channel.fetch_message(payload.message_id)
+            ig_category, ig_channel = _return_exception(env)
+            if message.channel.category_id in ig_category or message.channel.id in ig_channel:
+                return
             reaction = self._get_reaction(message)
             if reaction and reaction.count >= 3:
                 if await self._get_history_post(message):

@@ -143,6 +143,10 @@ date_pattern = re.compile(r'^\d{4}/\d{2}/\d{2}')
 
 # list
 stop_list = [stop_role, vc_stop_role]
+
+# other
+env = os.environ['ENV']  # main or alpha
+
 # 起動イベント
 
 """
