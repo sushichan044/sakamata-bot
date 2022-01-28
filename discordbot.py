@@ -843,7 +843,7 @@ class MemberVerifyButton(discord.ui.View):
     @discord.ui.button(
         label='認証を始める',
         style=discord.ButtonStyle.gray,
-        emoji='\N{Inbox Tray}',
+        emoji='\N{Envelope with Arrow}',
         custom_id='start_membership_verify_button',
     )
     async def _start_verify(self, button: discord.ui.Button, interaction: discord.Interaction):
@@ -869,7 +869,7 @@ class MemberVerifyButton(discord.ui.View):
 async def _send_verify_button(ctx: commands.Context):
     embed = discord.Embed(
         title='認証を始める',
-        description='__ボタンを押して認証を始めましょう！__\n\n\N{Inbox Tray}を押すと認証が始まります。',
+        description='__ボタンを押して認証を始めましょう！__\n\n\N{Envelope with Arrow}を押すと認証が始まります。',
         color=15767485,
     )
     await ctx.send(embed=embed, view=MemberVerifyButton())
