@@ -877,28 +877,28 @@ def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
     path = self_path + r'/images/auth_1.png'
     image = discord.File(fp=path, filename=image_name, spoiler=False)
     embed = discord.Embed(
-        title='Youtubeメンバーシップ認証',
-        description='以下の手順に従って認証を開始してください。',
+        title='メンバーシップ認証',
+        description='以下の手順に従って\n認証を開始してください。',
         color=15767485
     )
     embed.add_field(
         inline=False,
         name='手順1',
-        value='Discordアカウントの画像と、\n[こちら](https://www.youtube.com/paid_memberships)から確認できる\n__**次回支払日が確認できる画像**__(例:下の画像)を準備する。'
+        value='Discordアカウントの画像と、\n[こちら](https://www.youtube.com/paid_memberships)から確認できる\n__**次回支払日が確認できる画像**__\n(例:下の画像)を準備する。'
     )
     embed.add_field(
         inline=False,
         name='手順2',
-        value='このDMに、__手順1で準備した画像を全て添付して__、\n`//check`と送信する。'
+        value='このDMに、\n__手順1で準備した画像を全て添付して__、\n`//check`と送信する。'
     )
     embed.add_field(
         inline=False,
-        name='完了',
-        value='Botから\n```認証要求を受理しました。\nしばらくお待ちください。```\nと返信があれば完了です。管理者の対応をお待ちください。'
+        name='手順3',
+        value='Botから\n```認証要求を受理しました。\nしばらくお待ちください。```\nと返信があれば完了です。\n管理者の対応をお待ちください。'
     )
     embed.add_field(
         name='Botから完了の返信が来ない場合は？',
-        value='//checkではなく/checkと入力してしまっている、\n画像を添付していないなどの可能性があります。\n\n全て正しいのに解決しない場合は、\nこのDMにその旨を書いて送信してください。'
+        value='//checkでなく/checkと入力している、\n画像を添付していないなどの\n可能性があります。\n\n全て正しいのに解決しない場合は、\nこのDMでその旨を送信してください。'
     )
     embed.set_image(
         url=f'attachment://{image_name}'
@@ -910,7 +910,7 @@ def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
 @commands.has_role(admin_role)
 async def _send_verify_button(ctx: commands.Context):
     embed = discord.Embed(
-        title='メンバーシップ認証',
+        title='Youtubeメンバーシップ認証',
         description='\N{Envelope with Downwards Arrow Above}を押すと認証が始まります。',
         color=15767485,
     )
