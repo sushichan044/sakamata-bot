@@ -34,7 +34,8 @@ class Tool(commands.Cog):
                               time_str: Option(
                                   str, '時間を入力してください。(例:1234)', default='0000')
                               ):
-        date = datetime.strptime(date_str, '%Y/%m/%d')
+        await ctx.defer(ephemeral=True)
+        date = datetime.strptime(date_str, '%Y%m%d')
         delta = timedelta(
             hours=int(time_str[0:1]), minutes=int(time_str[2:3]))
         timestamp = discord.utils.format_dt(date + delta, style='f')
