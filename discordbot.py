@@ -69,9 +69,10 @@ class MyBot(commands.Bot):
         if not self.persistent_views_added:
             self.add_view(MemberVerifyButton())
             self.persistent_views_added = True
-        print('------------------------')
+            print('Set Persistant Views!')
+        print('------------------------------------------------')
         print(f'Logged in as {self.user} (ID: {self.user.id})')
-        print('------------------------')
+        print('------------------------------------------------')
         channel = self.get_channel(log_channel)
         now = discord.utils.utcnow()
         await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{self.user.id}')
