@@ -854,6 +854,7 @@ class MemberVerifyButton(discord.ui.View):
         path = self_path + r'/images/receive_dm.png'
         res_image = discord.File(
             fp=path, filename=res_image_name, spoiler=False)
+
         embed = discord.Embed(
             title='認証を開始します。',
             description='BotからのDMを確認してください。',
@@ -875,8 +876,9 @@ class MemberVerifyButton(discord.ui.View):
         try:
             await interaction.user.send(embed=DM_embed, file=dm_image)
         except discord.Forbidden as e:
+            hook_image = discord.File(fp=path, spoiler=False)
             print('Error at start membership verify: ', e)
-            await interaction.followup.send(content='DMの送信に失敗しました。\nDMが受信できない設定になっている可能性があります。\n\nサーバー設定の「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。', file=res_image, ephemeral=True)
+            await interaction.followup.send(content='DMの送信に失敗しました。\nDMが受信できない設定になっている可能性があります。\n\nサーバー設定の「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。', file=hook_image, ephemeral=True)
         return
 
 
@@ -907,7 +909,7 @@ def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
     )
     embed.add_field(
         name='Botから完了の返信が来ない場合は？',
-        value='コマンドが間違っている\n(正しいコマンドは`//check`)、\n画像を添付していないなどの\n可能性があります。\n\n全て正しいのに解決しない場合は、\nこのDMにその旨を書いて\n送信してください。。'
+        value='コマンドが間違っている\n(正しいコマンドは`//check`)、\n画像を添付していないなどの\n可能性があります。\n\n全て正しいのに解決しない場合は、\nこのDMにその旨を書いて\n送信してください。'
     )
     embed.set_image(
         url=f'attachment://{image_name}'
