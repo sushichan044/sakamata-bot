@@ -24,6 +24,7 @@ class StarBoard(commands.Cog):
             message: discord.Message = await channel.fetch_message(payload.message_id)
             ig_category, ig_channel = _return_exception(env)
             if message.channel.category_id in ig_category or message.channel.id in ig_channel:
+                print('starboard:ignore exception')
                 return
             reaction = self._get_reaction(message)
             if reaction and reaction.count >= 3:
