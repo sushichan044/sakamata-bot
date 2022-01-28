@@ -898,7 +898,7 @@ def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
     )
     embed.add_field(
         name='Botから完了の返信が来ない場合は？',
-        value='//checkでなく/checkと入力している、\n画像を添付していないなどの\n可能性があります。\n\n全て正しいのに解決しない場合は、\nこのDMでその旨を送信してください。'
+        value='コマンドが間違っている\n(正しいコマンドは`//check`)、\n画像を添付していないなどの\n可能性があります。\n\n全て正しいのに解決しない場合は、\nこのDMにその旨を書いて\n送信してください。。'
     )
     embed.set_image(
         url=f'attachment://{image_name}'
