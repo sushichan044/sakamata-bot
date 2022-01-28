@@ -843,17 +843,17 @@ class MemberVerifyButton(discord.ui.View):
     @discord.ui.button(
         label='認証を始める',
         style=discord.ButtonStyle.gray,
-        emoji='\N{Envelope with Arrow}',
+        emoji='\N{Envelope with Downwards Arrow Above}',
         custom_id='start_membership_verify_button',
     )
     async def _start_verify(self, button: discord.ui.Button, interaction: discord.Interaction):
         embed = discord.Embed(
             title='認証を開始します。',
-            description='DMを確認してください。',
+            description='BotからのDMを確認してください。',
             color=15767485,
         )
         embed.add_field(
-            name='DMが届かない場合は？',
+            name='BotからDMが届かない場合は？',
             value='サーバー設定の「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。'
         )
         if not interaction.response.is_done():
