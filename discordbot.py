@@ -848,6 +848,7 @@ class MemberVerifyButton(discord.ui.View):
         custom_id='start_membership_verify_button',
     )
     async def _start_verify(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await interaction.response.defer()
         embed = discord.Embed(
             title='認証を開始します。',
             description='BotからのDMを確認してください。',
@@ -872,7 +873,7 @@ class MemberVerifyButton(discord.ui.View):
 
 def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
     image_name = 'auth_1.png'
-    image = discord.File(fp=r'images.auth_1.png',
+    image = discord.File(fp=r'.images.auth_1.png',
                          filename=image_name, spoiler=False)
     embed = discord.Embed(
         title='メンバーシップ認証',
