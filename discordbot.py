@@ -878,7 +878,7 @@ class MemberVerifyButton(discord.ui.View):
         except discord.Forbidden as e:
             hook_image = discord.File(fp=path, spoiler=False)
             print('Error at start membership verify: ', e)
-            await interaction.followup.send(content='DMの送信に失敗しました。\nDMが受信できない設定になっている可能性があります。\n\nサーバー設定の「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。', file=hook_image, ephemeral=True)
+            await interaction.followup.send(content='DMの送信に失敗しました。\nDMが受信できない設定に\nなっている可能性があります。\n\nサーバー設定の\n「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。', file=hook_image, ephemeral=True)
         return
 
 
