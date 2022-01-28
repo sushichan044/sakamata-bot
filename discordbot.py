@@ -53,8 +53,32 @@ class JapaneseHelpCommand(commands.DefaultHelpCommand):
 
 
 intents = discord.Intents.all()
+"""
 bot = commands.Bot(command_prefix='//', intents=intents,
                    help_command=JapaneseHelpCommand())
+                   """
+
+
+class MyBot(commands.Bot):
+    def __init__(self):
+        super().__init__(command_prefix='//', intents=intents,
+                         help_command=JapaneseHelpCommand())
+        self.persistent_views_added = False
+
+        async def on_ready(self):
+            if not self.persistent_views_added:
+                self.add_view(MemberVerifyButton())
+                self.persistent_views_added = True
+            print('------------------------')
+            print(f'Logged in as {self.user} (ID: {self.user.id})')
+            print('------------------------')
+            channel = self.get_channel(log_channel)
+            now = discord.utils.utcnow()
+            await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{self.user.id}')
+            return
+
+
+bot = MyBot()
 
 
 INIT_EXTENSION_LIST = [
@@ -120,8 +144,8 @@ date_pattern = re.compile(r'^\d{4}/\d{2}/\d{2}')
 stop_list = [stop_role, vc_stop_role]
 # 起動イベント
 
-
-@bot.event
+"""
+@ bot.event
 async def on_ready():
     print('logged in as {0.user}'.format(bot))
     await greet()
@@ -137,11 +161,13 @@ async def greet():
     await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
     return
 
+"""
+
 
 # Dispander-All
 
 
-@bot.listen('on_message')
+@ bot.listen('on_message')
 async def on_message_dispand(message):
     avoid_word_list_prefix = ['//send-message', '//edit-message', '//send-dm']
     if type(message.channel) == DMChannel:
@@ -165,7 +191,7 @@ https://discordbot.jp/blog/17/
 # VC入退室ログ
 
 
-@bot.listen()
+@ bot.listen()
 async def on_voice_state_update(member, before, after):
     if member.guild.id == guild_id and (before.channel != after.channel):
         channel = bot.get_channel(vc_log_channel)
@@ -186,8 +212,8 @@ async def on_voice_state_update(member, before, after):
 # hello?
 
 
-@bot.command()
-@commands.has_role(mod_role)
+@ bot.command()
+@ commands.has_role(mod_role)
 async def test(ctx):
     """生存確認用"""
     await ctx.send('hello')
@@ -221,8 +247,8 @@ async def user(ctx,id:int):
 '''
 
 
-@bot.slash_command(name='user', guild_ids=[guild_id], default_permission=False)
-@permissions.has_role(mod_role)
+@ bot.slash_command(name='user', guild_ids=[guild_id], default_permission=False)
+@ permissions.has_role(mod_role)
 async def _newuser(
     ctx,
     member: Option(Member, '対象のIDや名前を入力してください。'),
@@ -290,8 +316,8 @@ async def _newuser(
     return
 
 
-@bot.command(name='user')
-@commands.has_role(mod_role)
+@ bot.command(name='user')
+@ commands.has_role(mod_role)
 async def _new_user(ctx, member: Member):
     """ユーザー情報を取得できます。"""
     guild = ctx.guild
@@ -322,8 +348,8 @@ async def _new_user(ctx, member: Member):
 # ping-test
 
 
-@bot.slash_command(guild_ids=[guild_id], name='ping')
-@permissions.has_role(admin_role)
+@ bot.slash_command(guild_ids=[guild_id], name='ping')
+@ permissions.has_role(admin_role)
 async def _ping(ctx):
     """生存確認用"""
     raw_ping = bot.latency
@@ -334,7 +360,7 @@ async def _ping(ctx):
 # receive-dm
 
 
-@bot.listen('on_message')
+@ bot.listen('on_message')
 async def on_message_dm(message):
     avoid_dm_list = ['//check', '//remove-member']
     if type(message.channel) == DMChannel and bot.user == message.channel.me:
@@ -367,8 +393,8 @@ async def on_message_dm(message):
 # send-message
 
 
-@bot.command(name='send-message')
-@commands.has_role(admin_role)
+@ bot.command(name='send-message')
+@ commands.has_role(admin_role)
 async def _messagesend(ctx, channel_id: int, *, arg):
     """メッセージ送信用"""
     # channel:送信先
@@ -397,8 +423,8 @@ async def _messagesend(ctx, channel_id: int, *, arg):
 # send-dm
 
 
-@bot.command(name='send-dm')
-@commands.has_role(admin_role)
+@ bot.command(name='send-dm')
+@ commands.has_role(admin_role)
 async def _send_dm(ctx, user: Member, *, arg):
     """DM送信用"""
     role = ctx.guild.get_role(admin_role)
@@ -424,8 +450,8 @@ async def _send_dm(ctx, user: Member, *, arg):
 # edit-message
 
 
-@bot.command(name='edit-message')
-@commands.has_role(admin_role)
+@ bot.command(name='edit-message')
+@ commands.has_role(admin_role)
 async def _editmessage(ctx, channel_id: int, message_id: int, *, arg):
     """メッセージ編集用"""
     channel = bot.get_channel(channel_id)
@@ -461,8 +487,8 @@ add_dm = None
 # timeout-member
 
 
-@bot.user_command(guild_ids=[guild_id], name='緊急タイムアウト')
-@permissions.has_role(mod_role)
+@ bot.user_command(guild_ids=[guild_id], name='緊急タイムアウト')
+@ permissions.has_role(mod_role)
 # user commands return the member
 async def _emergency_timeout(ctx, member: Member):
     await member.timeout_for(duration=timedelta(days=1), reason='Emergency Timeout')
@@ -475,8 +501,8 @@ async def _emergency_timeout(ctx, member: Member):
     return
 
 
-@bot.command(name='timeout')
-@commands.has_role(mod_role)
+@ bot.command(name='timeout')
+@ commands.has_role(mod_role)
 async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'dm:true'):
     """メンバーをタイムアウト"""
     until = datetime.strptime(input_until, '%Y%m%d')
@@ -530,8 +556,8 @@ async def _timeout(ctx, member: Member, input_until: str, if_dm: str = 'dm:true'
 # untimeout-member
 
 
-@bot.command(name='untimeout')
-@commands.has_role(admin_role)
+@ bot.command(name='untimeout')
+@ commands.has_role(admin_role)
 async def _untimeout(ctx, member: Member):
     """メンバーのタイムアウトを解除"""
     role = ctx.guild.get_role(admin_role)
@@ -555,7 +581,7 @@ async def _untimeout(ctx, member: Member):
         return
 
 
-@bot.listen('on_member_update')
+@ bot.listen('on_member_update')
 async def _on_member_untimeout(before: Member, after: Member):
     if before.timed_out and not after.timed_out:
         channel = bot.get_channel(log_channel)
@@ -571,8 +597,8 @@ async def _on_member_untimeout(before: Member, after: Member):
 # kick-member
 
 
-@bot.command(name='kick')
-@commands.has_role(admin_role)
+@ bot.command(name='kick')
+@ commands.has_role(admin_role)
 async def _kick_user(ctx, member: Member, if_dm: str = 'dm:true'):
     """メンバーをキック"""
     role = ctx.guild.get_role(admin_role)
@@ -623,8 +649,8 @@ async def _kick_user(ctx, member: Member, if_dm: str = 'dm:true'):
 # ban-member
 
 
-@bot.command(name='ban')
-@commands.has_role(admin_role)
+@ bot.command(name='ban')
+@ commands.has_role(admin_role)
 async def _ban_user(ctx, member: Member, if_dm: str = 'dm:true'):
     """メンバーをBAN"""
     role = ctx.guild.get_role(admin_role)
@@ -681,8 +707,8 @@ https://forms.gle/mR1foEyd9JHbhYdCA
 # Unban-member
 
 
-@bot.command(name='unban')
-@commands.has_role(admin_role)
+@ bot.command(name='unban')
+@ commands.has_role(admin_role)
 async def _unban_user(ctx, id: int):
     """ユーザーのBANを解除"""
     user = await bot.fetch_user(id)
@@ -717,8 +743,8 @@ async def _unban_user(ctx, id: int):
 # check-member
 
 
-@bot.command(name='check')
-@commands.dm_only()
+@ bot.command(name='check')
+@ commands.dm_only()
 async def _check_member(ctx):
     """メンバーシップ認証用"""
     if ctx.message.attachments == []:
@@ -809,11 +835,51 @@ async def _check_member(ctx):
                 return
 
 
+class MemberVerifyButton(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(
+        label='認証を始める',
+        style=discord.ButtonStyle.blurple,
+        emoji='\N{White Heavy Check Mark}',
+        custom_id='start_membership_verify_button',
+    )
+    async def _start_verify(self, button: discord.ui.Button, interaction: discord.Interaction):
+        embed = discord.Embed(
+            title='認証を開始します。',
+            description='DMを確認してください。',
+            color=15767485,
+        )
+        embed.add_field(
+            name='DMが届かない場合は？',
+            value='サーバー設定の「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。'
+        )
+        if not interaction.response.is_done():
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+        else:
+            await interaction.followup.send(embed=embed, ephemeral=True)
+        await interaction.user.send('テストです。')
+        return
+
+
+@bot.command()
+@commands.has_role(admin_role)
+async def _send_verify_button(ctx: commands.Context):
+    embed = discord.Embed(
+        title='認証を始める',
+        description='__ボタンを押して認証を始めましょう！__',
+        color=15767485,
+    )
+    await ctx.send(embed=embed, view=MemberVerifyButton())
+    return
+
+
 # remove-member
 
 
-@bot.command(name='remove-member')
-@commands.dm_only()
+@ bot.command(name='remove-member')
+@ commands.dm_only()
 async def _remove_member(ctx):
     """メンバーシップ継続停止時"""
     await ctx.reply(content='メンバーシップ継続停止を受理しました。\nしばらくお待ちください。', mention_author=False)
@@ -855,8 +921,8 @@ async def _remove_member(ctx):
 # member-update-dm
 
 
-@bot.command(name='update-member')
-@commands.has_role(admin_role)
+@ bot.command(name='update-member')
+@ commands.has_role(admin_role)
 async def _update_member(ctx, *update_member: Member):
     """メンバーシップ更新案内"""
     role = ctx.guild.get_role(admin_role)
@@ -1050,8 +1116,8 @@ YOUTUBE_API_VERSION = 'v3'
 # create-event-slash
 
 
-@bot.slash_command(guild_ids=[guild_id], default_permission=False, name='make-event')
-@permissions.has_role(mod_role)
+@ bot.slash_command(guild_ids=[guild_id], default_permission=False, name='make-event')
+@ permissions.has_role(mod_role)
 async def _newcreateevent(ctx,
                           event_name: Option(str, '配信の名前(例:マリカ,歌枠,など)'),
                           stream_url: Option(str, '配信のURL'),
@@ -1084,7 +1150,7 @@ async def _newcreateevent(ctx,
     return
 
 
-@bot.command(name='private')
+@ bot.command(name='private')
 async def _private(ctx):
     role = ctx.guild.get_role(server_member_role)
     channels = sorted([channel for channel in ctx.guild.channels if channel.category],
