@@ -869,7 +869,7 @@ class MemberVerifyButton(discord.ui.View):
 async def _send_verify_button(ctx: commands.Context):
     embed = discord.Embed(
         title='認証を始める',
-        description='__ボタンを押して認証を始めましょう！__\n\n\N{Envelope with Arrow}を押すと認証が始まります。',
+        description='__ボタンを押して認証を始めましょう！__\n\n\N{Envelope with Downwards Arrow Above}を押すと認証が始まります。',
         color=15767485,
     )
     await ctx.send(embed=embed, view=MemberVerifyButton())
