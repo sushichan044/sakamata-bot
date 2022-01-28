@@ -849,6 +849,11 @@ class MemberVerifyButton(discord.ui.View):
     )
     async def _start_verify(self, button: discord.ui.Button, interaction: discord.Interaction):
         await interaction.response.defer()
+        res_image_name = 'receive_dm.png'
+        self_path = os.path.dirname(__file__)
+        path = self_path + r'/images/receive_dm.png'
+        res_image = discord.File(
+            fp=path, filename=res_image_name, spoiler=False)
         embed = discord.Embed(
             title='認証を開始します。',
             description='BotからのDMを確認してください。',
@@ -856,18 +861,22 @@ class MemberVerifyButton(discord.ui.View):
         )
         embed.add_field(
             name='BotからDMが届かない場合は？',
-            value='サーバー設定の「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。'
+            value='サーバー設定の\n「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。'
         )
-        DM_embed, image = _compose_dm_embeds()
+        embed.set_image(
+            url=f'attachment://{res_image_name}'
+        )
         if not interaction.response.is_done():
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+            await interaction.response.send_message(embed=embed, file=res_image, ephemeral=True)
         else:
-            await interaction.followup.send(embed=embed, ephemeral=True)
+            await interaction.followup.send(embed=embed, file=res_image, ephemeral=True)
+        # Send DM
+        DM_embed, dm_image = _compose_dm_embeds()
         try:
-            await interaction.user.send(file=image, embed=DM_embed)
+            await interaction.user.send(embed=DM_embed, file=dm_image)
         except discord.Forbidden as e:
             print('Error at start membership verify: ', e)
-            await interaction.followup.send('DMの送信に失敗しました。\nDMが受信できない設定になっている可能性があります。\n\nサーバー設定の「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。', ephemeral=True)
+            await interaction.followup.send(content='DMの送信に失敗しました。\nDMが受信できない設定になっている可能性があります。\n\nサーバー設定の「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。', file=res_image, ephemeral=True)
         return
 
 
