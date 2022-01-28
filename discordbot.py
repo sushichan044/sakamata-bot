@@ -857,24 +857,56 @@ class MemberVerifyButton(discord.ui.View):
             name='BotからDMが届かない場合は？',
             value='サーバー設定の「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。'
         )
+        DM_embed, image = _compose_dm_embeds()
         if not interaction.response.is_done():
             await interaction.response.send_message(embed=embed, ephemeral=True)
         else:
             await interaction.followup.send(embed=embed, ephemeral=True)
         try:
-            await interaction.user.send('テストです。')
+            await interaction.user.send(file=image, embed=DM_embed)
         except discord.Forbidden as e:
             print('Error at start membership verify: ', e)
             await interaction.followup.send('DMの送信に失敗しました。\nDMが受信できない設定になっている可能性があります。\n\nサーバー設定の「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。', ephemeral=True)
         return
 
 
+def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
+    image_name = 'auth_1.png'
+    image = discord.File(fp=r'images.auth_1.png',
+                         filename=image_name, spoiler=False)
+    embed = discord.Embed(
+        title='メンバーシップ認証',
+        description='以下の手順に従って認証を開始してください。',
+        color=15767485
+    )
+    embed.add_field(
+        name='手順1',
+        value='Discordアカウントの画像と、\n[こちら](https://www.youtube.com/paid_memberships)から確認できる\n__**次回支払日が確認できる**__画像(例:下の画像)を準備する。'
+    )
+    embed.add_field(
+        name='手順2',
+        value='このDMに、__手順1で準備した画像を全て添付して__、\n`//check`と送信する。'
+    )
+    embed.add_field(
+        name='完了',
+        value='Botから\n\n```認証要求を受理しました。\nしばらくお待ちください。```\n\nと返信があれば完了です。管理者の対応をお待ちください。'
+    )
+    embed.add_field(
+        name='Botから完了の返信が来ない場合は？',
+        value='`//checkではなく/checkと入力してしまっている、\n画像を添付していないなどの可能性があります。\n\n全て正しいのに解決しない場合は、\nこのDMにその旨を書いて送信してください。`'
+    )
+    embed.set_image(
+        url=f'attachment://{image_name}'
+    )
+    return embed, image
+
+
 @bot.command(name='send_verify_button')
 @commands.has_role(admin_role)
 async def _send_verify_button(ctx: commands.Context):
     embed = discord.Embed(
-        title='認証を始める',
-        description='__ボタンを押して認証を始めましょう！__\n\n\N{Envelope with Downwards Arrow Above}を押すと認証が始まります。',
+        title='メンバーシップ認証',
+        description='\N{Envelope with Downwards Arrow Above}を押すと認証が始まります。',
         color=15767485,
     )
     await ctx.send(embed=embed, view=MemberVerifyButton())
