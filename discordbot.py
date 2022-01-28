@@ -1,4 +1,5 @@
 import asyncio
+from csv import excel_tab
 import logging
 import os
 import re
@@ -53,8 +54,33 @@ class JapaneseHelpCommand(commands.DefaultHelpCommand):
 
 
 intents = discord.Intents.all()
+"""
 bot = commands.Bot(command_prefix='//', intents=intents,
                    help_command=JapaneseHelpCommand())
+                   """
+
+
+class MyBot(commands.Bot):
+    def __init__(self):
+        super().__init__(command_prefix='//', intents=intents,
+                         help_command=JapaneseHelpCommand())
+        self.persistent_views_added = False
+
+    async def on_ready(self):
+        if not self.persistent_views_added:
+            self.add_view(MemberVerifyButton())
+            self.persistent_views_added = True
+            print('Set Persistant Views!')
+        print('------------------------------------------------')
+        print(f'Logged in as {self.user} (ID: {self.user.id})')
+        print('------------------------------------------------')
+        channel = self.get_channel(log_channel)
+        now = discord.utils.utcnow()
+        await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{self.user.id}')
+        return
+
+
+bot = MyBot()
 
 
 INIT_EXTENSION_LIST = [
@@ -120,8 +146,8 @@ date_pattern = re.compile(r'^\d{4}/\d{2}/\d{2}')
 stop_list = [stop_role, vc_stop_role]
 # 起動イベント
 
-
-@bot.event
+"""
+@ bot.event
 async def on_ready():
     print('logged in as {0.user}'.format(bot))
     await greet()
@@ -136,6 +162,8 @@ async def greet():
     now = discord.utils.utcnow()
     await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
     return
+
+"""
 
 
 # Dispander-All
@@ -555,6 +583,19 @@ async def _untimeout(ctx, member: Member):
         return
 
 
+@bot.listen('on_member_update')
+async def _on_member_untimeout(before: Member, after: Member):
+    if before.timed_out and not after.timed_out:
+        channel = bot.get_channel(log_channel)
+        embed = discord.Embed(
+            title='Timeout 解除通知',
+            color=3447003,
+            description=f'{after.mention}のタイムアウトが終了しました。',
+            timestamp=discord.utils.utcnow()
+        )
+        await channel.send(embed=embed)
+        return
+
 # kick-member
 
 
@@ -794,6 +835,98 @@ async def _check_member(ctx):
                 )
                 await log_channel_object.send(embed=embed)
                 return
+
+
+class MemberVerifyButton(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(
+        label='認証を始める',
+        style=discord.ButtonStyle.gray,
+        emoji='\N{Envelope with Downwards Arrow Above}',
+        custom_id='start_membership_verify_button',
+    )
+    async def _start_verify(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await interaction.response.defer()
+        res_image_name = 'receive_dm.png'
+        self_path = os.path.dirname(__file__)
+        path = self_path + r'/images/receive_dm.png'
+        res_image = discord.File(
+            fp=path, filename=res_image_name, spoiler=False)
+
+        embed = discord.Embed(
+            title='認証を開始します。',
+            description='BotからのDMを確認してください。',
+            color=15767485,
+        )
+        embed.add_field(
+            name='BotからDMが届かない場合は？',
+            value='サーバー設定の\n「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。'
+        )
+        embed.set_image(
+            url=f'attachment://{res_image_name}'
+        )
+        if not interaction.response.is_done():
+            await interaction.response.send_message(embed=embed, file=res_image, ephemeral=True)
+        else:
+            await interaction.followup.send(embed=embed, file=res_image, ephemeral=True)
+        # Send DM
+        DM_embed, dm_image = _compose_dm_embeds()
+        try:
+            await interaction.user.send(embed=DM_embed, file=dm_image)
+        except discord.Forbidden as e:
+            hook_image = discord.File(fp=path, spoiler=False)
+            print('Error at start membership verify: ', e)
+            await interaction.followup.send(content='DMの送信に失敗しました。\nDMが受信できない設定に\nなっている可能性があります。\n\nサーバー設定の\n「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。', file=hook_image, ephemeral=True)
+        return
+
+
+def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
+    image_name = 'auth_1.png'
+    self_path = os.path.dirname(__file__)
+    path = self_path + r'/images/auth_1.png'
+    image = discord.File(fp=path, filename=image_name, spoiler=False)
+    embed = discord.Embed(
+        title='メンバーシップ認証',
+        description='以下の手順に従って\n認証を開始してください。',
+        color=15767485
+    )
+    embed.add_field(
+        inline=False,
+        name='手順1',
+        value='Discordアカウントの画像と、\n[こちら](https://www.youtube.com/paid_memberships)から確認できる\n__**次回支払日が確認できる画像**__\n(例:下の画像)を準備する。'
+    )
+    embed.add_field(
+        inline=False,
+        name='手順2',
+        value='このDMに、\n__手順1で準備した画像を__\n__全て添付して__、\n`//check`と送信する。'
+    )
+    embed.add_field(
+        inline=False,
+        name='手順3',
+        value='Botから\n```認証要求を受理しました。\nしばらくお待ちください。```\nと返信があれば完了です。\n管理者の対応をお待ちください。'
+    )
+    embed.add_field(
+        name='Botから完了の返信が来ない場合は？',
+        value='コマンドが間違っている\n(正しいコマンドは`//check`)、\n画像を添付していないなどの\n可能性があります。\n\n全て正しいのに解決しない場合は、\nこのDMにその旨を書いて\n送信してください。'
+    )
+    embed.set_image(
+        url=f'attachment://{image_name}'
+    )
+    return embed, image
+
+
+@bot.command(name='send_verify_button')
+@commands.has_role(admin_role)
+async def _send_verify_button(ctx: commands.Context):
+    embed = discord.Embed(
+        title='Youtubeメンバーシップ認証',
+        description='\N{Envelope with Downwards Arrow Above}を押すと認証が始まります。',
+        color=15767485,
+    )
+    await ctx.send(embed=embed, view=MemberVerifyButton())
+    return
 
 
 # remove-member
