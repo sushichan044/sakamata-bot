@@ -41,7 +41,7 @@ class Tool(commands.Cog):
         timestamp = discord.utils.format_dt(date + delta, style='f')
         raw_timestamp = discord.utils.escape_markdown(
             timestamp, as_needed=True)
-        await ctx.interaction.response.send_message(timestamp, ephemeral=True)
+        await ctx.interaction.followup.send(timestamp, ephemeral=True)
         await ctx.interaction.followup.send(raw_timestamp, ephemeral=True)
         return
 
