@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 import discord
 from discord import Option, permissions
@@ -34,7 +34,6 @@ class Tool(commands.Cog):
                               time_str: Option(
                                   str, '時間を入力してください。(例:1234)', default='0000')
                               ):
-        await ctx.interaction.response.defer()
         date = datetime.strptime(date_str, '%Y/%m/%d')
         delta = timedelta(
             hours=int(time_str[0:1]), minutes=int(time_str[2:3]))
