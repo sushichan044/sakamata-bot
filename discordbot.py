@@ -884,7 +884,7 @@ def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
     embed.add_field(
         inline=False,
         name='手順1',
-        value='Discordアカウントの画像と、\n[こちら](https://www.youtube.com/paid_memberships)から確認できる\n__**次回支払日が確認できる**__画像(例:下の画像)を準備する。'
+        value='Discordアカウントの画像と、\n[こちら](https://www.youtube.com/paid_memberships)から確認できる\n__**次回支払日が確認できる画像**__(例:下の画像)を準備する。'
     )
     embed.add_field(
         inline=False,
@@ -894,7 +894,7 @@ def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
     embed.add_field(
         inline=False,
         name='完了',
-        value='Botから\n\n```認証要求を受理しました。\nしばらくお待ちください。```\n\nと返信があれば完了です。管理者の対応をお待ちください。'
+        value='Botから\n```認証要求を受理しました。\nしばらくお待ちください。```\nと返信があれば完了です。管理者の対応をお待ちください。'
     )
     embed.add_field(
         name='Botから完了の返信が来ない場合は？',
