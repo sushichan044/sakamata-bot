@@ -874,7 +874,7 @@ class MemberVerifyButton(discord.ui.View):
 def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
     image_name = 'auth_1.png'
     self_path = os.path.dirname(__file__)
-    path = self_path + r'.images.auth_1.png'
+    path = self_path + r'/images/auth_1.png'
     image = discord.File(fp=path, filename=image_name, spoiler=False)
     embed = discord.Embed(
         title='メンバーシップ認証',
