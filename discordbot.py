@@ -65,17 +65,17 @@ class MyBot(commands.Bot):
                          help_command=JapaneseHelpCommand())
         self.persistent_views_added = False
 
-        async def on_ready(self):
-            if not self.persistent_views_added:
-                self.add_view(MemberVerifyButton())
-                self.persistent_views_added = True
-            print('------------------------')
-            print(f'Logged in as {self.user} (ID: {self.user.id})')
-            print('------------------------')
-            channel = self.get_channel(log_channel)
-            now = discord.utils.utcnow()
-            await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{self.user.id}')
-            return
+    async def on_ready(self):
+        if not self.persistent_views_added:
+            self.add_view(MemberVerifyButton())
+            self.persistent_views_added = True
+        print('------------------------')
+        print(f'Logged in as {self.user} (ID: {self.user.id})')
+        print('------------------------')
+        channel = self.get_channel(log_channel)
+        now = discord.utils.utcnow()
+        await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{self.user.id}')
+        return
 
 
 bot = MyBot()
@@ -863,7 +863,7 @@ class MemberVerifyButton(discord.ui.View):
         return
 
 
-@bot.command()
+@bot.command(name='send_verify_button')
 @commands.has_role(admin_role)
 async def _send_verify_button(ctx: commands.Context):
     embed = discord.Embed(
