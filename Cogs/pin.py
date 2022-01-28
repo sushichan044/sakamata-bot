@@ -16,7 +16,10 @@ class ContextPin(commands.Cog):
     @message_command(guild_ids=[guild_id], name='ピン留め')
     @permissions.has_role(server_member_role)
     async def _pin(self, ctx, message: discord.Message):
-        if message.type != discord.MessageType.default:
+        available_types = [discord.MessageType.default,
+                           discord.MessageType.application_command,
+                           discord.MessageType.context_menu_command]
+        if message.type not in available_types:
             await ctx.respond('システムメッセージをピン留めすることはできません！', ephemeral=True)
             return
         elif len(await message.channel.pins()) == 50:
