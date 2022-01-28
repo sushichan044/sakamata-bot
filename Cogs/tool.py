@@ -39,9 +39,8 @@ class Tool(commands.Cog):
         delta = timedelta(
             hours=int(time_str[0:2]) - 9, minutes=int(time_str[2:4]))
         timestamp = discord.utils.format_dt(date + delta, style='f')
-        raw_timestamp = discord.utils.escape_markdown(timestamp)
         await ctx.interaction.followup.send(timestamp, ephemeral=True)
-        await ctx.interaction.followup.send(raw_timestamp, ephemeral=True)
+        await ctx.interaction.followup.send(f'```{timestamp}```', ephemeral=True)
         return
 
 
