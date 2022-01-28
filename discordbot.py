@@ -1,4 +1,5 @@
 import asyncio
+from csv import excel_tab
 import logging
 import os
 import re
@@ -860,7 +861,11 @@ class MemberVerifyButton(discord.ui.View):
             await interaction.response.send_message(embed=embed, ephemeral=True)
         else:
             await interaction.followup.send(embed=embed, ephemeral=True)
-        await interaction.user.send('テストです。')
+        try:
+            await interaction.user.send('テストです。')
+        except discord.Forbidden as e:
+            print('Error at start membership verify: ', e)
+            await interaction.followup.send('DMの送信に失敗しました。\nDMが受信できない設定になっている可能性があります。\n\nサーバー設定の「プライバシー設定」から、\n「サーバーにいるメンバーからのダイレクトメッセージを許可する」\nをONにしてください。', ephemeral=True)
         return
 
 
