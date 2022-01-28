@@ -37,7 +37,7 @@ class Tool(commands.Cog):
         await ctx.defer(ephemeral=True)
         date = datetime.strptime(date_str, '%Y%m%d')
         delta = timedelta(
-            hours=int(time_str[0:2] - 9), minutes=int(time_str[2:4]))
+            hours=int(time_str[0:2]) - 9, minutes=int(time_str[2:4]))
         timestamp = discord.utils.format_dt(date + delta, style='f')
         raw_timestamp = discord.utils.escape_markdown(
             timestamp, as_needed=True)
