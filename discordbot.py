@@ -84,7 +84,6 @@ bot = MyBot()
 
 INIT_EXTENSION_LIST = [
     'Cogs.concept',
-    'Cogs.dakuten',
     'Cogs.error',
     'Cogs.entrance',
     # 'Cogs.fun',
@@ -95,6 +94,7 @@ INIT_EXTENSION_LIST = [
     'Cogs.slow',
     'Cogs.starboard',
     'Cogs.thread',
+    'Cogs.tool'
 ]
 
 for cog in INIT_EXTENSION_LIST:
