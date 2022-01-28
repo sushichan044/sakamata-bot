@@ -882,20 +882,23 @@ def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
         color=15767485
     )
     embed.add_field(
+        inline=False,
         name='手順1',
         value='Discordアカウントの画像と、\n[こちら](https://www.youtube.com/paid_memberships)から確認できる\n__**次回支払日が確認できる**__画像(例:下の画像)を準備する。'
     )
     embed.add_field(
+        inline=False,
         name='手順2',
         value='このDMに、__手順1で準備した画像を全て添付して__、\n`//check`と送信する。'
     )
     embed.add_field(
+        inline=False,
         name='完了',
         value='Botから\n\n```認証要求を受理しました。\nしばらくお待ちください。```\n\nと返信があれば完了です。管理者の対応をお待ちください。'
     )
     embed.add_field(
         name='Botから完了の返信が来ない場合は？',
-        value='`//checkではなく/checkと入力してしまっている、\n画像を添付していないなどの可能性があります。\n\n全て正しいのに解決しない場合は、\nこのDMにその旨を書いて送信してください。`'
+        value='//checkではなく/checkと入力してしまっている、\n画像を添付していないなどの可能性があります。\n\n全て正しいのに解決しない場合は、\nこのDMにその旨を書いて送信してください。'
     )
     embed.set_image(
         url=f'attachment://{image_name}'
