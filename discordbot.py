@@ -900,7 +900,7 @@ def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
     embed.add_field(
         inline=False,
         name='手順2',
-        value='このDMに、\n__手順1で準備した画像を全て添付して__、\n`//check`と送信する。'
+        value='このDMに、\n__手順1で準備した画像を__\n__全て添付して__、\n`//check`と送信する。'
     )
     embed.add_field(
         inline=False,
