@@ -877,7 +877,7 @@ def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
     path = self_path + r'/images/auth_1.png'
     image = discord.File(fp=path, filename=image_name, spoiler=False)
     embed = discord.Embed(
-        title='メンバーシップ認証',
+        title='Youtubeメンバーシップ認証',
         description='以下の手順に従って認証を開始してください。',
         color=15767485
     )
