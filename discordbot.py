@@ -842,7 +842,7 @@ class MemberVerifyButton(discord.ui.View):
 
     @discord.ui.button(
         label='認証を始める',
-        style=discord.ButtonStyle.blurple,
+        style=discord.ButtonStyle.gray,
         emoji='\N{White Heavy Check Mark}',
         custom_id='start_membership_verify_button',
     )
