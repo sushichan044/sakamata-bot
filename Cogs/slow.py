@@ -44,7 +44,7 @@ class SlowMode(commands.Cog):
 
     async def _slow(self, channel):
         if channel.slowmode_delay == 0:
-            delay = 60
+            delay = 30
             await channel.edit(slowmode_delay=delay)
             return True
         else:
