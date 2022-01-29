@@ -7,39 +7,39 @@ from discord import permissions
 from discord.commands import message_command, slash_command
 from discord.ext import commands
 
-guild_id = int(os.environ['GUILD_ID'])
-mod_role = int(os.environ['MOD_ROLE'])
+guild_id = int(os.environ["GUILD_ID"])
+mod_role = int(os.environ["MOD_ROLE"])
 
 
 class SlowMode(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
 
-    @message_command(guild_ids=[guild_id], name='スローモード切替')
+    @message_command(guild_ids=[guild_id], name="スローモード切替")
     @permissions.has_role(mod_role)
     async def _slow_mode(self, ctx, message: discord.Message):
         res = await self._slow(message.channel)
         if res:
-            deal = 'ON'
+            deal = "ON"
         else:
-            deal = 'OFF'
-        await ctx.respond(f'スローモードを{deal}にしました。', ephemeral=True)
+            deal = "OFF"
+        await ctx.respond(f"スローモードを{deal}にしました。", ephemeral=True)
         return
 
-    @slash_command(guild_ids=[guild_id], name='slow')
+    @slash_command(guild_ids=[guild_id], name="slow")
     @permissions.has_role(mod_role)
     async def _slash_slow(
         self,
         ctx,
-        channel: Option(discord.TextChannel, '対象のチャンネルを選択してください。'),
+        channel: Option(discord.TextChannel, "対象のチャンネルを選択してください。"),
     ):
         """指定したチャンネルのスローモードを切り替えます。"""
         result = await self._slow(channel)
         if result:
-            deal = 'ON'
+            deal = "ON"
         else:
-            deal = 'OFF'
-        await ctx.respond(f'スローモードを{deal}にしました。', ephemeral=True)
+            deal = "OFF"
+        await ctx.respond(f"スローモードを{deal}にしました。", ephemeral=True)
         return
 
     async def _slow(self, channel):
