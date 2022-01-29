@@ -150,27 +150,6 @@ stop_list = [stop_role, vc_stop_role]
 # other
 env = os.environ["ENV"]  # main or alpha
 
-# 起動イベント
-
-"""
-@ bot.event
-async def on_ready():
-    print('logged in as {0.user}'.format(bot))
-    await greet()
-    return
-
-# Boot-log
-
-
-async def greet():
-    channel = bot.get_channel(log_channel)
-#    now = discord.utils.utcnow() + timedelta(hours=9)
-    now = discord.utils.utcnow()
-    await channel.send(f'起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{bot.user.id}')
-    return
-
-"""
-
 
 # Dispander-All
 
@@ -228,35 +207,6 @@ async def test(ctx):
     """生存確認用"""
     await ctx.send("hello")
     return
-
-
-'''
-# user-info-command
-@bot.command()
-@commands.has_role(mod_role)
-async def user(ctx,id:int):
-    """ユーザー情報取得"""
-    guild = bot.get_guild(guild_id)
-    member = guild.get_member(id)
-    # この先表示する用
-    member_if_bot = member.bot
-    member_reg_date = member.created_at.astimezone(jst)
-    # NickNameあるか？
-    if member.display_name == member.name :
-        member_if_nickname = 'None'
-    else:
-        member_if_nickname = member.display_name
-    member_id = member.id
-    member_join_date = member.joined_at.astimezone(jst)
-    membermention = member.mention
-    roles = [[x.name,x.id] for x in member.roles]
-# [[name,id],[name,id]...]
-    x = ['/ID: '.join(str(y) for y in x) for x in roles]
-    z = '\n'.join(x)
-    # Message成形-途中
-    user_info_msg = f'```ユーザー名:{member} (ID:{member_id})\nBot?:{member_if_bot}\nニックネーム:{member_if_nickname}\nアカウント作成日時:{member_reg_date:%Y/%m/%d %H:%M:%S}\n参加日時:{member_join_date:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```'
-    await ctx.send(user_info_msg)
-'''
 
 
 @bot.slash_command(name="user", guild_ids=[guild_id], default_permission=False)
