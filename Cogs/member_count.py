@@ -4,9 +4,9 @@ from discord import permissions
 from discord.commands import slash_command
 from discord.ext import commands, tasks
 
-admin_role = int(os.environ['ADMIN_ROLE'])
-count_vc = int(os.environ['COUNT_VC'])
-guild_id = int(os.environ['GUILD_ID'])
+admin_role = int(os.environ["ADMIN_ROLE"])
+count_vc = int(os.environ["COUNT_VC"])
+guild_id = int(os.environ["GUILD_ID"])
 
 
 class MemberCount(commands.Cog):
@@ -22,19 +22,19 @@ class MemberCount(commands.Cog):
         await self.bot.wait_until_ready()
         await self.membercount()
 
-    @slash_command(guild_ids=[guild_id], default_permission=False, name='manualcount')
+    @slash_command(guild_ids=[guild_id], default_permission=False, name="manualcount")
     @permissions.has_role(admin_role)
     async def _manual(self, ctx):
         """メンバーカウントの手動更新用"""
         await self.membercount()
-        await ctx.respond(content='更新が完了しました。', ephemeral=True)
+        await ctx.respond(content="更新が完了しました。", ephemeral=True)
         return
 
     async def membercount(self):
         guild = self.bot.get_guild(guild_id)
         server_member_count = guild.member_count
         vc = self.bot.get_channel(count_vc)
-        await vc.edit(name=f'Member Count: {server_member_count}')
+        await vc.edit(name=f"Member Count: {server_member_count}")
         return
 
 
