@@ -45,7 +45,7 @@ packaging==21.3
 pathspec==0.9.0
 pipdeptree==2.2.1
 platformdirs==2.4.1
-protobuf==3.19.3
+protobuf==3.19.4
 git+https://github.com/Pycord-Development/pycord@45f4753ccf03289d3ff400b3edb5d4f0d8e66aee
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
