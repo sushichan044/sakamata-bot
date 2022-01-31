@@ -113,6 +113,7 @@ class Thread(commands.Cog):
                 ],
                 key=lambda thread: len(thread.name),
             )
+            print(child_thread)
             mark_child_thread = [f"<#{thread.id}>" for thread in child_thread]
             if mark_child_thread:
                 board = thread_board + child_thread
