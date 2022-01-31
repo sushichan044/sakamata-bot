@@ -98,7 +98,7 @@ class Thread(commands.Cog):
             thread_dic[thread] = thread.parent.position
         """
         thread_dic:
-        {thread:pos,
+        {thread,
         thread:pos,
         ...}
         """
@@ -113,10 +113,10 @@ class Thread(commands.Cog):
                 ],
                 key=lambda thread: len(thread.name),
             )
-            print(child_thread)
+            # print(child_thread)
             mark_child_thread = [f"<#{thread.id}>" for thread in child_thread]
             if mark_child_thread:
-                board = thread_board + child_thread
+                board = thread_board + mark_child_thread
                 board_text_draft = "\n┣".join(board[:-1])
                 board_text = f"{board_text_draft}\n┗{board[-1]}"
                 final_board.append(board_text)
