@@ -107,13 +107,14 @@ class Thread(commands.Cog):
             thread_board = [f"<#{channel.id}>"]
             child_thread = sorted(
                 [
-                    f"<#{thread.id}>"
+                    thread
                     for thread, parent in thread_dic.items()
                     if parent == channel.position
                 ],
                 key=lambda thread: len(thread.name),
             )
-            if child_thread:
+            mark_child_thread = [f"<#{thread.id}>" for thread in child_thread]
+            if mark_child_thread:
                 board = thread_board + child_thread
                 board_text_draft = "\n┣".join(board[:-1])
                 board_text = f"{board_text_draft}\n┗{board[-1]}"
