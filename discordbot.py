@@ -1022,7 +1022,7 @@ async def confirm(ctx, confirm_arg, role, confirm_msg) -> bool:
         return (
             role in payload.member.roles
             and str(payload.emoji) in valid_reactions
-            and payload.message_id == m.id
+            and payload.message_id == message.id
         )
 
     payload = await bot.wait_for("raw_reaction_add", check=check_confirm)
