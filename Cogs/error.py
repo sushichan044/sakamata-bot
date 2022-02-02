@@ -17,9 +17,9 @@ class ErrorNotify(commands.Cog):
     async def _on_error(self, event, something):
         channel = self.bot.get_channel(error_log_channel)
         now = discord.utils.utcnow().astimezone(jst)
-        msg = f"```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(event)}\n{str(something)}```"
+        msg = f"エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(event)}\n{str(something)}"
         print(msg)
-        await channel.send(msg)
+        await channel.send(f"```{msg}```")
         return
 
     @commands.Cog.listener(name="on_command_error")

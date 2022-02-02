@@ -7,6 +7,7 @@ from discord.ext import commands
 
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 alert_channel = int(os.environ["ALERT_CHANNEL"])
+admin_role = int(os.environ["ADMIN_ROLE"])
 
 
 class NGWordSystem(commands.Cog):
@@ -16,24 +17,25 @@ class NGWordSystem(commands.Cog):
     @commands.Cog.listener(name="on_message")
     async def detect_NG_word(self, message):
         word_list = ["@everyone", "@here", "@飼育員たち"]
-        if message.author == self.bot.user:
-            return
-        elif type(message.channel) == discord.DMChannel:
+        if (
+            message.author == self.bot.user
+            or type(message.channel) == discord.DMChannel
+        ):
             return
         else:
-            m = [x for x in word_list if x in message.content]
+            ng_msg = [x for x in word_list if x in message.content]
             prog = re.compile(r"discord.gg/[\w]*")
-            n = prog.findall(message.content)
+            links = prog.findall(message.content)
             # print(n)
-            invites_list = await message.guild.invites()
-            invites_url = [x.url for x in invites_list]
-            replaced_invites = [item.replace("https://", "") for item in invites_url]
+            # invites_list = await message.guild.invites()
+            invites_url = [x.url for x in await message.guild.invites()]
+            allowed_urls = [item.replace("https://", "") for item in invites_url]
             # print(f'{replaced_invites}')
-            n = [x for x in n if x not in replaced_invites]
-            if m != [] or n != []:
-                m = m + n
-                m = "\n".join(m)
-                await self.send_ng_log(message, m)
+            ng_url = [link for link in links if link not in allowed_urls]
+            if ng_msg != [] or ng_url != []:
+                ng_content = ng_msg + ng_url
+                ng_content = "\n".join(ng_content)
+                await self.send_ng_log(message, ng_content)
                 return
             else:
                 return
@@ -43,7 +45,7 @@ class NGWordSystem(commands.Cog):
     async def send_ng_log(self, message, m):
         channel = self.bot.get_channel(alert_channel)
         embed = discord.Embed(
-            title="NGワードを検知しました。",
+            title="要注意メッセージを検知しました。",
             url=message.jump_url,
             color=16711680,
             description=message.content,
@@ -58,7 +60,7 @@ class NGWordSystem(commands.Cog):
         embed.add_field(
             name="送信日時", value=f"{message.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}"
         )
-        await channel.send(embed=embed)
+        await channel.send(content=f"<@&{admin_role}>", embed=embed)
         return
 
 
