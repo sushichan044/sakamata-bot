@@ -142,7 +142,11 @@ reject_emoji = "\N{Cross Mark}"
 
 
 # pattern
+# yyyy/mm/dd
 date_pattern = re.compile(r"^\d{4}/\d{2}/\d{2}")
+
+# discord's invite url
+discord_pattern = re.compile(r"discord.gg/[\w]*")
 
 # list
 stop_list = [stop_role, vc_stop_role]
