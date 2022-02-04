@@ -13,3 +13,4 @@ official_statistics = (
     "https://webstatic-sea.mihoyo.com/app/community-game-records-sea/index.html"
 )
 unofficial_map = "https://genshin-impact-map.appsample.com/#/"
+unofficial_map_2 = "https://yuanshen.site/index_jp.html?locale=ja"
