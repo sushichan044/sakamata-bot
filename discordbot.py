@@ -100,9 +100,15 @@ INIT_EXTENSION_LIST = [
     "Cogs.tool",
 ]
 
+GENSHIN_EXTENSION_LIST = ["Genshin.alarm"]
+
 for cog in INIT_EXTENSION_LIST:
     bot.load_extension(cog)
     print(f"extension [{cog}] is loaded!")
+
+for cog in GENSHIN_EXTENSION_LIST:
+    bot.load_extension(cog)
+    print(f"extension for Genshin [{cog}] is loaded!")
 
 
 # ID-guild
