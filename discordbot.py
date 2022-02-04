@@ -102,7 +102,7 @@ INIT_EXTENSION_LIST = [
     "Cogs.tool",
 ]
 
-GENSHIN_EXTENSION_LIST = ["Genshin.alarm"]
+GENSHIN_EXTENSION_LIST = ["Genshin.alarm", "Genshin.portal"]
 
 for cog in INIT_EXTENSION_LIST:
     bot.load_extension(cog)
