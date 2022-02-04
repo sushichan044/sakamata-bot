@@ -11,7 +11,7 @@ class Portal(commands.Cog):
     @commands.command(name="tool")
     async def portal(self, ctx):
         embed = embed_builder._portal()
-        await ctx.message.channel.send(embed=embed)
+        await ctx.message.channel.send(embed=embed, view=PortalView())
         return
 
 
