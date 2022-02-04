@@ -16,6 +16,7 @@ from newdispanderfixed import dispand
 import Components.member_button as membership_button
 from Cogs.connect import connect
 from Cogs.post_sheet import PostToSheet as sheet
+from Genshin.portal import PortalView
 
 logging.basicConfig(level=logging.INFO)
 
@@ -69,6 +70,7 @@ class MyBot(commands.Bot):
     async def on_ready(self):
         if not self.persistent_views_added:
             self.add_view(MemberVerifyButton())
+            self.add_view(PortalView())
             self.persistent_views_added = True
             print("Set Persistant Views!")
         print("------------------------------------------------")
