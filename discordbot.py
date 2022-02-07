@@ -2,6 +2,7 @@ import asyncio
 import logging
 import os
 import re
+import traceback
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -85,11 +86,19 @@ class MyBot(commands.Bot):
         )
         self.persistent_views_added = False
         for cog in INIT_EXTENSION_LIST:
-            bot.load_extension(cog)
-            print(f"extension [{cog}] is loaded!")
+            try:
+                self.load_extension(cog)
+            except Exception:
+                traceback.print_exc()
+            else:
+                print(f"extension [{cog}] is loaded!")
         for cog in GENSHIN_EXTENSION_LIST:
-            bot.load_extension(cog)
-            print(f"extension for Genshin [{cog}] is loaded!")
+            try:
+                self.load_extension(cog)
+            except Exception:
+                traceback.print_exc()
+            else:
+                print(f"extension for Genshin [{cog}] is loaded!")
 
     async def on_ready(self):
         if not self.persistent_views_added:
