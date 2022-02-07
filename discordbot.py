@@ -59,6 +59,24 @@ bot = commands.Bot(command_prefix='//', intents=intents,
                    help_command=JapaneseHelpCommand())
                    """
 
+INIT_EXTENSION_LIST = [
+    "Cogs.concept",
+    "Cogs.error",
+    "Cogs.entrance",
+    # 'Cogs.fun',
+    "Cogs.member_count",
+    "Cogs.ng_word",
+    "Cogs.pin",
+    "Cogs.poll",
+    "Cogs.slow",
+    "Cogs.starboard",
+    "Cogs.talk_api",
+    "Cogs.thread",
+    "Cogs.tool",
+]
+
+GENSHIN_EXTENSION_LIST = ["Genshin.alarm", "Genshin.portal"]
+
 
 class MyBot(commands.Bot):
     def __init__(self):
@@ -66,6 +84,12 @@ class MyBot(commands.Bot):
             command_prefix="//", intents=intents, help_command=JapaneseHelpCommand()
         )
         self.persistent_views_added = False
+        for cog in INIT_EXTENSION_LIST:
+            bot.load_extension(cog)
+            print(f"extension [{cog}] is loaded!")
+        for cog in GENSHIN_EXTENSION_LIST:
+            bot.load_extension(cog)
+            print(f"extension for Genshin [{cog}] is loaded!")
 
     async def on_ready(self):
         if not self.persistent_views_added:
@@ -85,32 +109,6 @@ class MyBot(commands.Bot):
 
 
 bot = MyBot()
-
-
-INIT_EXTENSION_LIST = [
-    "Cogs.concept",
-    "Cogs.error",
-    "Cogs.entrance",
-    # 'Cogs.fun',
-    "Cogs.member_count",
-    "Cogs.ng_word",
-    "Cogs.pin",
-    "Cogs.poll",
-    "Cogs.slow",
-    "Cogs.starboard",
-    "Cogs.thread",
-    "Cogs.tool",
-]
-
-GENSHIN_EXTENSION_LIST = ["Genshin.alarm", "Genshin.portal"]
-
-for cog in INIT_EXTENSION_LIST:
-    bot.load_extension(cog)
-    print(f"extension [{cog}] is loaded!")
-
-for cog in GENSHIN_EXTENSION_LIST:
-    bot.load_extension(cog)
-    print(f"extension for Genshin [{cog}] is loaded!")
 
 
 # ID-guild
@@ -1212,4 +1210,5 @@ async def _private(ctx):
 # async def mention(ctx, member: Member):  # user commands return the member
 #     await ctx.respond(f"{ctx.author.name} just mentioned {member.mention}!")
 
-bot.run(token)
+if __name__ == "__main__":
+    bot.run(token)
