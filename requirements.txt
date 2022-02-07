@@ -12,7 +12,7 @@ chardet==3.0.4
 charset-normalizer==2.0.11
 click==8.0.3
 colorama==0.4.4
-deepl==1.4.0
+deepl==1.4.1
 Deprecated==1.2.13
 git+https://github.com/sushi-chaaaan/discord-ext-ui-fork.git@bbbfef777a223c2cf2f6fb0ad7f7d2b6e71c8789
 docutils==0.18.1
