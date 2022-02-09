@@ -32,7 +32,7 @@ httpcore==0.9.1
 httplib2==0.20.2
 httpx==0.13.3
 hyperframe==5.2.0
-idna==2.10
+idna==2.7
 importlib-metadata==4.10.1
 install==1.3.5
 mccabe==0.6.1
@@ -45,8 +45,9 @@ packaging==21.3
 pathspec==0.9.0
 pipdeptree==2.2.1
 platformdirs==2.4.1
-protobuf==3.19.4
-git+https://github.com/Pycord-Development/pycord@45f4753ccf03289d3ff400b3edb5d4f0d8e66aee
+protobuf==3.19.3
+git+https://github.com/Pycord-Development/pycord@5806985502403c5e61bcc90af92bd799d69b2d80
+git+https://github.com/sushi-chaaaan/pya3rt.git@d38cb21df8e476c1268ba039c973a0a2be93df36
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycodestyle==2.8.0
@@ -59,8 +60,8 @@ PySocks==1.7.1
 python-dateutil==2.8.2
 pywin32-ctypes==0.2.0
 redis==4.1.2
-requests==2.27.1
-requests-oauthlib==1.3.1
+requests==2.20.0
+requests-oauthlib==1.3.0
 requests-toolbelt==0.9.1
 rfc3986==1.5.0
 rsa==4.8
@@ -71,7 +72,7 @@ toml==0.10.2
 tomli==1.2.3
 typing_extensions==4.0.1
 uritemplate==4.1.1
-urllib3==1.26.8
+urllib3==1.24.3
 webencodings==0.5.1
 wrapt==1.13.3
 yarl==1.7.2
