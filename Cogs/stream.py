@@ -112,12 +112,12 @@ class StreamModal(Modal):
         else:
             time = self._make_time(start_time)
         dur = timedelta(hours=float(self.children[3].value))
-        end_time = time + dur
+        end = time + dur
         await guild.create_scheduled_event(
             name=event_name,
             description="",
             start_time=time.astimezone(utc),
-            end_time=end_time,
+            end_time=end,
             location=event_url,
         )
         await interaction.response.send_message("配信を登録しました。")
