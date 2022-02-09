@@ -1,8 +1,7 @@
 import os
 
 import discord
-from discord import permissions
-from discord.commands import message_command
+from discord.commands import message_command, permissions
 from discord.ext import commands
 
 guild_id = int(os.environ["GUILD_ID"])

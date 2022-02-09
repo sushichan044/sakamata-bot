@@ -72,7 +72,7 @@ INIT_EXTENSION_LIST = [
     "Cogs.slow",
     "Cogs.starboard",
     "Cogs.stream",
-    "Cogs.talk_api",
+    # "Cogs.talk_api",
     "Cogs.thread",
     "Cogs.tool",
 ]

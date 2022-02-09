@@ -5,8 +5,8 @@ from datetime import datetime, timedelta, timezone
 from typing import Tuple
 
 import discord
-from discord import Embed, Member, User, permissions
-from discord.commands import slash_command
+from discord import Embed, Member, User
+from discord.commands import slash_command, permissions
 from discord.ext import commands
 from discord.ext.ui import (
     Button,

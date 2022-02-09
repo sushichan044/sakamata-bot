@@ -1,4 +1,3 @@
-from cProfile import label
 import os
 from datetime import datetime, timedelta, timezone
 
@@ -77,7 +76,6 @@ class StreamModal(Modal):
                 placeholder="https://youtu.be/LyakqutKBpM",
                 row=1,
                 required=False,
-                value="",
             )
         )
         self.add_item(
@@ -90,12 +88,52 @@ class StreamModal(Modal):
                 max_length=15,
             )
         )
+        self.add_item(
+            InputText(
+                label="予想配信時間(単位:時間)", placeholder="1.5(1時間30分)", row=3, required=True
+            )
+        )
 
     async def callback(self, interaction: discord.Interaction):
-        # guild = interaction.guild
-        text = "\n".join([item.value for item in self.children])
-        await interaction.response.send_message(text)
+        guild = interaction.guild
+        event_name = self.children[0].value
+        if not self.children[1].value:
+            event_url = ""
+        else:
+            event_url = self.children[1].value
+        start_time = self.children[2].value
+        if len(start_time) != 4 or 15:
+            await interaction.response.send_message(
+                content="正しい時間を入力してください。\n有効な時間は\n```2022.05.18.2100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```",
+                ephemeral=True,
+            )
+            return
+        else:
+            time = self._make_time(start_time)
+        dur = timedelta(hours=float(self.children[3].value))
+        end_time = time + dur
+        await guild.create_scheduled_event(
+            name=event_name,
+            description="",
+            start_time=time.astimezone(utc),
+            end_time=end_time,
+            location=event_url,
+        )
+        await interaction.response.send_message("配信を登録しました。")
         return
+
+    def _make_time(self, time: str) -> datetime:
+        if len(time) == 4:
+            todate = datetime.now(timezone.utc).astimezone(jst)
+            time_object = datetime.strptime(time, "%H%M")
+            true_start_jst = time_object.replace(
+                year=todate.year, month=todate.month, day=todate.day, tzinfo=jst
+            )
+            return true_start_jst
+        else:
+            true_start = datetime.strptime(time, "%Y.%m.%d%H%M")
+            true_start_jst = true_start.replace(tzinfo=jst)
+            return true_start_jst
 
 
 def setup(bot):

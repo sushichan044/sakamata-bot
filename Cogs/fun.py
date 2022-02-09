@@ -3,8 +3,7 @@ import os
 import discord
 import requests
 from bs4 import BeautifulSoup as BS
-from discord import permissions
-from discord.commands import slash_command
+from discord.commands import slash_command, permissions
 from discord.ext import commands
 import random
 
