@@ -119,7 +119,7 @@ class StreamModal(Modal):
             )
             return
 
-        true_duration = timedelta(hours=self.children[3].value)
+        true_duration = timedelta(hours=int(self.children[3].value))
         true_end = true_start_jst + true_duration
         await guild.create_scheduled_event(
             name=str(event_name),
