@@ -77,6 +77,7 @@ class StreamModal(Modal):
                 placeholder="https://youtu.be/LyakqutKBpM",
                 row=1,
                 required=False,
+                value="",
             )
         )
         self.add_item(
