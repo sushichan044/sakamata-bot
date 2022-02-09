@@ -2,6 +2,8 @@ import os
 from datetime import datetime, timedelta, timezone
 from unicodedata import name
 
+from discord import ApplicationContext
+
 import discord
 from discord import Option
 from discord.commands import permissions, slash_command
@@ -23,14 +25,14 @@ class StreamRegister(commands.Cog):
     @permissions.has_role(mod_role)
     async def _newcreateevent(
         self,
-        ctx,
+        ctx: ApplicationContext,
         event_name: Option(str, "配信の名前(例:マリカ,歌枠,など)"),
         stream_url: Option(str, "配信のURL"),
         start_time: Option(str, "配信開始時間(202205182100または2100(当日))"),
         duration: Option(float, "予想される配信の長さ(単位:時間)(例:1.5)"),
     ):
         """配信を簡単にイベントに登録できます。"""
-        guild = ctx.guild
+        guild = ctx.interaction.guild
         if len(start_time) == 4:
             todate = datetime.now(timezone.utc).astimezone(jst)
             start_time_object = datetime.strptime(start_time, "%H%M")
@@ -99,15 +101,15 @@ class StreamModal(Modal):
         print(interaction.guild.id)
         event_name = self.children[0].value
         event_url = self.children[1].value
-        start_time = self.children[2].value
-        if len(start_time) == 4:
+        time = self.children[2].value
+        if len(time) == 4:
             todate = datetime.now(timezone.utc).astimezone(jst)
-            start_time_object = datetime.strptime(start_time, "%H%M")
+            start_time_object = datetime.strptime(time, "%H%M")
             true_start_jst = start_time_object.replace(
                 year=todate.year, month=todate.month, day=todate.day, tzinfo=jst
             )
-        elif len(start_time) == 15:
-            true_start = datetime.strptime(start_time, "%Y.%m.%d.%H%M")
+        elif len(time) == 15:
+            true_start = datetime.strptime(time, "%Y.%m.%d.%H%M")
             true_start_jst = true_start.replace(tzinfo=jst)
         else:
             await interaction.response.send_message(
@@ -117,13 +119,8 @@ class StreamModal(Modal):
             return
         true_duration = timedelta(hours=float(self.children[3].value))
         true_end = true_start_jst + true_duration
-        print(type(event_name), type(start_time), type(true_end), type(event_url))
-        await interaction.guild.create_scheduled_event(
-            name=f"{event_name}",
-            start_time=true_start_jst.astimezone(utc),
-            end_time=true_end,
-            location=event_url,
-        )
+        print(type(event_name), type(true_start_jst), type(true_end), type(event_url))
+        await interaction.guild.create_scheduled_event(name=f"{event_name}",start_time=true_start_jst.astimezone(utc),end_time=true_end,location=event_url)
         await interaction.response.send_message("配信を登録しました。")
         return
 
