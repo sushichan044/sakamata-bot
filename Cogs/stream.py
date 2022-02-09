@@ -103,6 +103,7 @@ class StreamModal(Modal):
             event_url = self.children[1].value
         start_time = self.children[2].value
         if len(start_time) != 4 or 15:
+            print(start_time)
             await interaction.response.send_message(
                 content="正しい時間を入力してください。\n有効な時間は\n```2022.05.18.2100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```",
                 ephemeral=True,
