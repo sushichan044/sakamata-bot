@@ -58,6 +58,12 @@ class StreamRegister(commands.Cog):
         await ctx.respond("配信を登録しました。")
         return
 
+    @slash_command(guild_ids=[guild_id], name="testmodal")
+    async def _test_modal(self, ctx):
+        modal = StreamModal()
+        await ctx.interaction.response.send_modal(modal)
+        return
+
 
 class StreamModal(Modal):
     def __init__(self) -> None:
@@ -88,12 +94,9 @@ class StreamModal(Modal):
         # guild = interaction.guild
         text = "\n".join([item.value for item in self.children])
         await interaction.response.send_message(text)
-
-    @slash_command(guild_ids=[guild_id], name="testmodal")
-    async def _test_modal(self, ctx):
-        modal = StreamModal()
-        await ctx.interaction.response.send_modal(modal)
         return
+
+
 
 
 def setup(bot):
