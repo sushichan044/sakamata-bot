@@ -71,6 +71,7 @@ INIT_EXTENSION_LIST = [
     "Cogs.poll",
     "Cogs.slow",
     "Cogs.starboard",
+    "Cogs.stream",
     "Cogs.talk_api",
     "Cogs.thread",
     "Cogs.tool",
