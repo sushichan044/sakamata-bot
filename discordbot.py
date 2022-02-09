@@ -20,8 +20,8 @@ from Cogs.post_sheet import PostToSheet as sheet
 from Cogs.inquiry import InquiryView, SuggestionView
 from Genshin.portal import PortalView
 
-from .Core.log_sender import LogSender as LS
-from .Core.confirm import Confirm
+from Core.log_sender import LogSender as LS
+from Core.confirm import Confirm
 
 logging.basicConfig(level=logging.INFO)
 
@@ -87,7 +87,6 @@ EXTENSION_LIST = [
     "Cogs.slow",
     "Cogs.starboard",
     "Cogs.stream",
-    # "Cogs.talk_api",
     "Cogs.thread",
     "Cogs.tool",
 ]
