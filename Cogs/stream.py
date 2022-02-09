@@ -49,7 +49,6 @@ class StreamRegister(commands.Cog):
         true_end = true_start_jst + true_duration
         await guild.create_scheduled_event(
             name=f"{event_name}",
-            description="",
             start_time=true_start_jst.astimezone(utc),
             end_time=true_end,
             location=stream_url,
@@ -76,6 +75,7 @@ class StreamModal(Modal):
                 placeholder="https://youtu.be/LyakqutKBpM",
                 row=1,
                 required=False,
+                value="",
             )
         )
         self.add_item(
@@ -95,13 +95,9 @@ class StreamModal(Modal):
         )
 
     async def callback(self, interaction: discord.Interaction):
-        guild = interaction.guild
-        print(guild.id)
+        print(interaction.guild.id)
         event_name = self.children[0].value
-        if not self.children[1].value:
-            event_url = ""
-        else:
-            event_url = self.children[1].value
+        event_url = self.children[1].value
         start_time = self.children[2].value
         if len(start_time) == 4:
             todate = datetime.now(timezone.utc).astimezone(jst)
@@ -109,40 +105,25 @@ class StreamModal(Modal):
             true_start_jst = start_time_object.replace(
                 year=todate.year, month=todate.month, day=todate.day, tzinfo=jst
             )
-        elif len(start_time) == 12:
-            true_start = datetime.strptime(start_time, "%Y%m%d%H%M")
+        elif len(start_time) == 15:
+            true_start = datetime.strptime(start_time, "%Y.%m.%d.%H%M")
             true_start_jst = true_start.replace(tzinfo=jst)
         else:
             await interaction.response.send_message(
-                content="正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```",
+                content="正しい時間を入力してください。\n有効な時間は\n```2022.05.18.2100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```",
                 ephemeral=True,
             )
             return
-
         true_duration = timedelta(hours=int(self.children[3].value))
         true_end = true_start_jst + true_duration
-        await guild.create_scheduled_event(
-            name=str(event_name),
-            description="",
+        await interaction.guild.create_scheduled_event(
+            name=f"{event_name}",
             start_time=true_start_jst.astimezone(utc),
             end_time=true_end,
             location=event_url,
         )
         await interaction.response.send_message("配信を登録しました。")
         return
-
-    def _make_time(self, time: str) -> datetime:
-        if len(time) == 4:
-            todate = datetime.now(timezone.utc).astimezone(jst)
-            time_object = datetime.strptime(time, "%H%M")
-            true_start_jst = time_object.replace(
-                year=todate.year, month=todate.month, day=todate.day, tzinfo=jst
-            )
-            return true_start_jst
-        else:
-            true_start = datetime.strptime(time, "%Y.%m.%d%H%M")
-            true_start_jst = true_start.replace(tzinfo=jst)
-            return true_start_jst
 
 
 def setup(bot):
