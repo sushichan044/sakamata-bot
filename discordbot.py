@@ -64,7 +64,19 @@ bot = commands.Bot(command_prefix='//', intents=intents,
                    help_command=JapaneseHelpCommand())
                    """
 
-INIT_EXTENSION_LIST = [
+CORE_EXTENSION_LIST = [
+    "Core.ban",
+    "Core.confirm",
+    "Core.dm",
+    "Core.kick",
+    "Core.log_sender",
+    "Core.logger",
+    "Core.message",
+    "Core.timeout",
+    "Core.utils",
+]
+
+EXTENSION_LIST = [
     "Cogs.concept",
     "Cogs.error",
     "Cogs.entrance",
@@ -89,7 +101,14 @@ class MyBot(commands.Bot):
             command_prefix="//", intents=intents, help_command=JapaneseHelpCommand()
         )
         self.persistent_views_added = False
-        for cog in INIT_EXTENSION_LIST:
+        for cog in CORE_EXTENSION_LIST:
+            try:
+                self.load_extension(cog)
+            except Exception:
+                traceback.print_exc()
+            else:
+                print(f"Core extension [{cog}] is loaded!")
+        for cog in EXTENSION_LIST:
             try:
                 self.load_extension(cog)
             except Exception:
