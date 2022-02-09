@@ -1,0 +1,13 @@
+{
+    "embeds": [
+        {
+            "title": "フィードバック",
+            "description": "description",
+            "color": 2105893,
+            "footer": {
+                "text": "footer text"
+            },
+            "fields": []
+        }
+    ]
+}

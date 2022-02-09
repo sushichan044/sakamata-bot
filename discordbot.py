@@ -17,6 +17,7 @@ from newdispanderfixed import dispand
 import Components.member_button as membership_button
 from Cogs.connect import connect
 from Cogs.post_sheet import PostToSheet as sheet
+from Cogs.inquiry import InquiryView
 from Genshin.portal import PortalView
 
 logging.basicConfig(level=logging.INFO)
@@ -64,7 +65,7 @@ INIT_EXTENSION_LIST = [
     "Cogs.concept",
     "Cogs.error",
     "Cogs.entrance",
-    # 'Cogs.fun',
+    "Cogs.inquiry",
     "Cogs.member_count",
     "Cogs.ng_word",
     "Cogs.pin",
@@ -105,6 +106,7 @@ class MyBot(commands.Bot):
         if not self.persistent_views_added:
             self.add_view(MemberVerifyButton())
             self.add_view(PortalView())
+            self.add_view(InquiryView())
             self.persistent_views_added = True
             print("Set Persistant Views!")
         print("------------------------------------------------")
