@@ -23,7 +23,7 @@ class Inquiry(commands.Cog):
     async def _send_inq_button(self, ctx):
         embed = discord.Embed(
             title="管理者への問い合わせ",
-            description="管理者へ直接問い合わせがしたい場合は\nボタンを押してください。",
+            description="管理者へ直接問い合わせがしたい場合は\nボタンを押してください。\n(間違えて押した場合は速やかに教えてください)",
             color=2105893,
         )
         await ctx.send(embed=embed, view=InquiryView())
@@ -34,7 +34,7 @@ class Inquiry(commands.Cog):
     async def _send_sug_button(self, ctx):
         embed = discord.Embed(
             title="サーバーへのご意見・ご要望",
-            description="サーバーへの要望などを送りたい場合は\n下のボタンからアクセスしてください！",
+            description="サーバーへの要望などを送りたい場合は\n下のフオームをご利用ください！",
             color=2105893,
         )
         await ctx.send(embed=embed, view=SuggestionView())
