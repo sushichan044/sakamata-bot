@@ -34,7 +34,7 @@ class Inquiry(commands.Cog):
     async def _send_sug_button(self, ctx):
         embed = discord.Embed(
             title="サーバーへのご意見・ご要望",
-            description="サーバーへの要望などを送りたい場合は\n下のフオームをご利用ください！",
+            description="サーバーへの要望などを送りたい場合は\n下のフォームをご利用ください！",
             color=2105893,
         )
         await ctx.send(embed=embed, view=SuggestionView())
