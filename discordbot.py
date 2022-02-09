@@ -68,7 +68,6 @@ INIT_EXTENSION_LIST = [
     "Cogs.inquiry",
     "Cogs.member_count",
     "Cogs.ng_word",
-    # "Cogs.pin",
     "Cogs.poll",
     "Cogs.slow",
     "Cogs.starboard",
@@ -110,9 +109,9 @@ class MyBot(commands.Bot):
             self.add_view(SuggestionView())
             self.persistent_views_added = True
             print("Set Persistant Views!")
-        print("------------------------------------------------")
+        print("------------------------------------------------------")
         print(f"Logged in as {self.user} (ID: {self.user.id})")
-        print("------------------------------------------------")
+        print("------------------------------------------------------")
         channel = self.get_channel(log_channel)
         now = discord.utils.utcnow()
         await channel.send(
