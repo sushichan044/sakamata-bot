@@ -88,6 +88,7 @@ class SurveyModal(Modal):
         df["embeds"][0]["footer"]["text"] = now
         if self.children[1].value:
             df["embeds"][0]["fields"] = {"name": "アカウント名", "value": self.children[1].value}
+        print(df)
         content = json.dumps(df, indent=4)
         headers = {"Content-Type": "application/json"}
         try:
