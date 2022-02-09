@@ -5,6 +5,10 @@ import discord
 import requests
 from discord.ext import commands
 from discord.ui import InputText, Modal
+from datetime import timedelta, timezone
+
+
+jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
 hook_url = "https://discord.com/api/webhooks/940939208049192960/syh7bQvU8O_JGmbyvukcdFaXrq3Vv1wBoX8PEgi-ex6wzLI4jFQ-20X68oSQHuKAy0dz"
 
@@ -78,10 +82,12 @@ class SurveyModal(Modal):
         path = os.path.join(os.path.dirname(__file__), "../src/inquiry.json")
         with open(path) as f:
             df: dict = json.load(f)
+        print(df)
+        now = discord.utils.utcnow().astimezone(jst).strftime("%Y/%m/%d %H:%M:%S")
+        df["embeds"]["description"] = self.children[0].value
+        df["embeds"]["footer"]["text"] = now
         if self.children[1].value:
-            df["embeds"][
-                "fields"
-            ] = {"name": "アカウント名", "value": self.children[1].value}
+            df["embeds"]["fields"] = {"name": "アカウント名", "value": self.children[1].value}
         content = json.dumps(df, indent=4)
         headers = {"Content-Type": "application/json"}
         try:
