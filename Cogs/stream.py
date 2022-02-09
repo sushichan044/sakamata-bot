@@ -96,28 +96,36 @@ class StreamModal(Modal):
 
     async def callback(self, interaction: discord.Interaction):
         guild = interaction.guild
+        print(guild.id)
         event_name = self.children[0].value
         if not self.children[1].value:
             event_url = ""
         else:
             event_url = self.children[1].value
         start_time = self.children[2].value
-        if len(start_time) not in [4, 15]:
-            # print(start_time)
+        if len(start_time) == 4:
+            todate = datetime.now(timezone.utc).astimezone(jst)
+            start_time_object = datetime.strptime(start_time, "%H%M")
+            true_start_jst = start_time_object.replace(
+                year=todate.year, month=todate.month, day=todate.day, tzinfo=jst
+            )
+        elif len(start_time) == 12:
+            true_start = datetime.strptime(start_time, "%Y%m%d%H%M")
+            true_start_jst = true_start.replace(tzinfo=jst)
+        else:
             await interaction.response.send_message(
-                content="正しい時間を入力してください。\n有効な時間は\n```2022.05.18.2100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```",
+                content="正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```",
                 ephemeral=True,
             )
             return
-        else:
-            time = self._make_time(start_time)
-        dur = timedelta(hours=float(self.children[3].value))
-        end = time + dur
+
+        true_duration = timedelta(hours=self.children[3].value)
+        true_end = true_start_jst + true_duration
         await guild.create_scheduled_event(
             name=str(event_name),
             description="",
-            start_time=time.astimezone(utc),
-            end_time=end,
+            start_time=true_start_jst.astimezone(utc),
+            end_time=true_end,
             location=event_url,
         )
         await interaction.response.send_message("配信を登録しました。")
