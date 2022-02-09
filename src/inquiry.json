@@ -2,8 +2,8 @@
     "embeds": [
         {
             "title": "フィードバック",
-            "description": "tesxt",
-            "color": 15767485,
+            "description": "description",
+            "color": 2105893,
             "footer": {
                 "text": "footer text"
             },

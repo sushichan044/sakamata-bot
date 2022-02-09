@@ -1,18 +1,12 @@
+from unicodedata import name
 from discord import Embed
-from discord.utils import utcnow
-from datetime import timezone, timedelta
-
-jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
 
-def _survey_embed(text: str, user: str = None) -> Embed:
-    now = utcnow().astimezone(jst).strftime("%Y/%m/%d %H:%M:%S")
+def _contact_embed() -> Embed:
     embed = Embed(
-        title="フィードバック",
-        description=text,
-        color=15767485,
+        title="スレッドが作成されました。",
+        description="お問い合わせありがとうございます。\n下のスレッドリンクからスレッドへ移動して、\n内容の投稿をお願いします。",
+        color=2105893,
     )
-    embed.set_footer(text=now)
-    if user:
-        embed.add_field(name="アカウント", value=user)
+    embed.add_field(name="スレッド", value="Temp")
     return embed
