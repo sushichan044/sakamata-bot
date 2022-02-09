@@ -72,6 +72,9 @@ class InquiryView(discord.ui.View):
 
 
 class SuggestionView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
     @discord.ui.button(
         label="目安箱/Server Suggestion",
         style=discord.ButtonStyle.secondary,
