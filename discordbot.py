@@ -38,6 +38,7 @@ utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
 # onlinetoken@heroku
+token = "OTE3MTg3MTYzNDEyNjYwMjI0.Ya1DHA.O7tyX2pt7T5qWjf1mmwxpHyDXUA"
 token = os.environ["DISCORD_BOT_TOKEN"]
 
 # help-command-localize-test

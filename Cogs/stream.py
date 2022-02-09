@@ -97,7 +97,5 @@ class StreamModal(Modal):
         return
 
 
-
-
 def setup(bot):
     return bot.add_cog(StreamRegister(bot))
