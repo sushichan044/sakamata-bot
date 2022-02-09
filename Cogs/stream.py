@@ -114,7 +114,7 @@ class StreamModal(Modal):
         dur = timedelta(hours=float(self.children[3].value))
         end = time + dur
         await guild.create_scheduled_event(
-            name=event_name,
+            name=str(event_name),
             description="",
             start_time=time.astimezone(utc),
             end_time=end,
