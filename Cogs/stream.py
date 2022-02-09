@@ -126,7 +126,7 @@ class StreamModal(Modal):
             end_time=true_end,
             location=event_url,
         )
-        await interaction.response.send_message("配信を登録しました。")
+        await interaction.response.send_message(content="配信を登録しました。", ephemeral=True)
         return
 
 
