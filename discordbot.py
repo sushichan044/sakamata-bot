@@ -63,6 +63,7 @@ CORE_EXTENSION_LIST = [
     "Core.log_sender",
     "Core.logger",
     "Core.message",
+    "Core.membership",
     "Core.timeout",
     "Core.utils",
 ]
