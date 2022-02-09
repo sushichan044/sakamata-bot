@@ -47,14 +47,13 @@ class InquiryView(discord.ui.View):
         else:
             thread_type = discord.ChannelType.public_thread
         target = await interaction.channel.create_thread(
-            name=f"{interaction.user.display_name}/ID:{interaction.id}",
+            name=f"{interaction.user.display_name} さん(ID:{interaction.id})",
             auto_archive_duration=1440,
             type=thread_type,
         )
         await target.add_user(interaction.user)
         await target.send(interaction.guild.get_role(mod_role).mention)
-        em = eb._contact_embed()
-        em.fields[0].value = target.mention
+        em = eb._contact_embed(target)
         await interaction.response.send_message(embed=em, ephemeral=True)
 
     @discord.ui.button(
