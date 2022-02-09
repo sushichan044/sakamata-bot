@@ -46,7 +46,7 @@ pathspec==0.9.0
 pipdeptree==2.2.1
 platformdirs==2.4.1
 protobuf==3.19.3
--git+https://github.com/Pycord-Development/pycord@5806985502403c5e61bcc90af92bd799d69b2d80
+git+https://github.com/Pycord-Development/pycord@5806985502403c5e61bcc90af92bd799d69b2d80
 git+https://github.com/sushi-chaaaan/pya3rt.git@d38cb21df8e476c1268ba039c973a0a2be93df36
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
