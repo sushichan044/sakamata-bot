@@ -8,30 +8,15 @@ import discord
 from discord import Member
 from discord.ext import commands
 
-from Cogs.connect import connect
 from Cogs.inquiry import InquiryView, SuggestionView
 from Core.membership import MemberVerifyButton
 from Genshin.portal import PortalView
 
 logging.basicConfig(level=logging.INFO)
 
-"""bot招待リンク
-https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=1403113958646&scope=bot%20applications.commands
-
-
-イベントハンドラ一覧(client)
-async def の後を変えるだけで実行されるイベンドが変わる
-メッセージ受信時に実行：   on_message(message)
-Bot起動時に実行：      on_ready(message)
-リアクション追加時に実行:  on_reaction_add(reaction, user)
-新規メンバー参加時に実行： on_member_join(member)
-ボイスチャンネル出入に実行： on_voice_state_update(member, before, after)"""
-
-conn = connect()
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
-# onlinetoken@heroku
 token = os.environ["DISCORD_BOT_TOKEN"]
 
 # help-command-localize-test
@@ -47,12 +32,6 @@ class JapaneseHelpCommand(commands.DefaultHelpCommand):
     def get_ending_note(self):
         return "各コマンドの説明: //help <コマンド名>\n"
 
-
-intents = discord.Intents.all()
-"""
-bot = commands.Bot(command_prefix='//', intents=intents,
-                   help_command=JapaneseHelpCommand())
-                   """
 
 CORE_EXTENSION_LIST = [
     "Core.ban",
@@ -88,7 +67,9 @@ GENSHIN_EXTENSION_LIST = ["Genshin.portal"]
 class MyBot(commands.Bot):
     def __init__(self):
         super().__init__(
-            command_prefix="//", intents=intents, help_command=JapaneseHelpCommand()
+            command_prefix="//",
+            intents=discord.Intents.all(),
+            help_command=JapaneseHelpCommand(),
         )
         self.persistent_views_added = False
         for cog in CORE_EXTENSION_LIST:
@@ -144,18 +125,14 @@ mod_role = int(os.environ["MOD_ROLE"])
 stop_role = int(os.environ["STOP_ROLE"])
 vc_stop_role = int(os.environ["VC_STOP_ROLE"])
 
-
 # ID-log
 log_channel = int(os.environ["LOG_CHANNEL"])
-
 
 # emoji
 accept_emoji = "\N{Heavy Large Circle}"
 reject_emoji = "\N{Cross Mark}"
 
-
-# pattern
-# yyyy/mm/dd
+# pattern(yyyy/mm/dd)
 date_pattern = re.compile(r"^\d{4}/\d{2}/\d{2}")
 
 # discord's invite url
@@ -166,13 +143,6 @@ stop_list = [stop_role, vc_stop_role]
 
 # other
 env = os.environ["ENV"]  # main or alpha
-
-
-"""
-デフォルトで提供されている on_message をオーバーライドすると、コマンドが実行されなくなります。
-これを修正するには on_message の最後に bot.process_commands(message) を追加してみてください。
-https://discordbot.jp/blog/17/
-"""
 
 
 @bot.command(name="user")
