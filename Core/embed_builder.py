@@ -35,7 +35,7 @@ def create_base_context_log_embed(
         url=f"{desc_url}",
         timestamp=discord.utils.utcnow(),
     )
-    embed.add_field(name="実行者", value=ctx.author.mention)
+    embed.add_field(name="実行者", value=ctx.interaction.user.mention)
     embed.add_field(
         name="実行日時",
         value=discord.utils.utcnow().astimezone(jst).strftime("%Y/%m/%d %H:%M:%S"),
