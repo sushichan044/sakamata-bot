@@ -84,10 +84,10 @@ class SurveyModal(Modal):
             df: dict = json.load(f)
         print(df)
         now = discord.utils.utcnow().astimezone(jst).strftime("%Y/%m/%d %H:%M:%S")
-        df["embeds"]["description"] = self.children[0].value
-        df["embeds"]["footer"]["text"] = now
+        df["embeds"][0]["description"] = self.children[0].value
+        df["embeds"][0]["footer"]["text"] = now
         if self.children[1].value:
-            df["embeds"]["fields"] = {"name": "アカウント名", "value": self.children[1].value}
+            df["embeds"][0]["fields"] = {"name": "アカウント名", "value": self.children[1].value}
         content = json.dumps(df, indent=4)
         headers = {"Content-Type": "application/json"}
         try:
