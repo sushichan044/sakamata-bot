@@ -78,7 +78,6 @@ class StreamModal(Modal):
                 placeholder="https://youtu.be/LyakqutKBpM",
                 row=1,
                 required=False,
-                value="",
             )
         )
         self.add_item(
@@ -101,6 +100,8 @@ class StreamModal(Modal):
         print(interaction.guild.id)
         event_name = self.children[0].value
         event_url = self.children[1].value
+        if not event_url:
+            event_url = ""
         time = self.children[2].value
         if len(time) == 4:
             todate = datetime.now(timezone.utc).astimezone(jst)
@@ -120,7 +121,12 @@ class StreamModal(Modal):
         true_duration = timedelta(hours=float(self.children[3].value))
         true_end = true_start_jst + true_duration
         print(type(event_name), type(true_start_jst), type(true_end), type(event_url))
-        await interaction.guild.create_scheduled_event(name=f"{event_name}",start_time=true_start_jst.astimezone(utc),end_time=true_end,location=event_url)
+        await interaction.guild.create_scheduled_event(
+            name=event_name,
+            start_time=true_start_jst.astimezone(utc),
+            end_time=true_end,
+            location=event_url,
+        )
         await interaction.response.send_message("配信を登録しました。")
         return
 
