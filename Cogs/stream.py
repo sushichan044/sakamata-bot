@@ -1,11 +1,8 @@
 import os
 from datetime import datetime, timedelta, timezone
-from unicodedata import name
-
-from discord import ApplicationContext
 
 import discord
-from discord import Option
+from discord import ApplicationContext, Option
 from discord.commands import permissions, slash_command
 from discord.ext import commands
 from discord.ui import InputText, Modal
@@ -21,7 +18,7 @@ class StreamRegister(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(guild_ids=[guild_id], default_permission=False, name="stream")
+    @slash_command(guild_ids=[guild_id], default_permission=False, name="old_stream")
     @permissions.has_role(mod_role)
     async def _newcreateevent(
         self,
@@ -59,8 +56,10 @@ class StreamRegister(commands.Cog):
         await ctx.respond("配信を登録しました。")
         return
 
-    @slash_command(guild_ids=[guild_id], name="testmodal")
+    @slash_command(guild_ids=[guild_id], default_permission=False, name="stream")
+    @permissions.has_role(mod_role)
     async def _test_modal(self, ctx):
+        """配信を簡単にイベントに登録できます。"""
         modal = StreamModal()
         await ctx.interaction.response.send_modal(modal)
         return
@@ -74,7 +73,7 @@ class StreamModal(Modal):
         )
         self.add_item(
             InputText(
-                label="配信のURL(掲載できない場合は空欄)",
+                label="配信のURL(メン限など掲載できない場合は空欄)",
                 placeholder="https://youtu.be/LyakqutKBpM",
                 row=1,
                 required=False,
@@ -101,7 +100,7 @@ class StreamModal(Modal):
         event_name = self.children[0].value
         event_url = self.children[1].value
         if not event_url:
-            event_url = ""
+            event_url = "非公開"
         time = self.children[2].value
         if len(time) == 4:
             todate = datetime.now(timezone.utc).astimezone(jst)
