@@ -6,19 +6,14 @@ from typing import Tuple
 
 import discord
 from discord import Embed, Member, User
-from discord.commands import slash_command, permissions
+from discord.commands import permissions, slash_command
 from discord.ext import commands
-from discord.ext.ui import (
-    Button,
-    InteractionProvider,
-    Message,
-    MessageProvider,
-    View,
-    ViewTracker,
-    state,
-)
+from discord.ext.ui import (Button, InteractionProvider, Message,
+                            MessageProvider, View, ViewTracker, state)
 
 from Cogs.connect import connect
+
+from . import embed_builder as eb
 
 guild_id = int(os.environ["GUILD_ID"])
 utc = timezone.utc
@@ -172,9 +167,9 @@ class Concept(commands.Cog):
         master_thread: discord.Thread,
         session_id: int,
     ) -> str:
-        game_msg_1 = _set_session_id(_start_embed_game(master), session_id)
+        game_msg_1 = _set_session_id(eb._concept_start(master), session_id)
         await game_thread.send(embed=game_msg_1)
-        master_msg_1 = _set_session_id(_start_embed(master), session_id)
+        master_msg_1 = _set_session_id(eb._concept_start_parent(master), session_id)
         word_target = await master_thread.send(embed=master_msg_1)
 
         def _catch_answer(message):
@@ -189,53 +184,16 @@ class Concept(commands.Cog):
             "message", check=_catch_answer
         )
         master_msg_2 = _set_session_id(
-            _set_answer_embed(game_thread, answer_word_msg.content, master), session_id
+            eb._concept_set_answer_embed(game_thread, answer_word_msg.content, master),
+            session_id,
         )
         await master_thread.send(embed=master_msg_2)
-        game_msg_2 = _set_session_id(_set_answer_embed_game(), session_id)
+        game_msg_2 = _set_session_id(eb._concept_set_answer_embed_game(), session_id)
         await game_thread.send(embed=game_msg_2)
         return answer_word_msg.content
 
 
 # 進行用Embeds
-
-
-def _start_embed(master: Member) -> Embed:
-    embed = Embed(
-        title="Conceptへようこそ。",
-        description=f"{master.mention}さんは親に選ばれました。\n回答にする単語をこのメッセージに__返信__してください。",
-        color=15767485,
-    )
-    return embed
-
-
-def _start_embed_game(master: Member) -> Embed:
-    embed = Embed(
-        title="Conceptへようこそ。",
-        description=f"{master.mention}さんが親に選ばれました。\n親が回答をセットするまで\nしばらくお待ちくさい。",
-        color=15767485,
-    )
-    return embed
-
-
-def _set_answer_embed(
-    game_thread: discord.Thread, answer_word: str, master: Member
-) -> Embed:
-    embed = Embed(
-        title="回答をセットしました。",
-        description=f"セットされた回答: {answer_word}\n\n{game_thread.mention}でゲームを開始してください。\n\n万が一回答に時間がかかりすぎた際は、\n{master.mention}さんが{game_thread.mention}に\n回答を送信することでゲームを終了できます。",
-        color=15767485,
-    )
-    return embed
-
-
-def _set_answer_embed_game() -> Embed:
-    embed = Embed(
-        title="親が回答をセットしました。",
-        description="親がゲームを開始するまでお待ちください。",
-        color=15767485,
-    )
-    return embed
 
 
 def _end_game_game_thread(

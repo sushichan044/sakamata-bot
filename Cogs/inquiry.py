@@ -65,7 +65,7 @@ class InquiryView(discord.ui.View):
             type=thread_type,
         )
         await target.add_user(interaction.user)
-        em = eb._contact_embed(target)
+        em = eb._inquiry_contact(target)
         await interaction.response.send_message(embed=em, ephemeral=True)
         return
 

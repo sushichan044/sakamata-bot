@@ -68,7 +68,7 @@ INIT_EXTENSION_LIST = [
     "Cogs.inquiry",
     "Cogs.member_count",
     "Cogs.ng_word",
-    "Cogs.pin",
+    # "Cogs.pin",
     "Cogs.poll",
     "Cogs.slow",
     "Cogs.starboard",
