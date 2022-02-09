@@ -65,7 +65,6 @@ class InquiryView(discord.ui.View):
             type=thread_type,
         )
         await target.add_user(interaction.user)
-        await target.send(interaction.guild.get_role(mod_role).mention)
         em = eb._contact_embed(target)
         await interaction.response.send_message(embed=em, ephemeral=True)
         return
