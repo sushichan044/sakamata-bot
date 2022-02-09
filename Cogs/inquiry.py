@@ -75,7 +75,7 @@ class SurveyModal(Modal):
         )
 
     async def callback(self, interaction: discord.Interaction):
-        with open(".inquiry.json") as f:
+        with open("src.inquiry.json") as f:
             df = json.load(f)
         if self.children[1].value:
             df["embeds"]["fields"] = [
