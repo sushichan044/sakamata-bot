@@ -1,10 +1,13 @@
+import imp
 import os
+from typing import Any
 
 import requests
+from discord import Member
 
 
 class PostToSheet:
-    def __init__(self, member, date: str) -> None:
+    def __init__(self, member: Member, date: str) -> None:
         self.member = member
         self.date = date
 
@@ -18,7 +21,7 @@ class PostToSheet:
         else:
             return s["message"]
 
-    def post_sheet(self):
+    def post_sheet(self) -> Any:
         data = {
             "id": f"{self.member.id}",
             "name": f"{self.member}",
@@ -26,7 +29,7 @@ class PostToSheet:
         }
         url = os.environ["MEMBER_SHEET"]
         try:
-            r = requests.post(url, data=data)
+            r: requests.Response = requests.post(url, data=data)
             r.raise_for_status()
         except requests.exceptions.RequestException as e:
             print("エラー:", e)

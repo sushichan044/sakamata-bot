@@ -13,6 +13,7 @@ from . import embed_builder as EB
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
+error_log_channel = int(os.environ["ERROR_CHANNEL"])
 log_channel = int(os.environ["LOG_CHANNEL"])
 
 

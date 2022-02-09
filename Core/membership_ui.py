@@ -9,7 +9,7 @@ jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 # Classes
 
 
-class MemberConfView(View):
+class ConfirmView(View):
     ctx = state("ctx")
     status = state("status")
     ok_str = state("ok_str")
@@ -82,7 +82,7 @@ class MemberConfView(View):
         )
 
 
-class MemberRemoveView(View):
+class RemoveView(View):
     status = state("status")
     que = state("que")
     sheet = state("sheet")
