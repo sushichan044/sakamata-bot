@@ -1,0 +1,12 @@
+{
+    "embeds": [
+        {
+            "title": "フィードバック",
+            "description": "tesxt",
+            "color": 15767485,
+            "footer": {
+                "text": "footer text"
+            },
+        }
+    ]
+}
