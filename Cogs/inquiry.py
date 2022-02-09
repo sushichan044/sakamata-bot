@@ -75,7 +75,7 @@ class SurveyModal(Modal):
         )
 
     async def callback(self, interaction: discord.Interaction):
-        path = os.path.join(os.path.dirname(__file__), "../src.inquiry.json")
+        path = os.path.join(os.path.dirname(__file__), "../src/inquiry.json")
         with open(path) as f:
             df = json.load(f)
         if self.children[1].value:
