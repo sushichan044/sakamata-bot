@@ -75,7 +75,8 @@ class SurveyModal(Modal):
         )
 
     async def callback(self, interaction: discord.Interaction):
-        with open("src.inquiry.json") as f:
+        path = os.path.join(os.path.dirname(__file__), "../src.inquiry.json")
+        with open(path) as f:
             df = json.load(f)
         if self.children[1].value:
             df["embeds"]["fields"] = [
