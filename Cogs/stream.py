@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta, timezone
+from unicodedata import name
 
 import discord
 from discord import Option
@@ -114,8 +115,9 @@ class StreamModal(Modal):
                 ephemeral=True,
             )
             return
-        true_duration = timedelta(hours=int(self.children[3].value))
+        true_duration = timedelta(hours=float(self.children[3].value))
         true_end = true_start_jst + true_duration
+        print(type(event_name), type(start_time), type(true_end), type(event_url))
         await interaction.guild.create_scheduled_event(
             name=f"{event_name}",
             start_time=true_start_jst.astimezone(utc),
