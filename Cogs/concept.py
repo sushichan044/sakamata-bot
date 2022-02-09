@@ -8,8 +8,15 @@ import discord
 from discord import Embed, Member, User
 from discord.commands import permissions, slash_command
 from discord.ext import commands
-from discord.ext.ui import (Button, InteractionProvider, Message,
-                            MessageProvider, View, ViewTracker, state)
+from discord.ext.ui import (
+    Button,
+    InteractionProvider,
+    Message,
+    MessageProvider,
+    View,
+    ViewTracker,
+    state,
+)
 
 from Cogs.connect import connect
 
