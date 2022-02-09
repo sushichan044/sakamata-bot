@@ -78,7 +78,7 @@ INIT_EXTENSION_LIST = [
     "Cogs.tool",
 ]
 
-GENSHIN_EXTENSION_LIST = ["Genshin.alarm", "Genshin.portal"]
+GENSHIN_EXTENSION_LIST = ["Genshin.portal"]
 
 
 class MyBot(commands.Bot):
