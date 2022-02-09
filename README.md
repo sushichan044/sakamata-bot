@@ -15,10 +15,9 @@
 
 ### 開発環境及び使用ライブラリ
 Python 3.10.2<br>
-[pycord](https://github.com/Pycord-Development/pycord) 2.0.0a<br>
+[pycord](https://github.com/Pycord-Development/pycord) 2.0.0b4<br>
 [discord-ext-ui](https://pypi.org/project/discord-ext-ui/) 3.1.3<br>
-[dispander-fork](https://github.com/sushi-chaaaan/dispanderfixed/tree/for2.0)([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
-[holodex](https://pypi.org/project/holodex/0.10.7/) 0.10.9<br>
+[dispander](https://github.com/sushi-chaaaan/dispanderfixed/tree/for2.0)([DiscordBotPortalJP様のライブラリ](https://github.com/DiscordBotPortalJP/dispander)をforkさせていただきました)<br>
 
 ### 各ブランチ
 Mainブランチ:クロヱ水族館の本番環境<br>
@@ -27,6 +26,12 @@ alphaブランチ:バックアップ用。安定したコードしか上がり�
 
 
 ### 機能追加履歴
+
+> v1.3.4(2022.02.09)
+
+Modalのリリースに伴い配信登録コマンドをModalへ移行<br>
+Modalを利用したサーバー内問い合わせ/目安箱機能を実装<br>
+その他細かいバグ修正<br>
 
 > v1.3.3(2022.01.28)
 
