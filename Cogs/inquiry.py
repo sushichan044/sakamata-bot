@@ -58,7 +58,7 @@ class SurveyModal(Modal):
         super().__init__(title="目安箱/Server Suggestion", custom_id="submit_survey_modal")
         self.add_item(
             InputText(
-                label="サーバーへの意見やリクエスト、質問、相談などなんでもお聞かせください。",
+                label="サーバーへの意見やリクエスト、質問、相談など\nなんでもお聞かせください。",
                 style=discord.InputTextStyle.paragraph,
                 required=True,
                 row=0,
@@ -66,7 +66,7 @@ class SurveyModal(Modal):
         )
         self.add_item(
             InputText(
-                label="Discordアカウント名(管理者からの返信を希望する場合はお書きください。)",
+                label="Discordアカウント名\n(管理者からの返信を希望する場合はお書きください。)",
                 style=discord.InputTextStyle.short,
                 required=False,
                 row=1,
@@ -77,7 +77,7 @@ class SurveyModal(Modal):
     async def callback(self, interaction: discord.Interaction):
         path = os.path.join(os.path.dirname(__file__), "../src/inquiry.json")
         with open(path) as f:
-            df = json.load(f)
+            df: dict = json.load(f)
         if self.children[1].value:
             df["embeds"]["fields"] = [
                 {"name": "アカウント名", "value": self.children[1].value}
