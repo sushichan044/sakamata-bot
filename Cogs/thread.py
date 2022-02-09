@@ -2,8 +2,8 @@ import os
 from datetime import timedelta, timezone
 
 import discord
-from discord import Option, permissions
-from discord.commands import slash_command
+from discord import Option
+from discord.commands import slash_command, permissions
 from discord.ext import commands
 from discord.ext.ui import (
     Button,

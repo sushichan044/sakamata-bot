@@ -71,6 +71,7 @@ INIT_EXTENSION_LIST = [
     "Cogs.poll",
     "Cogs.slow",
     "Cogs.starboard",
+    "Cogs.stream",
     "Cogs.talk_api",
     "Cogs.thread",
     "Cogs.tool",
@@ -1160,45 +1161,6 @@ YOUTUBE_API_VERSION = "v3"
 
 
 # create-event-slash
-
-
-@bot.slash_command(guild_ids=[guild_id], default_permission=False, name="make-event")
-@permissions.has_role(mod_role)
-async def _newcreateevent(
-    ctx,
-    event_name: Option(str, "配信の名前(例:マリカ,歌枠,など)"),
-    stream_url: Option(str, "配信のURL"),
-    start_time: Option(str, "配信開始時間(202205182100または2100(当日))"),
-    duration: Option(float, "予想される配信の長さ(単位:時間)(例:1.5)"),
-):
-    """配信を簡単にイベントに登録できます。"""
-    guild = ctx.guild
-    if len(start_time) == 4:
-        todate = datetime.now(timezone.utc).astimezone(jst)
-        start_time_object = datetime.strptime(start_time, "%H%M")
-        true_start_jst = start_time_object.replace(
-            year=todate.year, month=todate.month, day=todate.day, tzinfo=jst
-        )
-    elif len(start_time) == 12:
-        true_start = datetime.strptime(start_time, "%Y%m%d%H%M")
-        true_start_jst = true_start.replace(tzinfo=jst)
-    else:
-        await ctx.respond(
-            content="正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```",
-            mention_author=False,
-        )
-        return
-    true_duration = timedelta(hours=duration)
-    true_end = true_start_jst + true_duration
-    await guild.create_scheduled_event(
-        name=f"{event_name}",
-        description="",
-        start_time=true_start_jst.astimezone(utc),
-        end_time=true_end,
-        location=stream_url,
-    )
-    await ctx.respond("配信を登録しました。")
-    return
 
 
 @bot.command(name="private")
