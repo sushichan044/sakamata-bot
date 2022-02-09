@@ -19,6 +19,7 @@ class Inquiry(commands.Cog):
         self.bot = bot
 
     @commands.command(name="send-sug")
+    @commands.has_permissions(administrator=True)
     async def _send_sug_button(self, ctx):
         embed = discord.Embed(
             title="サーバーへのご意見・ご要望",
@@ -26,6 +27,7 @@ class Inquiry(commands.Cog):
             color=2105893,
         )
         await ctx.send(embed=embed, view=InquiryView())
+        return
 
 
 class InquiryView(discord.ui.View):
@@ -47,7 +49,7 @@ class InquiryView(discord.ui.View):
         else:
             thread_type = discord.ChannelType.public_thread
         target = await interaction.channel.create_thread(
-            name=f"{interaction.user.display_name} さん(ID:{interaction.id})",
+            name=f"{interaction.user.display_name} さん(ID {interaction.id})",
             auto_archive_duration=1440,
             type=thread_type,
         )
@@ -55,6 +57,7 @@ class InquiryView(discord.ui.View):
         await target.send(interaction.guild.get_role(mod_role).mention)
         em = eb._contact_embed(target)
         await interaction.response.send_message(embed=em, ephemeral=True)
+        return
 
     @discord.ui.button(
         label="目安箱/Server Suggestion",
