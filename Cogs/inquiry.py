@@ -18,15 +18,26 @@ class Inquiry(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(name="send-inq")
+    @commands.has_permissions(administrator=True)
+    async def _send_inq_button(self, ctx):
+        embed = discord.Embed(
+            title="管理者への問い合わせ",
+            description="管理者へ直接問い合わせがしたい場合は\nボタンを押してください。",
+            color=2105893,
+        )
+        await ctx.send(embed=embed, view=InquiryView())
+        return
+
     @commands.command(name="send-sug")
     @commands.has_permissions(administrator=True)
     async def _send_sug_button(self, ctx):
         embed = discord.Embed(
             title="サーバーへのご意見・ご要望",
-            description="管理者に問い合わせがしたい場合や\nサーバーへの要望を送りたい場合は\n下のボタンからアクセスできます！",
+            description="サーバーへの要望などを送りたい場合は\n下のボタンからアクセスしてください！",
             color=2105893,
         )
-        await ctx.send(embed=embed, view=InquiryView())
+        await ctx.send(embed=embed, view=SuggestionView())
         return
 
 
@@ -58,6 +69,11 @@ class InquiryView(discord.ui.View):
         em = eb._contact_embed(target)
         await interaction.response.send_message(embed=em, ephemeral=True)
         return
+
+
+class SuggestionView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
 
     @discord.ui.button(
         label="目安箱/Server Suggestion",
