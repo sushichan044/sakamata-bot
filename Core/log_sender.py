@@ -16,7 +16,7 @@ jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 log_channel = int(os.environ["LOG_CHANNEL"])
 
 
-class LogSender(Object):
+class LogSender(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
