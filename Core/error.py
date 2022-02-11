@@ -15,7 +15,7 @@ class InteractionError(Exception):
         self,
         *,
         interaction: discord.Interaction | None = None,
-        err_cls: object | None = None,
+        cls: object | None = None,
         reason: str | None = None,
     ) -> None:
         traceback.print_exc()
@@ -23,8 +23,8 @@ class InteractionError(Exception):
         output = f"[Interaction Error]\n\nTime: ({now})"
         if interaction and interaction.id:
             output = f"{output}\n\nID: {interaction.id}"
-        if err_cls:
-            output = f"{output}\n\nclass: {err_cls.__class__.__name__}"
+        if cls:
+            output = f"{output}\n\nclass: {cls.__class__.__name__}"
         if reason:
             output = f"{output}\n\nreason: {reason}"
         if output:
