@@ -28,7 +28,7 @@ class SongDB(commands.Cog):
         await ctx.interaction.response.defer()
         embed = EB._start()
         view = SearchDropdownView()
-        await ctx.interaction.response.send_message(embed=embed, view=view)
+        await ctx.interaction.followup.send(embed=embed, view=view)
         return
 
 
