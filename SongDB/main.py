@@ -5,9 +5,9 @@ from Core.error import InteractionError
 from discord import ApplicationContext
 from discord.commands import slash_command
 from discord.ext import commands
-
 from SongDBCore import SongDBClient
 from SongDBCore.model import Artist, History, No_Recent, Song, Stream
+
 from SongDB.embed_builder import EmbedBuilder as EB
 from SongDB.match import match_url
 
