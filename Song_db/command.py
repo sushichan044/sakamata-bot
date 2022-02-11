@@ -67,6 +67,23 @@ class SearchDropdown(discord.ui.Select):
             return
 
 
+class SearchBySong(discord.ui.Modal):
+    def __init__(self) -> None:
+        super().__init__(title="歌枠データベース")
+        self.add_item(
+            discord.ui.InputText(
+                label="検索したい曲名を入力してください。",
+                style=discord.InputTextStyle.short,
+                required=True,
+                row=0,
+                placeholder="曲名",
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        pass
+
+
 class SearchByStream(discord.ui.Modal):
     def __init__(self) -> None:
         super().__init__(title="歌枠データベース")
@@ -81,25 +98,18 @@ class SearchByStream(discord.ui.Modal):
         )
 
     async def callback(self, interaction: discord.Interaction):
-        if not self.children[0].value:
-            print("SearchByStream: null is inputted")
-            await interaction.response.send_message(
-                content="予期せぬエラーが発生しました。\n管理者に問い合わせてください。", ephemeral=True
-            )
+        # match pattern and output v_id
+        id = match_url(self.children[0].value)
+        if id:
+            print(id)
+            await interaction.response.send_message(content=id)
             return
         else:
-            # match pattern and output v_id
-            id = match_url(self.children[0].value)
-            if id:
-                print(id)
-                await interaction.response.send_message(content=id)
-                return
-            else:
-                print("Invalid url inputted.")
-                await interaction.response.send_message(
-                    content="対応していないURLが入力されました。", ephemeral=True
-                )
-                return
+            print("Invalid url inputted.")
+            await interaction.response.send_message(
+                content="対応していないURLが入力されました。", ephemeral=True
+            )
+            return
 
 
 class SearchDropdownView(discord.ui.View):

@@ -1,11 +1,11 @@
 import re
 
 
-yt_long = re.compile(r"^https?://www.youtube.com/watch\?v=[\w]+")
-yt_short = re.compile(r"^https?://youtu.be/[\w]+")
+yt_long = re.compile(r"^[\S]*youtube.com/watch\?v=[\w]+")
+yt_short = re.compile(r"^[\S]*youtu.be/[\w]+")
 
-long_vid = re.compile(r"https?://www.youtube.com/watch\?v=")
-short_vid = re.compile(r"https?://youtu.be/")
+long_vid = re.compile(r"^[\S]+?v=")
+short_vid = re.compile(r"^[\S]*youtu.be/")
 
 
 def match_url(link: str) -> str | None:
