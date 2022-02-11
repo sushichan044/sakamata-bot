@@ -25,10 +25,10 @@ class SongDB(commands.Cog):
 
     @slash_command(guild_ids=[guild_id], name="song")
     async def _song(self, ctx: ApplicationContext):
-        await ctx.interaction.response.defer()
+        await ctx.interaction.response.defer(ephemeral=True)
         embed = EB._start()
         view = SearchDropdownView()
-        await ctx.interaction.followup.send(embed=embed, view=view)
+        await ctx.interaction.followup.send(embed=embed, view=view, ephemeral=True)
         return
 
 
@@ -53,6 +53,7 @@ class SearchDropdown(discord.ui.Select):
         )
 
     async def callback(self, interaction: discord.Interaction):
+        self.disabled = True
         if self.values[0] == "url":
             await interaction.response.send_modal(SearchByStream())
             return
