@@ -31,12 +31,6 @@ class SongDB(commands.Cog):
         await ctx.interaction.followup.send(embed=embed, view=view, ephemeral=True)
         return
 
-    @slash_command(guild_ids=[guild_id], name="error")
-    async def _err(self, ctx: ApplicationContext):
-        await ctx.interaction.response.defer(ephemeral=True)
-        await ctx.interaction.followup.send(content='error raised', ephemeral=True)
-        raise InteractionError(interaction=ctx.interaction,err_cls=self)
-
 
 class SearchDropdown(discord.ui.Select):
     def __init__(self) -> None:
@@ -95,7 +89,7 @@ class SearchBySong(discord.ui.Modal):
     async def callback(self, interaction: discord.Interaction):
         song_name = self.children[0].value
         await interaction.response.defer(ephemeral=True)
-        await interaction.followup.send(content="Coming Soon!")
+        await interaction.response.send_message(content="Coming Soon!")
         return
 
 
@@ -115,7 +109,7 @@ class SearchByArtist(discord.ui.Modal):
     async def callback(self, interaction: discord.Interaction):
         artist_name = self.children[0].value
         await interaction.response.defer(ephemeral=True)
-        await interaction.followup.send(content="Coming Soon!")
+        await interaction.response.send_message(content="Coming Soon!")
         return
 
 
