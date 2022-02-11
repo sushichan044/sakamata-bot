@@ -63,13 +63,6 @@ EXTENSION_LIST = [
 
 GENSHIN_EXTENSION_LIST = ["Genshin.portal"]
 
-PERSISTANT_VIEW: list[discord.ui.View] = [
-    MemberVerifyButton(),
-    PortalView(),
-    InquiryView(),
-    SuggestionView(),
-]
-
 
 class MyBot(commands.Bot):
     def __init__(self):
@@ -103,8 +96,10 @@ class MyBot(commands.Bot):
 
     async def on_ready(self):
         if not self.persistent_views_added:
-            for view in PERSISTANT_VIEW:
-                self.add_view(view)
+            self.add_view(MemberVerifyButton())
+            self.add_view(PortalView())
+            self.add_view(InquiryView())
+            self.add_view(SuggestionView())
             self.persistent_views_added = True
             print("Set Persistant Views!")
         print("------------------------------------------------------")
