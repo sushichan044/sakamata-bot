@@ -63,7 +63,7 @@ EXTENSION_LIST = [
 
 GENSHIN_EXTENSION_LIST = ["Genshin.portal"]
 
-SONG_DB_EXTENSION_LIST = ["Song_db.command"]
+SONG_DB_EXTENSION_LIST = ["SongDB.command"]
 
 
 class MyBot(commands.Bot):
