@@ -41,3 +41,12 @@ class Song:
             Union[History, list[History]]: Contains the date and the link tou youtube.
         """
         return self._response
+
+    @property
+    def latest_date(self) -> str:
+        """A date that the song was sung most recently.
+
+        Returns:
+            str: A date
+        """
+        return self._response
