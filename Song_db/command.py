@@ -89,7 +89,7 @@ class SearchBySong(discord.ui.Modal):
     async def callback(self, interaction: discord.Interaction):
         song_name = self.children[0].value
         await interaction.response.defer(ephemeral=True)
-        await interaction.response.send_message(content="Coming Soon!")
+        await _sender(interaction=interaction, content="Coming soon", ephemeral=True)
         return
 
 
@@ -109,7 +109,7 @@ class SearchByArtist(discord.ui.Modal):
     async def callback(self, interaction: discord.Interaction):
         artist_name = self.children[0].value
         await interaction.response.defer(ephemeral=True)
-        await interaction.response.send_message(content="Coming Soon!")
+        await _sender(interaction=interaction, content="Coming soon", ephemeral=True)
         return
 
 
@@ -145,6 +145,15 @@ class SearchDropdownView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
         self.add_item(SearchDropdown())
+
+
+async def _sender(interaction: discord.Interaction, **kwarg):
+    if interaction.response.is_done():
+        await interaction.followup.send(**kwarg)
+        return
+    else:
+        await interaction.response.send_message(**kwarg)
+        return
 
 
 def setup(bot):

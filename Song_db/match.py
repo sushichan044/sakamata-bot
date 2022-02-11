@@ -18,5 +18,4 @@ def match_url(link: str) -> str | None:
         v_id = short_vid.sub("", _short.group())
         return v_id
     else:
-        print("song_db_pattern:Nothing is matched.")
         return None
