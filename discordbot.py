@@ -64,6 +64,8 @@ EXTENSION_LIST = [
 
 GENSHIN_EXTENSION_LIST = ["Genshin.portal"]
 
+SONG_DB_EXTENSION_LIST = ["Song_db.command"]
+
 
 class MyBot(commands.Bot):
     def __init__(self):
@@ -94,6 +96,13 @@ class MyBot(commands.Bot):
                 traceback.print_exc()
             else:
                 print(f"extension for Genshin [{cog}] is loaded!")
+        for cog in SONG_DB_EXTENSION_LIST:
+            try:
+                self.load_extension(cog)
+            except Exception:
+                traceback.print_exc()
+            else:
+                print(f"extension for SongDB [{cog}] is loaded!")
 
     async def on_ready(self):
         if not self.persistent_views_added:
