@@ -108,7 +108,7 @@ class MyBot(commands.Bot):
         channel = self.get_channel(log_channel)
         now = discord.utils.utcnow()
         await channel.send(
-            f"起動完了({now.astimezone(jst).strftime('m/%d %H:%M:%S')})\nBot ID:{self.user.id}"
+            f"起動完了({now.astimezone(jst).strftime('%m/%d %H:%M:%S')})\nBot ID:{self.user.id}"
         )
         return
 
