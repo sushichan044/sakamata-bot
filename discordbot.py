@@ -138,6 +138,11 @@ date_pattern = re.compile(r"^\d{4}/\d{2}/\d{2}")
 # discord's invite url
 discord_pattern = re.compile(r"discord.gg/[\w]*")
 
+# tweet url
+tweet_pattern = re.compile(
+    r"https://twitter.com/(?P<account>[\w]+)/status/(?P<id>[\d]+)"
+)
+
 # list
 stop_list = [stop_role, vc_stop_role]
 
