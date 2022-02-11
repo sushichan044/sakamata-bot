@@ -5,7 +5,6 @@ import requests
 from discord import ApplicationContext
 from discord.commands import permissions, slash_command
 from discord.ext import commands
-from discord.ui import InputText, Modal
 
 from . import embed_builder as EB
 from .match import match_url
@@ -62,11 +61,11 @@ class SearchDropdown(discord.ui.Select):
             return
 
 
-class SearchByStream(Modal):
+class SearchByStream(discord.ui.Modal):
     def __init__(self) -> None:
         super().__init__(title="歌枠データベース")
         self.add_item(
-            InputText(
+            discord.ui.InputText(
                 label="検索したい歌枠のURLを入力してください。",
                 style=discord.InputTextStyle.short,
                 required=True,
