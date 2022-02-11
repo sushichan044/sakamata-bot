@@ -56,7 +56,7 @@ class NGWordSystem(commands.Cog):
         return
 
     async def send_ng_log_low(self, message: discord.Message, ng_content: str):
-        channel = self.bot.get_channel(alert_channel_mods)
+        channel = self.bot.get_channel(alert_channel)
         text = "要注意ワード検知"
         embed = self._embed(message, ng_content, text)
         await channel.send(embed=embed)
