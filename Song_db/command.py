@@ -41,6 +41,12 @@ class SearchDropdown(discord.ui.Select):
                 default=False,
             ),
             discord.SelectOption(
+                label="アーティスト名/作曲者名で検索",
+                value="artist",
+                description="アーティスト名や作曲者名から曲を検索できます。",
+                default=False,
+            ),
+            discord.SelectOption(
                 label="歌枠で検索",
                 value="url",
                 description="歌枠を指定することで曲などのデータを取得できます。",
