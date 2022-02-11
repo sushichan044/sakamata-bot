@@ -1,4 +1,5 @@
 import os
+import traceback
 from datetime import datetime, timedelta, timezone
 
 import discord
@@ -7,6 +8,29 @@ from discord.ext import commands
 error_log_channel = int(os.environ["ERROR_CHANNEL"])
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 admin_role = int(os.environ["ADMIN_ROLE"])
+
+
+class InteractionError(Exception):
+    def __init__(
+        self,
+        *,
+        interaction: discord.Interaction | None = None,
+        err_cls: object | None = None,
+        reason: str | None = None,
+    ) -> None:
+        traceback.print_exc()
+        now = datetime.now().astimezone(jst).strftime("%Y/%m/%d %H:%M:%S")
+        output = f"[Interaction Error]\n\nTime: ({now})"
+        if interaction and interaction.id:
+            output = f"{output}\n\nID: {interaction.id}"
+        if err_cls:
+            output = f"{output}\n\nclass: {err_cls.__class__.__name__}"
+        if reason:
+            output = f"{output}\n\nreason: {reason}"
+        if output:
+            output = f"--------------------\n{output}\n--------------------"
+        print(output)
+        pass
 
 
 class ErrorNotify(commands.Cog):

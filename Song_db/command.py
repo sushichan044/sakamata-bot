@@ -2,6 +2,7 @@ import os
 
 import discord
 import requests
+from Core.error import InteractionError
 from discord import ApplicationContext
 from discord.commands import permissions, slash_command
 from discord.ext import commands
@@ -57,14 +58,19 @@ class SearchDropdown(discord.ui.Select):
             placeholder="検索方式を指定してください。", min_values=1, max_values=1, options=options
         )
 
-    async def callback(self, interaction: discord.Interaction):
+    async def callback(self, interaction: discord.Interaction) -> None:
         self.disabled = True
-        if self.values[0] == "url":
-            await interaction.response.send_modal(SearchByStream())
+        if self.values[0] == "song":
+            modal = SearchBySong()
+        elif self.values[0] == "artist":
+            modal = SearchByArtist()
+        else:
+            modal = SearchByStream()
+        if modal:
+            await interaction.response.send_modal(modal)
             return
         else:
-            await interaction.response.send_message("Not Available now!")
-            return
+            raise InteractionError(interaction=interaction, err_cls=self)
 
 
 class SearchBySong(discord.ui.Modal):
@@ -81,7 +87,30 @@ class SearchBySong(discord.ui.Modal):
         )
 
     async def callback(self, interaction: discord.Interaction):
-        pass
+        song_name = self.children[0].value
+        await interaction.response.defer(ephemeral=True)
+        await interaction.followup.send(content="Coming Soon!")
+        return
+
+
+class SearchByArtist(discord.ui.Modal):
+    def __init__(self) -> None:
+        super().__init__(title="歌枠データベース")
+        self.add_item(
+            discord.ui.InputText(
+                label="検索したいアーティスト名や作曲者名を入力してください。",
+                style=discord.InputTextStyle.short,
+                required=True,
+                row=0,
+                placeholder="アーティスト名/作曲者名",
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        artist_name = self.children[0].value
+        await interaction.response.defer(ephemeral=True)
+        await interaction.followup.send(content="Coming Soon!")
+        return
 
 
 class SearchByStream(discord.ui.Modal):
