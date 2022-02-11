@@ -1,10 +1,9 @@
 import os
-from typing import Literal
 
 import discord
 from Core.error import InteractionError
 from discord import ApplicationContext
-from discord.commands import permissions, slash_command
+from discord.commands import slash_command
 from discord.ext import commands
 
 from SongDB.client import SongDBClient
