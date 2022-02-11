@@ -1,16 +1,14 @@
 import os
 
-from pkg_resources import IMetadataProvider
-
 import discord
-import requests
 from Core.error import InteractionError
 from discord import ApplicationContext
 from discord.commands import permissions, slash_command
 from discord.ext import commands
 
-from . import embed_builder as EB
-from .match import match_url
+from SongDB.client import SongDBClient
+from SongDB.embed_builder import EmbedBuilder as EB
+from SongDB.match import match_url
 
 hook_url = ""
 
@@ -28,7 +26,7 @@ class SongDB(commands.Cog):
     @slash_command(guild_ids=[guild_id], name="song")
     async def _song(self, ctx: ApplicationContext):
         await ctx.interaction.response.defer(ephemeral=True)
-        embed = EB._start()
+        embed = EB()._start()
         view = SearchDropdownView()
         await ctx.interaction.followup.send(embed=embed, view=view, ephemeral=True)
         return
@@ -55,6 +53,12 @@ class SearchDropdown(discord.ui.Select):
                 description="歌枠を指定することで曲などのデータを取得できます。",
                 default=False,
             ),
+            discord.SelectOption(
+                label="最近歌われていない曲",
+                value="no_recent",
+                description="最近歌われていない曲の一覧を検索できます。",
+                default=False,
+            ),
         ]
         super().__init__(
             placeholder="検索方式を指定してください。", min_values=1, max_values=1, options=options
@@ -63,14 +67,16 @@ class SearchDropdown(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction) -> None:
         self.disabled = True
         if self.values[0] == "song":
-            modal = SearchBySong()
-        elif self.values[0] == "artist":
-            modal = SearchByArtist()
-        else:
-            modal = SearchByStream()
-        if modal:
-            await interaction.response.send_modal(modal)
+            await interaction.response.send_modal(modal=SearchBySong())
             return
+        elif self.values[0] == "artist":
+            await interaction.response.send_modal(modal=SearchByArtist())
+            return
+        elif self.values[0] == "url":
+            await interaction.response.send_modal(modal=SearchByStream())
+            return
+        elif self.values[0] == "no_recent":
+            pass
         else:
             raise InteractionError(interaction=interaction, cls=self)
 
