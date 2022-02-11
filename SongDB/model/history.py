@@ -2,9 +2,12 @@ from typing import Any
 
 
 class History:
-    """An object that represents a history of the song."""
-
     def __init__(self, response: Any) -> None:
+        """An object that represents a history of the song.
+
+        Args:
+            response (Any): A response from spreadsheet.
+        """
         self._response = response
         pass
 

@@ -7,7 +7,7 @@ class Stream:
         """An object that has a list of the songs related to a specific stream.
 
         Args:
-            response (Any): [description]
+            response (Any): A response from spreadsheet.
         """
         self._response = response
         pass
