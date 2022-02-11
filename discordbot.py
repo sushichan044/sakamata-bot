@@ -55,7 +55,6 @@ EXTENSION_LIST = [
     "Cogs.ng_word",
     "Cogs.poll",
     "Cogs.slow",
-    "Cogs.song_db",
     "Cogs.starboard",
     "Cogs.stream",
     "Cogs.thread",
