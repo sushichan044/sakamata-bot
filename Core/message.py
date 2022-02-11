@@ -4,8 +4,8 @@ import discord
 from discord.ext import commands
 from newdispanderfixed import dispand
 
-from .confirm import Confirm
-from .log_sender import LogSender as LS
+from Core.confirm import Confirm
+from Core.log_sender import LogSender as LS
 
 admin_role = int(os.environ["ADMIN_ROLE"])
 

@@ -3,9 +3,9 @@ import os
 import discord
 from discord.ext import commands
 
-from . import embed_builder as EB
-from .confirm import Confirm
-from .log_sender import LogSender as LS
+from Core.confirm import Confirm
+from Core.embed_builder import EmbedBuilder as EB
+from Core.log_sender import LogSender as LS
 
 admin_role = int(os.environ["ADMIN_ROLE"])
 
@@ -66,7 +66,7 @@ class DM_Sys(commands.Cog):
                 channel = self.bot.get_channel(dm_box_channel)
                 embeds = []
                 if message.content or message.attachments:
-                    embed = EB.compose_embed_dm_box(message)
+                    embed = EB().compose_embed_dm_box(message)
                     embeds.append(embed)
                     for attachment in message.attachments[1:]:
                         embed = discord.Embed(

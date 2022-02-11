@@ -3,9 +3,9 @@ import os
 import discord
 from discord.ext import commands
 
-from .log_sender import LogSender as LS
-from .dm import DM_Sys as DS
-from .confirm import Confirm
+from Core.confirm import Confirm
+from Core.dm import DM_Sys as DS
+from Core.log_sender import LogSender as LS
 
 admin_role = int(os.environ["ADMIN_ROLE"])
 

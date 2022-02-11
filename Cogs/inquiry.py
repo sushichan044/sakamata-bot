@@ -7,7 +7,7 @@ import requests
 from discord.ext import commands
 from discord.ui import InputText, Modal
 
-from . import embed_builder as eb
+from Cogs.embed_builder import EmbedBuilder as EB
 
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 mod_role = int(os.environ["MOD_ROLE"])
@@ -65,7 +65,7 @@ class InquiryView(discord.ui.View):
             type=thread_type,
         )
         await target.add_user(interaction.user)
-        em = eb._inquiry_contact(target)
+        em = EB()._inquiry_contact(target)
         await interaction.response.send_message(embed=em, ephemeral=True)
         return
 

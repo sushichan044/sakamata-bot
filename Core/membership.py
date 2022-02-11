@@ -8,10 +8,10 @@ import discord
 from discord.ext import commands
 from discord.ext.ui import MessageProvider, ViewTracker
 
-from .confirm import Confirm
-from .log_sender import LogSender as LS
-from .membership_ui import ConfirmView, RemoveView
-from .post_sheet import PostToSheet as Sheet
+from Core.confirm import Confirm
+from Core.log_sender import LogSender as LS
+from Core.membership_ui import ConfirmView, RemoveView
+from Core.post_sheet import PostToSheet as Sheet
 
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
