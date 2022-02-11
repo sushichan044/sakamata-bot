@@ -39,7 +39,7 @@ class SearchDropdown(discord.ui.Select):
                 label="曲で検索",
                 value="song",
                 description="曲を指定して歌唱回数などのデータを取得できます。",
-                default=True,
+                default=False,
             ),
             discord.SelectOption(
                 label="歌枠で検索",
@@ -66,11 +66,11 @@ class SearchByStream(Modal):
         super().__init__(title="歌枠データベース")
         self.add_item(
             InputText(
-                label="検索したい歌枠のURLを入力してください。(youtube.comでもyoutu.beでもご利用いただけます)",
+                label="検索したい歌枠のURLを入力してください。",
                 style=discord.InputTextStyle.short,
                 required=True,
                 row=0,
-                placeholder="https://youtu.be/vyNBCYpeaUA",
+                placeholder="youtube.comとyoutu.beに対応しています",
             )
         )
 
