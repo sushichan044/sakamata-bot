@@ -31,6 +31,12 @@ class SongDB(commands.Cog):
         await ctx.interaction.followup.send(embed=embed, view=view, ephemeral=True)
         return
 
+    @slash_command(guild_ids=[guild_id], name="error")
+    async def _err(self, ctx: ApplicationContext):
+        await ctx.interaction.response.defer(ephemeral=True)
+        await ctx.interaction.followup.send(content='error raised', ephemeral=True)
+        raise InteractionError(interaction=ctx.interaction,err_cls=self)
+
 
 class SearchDropdown(discord.ui.Select):
     def __init__(self) -> None:
