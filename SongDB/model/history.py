@@ -2,9 +2,7 @@ from typing import Any
 
 
 class History:
-    """[summary]
-    An object that represents a history of the song.
-    """
+    """An object that represents a history of the song."""
 
     def __init__(self, response: Any) -> None:
         self._response = response

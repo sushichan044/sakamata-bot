@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Union
 from SongDB.model.song import Song
 
 
@@ -13,7 +13,7 @@ class Artist:
         pass
 
     @property
-    def songs(self) -> list[Song]:
+    def songs(self) -> Union[Song, list[Song]]:
         """A list of the song related to a specific artist.
 
         Returns:
