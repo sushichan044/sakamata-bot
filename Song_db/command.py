@@ -84,9 +84,16 @@ class SearchByStream(Modal):
         else:
             # match pattern and output v_id
             id = match_url(self.children[0].value)
-            print(id)
-            await interaction.response.send_message(content=id)
-            return
+            if id:
+                print(id)
+                await interaction.response.send_message(content=id)
+                return
+            else:
+                print("Invalid url inputted.")
+                await interaction.response.send_message(
+                    content="対応していないURLが入力されました。", ephemeral=True
+                )
+                return
 
 
 class SearchDropdownView(discord.ui.View):
