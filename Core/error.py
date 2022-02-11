@@ -1,5 +1,5 @@
 import os
-from datetime import timedelta, timezone
+from datetime import datetime, timedelta, timezone
 
 import discord
 from discord.ext import commands
@@ -41,10 +41,15 @@ class ErrorNotify(commands.Cog):
 
     @commands.Cog.listener(name="on_application_command_error")
     async def _on_application_command_error(self, ctx, exception):
-        channel = self.bot.get_channel(error_log_channel)
-        now = discord.utils.utcnow().astimezone(jst)
-        await channel.send(f"```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(exception)}```")
-        return
+        now = datetime.today().astimezone(jst).strftime("%m/%d %H:%M:%S")
+        msg = f"エラーが発生しました。({now})\n{str(exception)}"
+        if len(msg) >= 4000:
+            print(msg)
+            return
+        else:
+            channel = self.bot.get_channel(error_log_channel)
+            await channel.send(f"```{msg}```")
+            return
 
     @commands.command(name="errortest")
     @commands.has_role(admin_role)
