@@ -8,30 +8,15 @@ import discord
 from discord import Member
 from discord.ext import commands
 
-from Cogs.connect import connect
 from Cogs.inquiry import InquiryView, SuggestionView
 from Core.membership import MemberVerifyButton
 from Genshin.portal import PortalView
 
 logging.basicConfig(level=logging.INFO)
 
-"""bot招待リンク
-https://discord.com/api/oauth2/authorize?client_id=916956842440151070&permissions=1403113958646&scope=bot%20applications.commands
-
-
-イベントハンドラ一覧(client)
-async def の後を変えるだけで実行されるイベンドが変わる
-メッセージ受信時に実行：   on_message(message)
-Bot起動時に実行：      on_ready(message)
-リアクション追加時に実行:  on_reaction_add(reaction, user)
-新規メンバー参加時に実行： on_member_join(member)
-ボイスチャンネル出入に実行： on_voice_state_update(member, before, after)"""
-
-conn = connect()
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
-# onlinetoken@heroku
 token = os.environ["DISCORD_BOT_TOKEN"]
 
 # help-command-localize-test
@@ -47,12 +32,6 @@ class JapaneseHelpCommand(commands.DefaultHelpCommand):
     def get_ending_note(self):
         return "各コマンドの説明: //help <コマンド名>\n"
 
-
-intents = discord.Intents.all()
-"""
-bot = commands.Bot(command_prefix='//', intents=intents,
-                   help_command=JapaneseHelpCommand())
-                   """
 
 CORE_EXTENSION_LIST = [
     "Core.ban",
@@ -84,11 +63,20 @@ EXTENSION_LIST = [
 
 GENSHIN_EXTENSION_LIST = ["Genshin.portal"]
 
+PERSISTANT_VIEW: list[discord.ui.View] = [
+    MemberVerifyButton(),
+    PortalView(),
+    InquiryView(),
+    SuggestionView(),
+]
+
 
 class MyBot(commands.Bot):
     def __init__(self):
         super().__init__(
-            command_prefix="//", intents=intents, help_command=JapaneseHelpCommand()
+            command_prefix="//",
+            intents=discord.Intents.all(),
+            help_command=JapaneseHelpCommand(),
         )
         self.persistent_views_added = False
         for cog in CORE_EXTENSION_LIST:
@@ -115,10 +103,8 @@ class MyBot(commands.Bot):
 
     async def on_ready(self):
         if not self.persistent_views_added:
-            self.add_view(MemberVerifyButton())
-            self.add_view(PortalView())
-            self.add_view(InquiryView())
-            self.add_view(SuggestionView())
+            for view in PERSISTANT_VIEW:
+                self.add_view(view)
             self.persistent_views_added = True
             print("Set Persistant Views!")
         print("------------------------------------------------------")
@@ -127,7 +113,7 @@ class MyBot(commands.Bot):
         channel = self.get_channel(log_channel)
         now = discord.utils.utcnow()
         await channel.send(
-            f"起動完了({now.astimezone(jst):%m/%d-%H:%M:%S})\nBot ID:{self.user.id}"
+            f"起動完了({now.astimezone(jst).strftime('m/%d %H:%M:%S')})\nBot ID:{self.user.id}"
         )
         return
 
@@ -140,56 +126,33 @@ guild_id = int(os.environ["GUILD_ID"])
 
 # ID-role
 everyone = int(os.environ["GUILD_ID"])
-server_member_role = int(os.environ["SERVER_MEMBER_ROLE"])
 mod_role = int(os.environ["MOD_ROLE"])
-admin_role = int(os.environ["ADMIN_ROLE"])
-yt_membership_role = int(os.environ["YT_MEMBER_ROLE"])
 stop_role = int(os.environ["STOP_ROLE"])
 vc_stop_role = int(os.environ["VC_STOP_ROLE"])
 
-# ID-channel
-alert_channel = int(os.environ["ALERT_CHANNEL"])
-stream_channel = int(os.environ["STREAM_CHANNEL"])
-star_channel = int(os.environ["STAR_CHANNEL"])
-dm_box_channel = int(os.environ["DM_BOX_CHANNEL"])
-alert_channel = int(os.environ["ALERT_CHANNEL"])
-member_check_channel = int(os.environ["MEMBER_CHECK_CHANNEL"])
-
 # ID-log
-thread_log_channel = int(os.environ["THREAD_LOG_CHANNEL"])
-join_log_channel = int(os.environ["JOIN_LOG_CHANNEL"])
 log_channel = int(os.environ["LOG_CHANNEL"])
-vc_log_channel = int(os.environ["VC_LOG_CHANNEL"])
-error_log_channel = int(os.environ["ERROR_CHANNEL"])
-
-# Id-vc
-count_vc = int(os.environ["COUNT_VC"])
-
 
 # emoji
 accept_emoji = "\N{Heavy Large Circle}"
 reject_emoji = "\N{Cross Mark}"
 
-
-# pattern
-# yyyy/mm/dd
+# pattern(yyyy/mm/dd)
 date_pattern = re.compile(r"^\d{4}/\d{2}/\d{2}")
 
 # discord's invite url
 discord_pattern = re.compile(r"discord.gg/[\w]*")
+
+# tweet url
+tweet_pattern = re.compile(
+    r"https://twitter.com/(?P<account>[\w]+)/status/(?P<id>[\d]+)"
+)
 
 # list
 stop_list = [stop_role, vc_stop_role]
 
 # other
 env = os.environ["ENV"]  # main or alpha
-
-
-"""
-デフォルトで提供されている on_message をオーバーライドすると、コマンドが実行されなくなります。
-これを修正するには on_message の最後に bot.process_commands(message) を追加してみてください。
-https://discordbot.jp/blog/17/
-"""
 
 
 @bot.command(name="user")
