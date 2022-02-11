@@ -35,7 +35,7 @@ orjson==3.6.6
 packaging==21.3
 pathspec==0.9.0
 pipdeptree==2.2.1
-platformdirs==2.4.1
+platformdirs==2.5.0
 protobuf==3.19.3
 git+https://github.com/Pycord-Development/pycord@5806985502403c5e61bcc90af92bd799d69b2d80
 pyasn1==0.4.8
