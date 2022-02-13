@@ -42,6 +42,6 @@ class EmbedBuilder:
             value = f"アーティスト: {songs[num].artist}\n最終歌唱:{songs[num].latest.date}({delta.days}日経過)"
             if songs[num].latest.note:
                 value = value + "\n備考: " + songs[num].latest.note
-            value = value + f"\n[クリックして視聴]({songs[num].latest.url}"
+            value = value + f"\n[クリックして視聴]({songs[num].latest.url})"
             embed.add_field(name=title, value=value, inline=False)
         return embed
