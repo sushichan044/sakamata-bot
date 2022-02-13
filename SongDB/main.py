@@ -6,9 +6,11 @@ from discord import ApplicationContext
 from discord.commands import slash_command
 from discord.ext import commands
 from SongDBCore import SongDBClient
+from SongDBCore.model import Artist, Song, History, No_Recent, Stream
 
 from SongDB.embed_builder import EmbedBuilder as EB
 from SongDB.match import match_url
+
 
 hook_url = ""
 
@@ -117,12 +119,16 @@ class SearchByArtist(discord.ui.Modal):
 
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
+        artist_name = self.children[0].value
         client = SongDBClient()
-        artist = await client.search_artist(artist_name=self.children[0].value)
+        artist: Artist = await client.search_artist(artist_name=artist_name)
         if not artist:  # no result found
-            pass
+            await interaction.response.send_message(
+                content="検索結果は0件でした。", ephemeral=True
+            )
+            return
         else:
-            embed = EB()._songs(artist.songs)
+            embed = EB()._artist(artist=artist_name, songs=artist.songs)
             await interaction.response.send_message(embed=embed, ephemeral=False)
             return
 
