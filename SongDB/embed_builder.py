@@ -34,7 +34,7 @@ class EmbedBuilder:
             color=2105893,
         )
         for num in range(len(songs)):
-            sung = datetime.strptime(songs[num].latest.date, "%Y/%m/%d")
+            sung = datetime.strptime(songs[num].latest.date, "%Y/%m/%d").astimezone(jst)
             delta = datetime.now().astimezone(jst) - sung
             title = songs[num].title
             value = f"アーティスト: {songs[num].artist}\n最終歌唱:{songs[num].latest.date}({delta.days}日経過)\n[視聴]({songs[num].latest.url})"
