@@ -38,7 +38,7 @@ class SearchDropdown(discord.ui.Select):
     def __init__(self) -> None:
         options = [
             discord.SelectOption(
-                label="曲で検索",
+                label="曲名で検索",
                 value="song",
                 description="曲を指定して歌唱回数などのデータを取得できます。",
                 default=False,
@@ -56,7 +56,7 @@ class SearchDropdown(discord.ui.Select):
                 default=False,
             ),
             discord.SelectOption(
-                label="最近歌われていない曲",
+                label="最近歌われていない曲(利用不可)",
                 value="no_recent",
                 description="最近歌われていない曲の一覧を検索できます。",
                 default=False,
@@ -78,7 +78,8 @@ class SearchDropdown(discord.ui.Select):
             await interaction.response.send_modal(modal=SearchByStream())
             return
         elif self.values[0] == "no_recent":
-            pass
+            await interaction.response.send_message(content="準備中です。", ephemeral=True)
+            return
         else:
             raise InteractionError(interaction=interaction, cls=self)
 
@@ -168,7 +169,7 @@ class SearchByArtist(discord.ui.Modal):
             )
             return
         else:
-            embed = EB()._artist(artist=artist_name, songs=artist.songs)
+            embed = EB()._artist(songs=artist.songs)
             await interaction.response.send_message(embed=embed, ephemeral=False)
             return
 

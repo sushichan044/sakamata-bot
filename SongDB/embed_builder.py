@@ -28,7 +28,7 @@ class EmbedBuilder:
         )
         return embed
 
-    def _artist(self, artist: str, songs: list[Song]) -> Embed:
+    def _artist(self, songs: list[Song]) -> Embed:
         embed = Embed(
             title=f"検索結果({artist})",
             color=2105893,
