@@ -60,6 +60,22 @@ class EmbedBuilder:
             embed.add_field(name=title, value=value, inline=False)
         return embed
 
+    def _rawsong(self, song_input: str, songs: list[Song]) -> Embed:
+        embed = Embed(
+            title="検索結果(曲名検索)",
+            color=2105893,
+        )
+        for num in range(len(songs)):
+            delta = self.calc_delta(songs[num].latest.date)
+            title = songs[num].title
+            value = f"アーティスト: {songs[num].artist}\n最終歌唱日:{songs[num].latest.date}({str(delta.days)}日経過)"
+            if songs[num].latest.note:
+                value = value + "\n備考: " + songs[num].latest.note
+            if songs[num].latest.url:
+                value = value + f"\n[クリックして視聴]({songs[num].latest.url})"
+            embed.add_field(name=title, value=value, inline=False)
+        return embed
+
     def _song(self, song_input: str, song: Song) -> Embed:
         embed = Embed(
             title=f"検索結果({song_input})",
