@@ -1,8 +1,8 @@
 import re
 
 
-yt_long = re.compile(r"^[\S]*youtube.com/watch\?v=[\w]+")
-yt_short = re.compile(r"^[\S]*youtu.be/[\w]+")
+yt_long = re.compile(r"^[\S]*youtube.com/watch\?v=[\S]+")
+yt_short = re.compile(r"^[\S]*youtu.be/[\S]+")
 
 long_vid = re.compile(r"^[\S]+?v=")
 short_vid = re.compile(r"^[\S]*youtu.be/")
