@@ -30,7 +30,7 @@ class EmbedBuilder:
 
     def _artist(self, songs: list[Song]) -> Embed:
         embed = Embed(
-            title=f"検索結果({artist})",
+            title="検索結果(アーティスト検索)",
             color=2105893,
         )
         for num in range(len(songs)):
