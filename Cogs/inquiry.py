@@ -10,7 +10,7 @@ from discord.ui import InputText, Modal
 from Cogs.embed_builder import EmbedBuilder as EB
 
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
-mod_role = int(os.environ["MOD_ROLE"])
+admin_role = int(os.environ["ADMIN_ROLE"])
 hook_url = os.environ["FEEDBACK_WEBHOOK"]
 
 
@@ -65,7 +65,7 @@ class InquiryView(discord.ui.View):
             type=thread_type,
         )
         await target.add_user(interaction.user)
-        mods = interaction.guild.get_role(mod_role).members
+        mods = interaction.guild.get_role(admin_role).members
         if mods:
             for mod in mods:
                 await target.add_user(mod)
