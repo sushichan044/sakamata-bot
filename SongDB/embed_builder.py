@@ -28,10 +28,13 @@ class EmbedBuilder:
 
     def _songs(self, songs: list[Song]) -> Embed:
         embed = Embed(
-            title="検索結果",
-            description="検索方法:アーティスト",
+            title="検索結果(アーティスト検索)",
             color=2105893,
         )
         for num in range(len(songs)):
-            embed.add_field(name=str(num), value=songs[num].title)
+            title = songs[num].title
+            value = f"アーティスト: {songs[num].artist}\n最終歌唱:[{songs[num].latest.date}]({songs[num].latest.url})"
+            if songs[num].latest.note:
+                value = value + "\n備考: " + songs[num].latest.note
+            embed.add_field(name=title, value=value, inline=False)
         return embed

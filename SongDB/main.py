@@ -6,7 +6,6 @@ from discord import ApplicationContext
 from discord.commands import slash_command
 from discord.ext import commands
 from SongDBCore import SongDBClient
-from SongDBCore.model import Artist, History, No_Recent, Song, Stream
 
 from SongDB.embed_builder import EmbedBuilder as EB
 from SongDB.match import match_url
@@ -123,11 +122,8 @@ class SearchByArtist(discord.ui.Modal):
         if not artist:  # no result found
             pass
         else:
-            songs = [song for song in artist.songs]
-            embed = EB()._songs(songs)
-            await interaction.response.send_message(
-                content="Coming soon", embed=embed, ephemeral=True
-            )
+            embed = EB()._songs(artist.songs)
+            await interaction.response.send_message(embed=embed, ephemeral=False)
             return
 
 
