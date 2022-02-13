@@ -188,17 +188,8 @@ class SearchByStream(discord.ui.Modal):
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
         # match pattern and output v_id
-        id = match_url(self.children[0].value)
-        if not id:
-            print("Invalid url inputted.")
-            await interaction.response.send_message(
-                content="対応していないURLが入力されました。", ephemeral=True
-            )
-            return
-        else:
-            print(id)
-            client = SongDBClient()
-            stream = await client.search_stream(stream_id=id)
+        client = SongDBClient()
+        stream = await client.search_stream(stream_id=self.children[0].value)
         if not stream:  # no result found
             await interaction.response.send_message(
                 content="検索結果は0件でした。", ephemeral=True
