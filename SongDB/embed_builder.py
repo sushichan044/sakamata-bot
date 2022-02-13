@@ -46,3 +46,22 @@ class EmbedBuilder:
                 value = value + f"\n[クリックして視聴]({songs[num].latest.url})"
             embed.add_field(name=title, value=value, inline=False)
         return embed
+
+    def _stream(self, songs: list[Song]) -> Embed:
+        embed = Embed(
+            title="検索結果(URL検索)",
+            color=2105893,
+        )
+        for num in range(len(songs)):
+            sung = datetime.strptime(songs[num].latest.date, "%Y/%m/%d").replace(
+                tzinfo=jst
+            )
+            delta = datetime.now().astimezone(jst) - sung
+            title = songs[num].title
+            value = f"アーティスト: {songs[num].artist}\n最終歌唱:{songs[num].latest.date}({delta.days}日経過)"
+            if songs[num].latest.note:
+                value = value + "\n備考: " + songs[num].latest.note
+            if songs[num].latest.url:
+                value = value + f"\n[クリックして視聴]({songs[num].latest.url})"
+            embed.add_field(name=title, value=value, inline=False)
+        return embed

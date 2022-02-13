@@ -1,3 +1,4 @@
+from audioop import add
 import os
 
 import discord
@@ -83,6 +84,38 @@ class SearchDropdown(discord.ui.Select):
             raise InteractionError(interaction=interaction, cls=self)
 
 
+class ProdSearch(discord.ui.Modal):
+    def __init__(self) -> None:
+        super().__init__(title="歌枠データベース")
+        self.add_item(
+            discord.ui.InputText(
+                label="検索したい曲名を入力してください。",
+                style=discord.InputTextStyle.short,
+                required=False,
+                row=0,
+                placeholder="曲名",
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="検索したいアーティスト名や作曲者名を入力してください。",
+                style=discord.InputTextStyle.short,
+                required=False,
+                row=1,
+                placeholder="アーティスト名/作曲者名",
+            ),
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="検索したい歌枠のURLを入力してください。",
+                style=discord.InputTextStyle.short,
+                required=False,
+                row=2,
+                placeholder="youtube.comとyoutu.beに対応しています",
+            )
+        )
+
+
 class SearchBySong(discord.ui.Modal):
     def __init__(self) -> None:
         super().__init__(title="歌枠データベース")
@@ -160,7 +193,14 @@ class SearchByStream(discord.ui.Modal):
             print(id)
             client = SongDBClient()
             stream = await client.search_stream(stream_id=id)
-            await interaction.response.send_message(content=id)
+        if not stream:  # no result found
+            await interaction.response.send_message(
+                content="検索結果は0件でした。", ephemeral=True
+            )
+            return
+        else:
+            embed = EB()._stream(songs=stream.songs)
+            await interaction.response.send_message(embed=embed, ephemeral=False)
             return
 
 
