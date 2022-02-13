@@ -120,8 +120,15 @@ class SearchByArtist(discord.ui.Modal):
         await interaction.response.defer(ephemeral=True)
         client = SongDBClient()
         artist = await client.search_artist(artist_name=self.children[0].value)
-        await interaction.response.send_message(content="Coming soon", ephemeral=True)
-        return
+        if not artist:  # no result found
+            pass
+        else:
+            songs = [song for song in artist.songs]
+            embed = EB()._songs(songs)
+            await interaction.response.send_message(
+                content="Coming soon", embed=embed, ephemeral=True
+            )
+            return
 
 
 class SearchByStream(discord.ui.Modal):
