@@ -65,6 +65,10 @@ class InquiryView(discord.ui.View):
             type=thread_type,
         )
         await target.add_user(interaction.user)
+        mods = interaction.guild.get_role(mod_role).members
+        if mods:
+            for mod in mods:
+                await target.add_user(mod)
         em = EB()._inquiry_contact(target)
         await interaction.response.send_message(embed=em, ephemeral=True)
         return
