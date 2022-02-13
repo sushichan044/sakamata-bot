@@ -1,4 +1,3 @@
-from audioop import add
 import os
 
 import discord
@@ -133,8 +132,15 @@ class SearchBySong(discord.ui.Modal):
         await interaction.response.defer(ephemeral=True)
         client = SongDBClient()
         song = await client.search_song(song_name=self.children[0].value)
-        await interaction.response.send_message(content="Coming soon", ephemeral=True)
-        return
+        if not song:  # no result found
+            await interaction.response.send_message(
+                content="検索結果は0件でした。", ephemeral=True
+            )
+            return
+        else:
+            embed = EB()._song(song_input=self.children[0].value, song=song)
+            await interaction.response.send_message(embed=embed, ephemeral=False)
+            return
 
 
 class SearchByArtist(discord.ui.Modal):
