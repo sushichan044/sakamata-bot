@@ -1,6 +1,11 @@
+from datetime import datetime, timedelta, timezone
+from typing import Optional
+
 from discord import Embed
 from SongDBCore.model import Artist, History, No_Recent, Song, Stream
-from typing import Optional
+
+utc = timezone.utc
+jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
 
 class EmbedBuilder:
@@ -23,17 +28,16 @@ class EmbedBuilder:
         )
         return embed
 
-    def _artist(self, artist):
-        pass
-
-    def _songs(self, songs: list[Song]) -> Embed:
+    def _artist(self, artist: str, songs: list[Song]) -> Embed:
         embed = Embed(
-            title="検索結果(アーティスト検索)",
+            title=f"検索結果({artist})",
             color=2105893,
         )
         for num in range(len(songs)):
+            sung = datetime.strptime(songs[num].latest.date, "%Y/%m/%d")
+            delta = datetime.now().astimezone(jst) - sung
             title = songs[num].title
-            value = f"アーティスト: {songs[num].artist}\n最終歌唱:[{songs[num].latest.date}]({songs[num].latest.url})"
+            value = f"アーティスト: {songs[num].artist}\n最終歌唱:{songs[num].latest.date}({delta.days}日経過)\n[視聴]({songs[num].latest.url})"
             if songs[num].latest.note:
                 value = value + "\n備考: " + songs[num].latest.note
             embed.add_field(name=title, value=value, inline=False)
