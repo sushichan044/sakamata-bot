@@ -6,7 +6,6 @@ from discord import ApplicationContext
 from discord.commands import slash_command
 from discord.ext import commands
 from SongDBCore import SongDBClient
-from SongDBCore.model import Artist, Song, History, No_Recent, Stream
 
 from SongDB.embed_builder import EmbedBuilder as EB
 from SongDB.match import match_url
@@ -29,7 +28,7 @@ class SongDB(commands.Cog):
     async def _song(self, ctx: ApplicationContext):
         await ctx.interaction.response.defer(ephemeral=True)
         embed = EB()._start()
-        view = SearchDropdownView()
+        view = ProdDropdownView()
         await ctx.interaction.followup.send(embed=embed, view=view, ephemeral=True)
         return
 
@@ -84,6 +83,37 @@ class SearchDropdown(discord.ui.Select):
             await interaction.response.send_modal(modal=SearchByStream())
             return
         elif self.values[0] == "multi":
+            await interaction.response.send_modal(modal=ProdSearch())
+            return
+        elif self.values[0] == "no_recent":
+            await interaction.response.send_message(content="準備中です。", ephemeral=True)
+            return
+        else:
+            raise InteractionError(interaction=interaction, cls=self)
+
+
+class ProdDropdown(discord.ui.Select):
+    def __init__(self) -> None:
+        options = [
+            discord.SelectOption(
+                label="複数条件検索",
+                value="multi",
+                description="曲名、アーティスト、配信URLなど複数の条件で検索できます。",
+                default=False,
+            ),
+            discord.SelectOption(
+                label="最近歌われていない曲(利用不可)",
+                value="no_recent",
+                description="最近歌われていない曲の一覧を検索できます。",
+                default=False,
+            ),
+        ]
+        super().__init__(
+            placeholder="検索方式を指定してください。", min_values=1, max_values=1, options=options
+        )
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        if self.values[0] == "multi":
             await interaction.response.send_modal(modal=ProdSearch())
             return
         elif self.values[0] == "no_recent":
@@ -199,7 +229,7 @@ class SearchByArtist(discord.ui.Modal):
         await interaction.response.defer(ephemeral=True)
         artist_name = self.children[0].value
         client = SongDBClient()
-        artist: Artist = await client.search_artist(artist_name=artist_name)
+        artist = await client.search_artist(artist_name=artist_name)
         if not artist:  # no result found
             await interaction.response.send_message(
                 content="検索結果は0件でした。", ephemeral=True
@@ -253,6 +283,12 @@ class SearchDropdownView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
         self.add_item(SearchDropdown())
+
+
+class ProdDropdownView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        self.add_item(ProdDropdown())
 
 
 def setup(bot):
