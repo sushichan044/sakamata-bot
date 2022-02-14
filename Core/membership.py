@@ -261,12 +261,8 @@ class MemberVerifyButton(discord.ui.View):
     ):
         await interaction.response.defer()
         res_image_name = "receive_dm.png"
-        path = os.path.dirname(__file__)
-        path_img = r"../images/receive_dm.png"
-        # print(path)
-        path = os.path.join(path, path_img)
+        path = os.path.join(os.path.dirname(__file__), r"../images/receive_dm.png")
         res_image = discord.File(fp=path, filename=res_image_name, spoiler=False)
-
         embed = discord.Embed(
             title="認証を開始します。",
             description="BotからのDMを確認してください。",
