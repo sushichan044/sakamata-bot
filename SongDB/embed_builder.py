@@ -62,7 +62,12 @@ class EmbedBuilder:
         return embed
 
     def _rawsong(self, *, input: dict, songs: list[Song]) -> list[Embed]:
-        s_method = [value for value in list(input.values()) if value]
+        converter_dict = {
+            "song_name": "曲名: ",
+            "artist_name": "アーティスト名: ",
+            "stream_id": "配信ID: ",
+        }
+        s_method = [converter_dict[k] + v for k, v in input.items() if v]
         embeds = []
         embed = Embed(
             title="検索結果(複数条件検索)",
