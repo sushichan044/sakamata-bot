@@ -96,9 +96,9 @@ class ProdDropdown(discord.ui.Select):
     def __init__(self) -> None:
         options = [
             discord.SelectOption(
-                label="複数条件検索",
+                label="データベース検索",
                 value="multi",
-                description="曲名、アーティスト、配信URLなど複数の条件で検索できます。",
+                description="曲名、アーティスト、配信URLなどの条件で検索できます。",
                 default=False,
             ),
             discord.SelectOption(

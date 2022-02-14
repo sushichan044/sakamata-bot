@@ -70,7 +70,8 @@ class EmbedBuilder:
         s_method = [converter_dict[k] + v for k, v in input.items() if v]
         embeds = []
         embed = Embed(
-            title="検索結果(複数条件検索)",
+            title="検索結果",
+            description=f"検索結果は{len(songs)}件でした。",
             color=2105893,
         )
         embed.add_field(
