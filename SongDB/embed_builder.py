@@ -65,6 +65,7 @@ class EmbedBuilder:
         embeds = []
         embed = Embed(
             title="検索結果(曲名検索)",
+            description=f"{song_input}での検索結果は{len(songs)}件でした。",
             color=2105893,
         )
         embeds.append(embed)
