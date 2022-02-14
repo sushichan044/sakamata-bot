@@ -89,7 +89,7 @@ class EmbedBuilder:
                 value=f"[クリックして視聴]({song.latest.url})",
                 inline=False,
             )
-            embed.set_image(
+            embed.set_thumbnail(
                 url=f"https://img.youtube.com/vi/{song.latest.raw_id}/maxresdefault.jpg"
             )
             if song.latest.note:
