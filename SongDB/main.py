@@ -169,14 +169,9 @@ class ProdSearch(discord.ui.Modal):
             return
         else:
             songs = await client.multi_search(**d)
-            if songs.songs == []:  # no result found
-                embeds = EB()._rawsong(input=d, songs=songs.songs)
-                await interaction.response.send_message(embeds=embeds, ephemeral=True)
-                return
-            else:
-                embeds = EB()._rawsong(input=d, songs=songs.songs)
-                await interaction.response.send_message(embeds=embeds, ephemeral=False)
-                return
+            embeds = EB()._rawsong(input=d, songs=songs.songs)
+            await interaction.response.send_message(embeds=embeds, ephemeral=False)
+            return
 
 
 class SearchBySong(discord.ui.Modal):

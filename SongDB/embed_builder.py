@@ -94,37 +94,40 @@ class EmbedBuilder:
             value="\n".join(self._query(input=input)),
         )
         embeds.append(embed)
-        for song in songs:
-            delta = self.calc_delta(song.latest.date)
-            embed = Embed(
-                title=song.title,
-                color=2105893,
-            )
-            embed.add_field(
-                name="アーティスト",
-                value=song.artist,
-                inline=False,
-            )
-            embed.add_field(
-                name="最終歌唱日",
-                value=f"{song.latest.date}({str(delta.days)}日経過)",
-                inline=False,
-            )
-            embed.add_field(
-                name="視聴",
-                value=f"[クリックして視聴]({song.latest.url})",
-                inline=False,
-            )
-            embed.set_thumbnail(
-                url=f"https://img.youtube.com/vi/{song.latest.raw_id}/maxresdefault.jpg"
-            )
-            if song.latest.note:
+        if songs != []:
+            for song in songs:
+                delta = self.calc_delta(song.latest.date)
+                embed = Embed(
+                    title=song.title,
+                    color=2105893,
+                )
                 embed.add_field(
-                    name="備考",
-                    value=song.latest.note,
+                    name="アーティスト",
+                    value=song.artist,
                     inline=False,
                 )
-            embeds.append(embed)
+                embed.add_field(
+                    name="最終歌唱日",
+                    value=f"{song.latest.date}({str(delta.days)}日経過)",
+                    inline=False,
+                )
+                embed.add_field(
+                    name="視聴",
+                    value=f"[クリックして視聴]({song.latest.url})",
+                    inline=False,
+                )
+                embed.set_thumbnail(
+                    url=f"https://img.youtube.com/vi/{song.latest.raw_id}/maxresdefault.jpg"
+                )
+                if song.latest.note:
+                    embed.add_field(
+                        name="備考",
+                        value=song.latest.note,
+                        inline=False,
+                    )
+                embeds.append(embed)
+        else:
+            pass
         return embeds
 
     def _song(self, song_input: str, song: Song) -> Embed:
