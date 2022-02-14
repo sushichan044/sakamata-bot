@@ -140,8 +140,8 @@ class SearchBySong(discord.ui.Modal):
             return
         else:
             print(song)
-            embed = EB()._rawsong(song_input=self.children[0].value, songs=song.songs)
-            await interaction.response.send_message(embed=embed, ephemeral=False)
+            embeds = EB()._rawsong(song_input=self.children[0].value, songs=song.songs)
+            await interaction.response.send_message(embeds=embeds, ephemeral=False)
             return
 
 

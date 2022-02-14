@@ -1,3 +1,4 @@
+from curses.ascii import EM
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -60,21 +61,45 @@ class EmbedBuilder:
             embed.add_field(name=title, value=value, inline=False)
         return embed
 
-    def _rawsong(self, song_input: str, songs: list[Song]) -> Embed:
+    def _rawsong(self, song_input: str, songs: list[Song]) -> list[Embed]:
+        embeds = []
         embed = Embed(
             title="検索結果(曲名検索)",
             color=2105893,
         )
-        for num in range(len(songs)):
-            delta = self.calc_delta(songs[num].latest.date)
-            title = songs[num].title
-            value = f"アーティスト: {songs[num].artist}\n最終歌唱日:{songs[num].latest.date}({str(delta.days)}日経過)"
-            if songs[num].latest.note:
-                value = value + "\n備考: " + songs[num].latest.note
-            if songs[num].latest.url:
-                value = value + f"\n[クリックして視聴]({songs[num].latest.url})"
-            embed.add_field(name=title, value=value, inline=False)
-        return embed
+        embeds.append(embed)
+        for song in songs:
+            delta = self.calc_delta(song.latest.date)
+            embed = Embed(
+                title=song.title,
+                color=2105893,
+            )
+            embed.add_field(
+                name="アーティスト",
+                value=song.artist,
+                inline=False,
+            )
+            embed.add_field(
+                name="最終歌唱日",
+                value=f"{song.latest.date}({str(delta.days)}日経過)",
+                inline=False,
+            )
+            embed.add_field(
+                name="視聴",
+                value=f"[クリックして視聴]({song.latest.url})",
+                inline=False,
+            )
+            embed.set_image(
+                url=f"https://img.youtube.com/vi/{song.latest.raw_id}/maxresdefault.jpg"
+            )
+            if song.latest.note:
+                embed.add_field(
+                    name="備考",
+                    value=song.latest.note,
+                    inline=False,
+                )
+            embeds.append(embed)
+        return embeds
 
     def _song(self, song_input: str, song: Song) -> Embed:
         embed = Embed(
