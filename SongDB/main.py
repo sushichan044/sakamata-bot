@@ -98,7 +98,7 @@ class ProdDropdown(discord.ui.Select):
             discord.SelectOption(
                 label="データベース検索",
                 value="multi",
-                description="曲名、アーティスト、配信URLなどの条件で検索できます。",
+                description="曲名、アーティスト名、配信URLなどの条件で検索",
                 default=False,
             ),
             discord.SelectOption(
