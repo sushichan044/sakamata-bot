@@ -61,13 +61,28 @@ class EmbedBuilder:
             embed.add_field(name=title, value=value, inline=False)
         return embed
 
-    def _rawsong(self, *, input: dict, songs: list[Song]) -> list[Embed]:
+    def _query(self, *, input: dict) -> list[str]:
         converter_dict = {
             "song_name": "曲名: ",
             "artist_name": "アーティスト名: ",
             "stream_id": "配信ID: ",
         }
         s_method = [converter_dict[k] + v for k, v in input.items() if v]
+        return s_method
+
+    def _empty(self, *, input: dict) -> Embed:
+        embed = Embed(
+            title="検索結果",
+            description="検索結果は0件でした。",
+            color=2105893,
+        )
+        embed.add_field(
+            name="検索条件",
+            value="\n".join(self._query(input=input)),
+        )
+        return embed
+
+    def _rawsong(self, *, input: dict, songs: list[Song]) -> list[Embed]:
         embeds = []
         embed = Embed(
             title="検索結果",
@@ -76,7 +91,7 @@ class EmbedBuilder:
         )
         embed.add_field(
             name="検索条件",
-            value="\n".join(s_method),
+            value="\n".join(self._query(input=input)),
         )
         embeds.append(embed)
         for song in songs:
