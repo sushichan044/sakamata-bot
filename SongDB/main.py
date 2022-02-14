@@ -176,9 +176,7 @@ class ProdSearch(discord.ui.Modal):
                 return
             else:
                 print(songs)
-                embeds = EB()._rawsong(
-                    song_input=self.children[0].value, songs=songs.songs
-                )
+                embeds = EB()._rawsong(input=d, songs=songs.songs)
                 await interaction.response.send_message(embeds=embeds, ephemeral=False)
                 return
 

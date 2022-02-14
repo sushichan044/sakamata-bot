@@ -61,12 +61,16 @@ class EmbedBuilder:
             embed.add_field(name=title, value=value, inline=False)
         return embed
 
-    def _rawsong(self, song_input: str, songs: list[Song]) -> list[Embed]:
+    def _rawsong(self, *, input: dict, songs: list[Song]) -> list[Embed]:
+        s_method = [value for value in list(input.values()) if value]
         embeds = []
         embed = Embed(
-            title="検索結果(曲名検索)",
-            description=f"{song_input}での検索結果は{len(songs)}件でした。",
+            title="検索結果(複数条件検索)",
             color=2105893,
+        )
+        embed.add_field(
+            name="検索条件",
+            value="\n".join(s_method),
         )
         embeds.append(embed)
         for song in songs:
