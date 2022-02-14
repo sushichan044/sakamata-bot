@@ -52,7 +52,13 @@ class SearchDropdown(discord.ui.Select):
             discord.SelectOption(
                 label="歌枠で検索",
                 value="url",
-                description="歌枠を指定することで曲などのデータを取得できます。",
+                description="配信URLを指定することで曲などのデータを取得できます。",
+                default=False,
+            ),
+            discord.SelectOption(
+                label="複数条件検索",
+                value="multi",
+                description="曲名、アーティスト、配信URLなど複数の条件で検索できます。",
                 default=False,
             ),
             discord.SelectOption(
@@ -76,6 +82,9 @@ class SearchDropdown(discord.ui.Select):
             return
         elif self.values[0] == "url":
             await interaction.response.send_modal(modal=SearchByStream())
+            return
+        elif self.values[0] == "multi":
+            await interaction.response.send_modal(modal=ProdSearch())
             return
         elif self.values[0] == "no_recent":
             await interaction.response.send_message(content="準備中です。", ephemeral=True)
@@ -114,6 +123,34 @@ class ProdSearch(discord.ui.Modal):
                 placeholder="youtube.comとyoutu.beに対応しています",
             )
         )
+
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.response.defer(ephemeral=True)
+        client = SongDBClient()
+        d = {
+            "song_name": self.children[0].value,
+            "artist_name": self.children[1].value,
+            "stream_id": self.children[2].value,
+        }
+        if not any(d.values()):
+            await interaction.response.send_message(
+                content="一つ以上の検索条件を指定してください。", ephemeral=True
+            )
+            return
+        else:
+            songs = await client.multi_search(**d)
+            if not songs:  # no result found
+                await interaction.response.send_message(
+                    content="検索結果は0件でした。", ephemeral=True
+                )
+                return
+            else:
+                print(songs)
+                embeds = EB()._rawsong(
+                    song_input=self.children[0].value, songs=songs.songs
+                )
+                await interaction.response.send_message(embeds=embeds, ephemeral=False)
+                return
 
 
 class SearchBySong(discord.ui.Modal):
