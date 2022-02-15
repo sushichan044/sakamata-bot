@@ -1,6 +1,7 @@
 from curses.ascii import EM
 from datetime import datetime, timedelta, timezone
 from typing import Optional
+from unicodedata import name
 
 from discord import Embed
 from SongDBCore.model import Artist, History, No_Recent, Song, Stream
@@ -111,23 +112,47 @@ class EmbedBuilder:
                     value=f"{song.latest.date}({str(delta.days)}日経過)",
                     inline=False,
                 )
-                embed.add_field(
-                    name="視聴",
-                    value=f"[クリックして視聴]({song.latest.url})",
-                    inline=False,
-                )
-                embed.set_thumbnail(
-                    url=f"https://img.youtube.com/vi/{song.latest.raw_id}/maxresdefault.jpg"
-                )
-                if song.latest.note:
+                if song.latest.url:
                     embed.add_field(
-                        name="備考",
-                        value=song.latest.note,
+                        name="視聴",
+                        value=f"[クリックして視聴]({song.latest.url})",
                         inline=False,
                     )
+                    embed.set_thumbnail(
+                        url=f"https://img.youtube.com/vi/{song.latest.raw_id}/maxresdefault.jpg"
+                    )
+                else:
+                    embed.add_field(
+                        name="視聴不可",
+                        value="No archive",
+                        inline=False,
+                    )
+                    if song.latest.note:
+                        embed.add_field(
+                            name="備考",
+                            value=song.latest.note,
+                            inline=False,
+                        )
+                    else:
+                        availables = [
+                            history for history in song.history if history.url
+                        ]
+                        if availables != []:
+                            embed.add_field(
+                                name="視聴(二番目に新しいもの)",
+                                value=availables[0].url,
+                                inline=False,
+                            )
+                            embed.set_thumbnail(
+                                url=f"https://img.youtube.com/vi/{availables[0].raw_id}/maxresdefault.jpg"
+                            )
+                            if availables[0].note:
+                                embed.add_field(
+                                    name="備考",
+                                    value=availables[0].note,
+                                    inline=False,
+                                )
                 embeds.append(embed)
-        else:
-            pass
         return embeds
 
     def _song(self, song_input: str, song: Song) -> Embed:
