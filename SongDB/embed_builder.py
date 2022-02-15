@@ -138,7 +138,7 @@ class EmbedBuilder:
                     if availables != []:
                         embed.add_field(
                             name="視聴(二番目に新しいもの)",
-                            value=availables[0].url,
+                            value=f"[クリックして視聴]({availables[0].url})",
                             inline=False,
                         )
                         embed.set_thumbnail(
