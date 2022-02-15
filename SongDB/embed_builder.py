@@ -150,7 +150,7 @@ class EmbedBuilder:
                                 value=availables[0].note,
                                 inline=False,
                             )
-            embeds.append(embed)
+                embeds.append(embed)
         return embeds
 
     def _song(self, song_input: str, song: Song) -> Embed:
