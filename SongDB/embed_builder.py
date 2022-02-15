@@ -127,32 +127,30 @@ class EmbedBuilder:
                         value="No archive",
                         inline=False,
                     )
-                    if song.latest.note:
+                if song.latest.note:
+                    embed.add_field(
+                        name="備考",
+                        value=song.latest.note,
+                        inline=False,
+                    )
+                if not song.latest.url:
+                    availables = [history for history in song.history if history.url]
+                    if availables != []:
                         embed.add_field(
-                            name="備考",
-                            value=song.latest.note,
+                            name="視聴(二番目に新しいもの)",
+                            value=availables[0].url,
                             inline=False,
                         )
-                    else:
-                        availables = [
-                            history for history in song.history if history.url
-                        ]
-                        if availables != []:
+                        embed.set_thumbnail(
+                            url=f"https://img.youtube.com/vi/{availables[0].raw_id}/maxresdefault.jpg"
+                        )
+                        if availables[0].note:
                             embed.add_field(
-                                name="視聴(二番目に新しいもの)",
-                                value=availables[0].url,
+                                name="備考",
+                                value=availables[0].note,
                                 inline=False,
                             )
-                            embed.set_thumbnail(
-                                url=f"https://img.youtube.com/vi/{availables[0].raw_id}/maxresdefault.jpg"
-                            )
-                            if availables[0].note:
-                                embed.add_field(
-                                    name="備考",
-                                    value=availables[0].note,
-                                    inline=False,
-                                )
-                embeds.append(embed)
+            embeds.append(embed)
         return embeds
 
     def _song(self, song_input: str, song: Song) -> Embed:
