@@ -123,8 +123,8 @@ class ProdSearch(discord.ui.Modal):
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         embeds = EB()._rawsong(input=d, songs=songs.songs)
-        await interaction.response.send_message(embed=embeds[0])
-        await PagePage(embeds=embeds[1:])._send(interaction)
+        # await interaction.response.send_message(embed=embeds[0])
+        await PagePage(embeds=embeds)._send(interaction)
         return
 
 
