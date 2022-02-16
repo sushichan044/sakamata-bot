@@ -114,6 +114,7 @@ class SurveyModal(Modal):
         )
 
     async def callback(self, interaction: discord.Interaction):
+        await interaction.response.defer(ephemeral=True)
         path = os.path.join(os.path.dirname(__file__), "../src/inquiry.json")
         with open(path) as f:
             df: dict = json.load(f)
