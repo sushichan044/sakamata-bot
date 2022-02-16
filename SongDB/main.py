@@ -123,11 +123,8 @@ class ProdSearch(discord.ui.Modal):
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
         embeds = EB()._rawsong(input=d, songs=songs.songs)
-        if len(songs.songs) <= 9:
-            await interaction.response.send_message(embeds=embeds, ephemeral=False)
-        else:
-            await PagePage(embeds=embeds)._send(interaction)
-            return
+        await PagePage(embeds=embeds)._send(interaction)
+        return
 
 
 class ProdDropdownView(discord.ui.View):

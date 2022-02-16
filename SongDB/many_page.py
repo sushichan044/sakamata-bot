@@ -29,7 +29,7 @@ class PagePage:
         pass
 
     def _split(self, __embeds: list[Embed]) -> list[list[Embed]]:
-        return [__embeds[num : num + 10] for num in range(0, len(__embeds), 10)]
+        return [__embeds[num : num + 5] for num in range(0, len(__embeds), 5)]
 
     def _view(self) -> PaginationView:
         embed_list = self._split(self._embeds)
