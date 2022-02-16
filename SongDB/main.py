@@ -97,7 +97,7 @@ class ProdSearch(discord.ui.Modal):
         )
 
     async def callback(self, interaction: discord.Interaction):
-        await interaction.response.defer(ephemeral=True)
+        # await interaction.response.defer(ephemeral=True)
         if self.children[2].value:
             id = match_url(self.children[2].value)
             if not id:
