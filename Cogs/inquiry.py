@@ -46,7 +46,7 @@ class InquiryConfView(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(
-        label="続ける / Continue contact",
+        label="続ける",
         style=discord.ButtonStyle.red,
         custom_id="continue_contact_mods_button",
         row=0,
@@ -73,18 +73,6 @@ class InquiryConfView(discord.ui.View):
         await interaction.followup.send(embed=em, ephemeral=True)
         return
 
-    @discord.ui.button(
-        label="キャンセル / Cancel contact",
-        style=discord.ButtonStyle.blurple,
-        custom_id="cancel_contact_mods_button",
-        row=1,
-    )
-    async def callback_ng(
-        self, button: discord.ui.Button, interaction: discord.Interaction
-    ):
-        await interaction.delete_original_message()
-        return
-
 
 class InquiryView(discord.ui.View):
     def __init__(self) -> None:
@@ -102,7 +90,7 @@ class InquiryView(discord.ui.View):
     ):
         await interaction.response.defer(ephemeral=True)
         await interaction.followup.send(
-            content="続けることで管理者を呼び出します。\n間違えて押した場合はキャンセルしてください。",
+            content="続けることで管理者を呼び出します。\n間違えて押した場合はこのメッセージを消してください。",
             view=InquiryConfView(),
             ephemeral=True,
         )
