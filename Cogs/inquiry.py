@@ -41,20 +41,20 @@ class Inquiry(commands.Cog):
         return
 
 
-class InquiryView(discord.ui.View):
-    def __init__(self) -> None:
+class InquiryConfView(discord.ui.View):
+    def __init__(self):
         super().__init__(timeout=None)
 
     @discord.ui.button(
-        label="管理者への問い合わせ/Contact to Moderators",
-        style=discord.ButtonStyle.secondary,
-        emoji="\N{Thought Balloon}",
-        custom_id="start_contact_mods_button",
+        label="続ける / Continue contact",
+        style=discord.ButtonStyle.red,
+        custom_id="continue_contact_mods_button",
         row=0,
     )
-    async def _contact_button(
+    async def callback_ok(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
+        await interaction.response.defer(ephemeral=True)
         if interaction.guild.premium_tier >= 2:
             thread_type = discord.ChannelType.private_thread
         else:
@@ -71,6 +71,42 @@ class InquiryView(discord.ui.View):
                 await target.add_user(mod)
         em = EB()._inquiry_contact(target)
         await interaction.response.send_message(embed=em, ephemeral=True)
+        return
+
+    @discord.ui.button(
+        label="キャンセル / Cancel contact",
+        style=discord.ButtonStyle.blurple,
+        custom_id="cancel_contact_mods_button",
+        row=1,
+    )
+    async def callback_ng(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        await interaction.response.defer(ephemeral=True)
+        await interaction.delete_original_message()
+        return
+
+
+class InquiryView(discord.ui.View):
+    def __init__(self) -> None:
+        super().__init__(timeout=None)
+
+    @discord.ui.button(
+        label="管理者への問い合わせ/Contact to Moderators",
+        style=discord.ButtonStyle.secondary,
+        emoji="\N{Thought Balloon}",
+        custom_id="start_contact_mods_button",
+        row=0,
+    )
+    async def _contact_button(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        await interaction.response.defer(ephemeral=True)
+        await interaction.response.send_message(
+            content="続けることで管理者を呼び出します。\n間違えて押した場合はキャンセルしてください。",
+            view=InquiryConfView(),
+            ephemeral=True,
+        )
         return
 
 
