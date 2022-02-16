@@ -1,33 +1,40 @@
 import os
 from typing import Literal, Optional
 
+from discord import RawReactionActionEvent, Reaction
+
 import discord
 from discord.errors import HTTPException
 from discord.ext import commands
 
 # star_emoji = "\N{Blue Heart}"
-star_emoji = "<:c_Ofb4:926885084395606086>"
+# star_emoji = "<:c_Ofb4:926885084395606086>"
 emoji_url = "https://cdn.discordapp.com/emojis/926885084395606086.webp?size=1024&quality=lossless"
 star_channel = int(os.environ["STAR_CHANNEL"])
 env: Literal["main", "alpha"] = os.environ["ENV"]  # main or alpha
 
+emoji_dic = {"main": "<:c_Ofb4:926885084395606086>", "alpha": "\N{Blue Heart}"}
+
 
 class StarBoard(commands.Cog):
-    def __init__(self, bot) -> None:
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
     @commands.Cog.listener(name="on_raw_reaction_add")
-    async def board_add(self, payload):
+    async def board_add(self, payload: RawReactionActionEvent):
         # print(str(payload.emoji))
+        star_emoji = emoji_dic[os.environ["ENV"]]
         if str(payload.emoji) == star_emoji:
             channel = self.bot.get_channel(payload.channel_id)
-            message: discord.Message = await channel.fetch_message(payload.message_id)
+            if channel is None:
+                channel = await self.bot.fetch_channel(payload.channel_id)
+            message = await channel.fetch_message(payload.message_id)
             ig_category, ig_channel = _return_exception(env)
             if (
                 message.channel.category_id in ig_category
                 or message.channel.id in ig_channel
             ):
-                print("starboard:ignore exception")
+                print("starboard: ignore unpin channel or category")
                 return
             reaction = self._get_reaction(message)
             if reaction and reaction.count >= 3:
@@ -96,6 +103,8 @@ class StarBoard(commands.Cog):
 
     async def refresh_board(self, message: discord.Message, count: int):
         channel = self.bot.get_channel(star_channel)
+        if channel is None:
+            channel = await self.bot.fetch_channel(star_channel)
         history = await self._get_history(channel)
         if not history:
             return
@@ -115,14 +124,18 @@ class StarBoard(commands.Cog):
             # print(history)
             return history
 
-    def _get_reaction(self, message: discord.Message):
-        reaction = [x for x in message.reactions if str(x.emoji) == star_emoji]
+    def _get_reaction(self, message: discord.Message) -> Reaction:
+        reaction = [
+            x for x in message.reactions if str(x.emoji) == emoji_dic[os.environ["ENV"]]
+        ]
         if not reaction[0]:
             print("Reaction Buggy")
         return reaction[0]
 
     async def _get_history_post(self, message: discord.Message) -> Optional[bool]:
         channel = self.bot.get_channel(star_channel)
+        if channel is None:
+            channel = await self.bot.fetch_channel(star_channel)
         history = await self._get_history(channel)
         if not history:
             return True
@@ -131,7 +144,7 @@ class StarBoard(commands.Cog):
             for x in history
             if x.embeds and x.embeds[0].author.url == message.jump_url
         ]
-        if not target:
+        if target is None:
             return True
         else:
             return False
