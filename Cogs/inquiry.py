@@ -70,7 +70,7 @@ class InquiryConfView(discord.ui.View):
             for mod in mods:
                 await target.add_user(mod)
         em = EB()._inquiry_contact(target)
-        await interaction.response.send_message(embed=em, ephemeral=True)
+        await interaction.followup.send(embed=em, ephemeral=True)
         return
 
     @discord.ui.button(
@@ -82,7 +82,6 @@ class InquiryConfView(discord.ui.View):
     async def callback_ng(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
-        await interaction.response.defer(ephemeral=True)
         await interaction.delete_original_message()
         return
 
