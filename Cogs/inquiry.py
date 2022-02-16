@@ -102,7 +102,7 @@ class InquiryView(discord.ui.View):
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
         await interaction.response.defer(ephemeral=True)
-        await interaction.response.send_message(
+        await interaction.followup.send(
             content="続けることで管理者を呼び出します。\n間違えて押した場合はキャンセルしてください。",
             view=InquiryConfView(),
             ephemeral=True,
