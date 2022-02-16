@@ -138,7 +138,7 @@ class SurveyModal(Modal):
             )
         else:
             print("post completed")
-            await interaction.followup.send(
+            await interaction.response.send_message(
                 "送信が完了しました。\nありがとうございました。", ephemeral=True
             )
         return
