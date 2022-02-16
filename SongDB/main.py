@@ -11,7 +11,7 @@ from SongDB.embed_builder import EmbedBuilder as EB
 from SongDB.match import match_url
 
 
-req_url = "https://script.google.com/macros/s/AKfycbwi3pRuk3O82B9167hbLqxh7aKht4U8KBbimKRSTGNh_fd65--lW2GdJqojcs2JYINc/exec"
+req_url = "https://script.google.com/macros/s/AKfycbyYXAOWYDQRe1___cQyPTZkKGC-BZfbpF4ksEpXIvJpAHPH8CO-I0yu0fNqpNCvT7M/exec"
 
 guild_id = int(os.environ["GUILD_ID"])
 
@@ -116,15 +116,17 @@ class ProdSearch(discord.ui.Modal):
                 content="一つ以上の検索条件を指定してください。", ephemeral=True
             )
             return
-        else:
-            songs = await client.multi_search(**d)
-            embeds = EB()._rawsong(input=d, songs=songs.songs)
-            if songs.songs == []:  # no result found
-                _ephemeral = True
-            else:
-                _ephemeral = False
-            await interaction.response.send_message(embeds=embeds, ephemeral=_ephemeral)
+        songs = await client.multi_search(**d)
+        if songs.songs == []:  # no result found
+            embed = EB()._empty(input=d)
+            await interaction.response.send_message(embed=embed, ephemeral=True)
             return
+        if len(songs.songs) <= 9:
+            embeds = EB()._rawsong(input=d, songs=songs.songs)
+            await interaction.response.send_message(embeds=embeds, ephemeral=False)
+        text = EB()._many(input=d, songs=songs.songs)
+        await interaction.response.send_message(content=text, ephemeral=False)
+        return
 
 
 class ProdDropdownView(discord.ui.View):

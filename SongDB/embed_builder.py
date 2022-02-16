@@ -28,47 +28,6 @@ class EmbedBuilder:
         )
         return embed
 
-    def _artist(self, songs: list[Song]) -> Embed:
-        embed = Embed(
-            title="検索結果(アーティスト検索)",
-            color=2105893,
-        )
-        for num in range(len(songs)):
-            delta = self.calc_delta(songs[num].latest.date)
-            title = songs[num].title
-            value = f"アーティスト: {songs[num].artist}\n最終歌唱:{songs[num].latest.date}({delta.days}日経過)"
-            if songs[num].latest.note:
-                value = value + "\n備考: " + songs[num].latest.note
-            if songs[num].latest.url:
-                value = value + f"\n[クリックして視聴]({songs[num].latest.url})"
-            embed.add_field(name=title, value=value, inline=False)
-        return embed
-
-    def _stream(self, songs: list[Song]) -> Embed:
-        embed = Embed(
-            title="検索結果(URL検索)",
-            color=2105893,
-        )
-        for num in range(len(songs)):
-            delta = self.calc_delta(songs[num].latest.date)
-            title = songs[num].title
-            value = f"アーティスト: {songs[num].artist}\n最終歌唱日:{songs[num].latest.date}({str(delta.days)}日経過)"
-            if songs[num].latest.note:
-                value = value + "\n備考: " + songs[num].latest.note
-            if songs[num].latest.url:
-                value = value + f"\n[クリックして視聴]({songs[num].latest.url})"
-            embed.add_field(name=title, value=value, inline=False)
-        return embed
-
-    def _query(self, *, input: dict) -> list[str]:
-        converter_dict = {
-            "song_name": "曲名: ",
-            "artist_name": "アーティスト名: ",
-            "stream_id": "配信ID: ",
-        }
-        s_method = [converter_dict[k] + v for k, v in input.items() if v]
-        return s_method
-
     def _empty(self, *, input: dict) -> Embed:
         embed = Embed(
             title="検索結果",
@@ -151,30 +110,46 @@ class EmbedBuilder:
                 embeds.append(embed)
         return embeds
 
-    def _song(self, song_input: str, song: Song) -> Embed:
-        embed = Embed(
-            title=f"検索結果({song_input})",
-            color=2105893,
-        )
-        delta = self.calc_delta(song.latest.date)
-        embed.add_field(
-            name="曲名",
-            value=song.title,
-        )
-        embed.add_field(
-            name="アーティスト",
-            value=song.artist,
-        )
-        embed.add_field(
-            name="最終歌唱日",
-            value=f"{song.latest.date}({str(delta.days)}日経過)",
-        )
-        embed.set_image(
-            url=f"https://img.youtube.com/vi/{song.latest.raw_id}/maxresdefault.jpg"
-        )
-        return embed
-
     def calc_delta(self, latest: str) -> timedelta:
         latest_dt = datetime.strptime(latest, "%Y/%m/%d").replace(tzinfo=jst)
         delta = datetime.now().astimezone(jst) - latest_dt
         return delta
+
+    def _query(self, *, input: dict) -> list[str]:
+        converter_dict = {
+            "song_name": "曲名: ",
+            "artist_name": "アーティスト名: ",
+            "stream_id": "配信ID: ",
+        }
+        s_method = [converter_dict[k] + v for k, v in input.items() if v]
+        return s_method
+
+    def _many(self, *, input: dict, songs: list[Song]) -> str:
+        s_texts = []
+        nl = "\n"
+        dnl = "\n\n"
+        for num in range(len(songs)):
+            song = songs[num]
+            delta = self.calc_delta(song.latest.date)
+            if not song.latest.url:
+                availables = [history for history in song.history if history.url]
+                _watch = (
+                    f"最新のデータの配信にはアーカイブが存在しません。{nl}二番目に新しいものを視聴({availables[0].url})"
+                )
+            _watch = f"視聴({song.latest.url})"
+            _text = f"""
+            [{str(num+1)}]{nl}
+            曲名: {song.title}{nl}
+            アーティスト名: {song.artist}{nl}
+            最終歌唱日: {song.latest.date}({str(delta.days)}日経過){nl}
+            {_watch}{nl}
+            """
+            s_texts.append(_text)
+        text = f"""
+        【歌枠データベース照会結果】{nl}
+        検索結果が10件を超えたため簡易表示に切り替えます。{nl}{nl}
+        検索条件:{nl}
+        {nl.join(self._query(input=input))}{nl}{nl}
+        {dnl.join(s_texts)}"""
+        print(len(text))
+        return text
