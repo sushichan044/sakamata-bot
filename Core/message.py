@@ -26,7 +26,7 @@ class Message_Sys(commands.Cog):
             if message.content.endswith("中止に必要な承認人数: 1"):
                 return
             else:
-                await dispand(message)
+                await dispand(self.bot, message)
                 return
 
     @commands.command(name="send-message")
