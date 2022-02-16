@@ -19,7 +19,7 @@ class Page(PageView):
         return Message(embeds=self.embeds)
 
     async def on_appear(self, paginator: PaginationView) -> None:
-        print(f"appeared page: {paginator.page}")
+        # print(f"appeared page: {paginator.page}")
         pass
 
 
