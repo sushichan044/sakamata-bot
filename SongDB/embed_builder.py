@@ -1,7 +1,5 @@
-from curses.ascii import EM
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-from unicodedata import name
 
 from discord import Embed
 from SongDBCore.model import Artist, History, No_Recent, Song, Stream
