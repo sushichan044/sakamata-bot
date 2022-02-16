@@ -130,7 +130,7 @@ class ProdSearch(discord.ui.Modal):
 
 class ProdDropdownView(discord.ui.View):
     def __init__(self):
-        super().__init__(timeout=None)
+        super().__init__(timeout=10.0)
         self.add_item(ProdDropdown())
 
 
