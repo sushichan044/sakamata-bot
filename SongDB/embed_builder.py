@@ -133,9 +133,11 @@ class EmbedBuilder:
             delta = self.calc_delta(song.latest.date)
             if not song.latest.url:
                 availables = [history for history in song.history if history.url]
-                _watch = (
-                    f"最新のデータの配信にはアーカイブが存在しません。{nl}二番目に新しいものを視聴({availables[0].url})"
-                )
+                if availables != []:
+                    _watch = (
+                        f"最新のデータの配信にはアーカイブが存在しません。{nl}二番目に新しいものを視聴({availables[0].url})"
+                    )
+                _watch = "アーカイブが存在しません。"
             _watch = f"視聴({song.latest.url})"
             _text = f"""
             [{str(num+1)}]{nl}
