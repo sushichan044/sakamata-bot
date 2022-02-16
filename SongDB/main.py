@@ -11,7 +11,7 @@ from SongDB.embed_builder import EmbedBuilder as EB
 from SongDB.match import match_url
 
 
-hook_url = ""
+req_url = "https://script.google.com/macros/s/AKfycbwi3pRuk3O82B9167hbLqxh7aKht4U8KBbimKRSTGNh_fd65--lW2GdJqojcs2JYINc/exec"
 
 guild_id = int(os.environ["GUILD_ID"])
 
@@ -156,7 +156,7 @@ class ProdSearch(discord.ui.Modal):
 
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
-        client = SongDBClient()
+        client = SongDBClient(url=req_url)
         d = {
             "song_name": self.children[0].value,
             "artist_name": self.children[1].value,
