@@ -33,65 +33,6 @@ class SongDB(commands.Cog):
         return
 
 
-class SearchDropdown(discord.ui.Select):
-    def __init__(self) -> None:
-        options = [
-            discord.SelectOption(
-                label="曲名で検索",
-                value="song",
-                description="曲を指定して歌唱回数などのデータを取得できます。",
-                default=False,
-            ),
-            discord.SelectOption(
-                label="アーティスト名/作曲者名で検索",
-                value="artist",
-                description="アーティスト名や作曲者名から曲を検索できます。",
-                default=False,
-            ),
-            discord.SelectOption(
-                label="歌枠で検索",
-                value="url",
-                description="配信URLを指定することで曲などのデータを取得できます。",
-                default=False,
-            ),
-            discord.SelectOption(
-                label="複数条件検索",
-                value="multi",
-                description="曲名、アーティスト、配信URLなど複数の条件で検索できます。",
-                default=False,
-            ),
-            discord.SelectOption(
-                label="最近歌われていない曲(利用不可)",
-                value="no_recent",
-                description="最近歌われていない曲の一覧を検索できます。",
-                default=False,
-            ),
-        ]
-        super().__init__(
-            placeholder="検索方式を指定してください。", min_values=1, max_values=1, options=options
-        )
-
-    async def callback(self, interaction: discord.Interaction) -> None:
-        self.disabled = True
-        if self.values[0] == "song":
-            await interaction.response.send_modal(modal=SearchBySong())
-            return
-        elif self.values[0] == "artist":
-            await interaction.response.send_modal(modal=SearchByArtist())
-            return
-        elif self.values[0] == "url":
-            await interaction.response.send_modal(modal=SearchByStream())
-            return
-        elif self.values[0] == "multi":
-            await interaction.response.send_modal(modal=ProdSearch())
-            return
-        elif self.values[0] == "no_recent":
-            await interaction.response.send_message(content="準備中です。", ephemeral=True)
-            return
-        else:
-            raise InteractionError(interaction=interaction, cls=self)
-
-
 class ProdDropdown(discord.ui.Select):
     def __init__(self) -> None:
         options = [
@@ -156,6 +97,14 @@ class ProdSearch(discord.ui.Modal):
 
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
+        if self.children[2].value:
+            id = match_url(self.children[2].value)
+            if not id:
+                print("Invalid url inputted.")
+                await interaction.response.send_message(
+                    content="対応していないURLが入力されました。", ephemeral=True
+                )
+                return
         client = SongDBClient(url=req_url)
         d = {
             "song_name": self.children[0].value,
@@ -176,108 +125,6 @@ class ProdSearch(discord.ui.Modal):
                 _ephemeral = False
             await interaction.response.send_message(embeds=embeds, ephemeral=_ephemeral)
             return
-
-
-class SearchBySong(discord.ui.Modal):
-    def __init__(self) -> None:
-        super().__init__(title="歌枠データベース")
-        self.add_item(
-            discord.ui.InputText(
-                label="検索したい曲名を入力してください。",
-                style=discord.InputTextStyle.short,
-                required=True,
-                row=0,
-                placeholder="曲名",
-            )
-        )
-
-    async def callback(self, interaction: discord.Interaction):
-        await interaction.response.defer(ephemeral=True)
-        client = SongDBClient()
-        song = await client.search_song(song_name=self.children[0].value)
-        if not song:  # no result found
-            await interaction.response.send_message(
-                content="検索結果は0件でした。", ephemeral=True
-            )
-            return
-        else:
-            print(song)
-            embeds = EB()._rawsong(song_input=self.children[0].value, songs=song.songs)
-            await interaction.response.send_message(embeds=embeds, ephemeral=False)
-            return
-
-
-class SearchByArtist(discord.ui.Modal):
-    def __init__(self) -> None:
-        super().__init__(title="歌枠データベース")
-        self.add_item(
-            discord.ui.InputText(
-                label="検索したいアーティスト名や作曲者名を入力してください。",
-                style=discord.InputTextStyle.short,
-                required=True,
-                row=0,
-                placeholder="アーティスト名/作曲者名",
-            )
-        )
-
-    async def callback(self, interaction: discord.Interaction):
-        await interaction.response.defer(ephemeral=True)
-        artist_name = self.children[0].value
-        client = SongDBClient()
-        artist = await client.search_artist(artist_name=artist_name)
-        if not artist:  # no result found
-            await interaction.response.send_message(
-                content="検索結果は0件でした。", ephemeral=True
-            )
-            return
-        else:
-            embed = EB()._artist(songs=artist.songs)
-            await interaction.response.send_message(embed=embed, ephemeral=False)
-            return
-
-
-class SearchByStream(discord.ui.Modal):
-    def __init__(self) -> None:
-        super().__init__(title="歌枠データベース")
-        self.add_item(
-            discord.ui.InputText(
-                label="検索したい歌枠のURLを入力してください。",
-                style=discord.InputTextStyle.short,
-                required=True,
-                row=0,
-                placeholder="youtube.comとyoutu.beに対応しています",
-            )
-        )
-
-    async def callback(self, interaction: discord.Interaction):
-        await interaction.response.defer(ephemeral=True)
-        # match pattern and output v_id
-        id = match_url(self.children[0].value)
-        if not id:
-            print("Invalid url inputted.")
-            await interaction.response.send_message(
-                content="対応していないURLが入力されました。", ephemeral=True
-            )
-            return
-        else:
-            print(id)
-            client = SongDBClient()
-            stream = await client.search_stream(stream_id=id)
-        if not stream:  # no result found
-            await interaction.response.send_message(
-                content="検索結果は0件でした。", ephemeral=True
-            )
-            return
-        else:
-            embed = EB()._stream(songs=stream.songs)
-            await interaction.response.send_message(embed=embed, ephemeral=False)
-            return
-
-
-class SearchDropdownView(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
-        self.add_item(SearchDropdown())
 
 
 class ProdDropdownView(discord.ui.View):
