@@ -23,7 +23,7 @@ class Inquiry(commands.Cog):
     async def _send_inq_button(self, ctx):
         embed = discord.Embed(
             title="管理者への問い合わせ",
-            description="管理者へ直接問い合わせがしたい場合は\nボタンを押してください。\n(間違えて押した場合は速やかに教えてください)",
+            description="管理者へ直接問い合わせしたい場合は\nボタンを押してください。",
             color=2105893,
         )
         await ctx.send(embed=embed, view=InquiryView())
@@ -46,7 +46,7 @@ class InquiryConfView(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(
-        label="続ける",
+        label="続ける/Continue",
         style=discord.ButtonStyle.red,
         custom_id="continue_contact_mods_button",
         row=0,
@@ -77,7 +77,7 @@ class InquiryView(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(
-        label="問い合わせ/Contact to Moderators",
+        label="問い合わせ/Contact Moderators",
         style=discord.ButtonStyle.secondary,
         emoji="\N{Thought Balloon}",
         custom_id="start_contact_mods_button",
@@ -88,7 +88,7 @@ class InquiryView(discord.ui.View):
     ):
         await interaction.response.defer(ephemeral=True)
         await interaction.followup.send(
-            content="続けることで管理者を呼び出します。\n間違えて押した場合はこのメッセージを消してください。",
+            content="続けるボタンを押すと管理者を呼び出します。\n間違えて押した場合はこのメッセージを消してください。\n\nPress the 'Continue' button to contact Moderators.\nIf you pressed 'Contact' button by mistake, please delete this message.",
             view=InquiryConfView(),
             ephemeral=True,
         )
