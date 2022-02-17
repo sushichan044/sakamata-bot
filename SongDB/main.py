@@ -104,7 +104,10 @@ class DateSelect(discord.ui.Select):
         mth = int(self.values[0])  # 1 or 3 or 6 or 12
         now = datetime.now().astimezone(jst)
         __to = (now - timedelta(days=30 * mth)).date()
-        _to = f"{__to.year}/{__to.month}/{__to.day}"
+        if __to.month < 10:
+            month = f"0{str(__to.month)}"
+        month = str(__to.month)
+        _to = f"{__to.year}/{month}/{__to.day}"
         print(_to)
         client = SongDBClient(url=req_url)
         _date = await client.search_by_date(_to=_to)
