@@ -56,7 +56,7 @@ requests-toolbelt==0.9.1
 rfc3986==1.5.0
 rsa==4.8
 six==1.16.0
-git+https://github.com/sushi-chaaaan/song-db-client@3fe5f2d580b08bed02789d1923aaf714baac4c65
+git+https://github.com/sushi-chaaaan/song-db-client@02d58f117d35744c20458c3c679f81d59b87423e
 soupsieve==2.3.1
 toml==0.10.2
 tomli==2.0.1
