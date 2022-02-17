@@ -46,7 +46,7 @@ class InquiryConfView(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(
-        label="続ける",
+        label="続ける / Continue",
         style=discord.ButtonStyle.red,
         custom_id="continue_contact_mods_button",
         row=0,
@@ -67,7 +67,7 @@ class InquiryConfView(discord.ui.View):
         await target.add_user(interaction.user)
         role = interaction.guild.get_role(admin_role)
         await target.send(role.mention)
-        em = EB()._inquiry_contact(target)
+        em = eb._inquiry_contact(target)
         await interaction.followup.send(embed=em, ephemeral=True)
         return
 
@@ -77,7 +77,7 @@ class InquiryView(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(
-        label="問い合わせ/Contact to Moderators",
+        label="問い合わせ/Contact Moderators",
         style=discord.ButtonStyle.secondary,
         emoji="\N{Thought Balloon}",
         custom_id="start_contact_mods_button",
@@ -88,7 +88,7 @@ class InquiryView(discord.ui.View):
     ):
         await interaction.response.defer(ephemeral=True)
         await interaction.followup.send(
-            content="続けることで管理者を呼び出します。\n間違えて押した場合はこのメッセージを消してください。",
+            content="続けるボタンを押すと管理者を呼び出します。\n間違えて押した場合はこのメッセージを消してください。\n\nPress the 'Continue' button to contact Moderators.\nIf you pressed 'Contact' button by mistake, please delete this message.",
             view=InquiryConfView(),
             ephemeral=True,
         )
