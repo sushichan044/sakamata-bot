@@ -28,15 +28,15 @@ class Logger(commands.Cog):
             channel = self.bot.get_channel(vc_log_channel)
             now = discord.utils.utcnow().astimezone(jst)
             if before.channel is None:
-                message = f"{now:%m/%d %H:%M:%S} : {member.name} が {after.channel.mention} に参加しました。"
+                message = f"{now:%m/%d %H:%M:%S} : {member.name}(ID: {member.id}) が {after.channel.mention} に参加しました。"
                 await channel.send(message)
                 return
             elif after.channel is None:
-                message = f"{now:%m/%d %H:%M:%S} : {member.name} が {before.channel.mention} から退出しました。"
+                message = f"{now:%m/%d %H:%M:%S} : {member.name}(ID: {member.id}) が {before.channel.mention} から退出しました。"
                 await channel.send(message)
                 return
             else:
-                message = f"{now:%m/%d %H:%M:%S} : {member.name} が {before.channel.mention} から {after.channel.mention} に移動しました。"
+                message = f"{now:%m/%d %H:%M:%S} : {member.name}(ID: {member.id}) が {before.channel.mention} から {after.channel.mention} に移動しました。"
                 await channel.send(message)
                 return
 
