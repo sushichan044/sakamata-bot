@@ -23,9 +23,7 @@ class PortalView(discord.ui.View):
             discord.ui.Button(label="公式戦績", url=cfg.official_statistics, row=0)
         )
         self.add_item(discord.ui.Button(label="非公式マップ", url=cfg.unofficial_map, row=1))
-        self.add_item(
-            discord.ui.Button(label="資源特化マップ", url=cfg.unofficial_map_2, row=1)
-        )
+        self.add_item(discord.ui.Button(label="コード受け取り", url=cfg.redeem_code, row=1))
 
 
 def setup(bot):

@@ -14,3 +14,4 @@ official_statistics = (
 )
 unofficial_map = "https://genshin-impact-map.appsample.com/#/"
 unofficial_map_2 = "https://yuanshen.site/index_jp.html?locale=ja"
+redeem_code = "https://genshin.hoyoverse.com/ja/gift"
