@@ -29,7 +29,7 @@ install==1.3.5
 mccabe==0.6.1
 multidict==6.0.2
 mypy-extensions==0.4.3
-git+https://github.com/sushi-chaaaan/dispanderfixed.git@c83749dab47823fa5853f275ab9ece427ea63ef7
+git+https://github.com/sushi-chaaaan/dispanderfixed.git@da82c7f149988dd13f65ed0aead9ff3ecc688b8b
 oauthlib==3.2.0
 orjson==3.6.6
 packaging==21.3
