@@ -43,7 +43,7 @@ class ProdDropdown(discord.ui.Select):
                 default=False,
             ),
             discord.SelectOption(
-                label="最近歌われていない曲(利用不可)",
+                label="最近歌われていない曲",
                 value="no_recent",
                 description="最近歌われていない曲の一覧を検索できます。",
                 default=False,
