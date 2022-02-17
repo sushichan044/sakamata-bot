@@ -105,6 +105,7 @@ class DateSelect(discord.ui.Select):
         now = datetime.now().astimezone(jst)
         __to = (now - timedelta(days=30 * mth)).date()
         _to = f"{__to.year}/{__to.month}/{__to.day}"
+        print(_to)
         client = SongDBClient(url=req_url)
         _date = await client.search_by_date(_to=_to)
         if _date.songs == []:  # no result found
