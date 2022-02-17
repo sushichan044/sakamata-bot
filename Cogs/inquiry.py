@@ -65,11 +65,9 @@ class InquiryConfView(discord.ui.View):
             type=thread_type,
         )
         await target.add_user(interaction.user)
-        mods = interaction.guild.get_role(admin_role).members
-        if mods:
-            for mod in mods:
-                await target.add_user(mod)
-        em = eb._inquiry_contact(target)
+        role = interaction.guild.get_role(admin_role)
+        await target.send(role.mention)
+        em = EB()._inquiry_contact(target)
         await interaction.followup.send(embed=em, ephemeral=True)
         return
 
