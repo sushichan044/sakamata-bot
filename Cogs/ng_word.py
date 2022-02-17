@@ -25,7 +25,12 @@ class NGWordSystem(commands.Cog):
         ):
             return
         else:
-            high_ng_msg = [x for x in word_list_high if x in message.content]
+            role = message.guild.get_role(admin_role)
+            high_ng_msg = [
+                x
+                for x in word_list_high
+                if x in message.content and role not in message.author.roles
+            ]
             low_ng_msg = [word for word in word_list_low if word in message.content]
             prog = re.compile(r"discord.gg/[\w]*")
             links = prog.findall(message.content)
