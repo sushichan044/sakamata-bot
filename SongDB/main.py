@@ -106,7 +106,8 @@ class DateSelect(discord.ui.Select):
         __to = (now - timedelta(days=30 * mth)).date()
         if __to.month < 10:
             month = f"0{str(__to.month)}"
-        month = str(__to.month)
+        else:
+            month = str(__to.month)
         _to = f"{__to.year}/{month}/{__to.day}"
         print(_to)
         client = SongDBClient(url=req_url)
