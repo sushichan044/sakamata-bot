@@ -77,7 +77,7 @@ class InquiryView(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(
-        label="管理者への問い合わせ/Contact to Moderators",
+        label="問い合わせ/Contact to Moderators",
         style=discord.ButtonStyle.secondary,
         emoji="\N{Thought Balloon}",
         custom_id="start_contact_mods_button",
