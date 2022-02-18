@@ -13,7 +13,7 @@ class Portal(commands.Cog):
     @slash_command(name="gtool")
     async def portal(self, ctx: ApplicationContext):
         embed = embed_builder._portal()
-        await ctx.respond(embed=embed, view=PortalView(), ephemeral=True)
+        await ctx.respond(embed=embed, view=PortalView())
         return
 
 
