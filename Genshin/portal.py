@@ -22,12 +22,13 @@ class PortalView(discord.ui.View):
         super().__init__(timeout=None)
         self.add_item(discord.ui.Button(label="公式マップ", url=cfg.official_map, row=0))
         self.add_item(discord.ui.Button(label="非公式マップ", url=cfg.unofficial_map, row=0))
-        self.add_item(discord.ui.Button(label="コード受け取り", url=cfg.redeem_code, row=1))
-        self.add_item(discord.ui.Button(label="ログインボーナス", url=cfg.login_bonus, row=1))
+        self.add_item(discord.ui.Button(label="コード受け取り", url=cfg.redeem_code, row=0))
+        self.add_item(discord.ui.Button(label="ログインボーナス", url=cfg.login_bonus, row=0))
         self.add_item(
-            discord.ui.Button(label="shinshin.moe", url=cfg.shinshin_moe, row=2)
+            discord.ui.Button(label="shinshin.moe", url=cfg.shinshin_moe, row=1)
         )
-        self.add_item(discord.ui.Button(label="paimon.moe", url=cfg.paimon_moe, row=2))
+        self.add_item(discord.ui.Button(label="paimon.moe", url=cfg.paimon_moe, row=1))
+        self.add_item(discord.ui.Button(label="ダメージ計算機", url=cfg.damage_calc, row=1))
 
 
 def setup(bot):
