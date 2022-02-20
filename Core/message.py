@@ -100,7 +100,7 @@ class Message_Sys(commands.Cog):
             )
         if result:
             if files != []:
-                sent_message = await target.edit(content=text, files=[files])
+                sent_message = await target.edit(content=text, files=files)
             else:
                 sent_message = await target.edit(content=text)
             msg = exe_msg
