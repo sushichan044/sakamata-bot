@@ -67,10 +67,10 @@ class Message_Sys(commands.Cog):
                 names = []
                 for attachment in ctx.message.attachments:
                     names.append(attachment.filename)
-                    if attachment.proxy_url:
-                        download(attachment.filename, attachment.proxy_url)
-                    else:
-                        download(attachment.filename, attachment.url)
+                    path = os.path.join(
+                        os.path.dirname(__file__), f"/tmp/{attachment.filename}"
+                    )
+                    await attachment.save(fp=path)
                 print(names)
                 # print("complete download")
                 sent_files = [
