@@ -74,9 +74,7 @@ class Membership(commands.Cog):
                         )
 
                     date = await self.bot.wait_for("message", check=check_date)
-                    status: Optional[str] = await Sheet(
-                        member, date.content
-                    ).check_status()
+                    status: Optional[str] = Sheet(member, date.content).check_status()
                     if status is None:
                         await date.reply("シートに反映されました。", mention_author=False)
                         add_role = guild.get_role(yt_membership_role)
