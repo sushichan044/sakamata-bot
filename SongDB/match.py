@@ -14,8 +14,7 @@ def match_url(link: str) -> str | None:
     if _long:
         v_id = long_vid.sub("", _long.group())
         return v_id
-    elif _short:
+    if _short:
         v_id = short_vid.sub("", _short.group())
         return v_id
-    else:
-        return None
+    return None
