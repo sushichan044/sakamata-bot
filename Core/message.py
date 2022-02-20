@@ -126,7 +126,7 @@ class Message_Sys(commands.Cog):
                 sent_message = await target.edit(content=text)
             msg = exe_msg
             desc_url = sent_message.jump_url
-            await ctx.send("Sended!")
+            await ctx.send("Edited!")
         else:
             msg = non_exe_msg
             desc_url = ""
