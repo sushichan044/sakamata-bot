@@ -70,7 +70,7 @@ class Thread(commands.Cog):
             required=False,
         ),
     ):
-        if category:
+        if category is not None:
             id = category.id
         else:
             id = None
@@ -115,7 +115,7 @@ class Thread(commands.Cog):
                 for thread in interaction.guild.threads
                 if not thread.is_private()
                 and not thread.locked
-                and thread.parent.category.id is None
+                and thread.parent.category is None
             ]
         # print(threads)
         for thread in threads:
