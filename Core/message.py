@@ -109,7 +109,7 @@ class Message_Sys(commands.Cog):
                         download(attachment.filename, attachment.proxy_url)
                     else:
                         download(attachment.filename, attachment.url)
-                print("complete download")
+                # print("complete download")
                 sent_files = [
                     discord.File(
                         os.path.join(os.path.dirname(__file__), f"/tmp/{name}"),
@@ -121,7 +121,7 @@ class Message_Sys(commands.Cog):
                 sent_message = await target.edit(content=text, files=sent_files)
                 for name in names:
                     os.remove(os.path.join(os.path.dirname(__file__), f"/tmp/{name}"))
-                print("complete delete")
+                # print("complete delete")
             else:
                 sent_message = await target.edit(content=text)
             msg = exe_msg
