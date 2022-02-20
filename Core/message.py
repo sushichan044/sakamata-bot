@@ -4,8 +4,8 @@ import discord
 from discord.ext import commands
 from newdispanderfixed import dispand
 
-from .confirm import Confirm
-from .log_sender import LogSender as LS
+from Core.confirm import Confirm
+from Core.log_sender import LogSender as LS
 
 admin_role = int(os.environ["ADMIN_ROLE"])
 
@@ -31,39 +31,49 @@ class Message_Sys(commands.Cog):
 
     @commands.command(name="send-message")
     @commands.has_role(admin_role)
-    async def _messagesend(self, ctx: commands.Context, channel_id: int, *, arg: str):
+    async def _send(self, ctx: commands.Context, channel_id: str, *, text: str):
         """メッセージ送信用"""
-        # channel:送信先
-        channel = self.bot.get_channel(channel_id)
-        # role:承認可能ロール
-        role = ctx.guild.get_role(admin_role)
+        channel = self.bot.get_channel(int(channel_id))
+        if channel is None:
+            channel = await self.bot.fetch_channel(int(channel_id))
+        files = []
+        if ctx.message.attachments:
+            files: list[discord.File] = [
+                await attachment.to_file() for attachment in ctx.message.attachments
+            ]
+        permitted_role = ctx.guild.get_role(admin_role)
         confirm_msg = f"【メッセージ送信確認】\n以下のメッセージを{channel.mention}へ送信します。"
         exe_msg = f"{channel.mention}にメッセージを送信しました。"
         non_exe_msg = f"{channel.mention}へのメッセージ送信をキャンセルしました。"
-        confirm_arg = f"\n{arg}\n------------------------"
-        result = await Confirm(self.bot).confirm(ctx, confirm_arg, role, confirm_msg)
+        confirm_arg = f"\n{text}\n------------------------"
+        result = await Confirm(self.bot).confirm(
+            ctx, confirm_arg, permitted_role, confirm_msg, files
+        )
         if result:
+            if files != []:
+                sent_message = await channel.send(content=text, files=files)
+            else:
+                sent_message = await channel.send(text)
             msg = exe_msg
-            message = await channel.send(arg)
-            desc_url = message.jump_url
+            desc_url = sent_message.jump_url
             await ctx.send("Sended!")
-            await LS(self.bot).send_exe_log(ctx, msg, desc_url)
-            return
         else:
             msg = non_exe_msg
             desc_url = ""
             await ctx.send("Cancelled!")
-            await LS(self.bot).send_exe_log(ctx, msg, desc_url)
-            return
+        await LS(self.bot).send_exe_log(ctx, msg, desc_url)
+        return
 
     @commands.command(name="edit-message")
     @commands.has_role(admin_role)
     async def _editmessage(
-        self, ctx: commands.Context, channel_id: int, message_id: int, *, arg: str
+        self, ctx: commands.Context, channel_id: int, message_id: int, *, text: str
     ):
         """メッセージ編集用"""
-        channel = self.bot.get_channel(channel_id)
-        role = ctx.guild.get_role(admin_role)
+        channel = self.bot.get_channel(int(channel_id))
+        if channel is None:
+            channel = await self.bot.fetch_channel(int(channel_id))
+        permitted_role = ctx.guild.get_role(admin_role)
         target = await channel.fetch_message(message_id)
         msg_url = (
             f"https://discord.com/channels/{ctx.guild.id}/{channel_id}/{message_id}"
@@ -71,21 +81,27 @@ class Message_Sys(commands.Cog):
         confirm_msg = f"【メッセージ編集確認】\n{channel.mention}のメッセージ\n{msg_url}\nを以下のように編集します。"
         exe_msg = f"{channel.mention}のメッセージを編集しました。"
         non_exe_msg = f"{channel.mention}のメッセージの編集をキャンセルしました。"
-        confirm_arg = f"\n{arg}\n------------------------"
-        result = await Confirm(self.bot).confirm(ctx, confirm_arg, role, confirm_msg)
+        confirm_arg = f"\n{text}\n------------------------"
+        result = await Confirm(self.bot).confirm(
+            ctx, confirm_arg, permitted_role, confirm_msg
+        )
         if result:
+            if ctx.message.attachments:
+                files: list[discord.File] = [
+                    await attachment.to_file() for attachment in ctx.message.attachments
+                ]
+                sent_message = await target.edit(content=text, files=files)
+            else:
+                sent_message = await target.edit(content=text)
             msg = exe_msg
-            await target.edit(content=arg)
-            desc_url = msg_url
+            desc_url = sent_message.jump_url
             await ctx.send("Edited!")
-            await LS(self.bot).send_exe_log(ctx, msg, desc_url)
-            return
         else:
             msg = non_exe_msg
             desc_url = ""
             await ctx.send("Cancelled!")
-            await LS(self.bot).send_exe_log(ctx, msg, desc_url)
-            return
+        await LS(self.bot).send_exe_log(ctx, msg, desc_url)
+        return
 
 
 def setup(bot):
