@@ -16,6 +16,7 @@ from discord.ext.ui import (
     View,
     ViewTracker,
     state,
+    PaginationButtons,
 )
 
 thread_log_channel = int(os.environ["THREAD_LOG_CHANNEL"])
@@ -175,7 +176,9 @@ class PagePage:
             [
                 Page(self._text),
                 Page(f"```{self._text}```"),
-            ]
+            ],
+            show_indicator=False,
+            cls=CustomButtons,
         )
         return view
 
@@ -183,6 +186,14 @@ class PagePage:
         view = self._view()
         tracker = ViewTracker(view, timeout=None)
         await tracker.track(InteractionProvider(interaction, ephemeral=True))
+
+
+class CustomButtons(PaginationButtons):
+    def previous(self, now: int, last_page: int) -> Button:
+        return Button("<").style(discord.ButtonStyle.green).disabled(now == 0)
+
+    def next(self, now: int, last_page: int) -> Button:
+        return Button(">").style(discord.ButtonStyle.green).disabled(now == last_page)
 
 
 class EscapeButton(View):
