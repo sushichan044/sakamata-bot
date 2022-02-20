@@ -15,7 +15,7 @@ class Confirm(commands.Cog):
         confirm_arg: str,
         role: discord.Role,
         confirm_msg: str,
-        attachments: list[discord.File] | list[] = None,
+        attachments: list[discord.File],
     ) -> bool:
         send_confirm_msg_1 = f"{confirm_msg}\n------------------------{confirm_arg}"
         send_confirm_msg_2 = f"\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1"
