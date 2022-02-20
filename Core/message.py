@@ -145,7 +145,9 @@ class Message_Sys(commands.Cog):
                     )
                     for name in names
                 ]
-                sent_message = await target.edit(content=text, files=sent_files)
+                sent_message = await target.edit(
+                    content=text, attachments=target.attachments, files=sent_files
+                )
                 for name in names:
                     os.remove(os.path.join(os.path.dirname(__file__), f"/tmp/{name}"))
                 # print("complete delete")
