@@ -1,14 +1,18 @@
 import os
 from datetime import timedelta, timezone
 
+from discord import ApplicationContext
+
 import discord
 from discord import Option
-from discord.commands import slash_command, permissions
+from discord.commands import permissions, slash_command
 from discord.ext import commands
 from discord.ext.ui import (
     Button,
     InteractionProvider,
     Message,
+    PageView,
+    PaginationView,
     View,
     ViewTracker,
     state,
@@ -59,15 +63,16 @@ class Thread(commands.Cog):
     @permissions.has_role(admin_role)
     async def _board_slash(
         self,
-        ctx,
+        ctx: ApplicationContext,
         category: Option(discord.CategoryChannel, "対象のカテゴリを選択してください。"),
     ):
         board = self._make_board(ctx.interaction, category.id)
-        print(board)
+        # print(board)
         # await ctx.respond('Done', ephemeral=True)
-        view = EscapeButton(board)
-        tracker = ViewTracker(view, timeout=None)
-        await tracker.track(InteractionProvider(ctx.interaction))
+        # view = EscapeButton(board)
+        # tracker = ViewTracker(view, timeout=None)
+        # await tracker.track(InteractionProvider(ctx.interaction))
+        await PagePage(text=board)._send(ctx.interaction)
         return
 
     @commands.command(name="thread_board")
@@ -145,6 +150,39 @@ class Thread(commands.Cog):
             value=f"{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}",
         )
         return embed
+
+
+class Page(PageView):
+    def __init__(self, text: str):
+        super(Page, self).__init__()
+        self.text = text
+
+    async def body(self, _paginator: PaginationView) -> Message | View:
+        return Message(content=self.text)
+
+    async def on_appear(self, paginator: PaginationView) -> None:
+        # print(f"appeared page: {paginator.page}")
+        pass
+
+
+class PagePage:
+    def __init__(self, text: str) -> None:
+        self._text = text
+        pass
+
+    def _view(self) -> PaginationView:
+        view = PaginationView(
+            [
+                Page(self._text),
+                Page(f"```{self._text}```"),
+            ]
+        )
+        return view
+
+    async def _send(self, interaction: discord.Interaction):
+        view = self._view()
+        tracker = ViewTracker(view, timeout=None)
+        await tracker.track(InteractionProvider(interaction, ephemeral=True))
 
 
 class EscapeButton(View):
