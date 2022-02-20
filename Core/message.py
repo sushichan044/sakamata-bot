@@ -1,6 +1,7 @@
 import os
 
 import discord
+import requests
 from discord.ext import commands
 from newdispanderfixed import dispand
 
@@ -90,6 +91,7 @@ class Message_Sys(commands.Cog):
             files: list[discord.File] = [
                 await attachment.to_file() for attachment in ctx.message.attachments
             ]
+
             result = await Confirm(self.bot).confirm(
                 ctx, confirm_arg, permitted_role, confirm_msg, files
             )
@@ -100,7 +102,26 @@ class Message_Sys(commands.Cog):
             )
         if result:
             if files != []:
-                sent_message = await target.edit(content=text, files=files)
+                names = []
+                for attachment in ctx.message.attachments:
+                    names.append(attachment.filename)
+                    if attachment.proxy_url:
+                        download(attachment.filename, attachment.proxy_url)
+                    else:
+                        download(attachment.filename, attachment.url)
+                print('complete download')
+                sent_files = [
+                    discord.File(
+                        os.path.join(os.path.dirname(__file__), f"/tmp/{name}"),
+                        filename=name,
+                        spoiler=False,
+                    )
+                    for name in names
+                ]
+                sent_message = await target.edit(content=text, files=sent_files)
+                for name in names:
+                    os.remove(os.path.join(os.path.dirname(__file__), f"/tmp/{name}"))
+                print('complete delete')
             else:
                 sent_message = await target.edit(content=text)
             msg = exe_msg
@@ -112,6 +133,16 @@ class Message_Sys(commands.Cog):
             await ctx.send("Cancelled!")
         await LS(self.bot).send_exe_log(ctx, msg, desc_url)
         return
+
+
+def download(title, url):
+    try:
+        r = requests.get(url)
+        # openの中で保存先のパス（ファイル名を指定）
+        with open("/tmp" + title, mode="w") as f:
+            f.write(r.text)
+    except requests.exceptions.RequestException as err:
+        print(err)
 
 
 def setup(bot):
