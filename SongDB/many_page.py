@@ -26,7 +26,6 @@ class Page(PageView):
 class PagePage:
     def __init__(self, embeds: list[Embed]) -> None:
         self._embeds = embeds
-        pass
 
     def _split(self, __embeds: list[Embed]) -> list[list[Embed]]:
         return [__embeds[num : num + 3] for num in range(0, len(__embeds), 3)]

@@ -64,8 +64,7 @@ class ProdDropdown(discord.ui.Select):
                 embed=embed, view=view, ephemeral=True
             )
             return
-        else:
-            raise InteractionError(interaction=interaction, cls=self)
+        raise InteractionError(interaction=interaction, cls=self)
 
 
 class DateSelect(discord.ui.Select):
@@ -156,8 +155,8 @@ class ProdSearch(discord.ui.Modal):
     async def callback(self, interaction: discord.Interaction):
         # await interaction.response.defer(ephemeral=True)
         if self.children[2].value:
-            id = match_url(self.children[2].value)
-            if not id:
+            matched_id = match_url(self.children[2].value)
+            if not matched_id:
                 print("Invalid url inputted.")
                 await interaction.response.send_message(
                     content="対応していないURLが入力されました。", ephemeral=True
@@ -176,10 +175,10 @@ class ProdSearch(discord.ui.Modal):
             return
         songs = await client.multi_search(**d)
         if songs.songs == []:  # no result found
-            embed = EB()._empty(input=d)
+            embed = EB()._empty(_input=d)
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
-        embeds = EB()._rawsong(input=d, songs=songs.songs)
+        embeds = EB()._rawsong(_input=d, songs=songs.songs)
         # await interaction.response.send_message(embed=embeds[0])
         await PagePage(embeds=embeds)._send(interaction)
         return

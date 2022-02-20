@@ -30,7 +30,6 @@ class InteractionError(Exception):
         if output:
             output = f"--------------------\n{output}\n--------------------"
         print(output)
-        pass
 
 
 class ErrorNotify(commands.Cog):
@@ -60,8 +59,7 @@ class ErrorNotify(commands.Cog):
         elif isinstance(error, commands.BotMissingPermissions):
             await ctx.reply(content="Botに必要な権限がありません。", mention_author=False)
             return
-        else:
-            return
+        return
 
     @commands.Cog.listener(name="on_application_command_error")
     async def _on_application_command_error(self, ctx, exception):
@@ -70,10 +68,9 @@ class ErrorNotify(commands.Cog):
         if len(msg) >= 4000:
             print(msg)
             return
-        else:
-            channel = self.bot.get_channel(error_log_channel)
-            await channel.send(f"```{msg}```")
-            return
+        channel = self.bot.get_channel(error_log_channel)
+        await channel.send(f"```{msg}```")
+        return
 
     @commands.command(name="errortest")
     @commands.has_role(admin_role)

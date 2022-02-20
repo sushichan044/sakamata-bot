@@ -28,7 +28,7 @@ class EmbedBuilder:
         )
         return embed
 
-    def _empty(self, *, input: dict) -> Embed:
+    def _empty(self, *, _input: dict) -> Embed:
         embed = Embed(
             title="検索結果",
             description="検索結果は0件でした。",
@@ -36,11 +36,11 @@ class EmbedBuilder:
         )
         embed.add_field(
             name="検索条件",
-            value="\n".join(self._query(input=input)),
+            value="\n".join(self._query(_input=_input)),
         )
         return embed
 
-    def _rawsong(self, *, input: dict, songs: list[Song]) -> list[Embed]:
+    def _rawsong(self, *, _input: dict, songs: list[Song]) -> list[Embed]:
         embeds = []
         embed = Embed(
             title="検索結果",
@@ -49,7 +49,7 @@ class EmbedBuilder:
         )
         embed.add_field(
             name="検索条件",
-            value="\n".join(self._query(input=input)),
+            value="\n".join(self._query(_input=_input)),
         )
         embeds.append(embed)
         if songs != []:
@@ -115,13 +115,13 @@ class EmbedBuilder:
         delta = datetime.now().astimezone(jst) - latest_dt
         return delta
 
-    def _query(self, *, input: dict) -> list[str]:
+    def _query(self, *, _input: dict) -> list[str]:
         converter_dict = {
             "song_name": "曲名: ",
             "artist_name": "アーティスト名: ",
             "stream_id": "配信ID: ",
         }
-        s_method = [converter_dict[k] + v for k, v in input.items() if v]
+        s_method = [converter_dict[k] + v for k, v in _input.items() if v]
         return s_method
 
     def _empty_recent(self, *, _to: str) -> Embed:
