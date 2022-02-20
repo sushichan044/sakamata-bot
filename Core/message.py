@@ -93,7 +93,9 @@ class Message_Sys(commands.Cog):
             ctx, confirm_arg, permitted_role, confirm_msg
         )
         if result:
-            sent_message = await target.edit(content=text)
+            sent_message = await target.edit(
+                content=text, attachments=target.attachments
+            )
             msg = exe_msg
             desc_url = sent_message.jump_url
             await ctx.send("Edited!")
