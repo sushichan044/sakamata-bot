@@ -48,7 +48,6 @@ CORE_EXTENSION_LIST = [
 ]
 
 EXTENSION_LIST = [
-    # "Cogs.concept",
     "Cogs.entrance",
     "Cogs.inquiry",
     "Cogs.member_count",
@@ -61,9 +60,13 @@ EXTENSION_LIST = [
     "Cogs.tool",
 ]
 
-GENSHIN_EXTENSION_LIST = ["Genshin.portal"]
+GENSHIN_EXTENSION_LIST = [
+    # "Genshin.portal",
+]
 
-SONG_DB_EXTENSION_LIST = ["SongDB.main"]
+SONG_DB_EXTENSION_LIST = [
+    # "SongDB.main",
+]
 
 
 class MyBot(commands.Bot):
