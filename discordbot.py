@@ -5,7 +5,7 @@ import traceback
 from datetime import timedelta, timezone
 
 import discord
-from discord import Member, Option
+from discord import Member
 from discord.ext import commands
 
 from Cogs.inquiry import InquiryView, SuggestionView

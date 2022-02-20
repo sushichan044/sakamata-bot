@@ -45,10 +45,7 @@ class DM_Sys(commands.Cog):
                 names = []
                 for attachment in ctx.message.attachments:
                     names.append(attachment.filename)
-                    path = os.path.join(
-                        os.path.dirname(__file__), f"/tmp/{attachment.filename}"
-                    )
-                    await attachment.save(fp=path)
+                    download(attachment.filename, attachment.url)
                 # print("complete download")
                 sent_files = [
                     discord.File(
