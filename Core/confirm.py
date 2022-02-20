@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from typing import Optional
 
 accept_emoji = "\N{Heavy Large Circle}"
 reject_emoji = "\N{Cross Mark}"
@@ -15,11 +16,11 @@ class Confirm(commands.Cog):
         confirm_arg: str,
         role: discord.Role,
         confirm_msg: str,
-        attachments: list[discord.File] | list[None] = None,
+        attachments: Optional[list[discord.File]] = None,
     ) -> bool:
         send_confirm_msg_1 = f"{confirm_msg}\n------------------------{confirm_arg}"
         send_confirm_msg_2 = f"\nコマンド承認:{role.mention}\n実行に必要な承認人数: 1\n中止に必要な承認人数: 1"
-        if attachments != []:
+        if attachments:
             send_confirm_msg_1 = (
                 send_confirm_msg_1
                 + f"\n添付ファイルの数:{len(attachments)}件\n------------------------"
@@ -28,7 +29,7 @@ class Confirm(commands.Cog):
                 send_confirm_msg_2 + "\n------------------------\n添付ファイル:"
             )
         msg = send_confirm_msg_1 + send_confirm_msg_2
-        if attachments != []:
+        if attachments:
             message = await ctx.send(content=msg, files=attachments)
         else:
             message = await ctx.send(content=msg)
