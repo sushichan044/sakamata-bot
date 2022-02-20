@@ -87,22 +87,13 @@ class Message_Sys(commands.Cog):
         non_exe_msg = f"{channel.mention}のメッセージの編集をキャンセルしました。"
         confirm_arg = f"\n{text}\n------------------------"
         if ctx.message.attachments:
-            files: list[discord.File] = [
-                await attachment.to_file() for attachment in ctx.message.attachments
-            ]
-            result = await Confirm(self.bot).confirm(
-                ctx, confirm_arg, permitted_role, confirm_msg, files
-            )
-        else:
-            files = []
-            result = await Confirm(self.bot).confirm(
-                ctx, confirm_arg, permitted_role, confirm_msg
-            )
+            await ctx.reply(content='メッセージの編集でファイルを追加することはできません。')
+            return
+        result = await Confirm(self.bot).confirm(
+            ctx, confirm_arg, permitted_role, confirm_msg
+        )
         if result:
-            if files != []:
-                sent_message = await target.edit(content=text, files=files)
-            else:
-                sent_message = await target.edit(content=text)
+            sent_message = await target.edit(content=text)
             msg = exe_msg
             desc_url = sent_message.jump_url
             await ctx.send("Edited!")
