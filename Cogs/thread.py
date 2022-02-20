@@ -3,6 +3,8 @@ from datetime import timedelta, timezone
 
 from discord import ApplicationContext
 
+from typing import Optional
+
 import discord
 from discord import Option
 from discord.commands import permissions, slash_command
@@ -62,9 +64,17 @@ class Thread(commands.Cog):
     async def _board_slash(
         self,
         ctx: ApplicationContext,
-        category: Option(discord.CategoryChannel, "対象のカテゴリを選択してください。"),
+        category: Option(
+            discord.CategoryChannel,
+            description="対象のカテゴリを選択してください。選択しなかった場合カテゴリのないチャンネルについて実行します。",
+            required=False,
+        ),
     ):
-        board = self._make_board(ctx.interaction, category.id)
+        if category:
+            id = category.id
+        else:
+            id = None
+        board = self._make_board(ctx.interaction, category_id=id)
         # print(board)
         # await ctx.respond('Done', ephemeral=True)
         # view = EscapeButton(board)
@@ -73,29 +83,40 @@ class Thread(commands.Cog):
         await PagePage(text=board)._send(ctx.interaction)
         return
 
-    @commands.command(name="thread_board")
-    @commands.has_role(admin_role)
-    async def _thread(self, ctx):
-        text = self._make_board(ctx, ctx.message.channel.category.id)
-        await ctx.send(text)
-        return
-
-    def _make_board(self, ctx, category_id: int) -> str:
-        channels = [
-            channel
-            for channel in ctx.guild.channels
-            if channel.category and channel.category.id == category_id
-        ]
+    def _make_board(
+        self, interaction: discord.Interaction, category_id: Optional[int] = None
+    ) -> str:
+        if category_id:
+            channels = [
+                channel
+                for channel in interaction.guild.channels
+                if channel.category and channel.category.id == category_id
+            ]
+        else:
+            channels = [
+                channel
+                for channel in interaction.guild.channels
+                if channel.category is None
+            ]
         sort_channels = sorted(channels, key=lambda channel: channel.position)
         # print(channels)
         thread_dic = {}
-        threads = [
-            thread
-            for thread in ctx.guild.threads
-            if not thread.is_private()
-            and not thread.locked
-            and thread.parent.category.id == category_id
-        ]
+        if category_id:
+            threads = [
+                thread
+                for thread in interaction.guild.threads
+                if not thread.is_private()
+                and not thread.locked
+                and thread.parent.category.id == category_id
+            ]
+        else:
+            threads = [
+                thread
+                for thread in interaction.guild.threads
+                if not thread.is_private()
+                and not thread.locked
+                and thread.parent.category.id is None
+            ]
         # print(threads)
         for thread in threads:
             thread_dic[thread] = thread.parent.position
@@ -111,8 +132,8 @@ class Thread(commands.Cog):
             child_thread = sorted(
                 [
                     thread
-                    for thread, parent in thread_dic.items()
-                    if parent == channel.position
+                    for thread, parent_pos in thread_dic.items()
+                    if parent_pos == channel.position
                 ],
                 key=lambda thread: len(thread.name),
             )
