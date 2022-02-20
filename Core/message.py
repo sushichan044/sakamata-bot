@@ -161,15 +161,5 @@ class Message_Sys(commands.Cog):
         return
 
 
-def download(title, url):
-    try:
-        r = requests.get(url, stream=True)
-        # openの中で保存先のパス（ファイル名を指定）
-        with open("/tmp/" + title, mode="wb") as f:
-            f.write(r.content)
-    except requests.exceptions.RequestException as err:
-        print(err)
-
-
 def setup(bot):
     return bot.add_cog(Message_Sys(bot))
