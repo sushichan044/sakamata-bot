@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 
 from Core.confirm import Confirm
+from Core.download import download
 from Core.embed_builder import EmbedBuilder as EB
 from Core.log_sender import LogSender as LS
 
@@ -41,7 +42,25 @@ class DM_Sys(commands.Cog):
             )
         if result:
             if files != []:
-                sent_message = await user.send(content=text, files=files)
+                names = []
+                for attachment in ctx.message.attachments:
+                    names.append(attachment.filename)
+                    if attachment.proxy_url:
+                        download(attachment.filename, attachment.proxy_url)
+                    else:
+                        download(attachment.filename, attachment.url)
+                # print("complete download")
+                sent_files = [
+                    discord.File(
+                        os.path.join(os.path.dirname(__file__), f"/tmp/{name}"),
+                        filename=name,
+                        spoiler=False,
+                    )
+                    for name in names
+                ]
+                sent_message = await user.send(content=text, files=sent_files)
+                for name in names:
+                    os.remove(os.path.join(os.path.dirname(__file__), f"/tmp/{name}"))
             else:
                 sent_message = await user.send(content=text)
             msg = exe_msg

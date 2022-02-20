@@ -1,11 +1,11 @@
 import os
 
 import discord
-import requests
 from discord.ext import commands
 from newdispanderfixed import dispand
 
 from Core.confirm import Confirm
+from Core.download import download
 from Core.log_sender import LogSender as LS
 
 admin_role = int(os.environ["ADMIN_ROLE"])
@@ -64,7 +64,25 @@ class Message_Sys(commands.Cog):
             )
         if result:
             if files != []:
-                sent_message = await channel.send(content=text, files=files)
+                names = []
+                for attachment in ctx.message.attachments:
+                    names.append(attachment.filename)
+                    if attachment.proxy_url:
+                        download(attachment.filename, attachment.proxy_url)
+                    else:
+                        download(attachment.filename, attachment.url)
+                # print("complete download")
+                sent_files = [
+                    discord.File(
+                        os.path.join(os.path.dirname(__file__), f"/tmp/{name}"),
+                        filename=name,
+                        spoiler=False,
+                    )
+                    for name in names
+                ]
+                sent_message = await channel.send(content=text, files=sent_files)
+                for name in names:
+                    os.remove(os.path.join(os.path.dirname(__file__), f"/tmp/{name}"))
             else:
                 sent_message = await channel.send(content=text)
             msg = exe_msg
