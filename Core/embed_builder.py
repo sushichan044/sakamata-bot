@@ -57,7 +57,7 @@ class EmbedBuilder:
         )
         embed.set_author(
             name=message.author.display_name,
-            icon_url=avatar_check(message.author),
+            icon_url=self.avatar_check(message.author),
         )
         embed.add_field(name="送信者", value=f"{message.author.mention}")
         embed.add_field(
