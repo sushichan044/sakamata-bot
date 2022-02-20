@@ -8,15 +8,12 @@ from discord import Option
 from discord.commands import permissions, slash_command
 from discord.ext import commands
 from discord.ext.ui import (
-    Button,
     InteractionProvider,
     Message,
     PageView,
     PaginationView,
     View,
     ViewTracker,
-    state,
-    PaginationButtons,
 )
 
 thread_log_channel = int(os.environ["THREAD_LOG_CHANNEL"])
