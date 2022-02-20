@@ -178,7 +178,6 @@ class PagePage:
                 Page(f"```{self._text}```"),
             ],
             show_indicator=False,
-            cls=CustomButtons,
         )
         return view
 
@@ -186,60 +185,6 @@ class PagePage:
         view = self._view()
         tracker = ViewTracker(view, timeout=None)
         await tracker.track(InteractionProvider(interaction, ephemeral=True))
-
-
-class CustomButtons(PaginationButtons):
-    def previous(self, now: int, last_page: int) -> Button:
-        return Button("<").style(discord.ButtonStyle.green).disabled(now == 0)
-
-    def next(self, now: int, last_page: int) -> Button:
-        return Button(">").style(discord.ButtonStyle.green).disabled(now == last_page)
-
-
-class EscapeButton(View):
-    status = state("status")
-    text = state("text")
-
-    def __init__(self, text: str):
-        super().__init__()
-        self.text = text
-        self.l_str = "OK"
-        self.r_str = "取り消し"
-        self.status = None
-
-    async def _ok(self, interaction: discord.Interaction):
-        self.status = True
-        self.text = f"```{self.text}```"
-        self.stop()
-        return
-
-    async def _ng(self, interaction: discord.Interaction):
-        self.status = False
-        await interaction.message.delete()
-        self.stop()
-        return
-
-    async def body(self) -> Message:
-        return Message(
-            content=self.text,
-            embeds=[
-                discord.Embed(
-                    title="スレッド一覧プレビュー",
-                    description="この内容で更新用メッセージを送信しますか？",
-                    color=15767485,
-                ),
-            ],
-            components=[
-                Button(self.l_str)
-                .style(discord.ButtonStyle.green)
-                .disabled(self.status is not None)
-                .on_click(self._ok),
-                Button(self.r_str)
-                .style(discord.ButtonStyle.red)
-                .disabled(self.status is not None)
-                .on_click(self._ng),
-            ],
-        )
 
 
 def setup(bot):
