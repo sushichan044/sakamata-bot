@@ -7,10 +7,10 @@ import requests
 from discord.ext import commands
 from discord.ui import InputText, Modal
 
-from . import embed_builder as eb
+from Cogs.embed_builder import EmbedBuilder as EB
 
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
-mod_role = int(os.environ["MOD_ROLE"])
+admin_role = int(os.environ["ADMIN_ROLE"])
 hook_url = os.environ["FEEDBACK_WEBHOOK"]
 
 
@@ -23,7 +23,7 @@ class Inquiry(commands.Cog):
     async def _send_inq_button(self, ctx):
         embed = discord.Embed(
             title="管理者への問い合わせ",
-            description="管理者へ直接問い合わせがしたい場合は\nボタンを押してください。\n(間違えて押した場合は速やかに教えてください)",
+            description="管理者へ直接問い合わせしたい場合は\nボタンを押してください。",
             color=2105893,
         )
         await ctx.send(embed=embed, view=InquiryView())
@@ -41,20 +41,20 @@ class Inquiry(commands.Cog):
         return
 
 
-class InquiryView(discord.ui.View):
-    def __init__(self) -> None:
+class InquiryConfView(discord.ui.View):
+    def __init__(self):
         super().__init__(timeout=None)
 
     @discord.ui.button(
-        label="管理者への問い合わせ/Contact to Moderators",
-        style=discord.ButtonStyle.secondary,
-        emoji="\N{Thought Balloon}",
-        custom_id="start_contact_mods_button",
+        label="続ける/Continue",
+        style=discord.ButtonStyle.red,
+        custom_id="continue_contact_mods_button",
         row=0,
     )
-    async def _contact_button(
+    async def callback_ok(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
+        await interaction.response.defer(ephemeral=True)
         if interaction.guild.premium_tier >= 2:
             thread_type = discord.ChannelType.private_thread
         else:
@@ -65,8 +65,33 @@ class InquiryView(discord.ui.View):
             type=thread_type,
         )
         await target.add_user(interaction.user)
-        em = eb._inquiry_contact(target)
-        await interaction.response.send_message(embed=em, ephemeral=True)
+        role = interaction.guild.get_role(admin_role)
+        await target.send(role.mention)
+        em = EB()._inquiry_contact(target)
+        await interaction.followup.send(embed=em, ephemeral=True)
+        return
+
+
+class InquiryView(discord.ui.View):
+    def __init__(self) -> None:
+        super().__init__(timeout=None)
+
+    @discord.ui.button(
+        label="問い合わせ/Contact Moderators",
+        style=discord.ButtonStyle.secondary,
+        emoji="\N{Thought Balloon}",
+        custom_id="start_contact_mods_button",
+        row=0,
+    )
+    async def _contact_button(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        await interaction.response.defer(ephemeral=True)
+        await interaction.followup.send(
+            content="続けるボタンを押すと管理者を呼び出します。\n間違えて押した場合はこのメッセージを消してください。\n\nPress the 'Continue' button to contact Moderators.\nIf you pressed 'Contact' button by mistake, please delete this message.",
+            view=InquiryConfView(),
+            ephemeral=True,
+        )
         return
 
 

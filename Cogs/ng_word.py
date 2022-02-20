@@ -25,16 +25,30 @@ class NGWordSystem(commands.Cog):
         ):
             return
         else:
-            high_ng_msg = [x for x in word_list_high if x in message.content]
-            low_ng_msg = [word for word in word_list_low if word in message.content]
+            role = message.guild.get_role(admin_role)
+            high_ng_msg = [
+                x
+                for x in word_list_high
+                if x in message.content and role not in message.author.roles
+            ]
+            low_ng_msg = [
+                word
+                for word in word_list_low
+                if word in message.content and role not in message.author.roles
+            ]
             prog = re.compile(r"discord.gg/[\w]*")
             links = prog.findall(message.content)
-            # print(n)
-            # invites_list = await message.guild.invites()
-            invites_url = [x.url for x in await message.guild.invites()]
-            allowed_urls = [item.replace("https://", "") for item in invites_url]
-            # print(f'{replaced_invites}')
-            ng_url = [link for link in links if link not in allowed_urls]
+            ng_url = []
+            if links:
+                allowed_urls = [
+                    item.replace("https://", "")
+                    for item in [x.url for x in await message.guild.invites()]
+                ]
+                ng_url = [
+                    link
+                    for link in links
+                    if link not in allowed_urls and role not in message.author.roles
+                ]
             if high_ng_msg != [] or ng_url != []:
                 ng_content = high_ng_msg + ng_url
                 ng_content = "\n".join(ng_content)

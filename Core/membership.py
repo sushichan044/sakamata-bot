@@ -8,10 +8,10 @@ import discord
 from discord.ext import commands
 from discord.ext.ui import MessageProvider, ViewTracker
 
-from .confirm import Confirm
-from .log_sender import LogSender as LS
-from .membership_ui import ConfirmView, RemoveView
-from .post_sheet import PostToSheet as Sheet
+from Core.confirm import Confirm
+from Core.log_sender import LogSender as LS
+from Core.membership_ui import ConfirmView, RemoveView
+from Core.post_sheet import PostToSheet as Sheet
 
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
@@ -261,10 +261,8 @@ class MemberVerifyButton(discord.ui.View):
     ):
         await interaction.response.defer()
         res_image_name = "receive_dm.png"
-
-        path = os.path.dirname(__file__) + r"../images/receive_dm.png"
+        path = os.path.join(os.path.dirname(__file__), r"../images/receive_dm.png")
         res_image = discord.File(fp=path, filename=res_image_name, spoiler=False)
-
         embed = discord.Embed(
             title="認証を開始します。",
             description="BotからのDMを確認してください。",
@@ -298,7 +296,7 @@ class MemberVerifyButton(discord.ui.View):
 
 def _compose_dm_embeds() -> tuple[discord.Embed, discord.File]:
     image_name = "auth_1.png"
-    path = os.path.dirname(__file__) + r"../images/auth_1.png"
+    path = os.path.join(os.path.dirname(__file__), r"../images/auth_1.png")
     image = discord.File(fp=path, filename=image_name, spoiler=False)
     embed = discord.Embed(
         title="メンバーシップ認証", description="以下の手順に従って\n認証を開始してください。", color=15767485

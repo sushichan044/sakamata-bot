@@ -19,8 +19,7 @@ from discord.ext.ui import (
 )
 
 from Cogs.connect import connect
-
-from . import embed_builder as eb
+from Cogs.embed_builder import EmbedBuilder as EB
 
 guild_id = int(os.environ["GUILD_ID"])
 utc = timezone.utc
@@ -174,9 +173,9 @@ class Concept(commands.Cog):
         master_thread: discord.Thread,
         session_id: int,
     ) -> str:
-        game_msg_1 = _set_session_id(eb._concept_start(master), session_id)
+        game_msg_1 = _set_session_id(EB()._concept_start(master), session_id)
         await game_thread.send(embed=game_msg_1)
-        master_msg_1 = _set_session_id(eb._concept_start_parent(master), session_id)
+        master_msg_1 = _set_session_id(EB()._concept_start_parent(master), session_id)
         word_target = await master_thread.send(embed=master_msg_1)
 
         def _catch_answer(message):
@@ -191,11 +190,13 @@ class Concept(commands.Cog):
             "message", check=_catch_answer
         )
         master_msg_2 = _set_session_id(
-            eb._concept_set_answer_embed(game_thread, answer_word_msg.content, master),
+            EB()._concept_set_answer_embed(
+                game_thread, answer_word_msg.content, master
+            ),
             session_id,
         )
         await master_thread.send(embed=master_msg_2)
-        game_msg_2 = _set_session_id(eb._concept_set_answer_embed_game(), session_id)
+        game_msg_2 = _set_session_id(EB()._concept_set_answer_embed_game(), session_id)
         await game_thread.send(embed=game_msg_2)
         return answer_word_msg.content
 
