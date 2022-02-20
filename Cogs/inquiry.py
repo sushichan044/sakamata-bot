@@ -7,7 +7,7 @@ import requests
 from discord.ext import commands
 from discord.ui import InputText, Modal
 
-from . import embed_builder as eb
+from Cogs.embed_builder import EmbedBuilder as EB
 
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 admin_role = int(os.environ["ADMIN_ROLE"])
@@ -67,7 +67,7 @@ class InquiryConfView(discord.ui.View):
         await target.add_user(interaction.user)
         role = interaction.guild.get_role(admin_role)
         await target.send(role.mention)
-        em = eb._inquiry_contact(target)
+        em = EB()._inquiry_contact(target)
         await interaction.followup.send(embed=em, ephemeral=True)
         return
 

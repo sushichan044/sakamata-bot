@@ -3,7 +3,7 @@ import os
 import discord
 from discord.ext import commands
 
-from datetime import datetime, timezone, timedelta
+from datetime import timezone, timedelta
 
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")

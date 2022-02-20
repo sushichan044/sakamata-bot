@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timezone, timedelta
+from datetime import timezone, timedelta
 
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
@@ -14,3 +14,8 @@ official_statistics = (
 )
 unofficial_map = "https://genshin-impact-map.appsample.com/#/"
 unofficial_map_2 = "https://yuanshen.site/index_jp.html?locale=ja"
+redeem_code = "https://genshin.hoyoverse.com/ja/gift"
+login_bonus = "https://webstatic-sea.mihoyo.com/ys/event/signin-sea/index.html?act_id=e202102251931481&lang=ja-"
+shinshin_moe = "https://shinshin.moe/"
+paimon_moe = "https://paimon.moe/"
+damage_calc = "https://genshin.yunlu18.net/#/"

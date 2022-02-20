@@ -31,7 +31,11 @@ class NGWordSystem(commands.Cog):
                 for x in word_list_high
                 if x in message.content and role not in message.author.roles
             ]
-            low_ng_msg = [word for word in word_list_low if word in message.content]
+            low_ng_msg = [
+                word
+                for word in word_list_low
+                if word in message.content and role not in message.author.roles
+            ]
             prog = re.compile(r"discord.gg/[\w]*")
             links = prog.findall(message.content)
             ng_url = []
@@ -40,7 +44,11 @@ class NGWordSystem(commands.Cog):
                     item.replace("https://", "")
                     for item in [x.url for x in await message.guild.invites()]
                 ]
-                ng_url = [link for link in links if link not in allowed_urls]
+                ng_url = [
+                    link
+                    for link in links
+                    if link not in allowed_urls and role not in message.author.roles
+                ]
             if high_ng_msg != [] or ng_url != []:
                 ng_content = high_ng_msg + ng_url
                 ng_content = "\n".join(ng_content)
