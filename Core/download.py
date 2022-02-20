@@ -1,9 +1,9 @@
 import requests
 
 
-def download(title, url):
+def download(title: str, url: str):
     try:
-        r = requests.get(url, stream=True)
+        r = requests.get(url)
         # openの中で保存先のパス（ファイル名を指定）
         with open("/tmp/" + title, mode="wb") as f:
             f.write(r.content)
