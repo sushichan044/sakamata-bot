@@ -31,7 +31,7 @@ class Message_Sys(commands.Cog):
 
     @commands.command(name="send-message")
     @commands.has_role(admin_role)
-    async def _send(self, ctx: commands.Context, *, channel_id: str, text: str):
+    async def _send(self, ctx: commands.Context, channel_id: str, text: str):
         """メッセージ送信用"""
         channel = self.bot.get_channel(int(channel_id))
         if channel is None:
