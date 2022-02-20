@@ -139,7 +139,7 @@ def download(title, url):
     try:
         r = requests.get(url)
         # openの中で保存先のパス（ファイル名を指定）
-        with open("/tmp" + title, mode="w") as f:
+        with open("/tmp/" + title, mode="w") as f:
             f.write(r.text)
     except requests.exceptions.RequestException as err:
         print(err)
