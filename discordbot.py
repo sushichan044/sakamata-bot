@@ -48,7 +48,6 @@ CORE_EXTENSION_LIST = [
 ]
 
 EXTENSION_LIST = [
-    # "Cogs.concept",
     "Cogs.entrance",
     "Cogs.inquiry",
     "Cogs.member_count",
