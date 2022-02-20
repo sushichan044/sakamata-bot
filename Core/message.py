@@ -71,6 +71,7 @@ class Message_Sys(commands.Cog):
                         download(attachment.filename, attachment.proxy_url)
                     else:
                         download(attachment.filename, attachment.url)
+                print(names)
                 # print("complete download")
                 sent_files = [
                     discord.File(
