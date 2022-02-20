@@ -31,7 +31,7 @@ class Message_Sys(commands.Cog):
 
     @commands.command(name="send-message")
     @commands.has_role(admin_role)
-    async def _send(self, ctx: commands.Context, channel_id: str, text: str):
+    async def _send(self, ctx: commands.Context, channel_id: str, *text: str):
         """メッセージ送信用"""
         channel = self.bot.get_channel(int(channel_id))
         if channel is None:
@@ -65,7 +65,7 @@ class Message_Sys(commands.Cog):
     @commands.command(name="edit-message")
     @commands.has_role(admin_role)
     async def _editmessage(
-        self, ctx: commands.Context, channel_id: int, message_id: int, text: str
+        self, ctx: commands.Context, channel_id: int, message_id: int, *text: str
     ):
         """メッセージ編集用"""
         channel = self.bot.get_channel(int(channel_id))
