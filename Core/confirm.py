@@ -34,8 +34,7 @@ class Confirm(commands.Cog):
         # exe
         if str(payload.emoji) == accept_emoji:
             return True
-        else:
-            return False
+        return False
 
 
 def setup(bot):

@@ -3,9 +3,9 @@ import os
 import discord
 from discord.ext import commands
 
-from .confirm import Confirm
-from .dm import DM_Sys as DS
-from .log_sender import LogSender as LS
+from Core.confirm import Confirm
+from Core.dm import DM_Sys as DS
+from Core.log_sender import LogSender as LS
 
 admin_role = int(os.environ["ADMIN_ROLE"])
 
@@ -43,8 +43,6 @@ class Ban(commands.Cog):
             DM_content = DS(self.bot).make_deal_dm(deal, add_dm)
             if if_dm == "dm:false":
                 DM_content = ""
-            else:
-                pass
             confirm_msg = f"【BAN実行確認】\n実行者:{ctx.author.display_name}(アカウント名:{ctx.author},ID:{ctx.author.id})\n対象者:\n　{member}(ID:{member.id})\nDM送信:{if_dm}\nDM内容:{DM_content}"
             exe_msg = f"{member.mention}をBANしました。"
             non_exe_msg = f"{member.mention}のBANをキャンセルしました。"
