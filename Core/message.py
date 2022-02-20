@@ -17,15 +17,23 @@ class Message_Sys(commands.Cog):
 
     @commands.Cog.listener("on_message")
     async def on_message_dispand(self, message: discord.Message):
-        avoid_word_list_prefix = ["//send-message", "//edit-message", "//send-dm"]
+        avoid_prefix_list = [
+            "//send-message",
+            "//edit-message",
+            "//send-dm",
+            "【メッセージ送信確認】",
+            "【メッセージ編集確認】",
+        ]
+        avoid_suffix_list = []
         if type(message.channel) == discord.DMChannel:
             return
         else:
-            for word in avoid_word_list_prefix:
-                if message.content.startswith(word):
+            for prefix in avoid_prefix_list:
+                if message.content.startswith(prefix):
                     return
-            if message.content.endswith("中止に必要な承認人数: 1"):
-                return
+            for suffix in avoid_suffix_list:
+                if message.content.endswith(suffix):
+                    return
             else:
                 await dispand(self.bot, message)
                 return
