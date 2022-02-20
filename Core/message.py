@@ -36,24 +36,28 @@ class Message_Sys(commands.Cog):
         channel = self.bot.get_channel(int(channel_id))
         if channel is None:
             channel = await self.bot.fetch_channel(int(channel_id))
-        files = []
-        if ctx.message.attachments:
-            files: list[discord.File] = [
-                await attachment.to_file() for attachment in ctx.message.attachments
-            ]
         permitted_role = ctx.guild.get_role(admin_role)
         confirm_msg = f"【メッセージ送信確認】\n以下のメッセージを{channel.mention}へ送信します。"
         exe_msg = f"{channel.mention}にメッセージを送信しました。"
         non_exe_msg = f"{channel.mention}へのメッセージ送信をキャンセルしました。"
         confirm_arg = f"\n{text}\n------------------------"
-        result = await Confirm(self.bot).confirm(
-            ctx, confirm_arg, permitted_role, confirm_msg, files
-        )
+        if ctx.message.attachments:
+            files: list[discord.File] = [
+                await attachment.to_file() for attachment in ctx.message.attachments
+            ]
+            result = await Confirm(self.bot).confirm(
+                ctx, confirm_arg, permitted_role, confirm_msg, files
+            )
+        else:
+            files = []
+            result = await Confirm(self.bot).confirm(
+                ctx, confirm_arg, permitted_role, confirm_msg
+            )
         if result:
             if files != []:
                 sent_message = await channel.send(content=text, files=files)
             else:
-                sent_message = await channel.send(text)
+                sent_message = await channel.send(content=text)
             msg = exe_msg
             desc_url = sent_message.jump_url
             await ctx.send("Sended!")
@@ -82,17 +86,14 @@ class Message_Sys(commands.Cog):
         exe_msg = f"{channel.mention}のメッセージを編集しました。"
         non_exe_msg = f"{channel.mention}のメッセージの編集をキャンセルしました。"
         confirm_arg = f"\n{text}\n------------------------"
+        if ctx.message.attachments:
+            await ctx.reply(content='メッセージの編集でファイルを追加することはできません。')
+            return
         result = await Confirm(self.bot).confirm(
             ctx, confirm_arg, permitted_role, confirm_msg
         )
         if result:
-            if ctx.message.attachments:
-                files: list[discord.File] = [
-                    await attachment.to_file() for attachment in ctx.message.attachments
-                ]
-                sent_message = await target.edit(content=text, files=files)
-            else:
-                sent_message = await target.edit(content=text)
+            sent_message = await target.edit(content=text)
             msg = exe_msg
             desc_url = sent_message.jump_url
             await ctx.send("Edited!")
