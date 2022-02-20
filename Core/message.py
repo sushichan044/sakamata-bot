@@ -1,8 +1,14 @@
 import os
+from typing import Literal
+
+from discord import ApplicationContext, Option
 
 import discord
+import requests
 from discord.ext import commands
 from newdispanderfixed import dispand
+from discord.commands import slash_command, permissions
+
 
 from Core.confirm import Confirm
 from Core.log_sender import LogSender as LS
@@ -31,6 +37,11 @@ class Message_Sys(commands.Cog):
 
     @commands.command(name="send-message")
     @commands.has_role(admin_role)
+    async def _send(self, ctx):
+        pass
+
+    # @commands.command(name="send-message")
+    # @commands.has_role(admin_role)
     async def _messagesend(self, ctx: commands.Context, channel_id: int, *, arg: str):
         """メッセージ送信用"""
         # channel:送信先

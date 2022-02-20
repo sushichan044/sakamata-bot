@@ -5,7 +5,7 @@ import traceback
 from datetime import timedelta, timezone
 
 import discord
-from discord import Member
+from discord import Member, Option
 from discord.ext import commands
 
 from Cogs.inquiry import InquiryView, SuggestionView
@@ -185,6 +185,20 @@ async def _new_user(ctx, member: Member):
     user_info_msg = f"```ユーザー名:{member} (ID:{member.id})\nBot?:{member.bot}\nAvatar url:{avatar_url}\nニックネーム:{member_nickname}\nアカウント作成日時:{member_reg_date:%Y/%m/%d %H:%M:%S}\n参加日時:{member_join_date:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```"
     await ctx.reply(user_info_msg, mention_author=False)
     return
+
+
+@bot.slash_command(name="attach_file", guild_ids=[guild_id])
+async def say(
+    ctx: discord.ApplicationContext,
+    attachment: Option(
+        discord.Attachment,
+        "A file to attach to the message",
+        required=False,
+    ),
+):
+    """This demonstrates how to attach a file with a slash command."""
+    file = await attachment.to_file()
+    await ctx.respond("Here's your file!", file=file)
 
 
 # YoutubeAPI
