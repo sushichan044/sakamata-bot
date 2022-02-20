@@ -187,20 +187,6 @@ async def _new_user(ctx, member: Member):
     return
 
 
-@bot.slash_command(name="attach_file", guild_ids=[guild_id])
-async def say(
-    ctx: discord.ApplicationContext,
-    attachment: Option(
-        discord.Attachment,
-        "A file to attach to the message",
-        required=False,
-    ),
-):
-    """This demonstrates how to attach a file with a slash command."""
-    file = await attachment.to_file()
-    await ctx.respond("Here's your file!", file=file)
-
-
 # YoutubeAPI
 API_KEY = os.environ["GOOGLE_API_KEY"]
 YOUTUBE_API_SERVICE_NAME = "youtube"
