@@ -10,7 +10,7 @@ class PostToSheet:
         self.member = member
         self.date = date
 
-    async def check_status(self):
+    def check_status(self):
         if self.member is None:
             return
         d = self.post_sheet()
