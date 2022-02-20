@@ -26,9 +26,11 @@ class Confirm(commands.Cog):
                 send_confirm_msg_1
                 + f"\n添付ファイルの数:{len(attachments)}件\n------------------------"
             )
-            send_confirm_msg_2 = send_confirm_msg_2 + "\n------------------------\n添付ファイル:"
+            send_confirm_msg_2 = (
+                send_confirm_msg_2 + "\n------------------------\n添付ファイル:"
+            )
         msg = send_confirm_msg_1 + send_confirm_msg_2
-        if attachments:
+        if attachments != []:
             message = await ctx.send(content=msg, files=attachments)
         else:
             message = await ctx.send(content=msg)
