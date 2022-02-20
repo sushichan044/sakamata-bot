@@ -48,7 +48,7 @@ class DM_Sys(commands.Cog):
                     path = os.path.join(
                         os.path.dirname(__file__), f"/tmp/{attachment.filename}"
                     )
-                    await attachment.save(fp=path, use_cached=True)
+                    await attachment.save(fp=path)
                 # print("complete download")
                 sent_files = [
                     discord.File(
