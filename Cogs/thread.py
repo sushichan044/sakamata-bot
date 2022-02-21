@@ -53,7 +53,7 @@ class Thread(commands.Cog):
 
     @commands.command(name="switch")
     @commands.has_role(admin_role)
-    async def _switch_thread(self, ctx: commands.Context, thread_id: discord.Thread):
+    async def _switch_thread(self, ctx: commands.Context, thread_id: str):
         thread = ctx.guild.get_channel_or_thread(thread_id)
         if thread is None:
             await ctx.reply(content="移行先が存在しません。", mention_author=False)
