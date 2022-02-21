@@ -58,7 +58,7 @@ class Thread(commands.Cog):
         ctx: ApplicationContext,
         thread: Option(discord.Thread, description="移行先スレッド"),
     ):
-        if type(ctx.interaction.channel) != discord.TextChannel or discord.Thread:
+        if type(ctx.interaction.channel) not in [discord.TextChannel, discord.Thread]:
             await ctx.respond(content="invalid source channel", ephemeral=True)
             return
         msg_tuple = tuple(
