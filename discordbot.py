@@ -61,7 +61,7 @@ EXTENSION_LIST = [
 ]
 
 GENSHIN_EXTENSION_LIST = [
-    # "Genshin.portal",
+    "Genshin.portal",
 ]
 
 SONG_DB_EXTENSION_LIST = [
