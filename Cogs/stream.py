@@ -50,13 +50,13 @@ class StreamRegister(commands.Cog):
 
 
 class StreamButton(discord.ui.Button):
-    def __init__(self, url: Optional[str] = None, **kwargs):
+    def __init__(self, _url: Optional[str] = None, **kwargs):
         super().__init__(label="配信登録", style=discord.ButtonStyle.success, **kwargs)
-        self.url = url
+        self._url = _url
 
     async def callback(self, interaction: discord.Interaction):
         # msg = await interaction.original_message()
-        await interaction.response.send_modal(StreamModal(url=self.url))
+        await interaction.response.send_modal(StreamModal(_url=self._url))
         view = discord.ui.View(timeout=None)
         view.add_item(Dis_StreamButton())
         await interaction.message.edit(content="登録済み", view=view)
@@ -70,12 +70,12 @@ class Dis_StreamButton(StreamButton):
 
 
 class StreamModal(Modal):
-    def __init__(self, url: Optional[str] = None) -> None:
+    def __init__(self, _url: Optional[str] = None) -> None:
         super().__init__(title="配信登録用フォーム")
         self.add_item(
             InputText(label="配信のトピック", placeholder="歌枠、雑談、など", row=0, required=True)
         )
-        if url:
+        if _url:
             self.add_item(
                 InputText(
                     label="配信のURL(メン限など掲載できない場合は空欄)",
