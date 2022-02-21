@@ -36,7 +36,7 @@ class Message_Sys(commands.Cog):
                     return
             else:
                 embeds = await dispand(self.bot, message)
-                if embeds is None:
+                if embeds == []:
                     return
                 await message.reply(embeds=embeds, mention_author=False)
                 return
