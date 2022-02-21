@@ -80,7 +80,7 @@ class StreamModal(Modal):
                 InputText(
                     label="配信のURL(メン限など掲載できない場合は空欄)",
                     placeholder="https://youtu.be/LyakqutKBpM",
-                    row=0,
+                    row=1,
                     required=False,
                     value=_url,
                 )
@@ -90,7 +90,7 @@ class StreamModal(Modal):
                 InputText(
                     label="配信のURL(メン限など掲載できない場合は空欄)",
                     placeholder="https://youtu.be/LyakqutKBpM",
-                    row=0,
+                    row=1,
                     required=False,
                 )
             )
@@ -98,7 +98,7 @@ class StreamModal(Modal):
             InputText(
                 label="配信開始時刻",
                 placeholder="2100(当日) or 2022.05.18.2100(日付指定)",
-                row=1,
+                row=2,
                 required=True,
                 min_length=4,
                 max_length=15,
@@ -106,7 +106,7 @@ class StreamModal(Modal):
         )
         self.add_item(
             InputText(
-                label="予想配信時間(単位:時間)", placeholder="1.5(1時間30分)", row=2, required=True
+                label="予想配信時間(単位:時間)", placeholder="1.5(1時間30分)", row=3, required=True
             )
         )
 
