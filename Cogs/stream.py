@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta, timezone
+from typing import Optional
 
 from discord import ApplicationContext
 
@@ -40,18 +41,22 @@ class StreamRegister(commands.Cog):
             and "待機所が作成されました" in message.embeds[0].description
         ):
             view = discord.ui.View(timeout=None)
-            view.add_item(StreamButton())
+            if message.embeds[0].url:
+                view.add_item(StreamButton(_url=message.embeds[0].url))
+            else:
+                view.add_item(StreamButton())
             await message.reply(content="登録はこちら", view=view)
         return
 
 
 class StreamButton(discord.ui.Button):
-    def __init__(self, **kwargs):
+    def __init__(self, _url: Optional[str] = None, **kwargs):
         super().__init__(label="配信登録", style=discord.ButtonStyle.success, **kwargs)
+        self._url = _url
 
     async def callback(self, interaction: discord.Interaction):
         # msg = await interaction.original_message()
-        await interaction.response.send_modal(StreamModal())
+        await interaction.response.send_modal(StreamModal(_url=self._url))
         view = discord.ui.View(timeout=None)
         view.add_item(Dis_StreamButton())
         await interaction.message.edit(content="登録済み", view=view)
@@ -65,19 +70,30 @@ class Dis_StreamButton(StreamButton):
 
 
 class StreamModal(Modal):
-    def __init__(self) -> None:
+    def __init__(self, _url: Optional[str] = None) -> None:
         super().__init__(title="配信登録用フォーム")
         self.add_item(
             InputText(label="配信のトピック", placeholder="歌枠、雑談、など", row=0, required=True)
         )
-        self.add_item(
-            InputText(
-                label="配信のURL(メン限など掲載できない場合は空欄)",
-                placeholder="https://youtu.be/LyakqutKBpM",
-                row=1,
-                required=False,
+        if _url:
+            self.add_item(
+                InputText(
+                    label="配信のURL(メン限など掲載できない場合は空欄)",
+                    placeholder="https://youtu.be/LyakqutKBpM",
+                    row=1,
+                    required=False,
+                    value=_url,
+                )
             )
-        )
+        else:
+            self.add_item(
+                InputText(
+                    label="配信のURL(メン限など掲載できない場合は空欄)",
+                    placeholder="https://youtu.be/LyakqutKBpM",
+                    row=1,
+                    required=False,
+                )
+            )
         self.add_item(
             InputText(
                 label="配信開始時刻",
