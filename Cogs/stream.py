@@ -132,7 +132,7 @@ class StreamModal(Modal):
         )
         msg = await interaction.original_message()
         await interaction.response.send_message(content="配信を登録しました。")
-        await msg.edit(content="登録済み",view=Dis_StreamButton())
+        await msg.edit(content="登録済み", view=Dis_StreamButton())
         return
 
 
