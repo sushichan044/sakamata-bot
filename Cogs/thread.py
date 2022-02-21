@@ -96,7 +96,7 @@ class Thread(commands.Cog):
             channels = [
                 channel
                 for channel in interaction.guild.channels
-                if channel.category is None and channel.type != discord.CategoryChannel
+                if channel.category is None and type(channel) != discord.CategoryChannel
             ]
         sort_channels = sorted(channels, key=lambda channel: channel.position)
         # print(channels)
