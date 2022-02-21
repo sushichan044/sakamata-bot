@@ -35,37 +35,30 @@ class StreamRegister(commands.Cog):
         if message.webhook_id is None or message.author.id == self.bot.user.id:
             return
         if message.channel.id == stream_channel_mods:
-            await message.reply(content="登録はこちら", view=StreamButton())
+            view = discord.ui.View(timeout=None)
+            view.add_item(StreamButton())
+            await message.reply(content="登録はこちら", view=view)
         return
 
 
-class StreamButton(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
+class StreamButton(discord.ui.Button):
+    def __init__(self, **kwargs):
+        super().__init__(label="配信登録", style=discord.ButtonStyle.success, **kwargs)
 
-    @discord.ui.button(
-        label="配信登録",
-        style=discord.ButtonStyle.success,
-    )
-    async def _innput_stream(
+    async def callback(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
+        msg = await interaction.original_message()
         await interaction.response.send_modal(StreamModal())
+        view = discord.ui.View(timeout=None)
+        view.add_item(Dis_StreamButton())
+        await msg.edit(content="登録済み", view=view)
         return
 
 
-class Dis_StreamButton(discord.ui.View):
+class Dis_StreamButton(StreamButton):
     def __init__(self):
-        super().__init__(timeout=None)
-
-    @discord.ui.button(
-        label="登録済み",
-        style=discord.ButtonStyle.success,
-        disabled=True,
-    )
-    async def _innput_stream(
-        self, button: discord.ui.Button, interaction: discord.Interaction
-    ):
+        super().__init__(disabled=True)
         pass
 
 
@@ -130,9 +123,7 @@ class StreamModal(Modal):
             end_time=true_end,
             location=event_url,
         )
-        msg = await interaction.original_message()
         await interaction.response.send_message(content="配信を登録しました。")
-        await msg.edit(content="登録済み", view=Dis_StreamButton())
         return
 
 
