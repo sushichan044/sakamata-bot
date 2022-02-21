@@ -32,7 +32,7 @@ class StreamRegister(commands.Cog):
 
     @commands.Cog.listener("on_message")
     async def _add_stream_button(self, message: discord.Message):
-        if message.webhook_id is None:
+        if message.webhook_id is None or message.author.id == self.bot.user.id:
             return
         if message.channel.id == stream_channel_mods:
             await message.reply(content="登録はこちら", view=StreamButton())
