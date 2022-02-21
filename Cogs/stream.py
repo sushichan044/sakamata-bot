@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta, timezone
+from sqlite3 import connect
 from typing import Optional
 
 from discord import ApplicationContext
@@ -56,10 +57,10 @@ class StreamButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         # msg = await interaction.original_message()
-        await interaction.response.send_modal(StreamModal(_url=self._url))
-        view = discord.ui.View(timeout=None)
-        view.add_item(Dis_StreamButton())
-        await interaction.message.edit(content="登録済み", view=view)
+        await interaction.response.send_modal(
+            StreamModal(_url=self._url, origin_msg=interaction.message)
+        )
+
         return
 
 
@@ -70,8 +71,11 @@ class Dis_StreamButton(StreamButton):
 
 
 class StreamModal(Modal):
-    def __init__(self, _url: Optional[str] = None) -> None:
+    def __init__(
+        self, _url: Optional[str] = None, origin_msg: discord.Message | None = None
+    ) -> None:
         super().__init__(title="配信登録用フォーム")
+        self.origin_msg = origin_msg
         self.add_item(
             InputText(label="配信のトピック", placeholder="歌枠、雑談、など", row=0, required=True)
         )
@@ -142,6 +146,10 @@ class StreamModal(Modal):
             location=event_url,
         )
         await interaction.response.send_message(content="配信を登録しました。")
+        if self.origin_msg:
+            view = discord.ui.View(timeout=None)
+            view.add_item(Dis_StreamButton())
+            await self.origin_msg.edit(content="登録済み", view=view)
         return
 
 
