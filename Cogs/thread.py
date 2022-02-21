@@ -58,7 +58,7 @@ class Thread(commands.Cog):
         ctx: ApplicationContext,
         thread: Option(discord.Thread, description="移行先スレッド"),
     ):
-        await ctx.defer()
+        await ctx.defer(ephemeral=True)
         msg_tuple = [
             msg
             for msg in await ctx.interaction.channel.history().flatten()
@@ -66,6 +66,8 @@ class Thread(commands.Cog):
         ]
         embeds = [await dispand(self.bot, msg) for msg in msg_tuple]
         for _embeds in embeds:
+            if _embeds == []:
+                pass
             await thread.send(embeds=_embeds)
         await ctx.respond(content="Done", ephemeral=True)
         return
