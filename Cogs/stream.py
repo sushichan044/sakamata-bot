@@ -54,6 +54,21 @@ class StreamButton(discord.ui.View):
         return
 
 
+class Dis_StreamButton(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(
+        label="登録済み",
+        style=discord.ButtonStyle.success,
+        disabled=True,
+    )
+    async def _innput_stream(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        pass
+
+
 class StreamModal(Modal):
     def __init__(self) -> None:
         super().__init__(title="配信登録用フォーム")
@@ -116,6 +131,9 @@ class StreamModal(Modal):
             location=event_url,
         )
         await interaction.response.send_message(content="配信を登録しました。")
+        await interaction.edit_original_message(
+            content="登録されました", view=Dis_StreamButton()
+        )
         return
 
 
