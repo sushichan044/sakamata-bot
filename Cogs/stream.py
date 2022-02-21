@@ -45,9 +45,7 @@ class StreamButton(discord.ui.Button):
     def __init__(self, **kwargs):
         super().__init__(label="配信登録", style=discord.ButtonStyle.success, **kwargs)
 
-    async def callback(
-        self, interaction: discord.Interaction
-    ):
+    async def callback(self, interaction: discord.Interaction):
         msg = await interaction.original_message()
         await interaction.response.send_modal(StreamModal())
         view = discord.ui.View(timeout=None)
