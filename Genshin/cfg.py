@@ -19,3 +19,4 @@ login_bonus = "https://webstatic-sea.mihoyo.com/ys/event/signin-sea/index.html?a
 shinshin_moe = "https://shinshin.moe/"
 paimon_moe = "https://paimon.moe/"
 damage_calc = "https://genshin.yunlu18.net/#/"
+hoyo_lab = "https://www.hoyolab.com/home"
