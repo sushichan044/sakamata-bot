@@ -35,7 +35,8 @@ class Message_Sys(commands.Cog):
                 if message.content.endswith(suffix):
                     return
             else:
-                await dispand(self.bot, message)
+                embeds = await dispand(self.bot, message)
+                await message.reply(embeds=embeds, mention_author=False)
                 return
 
     @commands.command(name="send-message")

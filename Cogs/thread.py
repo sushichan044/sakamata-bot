@@ -5,6 +5,7 @@ from discord import ApplicationContext
 
 from typing import Optional
 
+from newdispanderfixed import dispand
 import discord
 from discord import Option
 from discord.commands import permissions, slash_command
@@ -49,6 +50,19 @@ class Thread(commands.Cog):
             return
         else:
             return
+
+    @commands.command(name="switch-thread")
+    @commands.has_role(admin_role)
+    async def _switch_thread(self, ctx: commands.Context, thread_id: discord.Thread):
+        thread = ctx.guild.get_thread(thread_id)
+        if thread is None:
+            await ctx.reply(content="移行先スレッドが存在しません。", mention_author=False)
+            return
+        msg_tuple = tuple(await ctx.message.channel.history().flatten())
+        embeds = [await dispand(self.bot, msg) for msg in msg_tuple]
+        for embed in embeds:
+            await thread.send(embed=embed)
+        return
 
     """
     Thread Board Parts
