@@ -13,55 +13,42 @@ guild_id = int(os.environ["GUILD_ID"])
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 utc = timezone.utc
 
+stream_channel_mods = int(os.environ["STREAM_MOD"])
+
 
 class StreamRegister(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(guild_ids=[guild_id], default_permission=False, name="old_stream")
-    @permissions.has_role(mod_role)
-    async def _newcreateevent(
-        self,
-        ctx: ApplicationContext,
-        event_name: Option(str, "配信の名前(例:マリカ,歌枠,など)"),
-        stream_url: Option(str, "配信のURL"),
-        start_time: Option(str, "配信開始時間(202205182100または2100(当日))"),
-        duration: Option(float, "予想される配信の長さ(単位:時間)(例:1.5)"),
-    ):
-        """配信を簡単にイベントに登録できます。"""
-        guild = ctx.interaction.guild
-        if len(start_time) == 4:
-            todate = datetime.now(timezone.utc).astimezone(jst)
-            start_time_object = datetime.strptime(start_time, "%H%M")
-            true_start_jst = start_time_object.replace(
-                year=todate.year, month=todate.month, day=todate.day, tzinfo=jst
-            )
-        elif len(start_time) == 12:
-            true_start = datetime.strptime(start_time, "%Y%m%d%H%M")
-            true_start_jst = true_start.replace(tzinfo=jst)
-        else:
-            await ctx.respond(
-                content="正しい時間を入力してください。\n有効な時間は\n```202205182100(2022年5月18日21:00)もしくは\n2100(入力した日の21:00)です。```",
-                mention_author=False,
-            )
-            return
-        true_duration = timedelta(hours=duration)
-        true_end = true_start_jst + true_duration
-        await guild.create_scheduled_event(
-            name=f"{event_name}",
-            start_time=true_start_jst.astimezone(utc),
-            end_time=true_end,
-            location=stream_url,
-        )
-        await ctx.respond("配信を登録しました。")
-        return
-
+    """
     @slash_command(guild_ids=[guild_id], default_permission=False, name="stream")
     @permissions.has_role(mod_role)
     async def _test_modal(self, ctx):
-        """配信を簡単にイベントに登録できます。"""
+        '''配信を簡単にイベントに登録できます。'''
         modal = StreamModal()
         await ctx.interaction.response.send_modal(modal)
+        return
+    """
+
+    @commands.Cog.listener("on_message")
+    async def _add_stream_button(self, message: discord.Message):
+        if message.channel.id == stream_channel_mods:
+            await message.reply(content="登録はこちら", view=StreamButton())
+        return
+
+
+class StreamButton(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(
+        label="配信登録",
+        style=discord.ButtonStyle.success,
+    )
+    async def _innput_stream(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        await interaction.response.send_modal(StreamModal())
         return
 
 
@@ -96,7 +83,7 @@ class StreamModal(Modal):
         )
 
     async def callback(self, interaction: discord.Interaction):
-        print(interaction.guild.id)
+        # print(interaction.guild.id)
         event_name = self.children[0].value
         event_url = self.children[1].value
         if not event_url:
@@ -119,14 +106,14 @@ class StreamModal(Modal):
             return
         true_duration = timedelta(hours=float(self.children[3].value))
         true_end = true_start_jst + true_duration
-        print(type(event_name), type(true_start_jst), type(true_end), type(event_url))
+        # print(type(event_name), type(true_start_jst), type(true_end), type(event_url))
         await interaction.guild.create_scheduled_event(
             name=event_name,
             start_time=true_start_jst.astimezone(utc),
             end_time=true_end,
             location=event_url,
         )
-        await interaction.response.send_message(content="配信を登録しました。", ephemeral=True)
+        await interaction.response.send_message(content="配信を登録しました。")
         return
 
 
