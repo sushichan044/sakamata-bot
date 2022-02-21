@@ -14,7 +14,7 @@ class Portal(commands.Cog):
     async def portal(self, ctx: ApplicationContext):
         """原神でお世話になりがちなリンク集を送り返します"""
         embed = embed_builder._portal()
-        await ctx.respond(embed=embed, view=PortalView(), ephemeral=True)
+        await ctx.respond(embed=embed, view=PortalView())
         return
 
 
