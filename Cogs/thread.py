@@ -58,11 +58,11 @@ class Thread(commands.Cog):
         ctx: ApplicationContext,
         thread: Option(discord.Thread, description="移行先スレッド"),
     ):
-        msg_tuple = tuple(
+        msg_tuple = [
             msg
             for msg in await ctx.interaction.channel.history().flatten()
-            if type(msg) == discord.MessageType.default
-        )
+            if msg.type == discord.MessageType.default
+        ]
         embeds = [await dispand(self.bot, msg) for msg in msg_tuple]
         for embed in embeds:
             await thread.send(embed=embed)
