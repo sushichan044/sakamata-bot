@@ -58,7 +58,11 @@ class Thread(commands.Cog):
         if thread is None:
             await ctx.reply(content="移行先スレッドが存在しません。", mention_author=False)
             return
-        msg_tuple = tuple(await ctx.message.channel.history().flatten())
+        msg_tuple = tuple(
+            msg
+            for msg in await ctx.message.channel.history().flatten()
+            if type(msg) == discord.MessageType.default
+        )
         embeds = [await dispand(self.bot, msg) for msg in msg_tuple]
         for embed in embeds:
             await thread.send(embed=embed)
