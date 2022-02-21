@@ -106,7 +106,7 @@ class StreamModal(Modal):
         )
         self.add_item(
             InputText(
-                label="予想配信時間(単位:時間)", placeholder="1.5(1時間30分)", row=3, required=True
+                label="予想配信時間(単位:時間)", placeholder="1.5(1時間30分)", row=2, required=True
             )
         )
 
