@@ -1,8 +1,9 @@
 import os
 from datetime import datetime, timedelta, timezone
 
+from discord import ApplicationContext
+
 import discord
-from discord import ApplicationContext, Option
 from discord.commands import permissions, slash_command
 from discord.ext import commands
 from discord.ui import InputText, Modal
@@ -20,15 +21,13 @@ class StreamRegister(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    """
     @slash_command(guild_ids=[guild_id], default_permission=False, name="stream")
     @permissions.has_role(mod_role)
-    async def _test_modal(self, ctx):
-        '''配信を簡単にイベントに登録できます。'''
+    async def _test_modal(self, ctx: ApplicationContext):
+        """配信を簡単にイベントに登録できます。"""
         modal = StreamModal()
         await ctx.interaction.response.send_modal(modal)
         return
-    """
 
     @commands.Cog.listener("on_message")
     async def _add_stream_button(self, message: discord.Message):
