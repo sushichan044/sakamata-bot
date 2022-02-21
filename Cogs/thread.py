@@ -51,21 +51,25 @@ class Thread(commands.Cog):
         else:
             return
 
-    @commands.command(name="switch")
-    @commands.has_role(admin_role)
-    async def _switch_thread(self, ctx: commands.Context, thread_id: str):
-        thread = ctx.guild.get_channel_or_thread(thread_id)
-        if thread is None:
-            await ctx.reply(content="移行先が存在しません。", mention_author=False)
+    @slash_command(guild_ids=[guild_id], name="switch")
+    @permissions.has_role(admin_role)
+    async def _switch_thread(
+        self,
+        ctx: ApplicationContext,
+        thread: Option(discord.Thread, description="移行先スレッド"),
+    ):
+        if type(ctx.interaction.channel) != discord.TextChannel or discord.Thread:
+            await ctx.respond(content="invalid source channel", ephemeral=True)
             return
         msg_tuple = tuple(
             msg
-            for msg in await ctx.message.channel.history().flatten()
+            for msg in await ctx.interaction.channel.history().flatten()
             if type(msg) == discord.MessageType.default
         )
         embeds = [await dispand(self.bot, msg) for msg in msg_tuple]
         for embed in embeds:
             await thread.send(embed=embed)
+        await ctx.respond(content="Done", ephemeral=True)
         return
 
     """
