@@ -42,7 +42,7 @@ class StreamRegister(commands.Cog):
         ):
             view = discord.ui.View(timeout=None)
             if message.embeds[0].url:
-                view.add_item(StreamButton(url=message.embeds[0].url))
+                view.add_item(StreamButton(_url=message.embeds[0].url))
             else:
                 view.add_item(StreamButton())
             await message.reply(content="登録はこちら", view=view)
