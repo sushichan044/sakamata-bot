@@ -67,7 +67,7 @@ class Thread(commands.Cog):
         embeds = [await dispand(self.bot, msg) for msg in msg_tuple]
         for _embeds in embeds:
             if _embeds == []:
-                pass
+                continue
             await thread.send(embeds=_embeds)
         await ctx.respond(content="Done", ephemeral=True)
         return
