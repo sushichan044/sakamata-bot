@@ -51,27 +51,6 @@ class Thread(commands.Cog):
         else:
             return
 
-    @slash_command(guild_ids=[guild_id], name="switch")
-    @permissions.has_role(admin_role)
-    async def _switch_thread(
-        self,
-        ctx: ApplicationContext,
-        thread: Option(discord.Thread, description="移行先スレッド"),
-    ):
-        await ctx.defer(ephemeral=True)
-        msg_tuple = [
-            msg
-            for msg in await ctx.interaction.channel.history().flatten()
-            if msg.type == discord.MessageType.default
-        ]
-        embeds = [await dispand(self.bot, msg) for msg in msg_tuple]
-        for _embeds in embeds:
-            if _embeds == []:
-                continue
-            await thread.send(embeds=_embeds)
-        await ctx.respond(content="Done", ephemeral=True)
-        return
-
     """
     Thread Board Parts
     normal
