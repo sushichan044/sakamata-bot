@@ -51,12 +51,12 @@ class Thread(commands.Cog):
         else:
             return
 
-    @commands.command(name="switch-thread")
+    @commands.command(name="switch")
     @commands.has_role(admin_role)
     async def _switch_thread(self, ctx: commands.Context, thread_id: discord.Thread):
-        thread = ctx.guild.get_thread(thread_id)
+        thread = ctx.guild.get_channel_or_thread(thread_id)
         if thread is None:
-            await ctx.reply(content="移行先スレッドが存在しません。", mention_author=False)
+            await ctx.reply(content="移行先が存在しません。", mention_author=False)
             return
         msg_tuple = tuple(
             msg
