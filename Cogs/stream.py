@@ -82,7 +82,7 @@ class StreamModal(Modal):
                     placeholder="https://youtu.be/LyakqutKBpM",
                     row=0,
                     required=False,
-                    value=url,
+                    value=_url,
                 )
             )
         else:
