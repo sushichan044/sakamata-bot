@@ -130,10 +130,9 @@ class StreamModal(Modal):
             end_time=true_end,
             location=event_url,
         )
+        msg = await interaction.original_message()
         await interaction.response.send_message(content="配信を登録しました。")
-        await interaction.edit_original_message(
-            content="登録されました", view=Dis_StreamButton()
-        )
+        await msg.edit(content="登録済み",view=Dis_StreamButton())
         return
 
 
