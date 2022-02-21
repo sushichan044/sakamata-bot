@@ -34,7 +34,12 @@ class StreamRegister(commands.Cog):
     async def _add_stream_button(self, message: discord.Message):
         if message.webhook_id is None or message.author.id == self.bot.user.id:
             return
-        if message.channel.id == stream_channel_mods:
+        if (
+            message.channel.id == stream_channel_mods
+            and message.embeds[0]
+            and message.embeds[0].description
+            and "待機所が作成されました" in message.embeds[0].description
+        ):
             view = discord.ui.View(timeout=None)
             view.add_item(StreamButton())
             await message.reply(content="登録はこちら", view=view)

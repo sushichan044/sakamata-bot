@@ -3,11 +3,12 @@ from datetime import datetime, timedelta
 
 import discord
 from discord import Option
-from discord.commands import slash_command, permissions
+from discord.commands import permissions, slash_command
 from discord.ext import commands
 
 guild_id = int(os.environ["GUILD_ID"])
 server_member_role = int(os.environ["SERVER_MEMBER_ROLE"])
+admin_role = int(os.environ["ADMIN_ROLE"])
 
 
 class Tool(commands.Cog):
