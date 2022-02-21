@@ -5,7 +5,6 @@ from discord import ApplicationContext
 
 from typing import Optional
 
-from newdispanderfixed import dispand
 import discord
 from discord import Option
 from discord.commands import permissions, slash_command
