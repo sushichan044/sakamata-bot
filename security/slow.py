@@ -1,4 +1,5 @@
 import os
+import asyncio
 
 from discord import Option
 
@@ -8,11 +9,47 @@ from discord.ext import commands
 
 guild_id = int(os.environ["GUILD_ID"])
 mod_role = int(os.environ["MOD_ROLE"])
+admin_role = int(os.environ["ADMIN_ROLE"])
 
 
-class SlowMode(commands.Cog):
-    def __init__(self, bot) -> None:
+class Slow(commands.Cog):
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
+
+    @commands.group()
+    @commands.has_role(admin_role)
+    @commands.guild_only()
+    async def slow_all(self, ctx: commands.Context):
+
+        if ctx.invoked_subcommand is None:
+            await ctx.reply(content="このコマンドはモード指定が必要です。\nONまたはOFFでモードを指定してください。")
+            return
+
+    @slow_all.command()
+    async def on(self, ctx: commands.Context):
+        channels: list[discord.TextChannel] = [
+            ch
+            for ch in await ctx.guild.fetch_channels()
+            if ch.type == discord.TextChannel
+        ]
+        for channel in channels:
+            await channel.edit(slowmode_delay=60)
+            await asyncio.sleep(delay=1)
+        await ctx.reply(content="全チャンネルのスローモードをONにしました。")
+        return
+
+    @slow_all.command()
+    async def off(self, ctx: commands.Context):
+        channels: list[discord.TextChannel] = [
+            ch
+            for ch in await ctx.guild.fetch_channels()
+            if ch.type == discord.TextChannel
+        ]
+        for channel in channels:
+            await channel.edit(slowmode_delay=0)
+            await asyncio.sleep(delay=1)
+        await ctx.reply(content="全チャンネルのスローモードをOFFにしました。")
+        return
 
     @message_command(guild_ids=[guild_id], name="スローモード切替")
     @permissions.has_role(mod_role)
@@ -53,4 +90,4 @@ class SlowMode(commands.Cog):
 
 
 def setup(bot):
-    return bot.add_cog(SlowMode(bot))
+    return bot.add_cog(Slow(bot))

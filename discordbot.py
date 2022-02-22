@@ -51,9 +51,7 @@ EXTENSION_LIST = [
     "Cogs.entrance",
     "Cogs.inquiry",
     "Cogs.member_count",
-    "Cogs.ng_word",
     "Cogs.poll",
-    "Cogs.slow",
     "Cogs.starboard",
     "Cogs.stream",
     "Cogs.thread",
@@ -66,6 +64,8 @@ GENSHIN_EXTENSION_LIST = [
 
 SECURITY_EXT_LIST = [
     "security.anti_spam",
+    "security.ng_word",
+    "security.slow",
 ]
 
 SONG_DB_EXTENSION_LIST = [
