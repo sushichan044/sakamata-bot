@@ -48,6 +48,14 @@ class ExecView(discord.ui.View):
     def __init__(self, *, target: discord.Member):
         super().__init__(timeout=None)
         self.add_item(TimeoutButton(target=target))
+        self.add_item(IgnoreButton())
+
+
+class Dis_View(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        self.add_item(Dis_Timeout())
+        self.add_item(Dis_Ignore())
 
 
 class TimeoutButton(discord.ui.Button):
@@ -65,9 +73,8 @@ class TimeoutButton(discord.ui.Button):
         await self.target.timeout_for(
             duration=timedelta(days=1), reason="Anti-Spam(Rapid post)"
         )
-        view = discord.ui.View(timeout=None)
-        view.add_item(Dis_Timeout())
-        await interaction.message.edit(content=interaction.message.content, view=view)
+        view = Dis_View()
+        await interaction.message.edit(view=view)
         await interaction.response.send_message(
             content=f"{self.target.display_name} (ID:{self.target.id})を\n24時間タイムアウトしました。"
         )
@@ -75,6 +82,28 @@ class TimeoutButton(discord.ui.Button):
 
 
 class Dis_Timeout(TimeoutButton):
+    def __init__(self):
+        super().__init__(disabled=True)
+
+
+class IgnoreButton(discord.ui.Button):
+    def __init__(self, **kwargs):
+        super().__init__(
+            style=discord.ButtonStyle.blurple,
+            label="問題ない",
+            custom_id="anti_spam_ignore",
+            row=0,
+            **kwargs,
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        view = Dis_View()
+        await interaction.message.edit(view=view)
+        await interaction.response.send_message(content="問題ないことが確認されました。")
+        pass
+
+
+class Dis_Ignore(IgnoreButton):
     def __init__(self):
         super().__init__(disabled=True)
 
