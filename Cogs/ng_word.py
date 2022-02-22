@@ -17,25 +17,17 @@ class NGWordSystem(commands.Cog):
 
     @commands.Cog.listener(name="on_message")
     async def detect_NG_word(self, message: discord.Message):
-        word_list_high = ["@everyone", "@here", "@飼育員たち"]
-        word_list_low = ["るしあ", "ルシア", "まふまふ"]
-        if (
-            message.author == self.bot.user
-            or type(message.channel) == discord.DMChannel
-        ):
+        ng_high = ["@everyone", "@here", "@飼育員たち"]
+        ng_low = ["るしあ", "ルシア", "まふまふ"]
+        if message.author == self.bot.user or message.channel.type == discord.DMChannel:
+            return
+        if message.author.roles and admin_role in [
+            role.id for role in message.author.roles
+        ]:
             return
         else:
-            role = message.guild.get_role(admin_role)
-            high_ng_msg = [
-                x
-                for x in word_list_high
-                if x in message.content and role not in message.author.roles
-            ]
-            low_ng_msg = [
-                word
-                for word in word_list_low
-                if word in message.content and role not in message.author.roles
-            ]
+            high_ng_msg = [x for x in ng_high if x in message.content]
+            low_ng_msg = [word for word in ng_low if word in message.content]
             prog = re.compile(r"discord.gg/[\w]*")
             links = prog.findall(message.content)
             ng_url = []
@@ -44,11 +36,7 @@ class NGWordSystem(commands.Cog):
                     item.replace("https://", "")
                     for item in [x.url for x in await message.guild.invites()]
                 ]
-                ng_url = [
-                    link
-                    for link in links
-                    if link not in allowed_urls and role not in message.author.roles
-                ]
+                ng_url = [link for link in links if link not in allowed_urls]
             if high_ng_msg != [] or ng_url != []:
                 ng_content = high_ng_msg + ng_url
                 ng_content = "\n".join(ng_content)
