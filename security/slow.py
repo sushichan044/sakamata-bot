@@ -22,11 +22,12 @@ class Slow(commands.Cog):
     async def slow_all(self, ctx: commands.Context):
 
         if ctx.invoked_subcommand is None:
-            await ctx.reply(content="このコマンドはモード指定が必要です。\nONまたはOFFでモードを指定してください。")
+            await ctx.reply(content="このコマンドはモード指定が必要です。\nonまたはoffでモードを指定してください。")
             return
 
     @slow_all.command()
     async def on(self, ctx: commands.Context):
+        await ctx.reply(content="全チャンネルのスローモードをONにします...")
         channels: list[discord.TextChannel] = [
             ch
             for ch in await ctx.guild.fetch_channels()
@@ -45,6 +46,7 @@ class Slow(commands.Cog):
 
     @slow_all.command()
     async def off(self, ctx: commands.Context):
+        await ctx.reply(content="全チャンネルのスローモードをOFFにします...")
         channels: list[discord.TextChannel] = [
             ch
             for ch in await ctx.guild.fetch_channels()
@@ -56,7 +58,7 @@ class Slow(commands.Cog):
             except Exception as e:
                 print(e)
             else:
-                print(f"slowed down [{channel.name}]")
+                print(f"removed slow-mode in [{channel.name}]")
             await asyncio.sleep(delay=1)
         await ctx.reply(content="全チャンネルのスローモードをOFFにしました。")
         return
