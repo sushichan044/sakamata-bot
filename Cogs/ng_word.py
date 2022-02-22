@@ -16,7 +16,8 @@ class NGWordSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         d: dict[str, str] = {}
-        with open("/Cogs/ng_word.json", mode="r") as f:
+        path = os.path.join(os.path.dirname(__file__), r"/Cogs/ng_word.json")
+        with open(path, mode="r") as f:
             d = json.load(f)
         self.ng_high = [k for k, v in d.items() if v == "high"]
         self.ng_low = [k for k, v in d.items() if v == "low"]
