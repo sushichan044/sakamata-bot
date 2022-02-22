@@ -33,7 +33,12 @@ class Slow(commands.Cog):
             if type(ch) == discord.TextChannel
         ]
         for channel in channels:
-            await channel.edit(slowmode_delay=60)
+            try:
+                await channel.edit(slowmode_delay=60)
+            except Exception as e:
+                print(e)
+            else:
+                print(f"slowed down [{channel.name}]")
             await asyncio.sleep(delay=1)
         await ctx.reply(content="全チャンネルのスローモードをONにしました。")
         return
@@ -46,7 +51,12 @@ class Slow(commands.Cog):
             if ch.type == discord.TextChannel
         ]
         for channel in channels:
-            await channel.edit(slowmode_delay=0)
+            try:
+                await channel.edit(slowmode_delay=0)
+            except Exception as e:
+                print(e)
+            else:
+                print(f"slowed down [{channel.name}]")
             await asyncio.sleep(delay=1)
         await ctx.reply(content="全チャンネルのスローモードをOFFにしました。")
         return

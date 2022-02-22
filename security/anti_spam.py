@@ -1,6 +1,7 @@
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
+from unicodedata import name
 
 
 import discord
@@ -71,6 +72,10 @@ def _alert(detected: tuple[Message]):
         name="連投終了メッセージ(現在も続いている可能性があります。)",
         value=f"[移動]({detected[-1].jump_url})",
         inline=False,
+    )
+    embed.add_field(
+        name="組織的荒らしを受けている場合は？",
+        value="`//slow-all`コマンドの仕様を検討してください。",
     )
     return embed
 
