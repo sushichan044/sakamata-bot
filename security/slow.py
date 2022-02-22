@@ -48,7 +48,7 @@ class Slow(commands.Cog):
         channels: list[discord.TextChannel] = [
             ch
             for ch in await ctx.guild.fetch_channels()
-            if ch.type == discord.TextChannel
+            if type(ch) == discord.TextChannel
         ]
         for channel in channels:
             try:
