@@ -2,12 +2,14 @@ import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
+
 import discord
 from discord import Message
 from discord.ext import commands
 
 admin_role = int(os.environ["ADMIN_ROLE"])
 security_channel = int(os.environ["SECURITY_CHANNEL"])
+jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 
 
 class AntiSpam(commands.Cog):
@@ -33,15 +35,44 @@ class AntiSpam(commands.Cog):
                 < 15
             )
 
-        if (
-            len(list(filter(lambda m: check_rapid_post(m), self.bot.cached_messages)))
-            >= 5
-        ):
+        detected: tuple[Message] = tuple(
+            filter(lambda m: check_rapid_post(m), self.bot.cached_messages)
+        )
+        if len(detected) >= 5:
             target = message.author
             channel = await message.guild.fetch_channel(security_channel)
             print("連投を検知")
-            await channel.send(content="連投を検知しました。", view=ExecView(target=target))
+            embed = _alert(detected=detected)
+            await channel.send(
+                content=f"<@&{admin_role}>", embed=embed, view=ExecView(target=target)
+            )
             return  # alert 連投
+
+
+def _alert(detected: tuple[Message]):
+    embed = discord.Embed(
+        title="不審な連投を検知しました。",
+        description=f"対象ユーザー: {detected[0].author.mention} (ID: {detected[0].author.id})",
+        color=16711680,
+    )
+    embed.set_footer(
+        text=datetime.utcnow().astimezone(jst).strftime("%Y/%m/%d %H:%M:%S")
+    )
+    embed.set_author(
+        name=detected[0].author.display_name,
+        icon_url=detected[0].author.display_avatar.url,
+    )
+    embed.add_field(
+        name="連投開始メッセージ",
+        value=f"[移動]({detected[0].jump_url})",
+        inline=False,
+    )
+    embed.add_field(
+        name="連投終了メッセージ(現在も続いている可能性があります。)",
+        value=f"[移動]({detected[-1].jump_url})",
+        inline=False,
+    )
+    return embed
 
 
 class ExecView(discord.ui.View):

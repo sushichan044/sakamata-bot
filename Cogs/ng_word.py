@@ -80,7 +80,7 @@ class NGWordSystem(commands.Cog):
             timestamp=message.created_at,
         )
         embed.set_author(
-            name=message.author.display_name, icon_url=message.author.avatar.url
+            name=message.author.display_name, icon_url=message.author.display_avatar.url
         )
         embed.add_field(name="検知ワード", value=f"{ng_content}")
         embed.add_field(name="送信者", value=f"{message.author.mention}")
