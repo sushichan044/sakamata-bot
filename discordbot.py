@@ -108,7 +108,7 @@ class MyBot(commands.Bot):
             except Exception:
                 traceback.print_exc()
             else:
-                print(f"extension for Genshin [{cog}] is loaded!")
+                print(f"extension for Security [{cog}] is loaded!")
         for cog in SONG_DB_EXTENSION_LIST:
             try:
                 self.load_extension(cog)
