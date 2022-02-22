@@ -17,9 +17,9 @@ class NGWordSystem(commands.Cog):
         self.bot = bot
         d: dict[str, str] = {}
         print(os.path.dirname(__file__))
-        # path = os.path.join(os.path.dirname(__file__), r"./ng_word.json")
-        # with open(path, mode="r") as f:
-            # d = json.load(f)
+        path = os.path.join(os.path.dirname(__file__), r"./ng_word.json")
+        with open(path, mode="r") as f:
+            d = json.load(f)
         self.ng_high = [k for k, v in d.items() if v == "high"]
         self.ng_low = [k for k, v in d.items() if v == "low"]
         self.prog = re.compile(r"discord.gg/[\w]*")
