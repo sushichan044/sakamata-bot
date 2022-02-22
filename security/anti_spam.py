@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import os
 
 import discord
@@ -16,13 +16,16 @@ class AntiSpam(commands.Cog):
     async def _anti_rapid_post(self, message: Message):
         if message.channel.type == discord.DMChannel:
             return
+        if message.author.id == self.bot.user.id:
+            return
         if admin_role in [r.id for r in message.author.roles]:
             return
 
         def check_rapid_post(m: Message):
             return (
                 m.author == message.author
-                and (datetime.utcnow() - m.created_at).seconds < 15
+                and (datetime.utcnow() - m.created_at.astimezone(timezone.utc)).seconds
+                < 15
             )
 
         if (
