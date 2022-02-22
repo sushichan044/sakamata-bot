@@ -64,6 +64,10 @@ GENSHIN_EXTENSION_LIST = [
     "Genshin.portal",
 ]
 
+SECURITY_EXT_LIST = [
+    "security.anti_spam",
+]
+
 SONG_DB_EXTENSION_LIST = [
     # "SongDB.main",
 ]
@@ -92,6 +96,13 @@ class MyBot(commands.Bot):
             else:
                 print(f"extension [{cog}] is loaded!")
         for cog in GENSHIN_EXTENSION_LIST:
+            try:
+                self.load_extension(cog)
+            except Exception:
+                traceback.print_exc()
+            else:
+                print(f"extension for Genshin [{cog}] is loaded!")
+        for cog in SECURITY_EXT_LIST:
             try:
                 self.load_extension(cog)
             except Exception:
