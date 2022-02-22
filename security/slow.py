@@ -16,7 +16,7 @@ class Slow(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
-    @commands.group()
+    @commands.group(name="slow-all")
     @commands.has_role(admin_role)
     @commands.guild_only()
     async def slow_all(self, ctx: commands.Context):
@@ -30,7 +30,7 @@ class Slow(commands.Cog):
         channels: list[discord.TextChannel] = [
             ch
             for ch in await ctx.guild.fetch_channels()
-            if ch.type == discord.TextChannel
+            if type(ch) == discord.TextChannel
         ]
         for channel in channels:
             await channel.edit(slowmode_delay=60)
