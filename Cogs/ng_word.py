@@ -27,7 +27,11 @@ class NGWordSystem(commands.Cog):
 
     @commands.Cog.listener(name="on_message")
     async def detect_NG_word(self, message: discord.Message):
-        if message.author == self.bot.user or message.channel.type == discord.DMChannel:
+        if (
+            message.author == self.bot.user
+            or message.channel.type == discord.DMChannel
+            or message.webhook_id
+        ):
             return
         if type(message.author) == discord.Member:
             if admin_role in [role.id for role in message.author.roles]:

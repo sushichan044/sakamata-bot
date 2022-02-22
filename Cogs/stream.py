@@ -1,6 +1,5 @@
 import os
 from datetime import datetime, timedelta, timezone
-from sqlite3 import connect
 from typing import Optional
 
 from discord import ApplicationContext
