@@ -18,7 +18,7 @@ class AntiSpam(commands.Cog):
     async def _anti_rapid_post(self, message: Message):
         if message.channel.type == discord.DMChannel:
             return
-        if message.author.id == self.bot.user.id:
+        if message.author.id == self.bot.user.id or message.author.bot:
             return
         if admin_role in [r.id for r in message.author.roles]:
             return
