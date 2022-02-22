@@ -14,7 +14,7 @@ class Portal(commands.Cog):
     async def portal(self, ctx: ApplicationContext):
         """原神でお世話になりがちなリンク集を送り返します"""
         embed = embed_builder._portal()
-        await ctx.respond(embed=embed, view=PortalView())
+        await ctx.respond(embed=embed, view=PortalView(), ephemeral=True)
         return
 
 
@@ -31,10 +31,6 @@ class PortalView(discord.ui.View):
         )
         self.add_item(discord.ui.Button(label="paimon.moe", url=cfg.paimon_moe, row=1))
         self.add_item(discord.ui.Button(label="ダメージ計算機", url=cfg.damage_calc, row=1))
-
-
-
-
 
 
 def setup(bot):
