@@ -1,3 +1,4 @@
+import json
 import os
 import re
 from datetime import timedelta, timezone
@@ -14,45 +15,45 @@ admin_role = int(os.environ["ADMIN_ROLE"])
 class NGWordSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        d: dict[str, str] = {}
+        with open("/Cogs/ng_word.json", mode="r") as f:
+            d = json.load(f)
+        self.ng_high = [k for k, v in d.items() if v == "high"]
+        self.ng_low = [k for k, v in d.items() if v == "low"]
+        self.prog = re.compile(r"discord.gg/[\w]*")
+        print(self.ng_high, self.ng_low)
 
     @commands.Cog.listener(name="on_message")
     async def detect_NG_word(self, message: discord.Message):
-        ng_high = ["@everyone", "@here", "@飼育員たち"]
-        ng_low = ["るしあ", "ルシア", "まふまふ"]
         if message.author == self.bot.user or message.channel.type == discord.DMChannel:
             return
-        if message.author.roles and admin_role in [
-            role.id for role in message.author.roles
-        ]:
+        if type(message.author) == discord.Member:
+            if admin_role in [role.id for role in message.author.roles]:
+                return
+        detected_high = [word for word in self.ng_high if word in message.content]
+        detected_low = [word for word in self.ng_low if word in message.content]
+        links: list[str] = self.prog.findall(message.content)
+        ng_url = []
+        if links:
+            allowed_urls = [
+                item.replace("https://", "")
+                for item in [x.url for x in await message.guild.invites()]
+            ]
+            ng_url = [link for link in links if link not in allowed_urls]
+        if detected_high != [] or ng_url != []:
+            ng_content = detected_high + ng_url
+            ng_content = "\n".join(ng_content)
+            await self.send_ng_log_high(message, ng_content)
             return
+        elif detected_low != []:
+            ng_content = "\n".join(detected_low)
+            await self.send_ng_log_low(message, ng_content)
         else:
-            high_ng_msg = [x for x in ng_high if x in message.content]
-            low_ng_msg = [word for word in ng_low if word in message.content]
-            prog = re.compile(r"discord.gg/[\w]*")
-            links = prog.findall(message.content)
-            ng_url = []
-            if links:
-                allowed_urls = [
-                    item.replace("https://", "")
-                    for item in [x.url for x in await message.guild.invites()]
-                ]
-                ng_url = [link for link in links if link not in allowed_urls]
-            if high_ng_msg != [] or ng_url != []:
-                ng_content = high_ng_msg + ng_url
-                ng_content = "\n".join(ng_content)
-                await self.send_ng_log_high(message, ng_content)
-                return
-            elif low_ng_msg != []:
-                ng_content = "\n".join(low_ng_msg)
-                await self.send_ng_log_low(message, ng_content)
-            else:
-                return
-
-            # send_ng_log
+            return
 
     async def send_ng_log_high(self, message: discord.Message, ng_content: str):
         channel = self.bot.get_channel(alert_channel)
-        text = "要注意メッセージを検知しました。"
+        text = "要注意ワードを検知しました。"
         embed = self._embed(message, ng_content, text)
         await channel.send(content=f"<@&{admin_role}>", embed=embed)
         return
