@@ -24,7 +24,10 @@ class AntiSpam(commands.Cog):
         def check_rapid_post(m: Message):
             return (
                 m.author == message.author
-                and (datetime.utcnow() - m.created_at.astimezone(timezone.utc)).seconds
+                and (
+                    datetime.utcnow().astimezone(timezone.utc)
+                    - m.created_at.astimezone(timezone.utc)
+                ).seconds
                 < 15
             )
 
