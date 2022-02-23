@@ -69,7 +69,7 @@ SECURITY_EXT_LIST = [
 ]
 
 SONG_DB_EXTENSION_LIST = [
-    # "SongDB.main",
+    "SongDB.main",
 ]
 
 

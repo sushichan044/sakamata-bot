@@ -1,8 +1,6 @@
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-from unicodedata import name
-
 
 import discord
 from discord import Message
