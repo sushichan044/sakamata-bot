@@ -75,7 +75,7 @@ def _alert(detected: tuple[Message]):
     )
     embed.add_field(
         name="組織的荒らしを受けている場合は？",
-        value="`//slow-all`コマンドの仕様を検討してください。",
+        value="飼育員ロールの発言権限停止も考えてください。",
     )
     return embed
 

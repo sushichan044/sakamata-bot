@@ -16,6 +16,7 @@ class Slow(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
+    """
     @commands.group(name="slow-all")
     @commands.has_role(admin_role)
     @commands.guild_only()
@@ -62,6 +63,7 @@ class Slow(commands.Cog):
             await asyncio.sleep(delay=1)
         await ctx.reply(content="全チャンネルのスローモードをOFFにしました。")
         return
+    """
 
     @message_command(guild_ids=[guild_id], name="スローモード切替")
     @permissions.has_role(mod_role)
