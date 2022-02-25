@@ -9,6 +9,7 @@ from discord import Member
 from discord.ext import commands
 
 from Cogs.inquiry import InquiryView, SuggestionView
+from Cogs.stream import StreamView, Dis_StreamView
 from Core.membership import MemberVerifyButton
 from Genshin.portal import PortalView
 
@@ -123,6 +124,8 @@ class MyBot(commands.Bot):
             self.add_view(PortalView())
             self.add_view(InquiryView())
             self.add_view(SuggestionView())
+            self.add_view(StreamView())
+            self.add_view(Dis_StreamView())
             self.persistent_views_added = True
             print("Set Persistant Views!")
         print("------------------------------------------------------")

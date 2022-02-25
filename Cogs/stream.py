@@ -41,11 +41,10 @@ class StreamRegister(commands.Cog):
             and message.embeds[0].description
             and "待機所が作成されました" in message.embeds[0].description
         ):
-            view = discord.ui.View(timeout=None)
             if message.embeds[0].url:
-                view.add_item(StreamButton(_url=message.embeds[0].url))
+                view = StreamView(_url=message.embeds[0].url)
             else:
-                view.add_item(StreamButton())
+                view = StreamView()
             await message.reply(content="登録はこちら", view=view)
         return
 
@@ -68,6 +67,21 @@ class Dis_StreamButton(StreamButton):
     def __init__(self):
         super().__init__(disabled=True)
         pass
+
+
+class StreamView(discord.ui.View):
+    def __init__(self, _url: Optional[str] = None):
+        super().__init__(timeout=None)
+        if _url:
+            self.add_item(StreamButton(_url=_url))
+        else:
+            self.add_item(StreamButton())
+
+
+class Dis_StreamView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        self.add_item(Dis_StreamButton())
 
 
 class StreamModal(Modal):
@@ -147,8 +161,7 @@ class StreamModal(Modal):
         )
         await interaction.response.send_message(content="配信を登録しました。")
         if self.origin_msg:
-            view = discord.ui.View(timeout=None)
-            view.add_item(Dis_StreamButton())
+            view = Dis_StreamView()
             await self.origin_msg.edit(content="登録済み", view=view)
         return
 
