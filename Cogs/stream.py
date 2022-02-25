@@ -55,7 +55,7 @@ class StreamButton(discord.ui.Button):
             label="配信登録",
             style=discord.ButtonStyle.success,
             custom_id="stream_register",
-            **kwargs
+            **kwargs,
         )
         self._url = _url
 
@@ -64,17 +64,7 @@ class StreamButton(discord.ui.Button):
         await interaction.response.send_modal(
             StreamModal(_url=self._url, origin_msg=interaction.message)
         )
-
         return
-
-
-class Dis_StreamButton(StreamButton):
-    def __init__(self):
-        super().__init__(
-            disabled=True,
-            custom_id="stream_register_completed",
-        )
-        pass
 
 
 class StreamView(discord.ui.View):
@@ -84,12 +74,6 @@ class StreamView(discord.ui.View):
             self.add_item(StreamButton(_url=_url))
         else:
             self.add_item(StreamButton())
-
-
-class Dis_StreamView(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
-        self.add_item(Dis_StreamButton())
 
 
 class StreamModal(Modal):
@@ -169,8 +153,9 @@ class StreamModal(Modal):
         )
         await interaction.response.send_message(content="配信を登録しました。")
         if self.origin_msg:
-            view = Dis_StreamView()
-            await self.origin_msg.edit(content="登録済み", view=view)
+            await self.origin_msg.edit(
+                content=f"登録済み\n登録してくれた人:{interaction.user.display_name}", view=None
+            )
         return
 
 
