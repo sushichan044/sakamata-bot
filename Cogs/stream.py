@@ -51,7 +51,12 @@ class StreamRegister(commands.Cog):
 
 class StreamButton(discord.ui.Button):
     def __init__(self, _url: Optional[str] = None, **kwargs):
-        super().__init__(label="配信登録", style=discord.ButtonStyle.success, **kwargs)
+        super().__init__(
+            label="配信登録",
+            style=discord.ButtonStyle.success,
+            custom_id="stream_register",
+            **kwargs
+        )
         self._url = _url
 
     async def callback(self, interaction: discord.Interaction):
@@ -65,7 +70,10 @@ class StreamButton(discord.ui.Button):
 
 class Dis_StreamButton(StreamButton):
     def __init__(self):
-        super().__init__(disabled=True)
+        super().__init__(
+            disabled=True,
+            custom_id="stream_register_completed",
+        )
         pass
 
 
