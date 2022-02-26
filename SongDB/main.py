@@ -12,7 +12,7 @@ from SongDB.embed_builder import EmbedBuilder as EB
 from SongDB.many_page import PagePage
 from SongDB.match import match_url
 
-req_url = "https://script.google.com/macros/s/AKfycbybEQO66Ui5AbgaPvisluBbWMqxayLM2iyPCNeipXUOvn__Jp4SQsm7X8Z4w3HQvxja/exec"
+req_url = "https://script.google.com/macros/s/AKfycbytMGqw9NTi9dwM87t0Nz8POlLmyJQMTMPX6y-wUk9LAy9hCzxpGFnr2m7Uu8XW3P6OWQ/exec"
 
 guild_id = int(os.environ["GUILD_ID"])
 
