@@ -12,6 +12,7 @@ from Cogs.inquiry import InquiryView, SuggestionView
 from Cogs.stream import StreamView
 from Core.membership import MemberVerifyButton
 from Genshin.portal import PortalView
+from security.anti_spam import ExecView
 
 logging.basicConfig(level=logging.INFO)
 
@@ -125,6 +126,7 @@ class MyBot(commands.Bot):
             self.add_view(InquiryView())
             self.add_view(SuggestionView())
             self.add_view(StreamView())
+            self.add_view(ExecView())
             self.persistent_views_added = True
             print("Set Persistant Views!")
         print("------------------------------------------------------")
