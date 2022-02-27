@@ -66,8 +66,9 @@ class InquiryConfView(discord.ui.View):
         ):
             print("Contact_mods: Invalid channel type")
             return
+        tickets = len(interaction.channel.threads)
         target = await interaction.channel.create_thread(
-            name=f"{interaction.user.display_name} さん(ID {interaction.id})",
+            name=f"tickets-{str(tickets).zfill(4)}",
             auto_archive_duration=1440,
             type=thread_type,
         )
