@@ -126,7 +126,7 @@ class MyBot(commands.Bot):
             self.add_view(InquiryView())
             self.add_view(SuggestionView())
             self.add_view(StreamView())
-            self.add_view(ExecView())
+            # self.add_view(ExecView())
             self.persistent_views_added = True
             print("Set Persistant Views!")
         print("------------------------------------------------------")
