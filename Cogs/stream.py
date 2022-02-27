@@ -1,3 +1,4 @@
+from curses.ascii import ETB
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
@@ -32,21 +33,29 @@ class StreamRegister(commands.Cog):
 
     @commands.Cog.listener("on_message")
     async def _add_stream_button(self, message: discord.Message):
-        if message.webhook_id is None or message.author.id == self.bot.user.id:
+        if (
+            not message.webhook_id
+            or not self.bot.user
+            or message.author.id == self.bot.user.id
+        ):
             return
-        if not message.embeds:
+        if not message.embeds or isinstance(
+            message.embeds[0].description, discord.embeds._EmptyEmbed
+        ):
             return
         if (
             message.channel.id == stream_channel_mods
             and message.embeds[0].description
             and "待機所が作成されました" in message.embeds[0].description
         ):
+            if isinstance(message.embeds[0].url, discord.embeds._EmptyEmbed):
+                return
             if message.embeds[0].url:
                 view = StreamView(_url=message.embeds[0].url)
             else:
                 view = StreamView()
             await message.reply(content="登録はこちら", view=view)
-        return
+            return
 
 
 class StreamButton(discord.ui.Button):
@@ -145,6 +154,8 @@ class StreamModal(Modal):
         true_duration = timedelta(hours=float(self.children[3].value))
         true_end = true_start_jst + true_duration
         # print(type(event_name), type(true_start_jst), type(true_end), type(event_url))
+        if not interaction.guild or interaction.user:
+            return
         await interaction.guild.create_scheduled_event(
             name=event_name,
             start_time=true_start_jst.astimezone(utc),
@@ -154,7 +165,7 @@ class StreamModal(Modal):
         await interaction.response.send_message(content="配信を登録しました。")
         if self.origin_msg:
             await self.origin_msg.edit(
-                content=f"登録済み\n登録してくれた人:{interaction.user.display_name}", view=None
+                content=f"登録済み\n登録してくれた人:{interaction.user.name}", view=None
             )
         return
 
