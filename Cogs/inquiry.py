@@ -68,7 +68,7 @@ class InquiryConfView(discord.ui.View):
             return
         tickets = len(interaction.channel.threads)
         target = await interaction.channel.create_thread(
-            name=f"tickets-{str(tickets+1).zfill(4)}",
+            name=f"ticket-{str(tickets+1).zfill(4)}",
             auto_archive_duration=1440,
             type=thread_type,
         )
