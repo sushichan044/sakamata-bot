@@ -55,18 +55,25 @@ class InquiryConfView(discord.ui.View):
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
         await interaction.response.defer(ephemeral=True)
+        if not interaction.guild or not interaction.user:
+            return
         if interaction.guild.premium_tier >= 2:
             thread_type = discord.ChannelType.private_thread
         else:
             thread_type = discord.ChannelType.public_thread
+        if not interaction.channel or not isinstance(
+            interaction.channel, discord.TextChannel
+        ):
+            print("Contact_mods: Invalid channel type")
+            return
+        tickets = len(interaction.channel.threads)
         target = await interaction.channel.create_thread(
-            name=f"{interaction.user.display_name} さん(ID {interaction.id})",
+            name=f"ticket-{str(tickets+1).zfill(4)}",
             auto_archive_duration=1440,
             type=thread_type,
         )
         await target.add_user(interaction.user)
-        role = interaction.guild.get_role(admin_role)
-        await target.send(role.mention)
+        await target.send(content=f"<@&{admin_role}>")
         em = EB()._inquiry_contact(target)
         await interaction.followup.send(embed=em, ephemeral=True)
         return
