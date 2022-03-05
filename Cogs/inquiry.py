@@ -72,7 +72,8 @@ class InquiryConfView(discord.ui.View):
             auto_archive_duration=1440,
             type=thread_type,
         )
-        await target.edit(invitable=False)
+        if target.type == discord.ChannelType.private_thread:
+            await target.edit(invitable=False)
         await target.add_user(interaction.user)
         await target.send(content=f"<@&{admin_role}>")
         em = EB()._inquiry_contact(target)
