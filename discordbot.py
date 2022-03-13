@@ -2,7 +2,7 @@ import logging
 import os
 import re
 import traceback
-from datetime import timedelta, timezone
+from datetime import timedelta, timezone, datetime
 
 import discord
 from discord import Member
@@ -133,9 +133,8 @@ class MyBot(commands.Bot):
         print(f"Logged in as {self.user} (ID: {self.user.id})")
         print("------------------------------------------------------")
         channel = self.get_channel(log_channel)
-        now = discord.utils.utcnow()
         await channel.send(
-            f"起動完了({now.astimezone(jst).strftime('%m/%d %H:%M:%S')})\nBot ID:{self.user.id}"
+            f"起動完了({datetime.now(jst).strftime('%m/%d %H:%M:%S')})\nBot ID:{self.user.id}"
         )
         return
 
