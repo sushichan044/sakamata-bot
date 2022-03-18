@@ -59,6 +59,15 @@ class Thread(commands.Cog):
     ┗
     """
 
+    @commands.command(name="add-thread")
+    @commands.guild_only()
+    async def _add_thread(
+        self, ctx: commands.Context, target: discord.Member, thread: discord.Thread
+    ):
+        await thread.add_user(target)
+        await ctx.reply(f"{target.mention}を{thread.mention}に追加したわよ")
+        return
+
     @slash_command(guild_ids=[guild_id], name="board")
     @permissions.has_role(admin_role)
     async def _board_slash(
