@@ -11,10 +11,11 @@ class MishMash(commands.Cog):
 
     @commands.command(name="send-mishmash")
     @commands.has_permissions(administrator=True)
+    @commands.guild_only()
     async def send_mishmash_view(
         self,
         ctx: commands.Context,
-        target: Optional[discord.TextChannel] = None,
+        target: Optional[str] = None,
         *,
         text: str,
     ):
@@ -22,7 +23,8 @@ class MishMash(commands.Cog):
         if target is None:
             await ctx.send(content=text, view=view)
         else:
-            await target.send(content=text, view=view)
+            ch = ctx.guild.get_channel(target)
+            await ch.send(content=text, view=view)
 
 
 class MishMash_View(discord.ui.View):
@@ -40,7 +42,9 @@ class MishMash_View(discord.ui.View):
         if interaction.user is None:
             return
         user_name = interaction.user.name
-        parsed_name = urllib.parse.quote(string=user_name)
+        user_disc = interaction.user.discriminator
+        user_identity = f"{user_name}#{user_disc}"
+        parsed_name = urllib.parse.quote(string=user_identity)
         user_id = interaction.user.id
         form_url = f"https://docs.google.com/forms/d/e/1FAIpQLSfCEgUa3I_i4kkJ1eJ5BBEoqpv_GGB9WzH6ybOrQv2ZjUESig/viewform?usp=pp_url&entry.703835030={user_id}&entry.1949127614={parsed_name}"
         view = MishMash_Form_View(link=form_url)
