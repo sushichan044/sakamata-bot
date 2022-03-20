@@ -3,6 +3,7 @@ import os
 import re
 import traceback
 from datetime import timedelta, timezone
+from Event.birth_mishmash import MishMash_View
 
 import discord
 from discord import Member
@@ -58,6 +59,7 @@ EXTENSION_LIST = [
     "Cogs.stream",
     "Cogs.thread",
     "Cogs.tool",
+    "Event.birth_mishmash",
 ]
 
 GENSHIN_EXTENSION_LIST = [
@@ -112,6 +114,7 @@ class MyBot(commands.Bot):
             self.add_view(PortalView())
             self.add_view(InquiryView())
             self.add_view(SuggestionView())
+            self.add_view(MishMash_View())
             self.persistent_views_added = True
             print("Set Persistant Views!")
         print("------------------------------------------------------")
