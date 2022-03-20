@@ -15,16 +15,12 @@ class MishMash(commands.Cog):
     async def send_mishmash_view(
         self,
         ctx: commands.Context,
-        target: Optional[str] = None,
+        target: discord.TextChannel,
         *,
         text: str,
     ):
         view = MishMash_View()
-        if target is None:
-            await ctx.send(content=text, view=view)
-        else:
-            ch = ctx.guild.get_channel(target)
-            await ch.send(content=text, view=view)
+        await target.send(content=text, view=view)
 
 
 class MishMash_View(discord.ui.View):
