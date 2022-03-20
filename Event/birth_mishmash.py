@@ -27,7 +27,7 @@ class MishMash_View(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(
-        label="日本語を使う方はこちら",
+        label="日本語を使う方",
         custom_id="mishmash_form_button",
         style=discord.ButtonStyle.blurple,
     )
