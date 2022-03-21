@@ -41,7 +41,7 @@ class MishMash_View(discord.ui.View):
         user_identity = f"{user_name}#{user_disc}"
         parsed_name = urllib.parse.quote(string=user_identity)
         user_id = interaction.user.id
-        form_url = f"https://docs.google.com/forms/d/e/1FAIpQLSfCEgUa3I_i4kkJ1eJ5BBEoqpv_GGB9WzH6ybOrQv2ZjUESig/viewform?usp=pp_url&entry.703835030={user_id}&entry.1949127614={parsed_name}"
+        form_url = f"https://docs.google.com/forms/d/e/1FAIpQLSfCEgUa3I_i4kkJ1eJ5BBEoqpv_GGB9WzH6ybOrQv2ZjUESig/viewform?usp=pp_url&entry.703835030={user_id}&entry.475358729={parsed_name}"
         view = MishMash_Form_View(link=form_url)
         await interaction.response.send_message(
             content="下のボタンからGoogleフォームへ移動して\n寄せ書きの入力を行ってください。\n\nフィームへのリンクはユーザーごとに違うため、自分のリンクを使用してください。",
