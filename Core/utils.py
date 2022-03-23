@@ -110,6 +110,10 @@ class Utils_Command(commands.Cog):
             print(channel.name, result)
         return
 
+    @commands.command(name="/")
+    async def _slash(self, ctx):
+        pass
+
     @slash_command(guild_ids=[guild_id], name="ping")
     @permissions.has_role(admin_role)
     async def _ping(self, ctx: ApplicationContext):
