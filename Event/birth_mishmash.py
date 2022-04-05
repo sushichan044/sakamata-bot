@@ -1,5 +1,5 @@
-from typing import Union
 import urllib.parse
+from typing import Union
 
 import discord
 from discord.ext import commands
@@ -28,7 +28,7 @@ class MishMash_View(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(
-        label="日本語を使う方",
+        label="日本語",
         custom_id="mishmash_form_button_jp",
         style=discord.ButtonStyle.blurple,
     )
@@ -47,7 +47,7 @@ class MishMash_View(discord.ui.View):
         )
 
     @discord.ui.button(
-        label="use English",
+        label="English",
         custom_id="mishmash_form_button_en",
         style=discord.ButtonStyle.success,
     )
