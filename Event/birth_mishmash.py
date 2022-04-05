@@ -60,7 +60,7 @@ class MishMash_View(discord.ui.View):
         form_url = f"https://docs.google.com/forms/d/e/1FAIpQLSe9O3tqOE4rjRZ2gVJ3kM5nfOdAJs2DY2W8Hv6qxzvvIwUxeg/viewform?usp=pp_url&entry.703835030={user_id}&entry.475358729={user_name}"
         view = MishMash_Form_View(link=form_url)
         await interaction.response.send_message(
-            content="Please use the button below to go to the Google form to fill out the yosegaki.\n Please use your own url to the form,\nas the url to the form is different for each user.",
+            content="Please use the button below to go to the Google form to fill out the yosegaki.\n\nPlease use your own url to the form,\n\nas the url to the form is different for each user.",
             view=view,
             ephemeral=True,
         )
