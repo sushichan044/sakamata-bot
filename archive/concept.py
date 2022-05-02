@@ -18,7 +18,7 @@ from discord.ext.ui import (
     state,
 )
 
-from Cogs.connect import connect
+from archive.connect import connect
 from Cogs.embed_builder import EmbedBuilder as EB
 
 guild_id = int(os.environ["GUILD_ID"])

@@ -8,7 +8,7 @@ from discord.commands import slash_command
 
 from holodex.client import HolodexClient
 
-from ..Cogs.connect import connect
+from .connect import connect
 from .holodex_process import TimeData
 
 conn = connect()
