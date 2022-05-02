@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 import discord
 from discord import ApplicationContext
-from discord.commands import permissions, user_command
+from discord.commands import user_command
 from discord.ext import commands
 
 from Core.confirm import Confirm
@@ -26,7 +26,6 @@ class Timeout(commands.Cog):
         self.bot = bot
 
     @user_command(guild_ids=[guild_id], name="緊急タイムアウト")
-    @permissions.has_role(mod_role)
     # user commands return the member
     async def _emergency_timeout(self, ctx: ApplicationContext, member: discord.Member):
         await member.timeout_for(duration=timedelta(days=1), reason="Emergency Timeout")

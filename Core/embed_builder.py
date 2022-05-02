@@ -1,4 +1,4 @@
-from datetime import timedelta, timezone
+from datetime import datetime, timedelta, timezone
 
 import discord
 from discord import ApplicationContext, Embed
@@ -20,13 +20,13 @@ class EmbedBuilder:
             color=3447003,
             description=msg,
             url=f"{desc_url}",
-            timestamp=discord.utils.utcnow(),
+            timestamp=datetime.utcnow(),
         )
         embed.add_field(name="実行者", value=f"{ctx.author.mention}")
         embed.add_field(name="実行コマンド", value=f"[コマンドリンク]({ctx.message.jump_url})")
         embed.add_field(
             name="実行日時",
-            value=discord.utils.utcnow().astimezone(jst).strftime("%Y/%m/%d %H:%M:%S"),
+            value=datetime.now(jst).strftime("%Y/%m/%d %H:%M:%S"),
         )
         return embed
 
@@ -38,12 +38,12 @@ class EmbedBuilder:
             color=3447003,
             description=msg,
             url=f"{desc_url}",
-            timestamp=discord.utils.utcnow(),
+            timestamp=datetime.utcnow(),
         )
         embed.add_field(name="実行者", value=ctx.interaction.user.mention)
         embed.add_field(
             name="実行日時",
-            value=discord.utils.utcnow().astimezone(jst).strftime("%Y/%m/%d %H:%M:%S"),
+            value=datetime.now(jst).strftime("%Y/%m/%d %H:%M:%S"),
         )
         return embed
 

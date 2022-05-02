@@ -1,8 +1,10 @@
 import os
 from datetime import datetime, timedelta, timezone
 
-import discord
 from discord.ext import commands
+from dotenv import load_dotenv
+
+load_dotenv()
 
 join_log_channel = int(os.environ["JOIN_LOG_CHANNEL"])
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
@@ -26,10 +28,9 @@ class EnctranceLog(commands.Cog):
 
     async def _send_member_log(self, member, status):
         channel = self.bot.get_channel(join_log_channel)
-        now = discord.utils.utcnow().astimezone(jst)
-        send_time = datetime.strftime(now, "%Y/%m/%d %H:%M:%S")
+        now = datetime.now(tz=jst).strftime("%Y/%m/%d %H:%M:%S")
         count = member.guild.member_count
-        send_msg = f"時刻: {send_time}\n{status}メンバー名: {member.name} (ID:{member.id})\nメンション: {member.mention}\nアカウント作成時刻: {member.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}\n現在のメンバー数:{count}\n"
+        send_msg = f"時刻: {now}\n{status}メンバー名: {member.name} (ID:{member.id})\nメンション: {member.mention}\nアカウント作成時刻: {member.created_at.astimezone(jst):%Y/%m/%d %H:%M:%S}\n現在のメンバー数:{count}\n"
         await channel.send(send_msg)
         return
 

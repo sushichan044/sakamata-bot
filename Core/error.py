@@ -19,7 +19,7 @@ class InteractionError(Exception):
         reason: str | None = None,
     ) -> None:
         traceback.print_exc()
-        now = datetime.now().astimezone(jst).strftime("%Y/%m/%d %H:%M:%S")
+        now = datetime.now(jst).strftime("%Y/%m/%d %H:%M:%S")
         output = f"[Interaction Error]\n\nTime: ({now})"
         if interaction and interaction.id:
             output = f"{output}\n\nID: {interaction.id}"
@@ -39,7 +39,7 @@ class ErrorNotify(commands.Cog):
     @commands.Cog.listener(name="on_error")
     async def _on_error(self, event, something):
         channel = self.bot.get_channel(error_log_channel)
-        now = discord.utils.utcnow().astimezone(jst)
+        now = datetime.now(jst).strftime("%Y/%m/%d %H:%M:%S")
         msg = f"エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(event)}\n{str(something)}"
         print(msg)
         await channel.send(f"```{msg}```")
@@ -48,7 +48,7 @@ class ErrorNotify(commands.Cog):
     @commands.Cog.listener(name="on_command_error")
     async def _on_command_error(self, ctx, error):
         channel = self.bot.get_channel(error_log_channel)
-        now = discord.utils.utcnow().astimezone(jst)
+        now = datetime.now(jst).strftime("%Y/%m/%d %H:%M:%S")
         await channel.send(f"```エラーが発生しました。({now:%m/%d %H:%M:%S})\n{str(error)}```")
         if isinstance(error, commands.MissingRole):
             await ctx.reply(content="このコマンドを実行する権限がありません。", mention_author=False)
@@ -63,7 +63,7 @@ class ErrorNotify(commands.Cog):
 
     @commands.Cog.listener(name="on_application_command_error")
     async def _on_application_command_error(self, ctx, exception):
-        now = datetime.today().astimezone(jst).strftime("%m/%d %H:%M:%S")
+        now = datetime.now(jst).strftime("%Y/%m/%d %H:%M:%S")
         msg = f"エラーが発生しました。({now})\n{str(exception)}"
         if len(msg) >= 4000:
             print(msg)

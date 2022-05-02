@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 import discord
 from discord import ApplicationContext, Option
-from discord.commands import permissions, slash_command
+from discord.commands import slash_command
 from discord.ext import commands
 
 guild_id = int(os.environ["GUILD_ID"])
@@ -26,7 +26,6 @@ class Utils_Command(commands.Cog):
         self.bot = bot
 
     @slash_command(name="user", guild_ids=[guild_id], default_permission=False)
-    @permissions.has_role(mod_role)
     async def _newuser(
         self,
         ctx: ApplicationContext,
@@ -111,7 +110,6 @@ class Utils_Command(commands.Cog):
         return
 
     @slash_command(guild_ids=[guild_id], name="ping")
-    @permissions.has_role(admin_role)
     async def _ping(self, ctx: ApplicationContext):
         """生存確認用"""
         raw_ping = self.bot.latency

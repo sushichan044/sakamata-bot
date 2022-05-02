@@ -2,15 +2,12 @@ import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
-from discord import ApplicationContext
-
 import discord
-from discord.commands import permissions, slash_command
+from discord import ApplicationContext
+from discord.commands import slash_command
 from discord.ext import commands
 from discord.ui import InputText, Modal
 
-mod_role = int(os.environ["MOD_ROLE"])
-admin_role = int(os.environ["ADMIN_ROLE"])
 guild_id = int(os.environ["GUILD_ID"])
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 utc = timezone.utc
@@ -23,7 +20,6 @@ class StreamRegister(commands.Cog):
         self.bot = bot
 
     @slash_command(guild_ids=[guild_id], default_permission=False, name="stream")
-    @permissions.has_role(mod_role)
     async def _test_modal(self, ctx: ApplicationContext):
         """配信を簡単にイベントに登録できます。"""
         modal = StreamModal()

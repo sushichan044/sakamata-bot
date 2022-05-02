@@ -1,13 +1,10 @@
 import os
-from datetime import timedelta, timezone
-
-from discord import ApplicationContext
-
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 import discord
-from discord import Option
-from discord.commands import permissions, slash_command
+from discord import ApplicationContext, Option
+from discord.commands import slash_command
 from discord.ext import commands
 from discord.ext.ui import (
     InteractionProvider,
@@ -20,8 +17,6 @@ from discord.ext.ui import (
 
 thread_log_channel = int(os.environ["THREAD_LOG_CHANNEL"])
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
-mod_role = int(os.environ["MOD_ROLE"])
-admin_role = int(os.environ["ADMIN_ROLE"])
 guild_id = int(os.environ["GUILD_ID"])
 
 
@@ -69,7 +64,6 @@ class Thread(commands.Cog):
         return
 
     @slash_command(guild_ids=[guild_id], name="board")
-    @permissions.has_role(admin_role)
     async def _board_slash(
         self,
         ctx: ApplicationContext,
@@ -159,12 +153,13 @@ class Thread(commands.Cog):
         return final_text
 
     async def compose_thread_create_log(self, thread):
+        now = datetime.now(jst).strftime("%Y/%m/%d %H:%M:%S")
         embed = discord.Embed(
             title="スレッドが作成されました。",
             url="",
             color=3447003,
             description="",
-            timestamp=discord.utils.utcnow(),
+            timestamp=datetime.now(timezone.utc),
         )
         embed.set_author(
             name=thread.owner.display_name,
@@ -175,7 +170,7 @@ class Thread(commands.Cog):
         embed.add_field(name="作成者", value=f"{thread.owner.mention}")
         embed.add_field(
             name="作成日時",
-            value=f"{discord.utils.utcnow().astimezone(jst):%Y/%m/%d %H:%M:%S}",
+            value=f"{now}",
         )
         return embed
 

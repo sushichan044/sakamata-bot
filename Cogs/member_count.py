@@ -1,9 +1,8 @@
 import os
 
-from discord.commands import slash_command, permissions
+from discord.commands import slash_command
 from discord.ext import commands, tasks
 
-admin_role = int(os.environ["ADMIN_ROLE"])
 count_vc = int(os.environ["COUNT_VC"])
 guild_id = int(os.environ["GUILD_ID"])
 
@@ -22,7 +21,6 @@ class MemberCount(commands.Cog):
         await self.membercount()
 
     @slash_command(guild_ids=[guild_id], default_permission=False, name="manualcount")
-    @permissions.has_role(admin_role)
     async def _manual(self, ctx):
         """メンバーカウントの手動更新用"""
         await self.membercount()
