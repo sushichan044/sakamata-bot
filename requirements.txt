@@ -32,7 +32,7 @@ httpcore==0.9.1
 httplib2==0.20.4
 httpx==0.13.3
 hyperframe==5.2.0
-idna==3.3
+idna==2.10
 importlib-metadata==4.11.0
 install==1.3.5
 mccabe==0.6.1
@@ -46,7 +46,7 @@ pathspec==0.9.0
 pipdeptree==2.2.1
 platformdirs==2.5.0
 protobuf==3.19.3
-py-cord @ git+https://github.com/Pycord-Development/pycord@5806985502403c5e61bcc90af92bd799d69b2d80
+py-cord==2.0.0b7
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycodestyle==2.8.0
