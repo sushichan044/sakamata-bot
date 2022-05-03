@@ -1,6 +1,5 @@
 import re
 
-
 yt_long = re.compile(r"^[\S]*youtube.com/watch\?v=[\S]+")
 yt_short = re.compile(r"^[\S]*youtu.be/[\S]+")
 

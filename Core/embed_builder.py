@@ -3,6 +3,9 @@ from datetime import datetime, timedelta, timezone
 import discord
 from discord import ApplicationContext, Embed
 from discord.ext import commands
+from dotenv import load_dotenv
+
+load_dotenv()
 
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")

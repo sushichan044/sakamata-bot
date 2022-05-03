@@ -1,6 +1,5 @@
 import os
 from datetime import datetime, timedelta, timezone
-from typing import Optional
 
 import discord
 from discord import ApplicationContext, Option
@@ -14,6 +13,9 @@ from discord.ext.ui import (
     View,
     ViewTracker,
 )
+from dotenv import load_dotenv
+
+load_dotenv()
 
 thread_log_channel = int(os.environ["THREAD_LOG_CHANNEL"])
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
@@ -87,7 +89,7 @@ class Thread(commands.Cog):
         return
 
     def _make_board(
-        self, interaction: discord.Interaction, category_id: Optional[int] = None
+        self, interaction: discord.Interaction, category_id: int | None = None
     ) -> str:
         if category_id:
             channels = [

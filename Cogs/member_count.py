@@ -2,6 +2,9 @@ import os
 
 from discord.commands import slash_command
 from discord.ext import commands, tasks
+from dotenv import load_dotenv
+
+load_dotenv()
 
 count_vc = int(os.environ["COUNT_VC"])
 guild_id = int(os.environ["GUILD_ID"])

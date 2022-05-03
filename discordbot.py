@@ -5,13 +5,15 @@ import traceback
 from datetime import datetime, timedelta, timezone
 
 import discord
-from discord import Member
 from discord.ext import commands
+from dotenv import load_dotenv
 
+from archive.portal import PortalView
 from Cogs.inquiry import InquiryView, SuggestionView
 from Core.membership import MemberVerifyButton
 from Event.birth_mishmash import MishMash_View
-from Genshin.portal import PortalView
+
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 
@@ -62,9 +64,6 @@ EXTENSION_LIST = [
     "Event.birth_mishmash",
 ]
 
-GENSHIN_EXTENSION_LIST = [
-    "Genshin.portal",
-]
 
 SONG_DB_EXTENSION_LIST = [
     # "SongDB.main",
@@ -93,13 +92,6 @@ class MyBot(commands.Bot):
                 traceback.print_exc()
             else:
                 print(f"extension [{cog}] is loaded!")
-        for cog in GENSHIN_EXTENSION_LIST:
-            try:
-                self.load_extension(cog)
-            except Exception:
-                traceback.print_exc()
-            else:
-                print(f"extension for Genshin [{cog}] is loaded!")
         for cog in SONG_DB_EXTENSION_LIST:
             try:
                 self.load_extension(cog)

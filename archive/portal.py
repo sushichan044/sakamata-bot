@@ -3,7 +3,9 @@ from discord import ApplicationContext
 from discord.commands import slash_command
 from discord.ext import commands
 
-from . import cfg, embed_builder
+from ..archive import cfg
+
+from ..archive import embed_builder
 
 
 class Portal(commands.Cog):

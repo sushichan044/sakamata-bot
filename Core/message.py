@@ -2,11 +2,14 @@ import os
 
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
 from newdispanderfixed import dispand
 
 from Core.confirm import Confirm
 from Core.download import download
 from Core.log_sender import LogSender as LS
+
+load_dotenv()
 
 admin_role = int(os.environ["ADMIN_ROLE"])
 
@@ -106,6 +109,9 @@ class Message_Sys(commands.Cog):
         if channel is None:
             channel = await self.bot.fetch_channel(int(channel_id))
         permitted_role = ctx.guild.get_role(admin_role)
+        if not permitted_role:
+            await ctx.reply("Admin role not found.")
+            return
         target = await channel.fetch_message(message_id)
         msg_url = (
             f"https://discord.com/channels/{ctx.guild.id}/{channel_id}/{message_id}"

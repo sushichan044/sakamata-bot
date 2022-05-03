@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta, timezone
-from typing import Optional
 
 from discord import Embed
 from SongDBCore.model import Artist, History, No_Recent, Song, Stream
@@ -12,12 +11,12 @@ class EmbedBuilder:
     def __init__(
         self,
         *,
-        artist: Optional[Artist] = None,
-        history: Optional[History] = None,
-        no_recent: Optional[No_Recent] = None,
-        song: Optional[Song] = None,
-        songs: Optional[list[Song]] = None,
-        stream: Optional[Stream] = None,
+        artist: Artist | None = None,
+        history: History | None = None,
+        no_recent: No_Recent | None = None,
+        song: Song | None = None,
+        songs: list[Song] | None = None,
+        stream: Stream | None = None,
     ) -> None:
         pass
 

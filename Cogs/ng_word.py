@@ -5,6 +5,10 @@ from datetime import timedelta, timezone
 
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 alert_channel = int(os.environ["ALERT_CHANNEL"])

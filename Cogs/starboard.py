@@ -1,15 +1,17 @@
 import os
-from typing import Literal, Optional
 
 import discord
 from discord.errors import HTTPException
 from discord.ext import commands
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # star_emoji = "\N{Blue Heart}"
 star_emoji = "<:a_chloesd17:918059955561574401>"
 emoji_url = "https://cdn.discordapp.com/emojis/918059955561574401.webp?size=1024&quality=lossless"
 star_channel = int(os.environ["STAR_CHANNEL"])
-env: Literal["main", "alpha"] = os.environ["ENV"]  # main or alpha
+env = os.environ["ENV"]  # main or alpha
 
 
 class StarBoard(commands.Cog):
@@ -105,7 +107,7 @@ class StarBoard(commands.Cog):
         await target[0].edit(embed=embed)
         return
 
-    async def _get_history(self, channel) -> Optional[list[discord.Message]]:
+    async def _get_history(self, channel) -> list[discord.Message] | None:
         try:
             history = await channel.history().flatten()
         except HTTPException as e:
@@ -121,7 +123,7 @@ class StarBoard(commands.Cog):
             print("Reaction Buggy")
         return reaction[0]
 
-    async def _get_history_post(self, message: discord.Message) -> Optional[bool]:
+    async def _get_history_post(self, message: discord.Message) -> bool | None:
         channel = self.bot.get_channel(star_channel)
         history = await self._get_history(channel)
         if not history:
@@ -137,7 +139,7 @@ class StarBoard(commands.Cog):
             return False
 
 
-def _return_exception(env: Literal["main", "alpha"]) -> tuple[list[int], list[int]]:
+def _return_exception(env: str) -> tuple[list[int], list[int]]:
     ignore_category = {
         916898415349223484: "main",
         927568480985821185: "main",

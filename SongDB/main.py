@@ -6,11 +6,14 @@ from Core.error import InteractionError
 from discord import ApplicationContext
 from discord.commands import slash_command
 from discord.ext import commands
+from dotenv import load_dotenv
 from SongDBCore import SongDBClient
 
 from SongDB.embed_builder import EmbedBuilder as EB
 from SongDB.many_page import PagePage
 from SongDB.match import match_url
+
+load_dotenv()
 
 req_url = "https://script.google.com/macros/s/AKfycbybEQO66Ui5AbgaPvisluBbWMqxayLM2iyPCNeipXUOvn__Jp4SQsm7X8Z4w3HQvxja/exec"
 

@@ -1,12 +1,14 @@
 import os
 from datetime import datetime, timedelta, timezone
-from typing import Optional
 
 import discord
 from discord import ApplicationContext
 from discord.commands import slash_command
 from discord.ext import commands
 from discord.ui import InputText, Modal
+from dotenv import load_dotenv
+
+load_dotenv()
 
 guild_id = int(os.environ["GUILD_ID"])
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
@@ -47,7 +49,7 @@ class StreamRegister(commands.Cog):
 
 
 class StreamButton(discord.ui.Button):
-    def __init__(self, _url: Optional[str] = None, **kwargs):
+    def __init__(self, _url: str | None = None, **kwargs):
         super().__init__(label="配信登録", style=discord.ButtonStyle.success, **kwargs)
         self._url = _url
 
@@ -68,7 +70,7 @@ class Dis_StreamButton(StreamButton):
 
 class StreamModal(Modal):
     def __init__(
-        self, _url: Optional[str] = None, origin_msg: discord.Message | None = None
+        self, _url: str | None = None, origin_msg: discord.Message | None = None
     ) -> None:
         super().__init__(title="配信登録用フォーム")
         self.origin_msg = origin_msg

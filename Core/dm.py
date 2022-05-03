@@ -2,11 +2,14 @@ import os
 
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
 
 from Core.confirm import Confirm
 from Core.download import download
 from Core.embed_builder import EmbedBuilder as EB
 from Core.log_sender import LogSender as LS
+
+load_dotenv()
 
 admin_role = int(os.environ["ADMIN_ROLE"])
 

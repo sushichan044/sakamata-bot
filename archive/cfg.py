@@ -1,6 +1,10 @@
 import os
 from datetime import timezone, timedelta
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 

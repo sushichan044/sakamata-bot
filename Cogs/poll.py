@@ -3,6 +3,9 @@ import os
 import discord
 from discord.commands import message_command
 from discord.ext import commands
+from dotenv import load_dotenv
+
+load_dotenv()
 
 guild_id = int(os.environ["GUILD_ID"])
 server_member_role = int(os.environ["SERVER_MEMBER_ROLE"])

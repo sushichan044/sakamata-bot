@@ -5,10 +5,13 @@ import discord
 from discord import ApplicationContext
 from discord.commands import user_command
 from discord.ext import commands
+from dotenv import load_dotenv
 
 from Core.confirm import Confirm
 from Core.dm import DM_Sys as DS
 from Core.log_sender import LogSender as LS
+
+load_dotenv()
 
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
@@ -32,7 +35,7 @@ class Timeout(commands.Cog):
         await ctx.respond(f"{member.mention}を緊急タイムアウトしました。", ephemeral=True)
         msg = f"{member.mention}を緊急タイムアウトしました。"
         desc_url = ""
-        until = discord.utils.utcnow().astimezone(jst) + timedelta(days=1)
+        until = datetime.now(jst) + timedelta(days=1)
         until_str = until.strftime("%Y/%m/%d %H:%M:%S")
         await LS(self.bot).send_context_timeout_log(ctx, msg, desc_url, until_str)
         return
@@ -132,7 +135,7 @@ class Timeout(commands.Cog):
                 title="Timeout 解除通知",
                 color=3447003,
                 description=f"{after.mention}のタイムアウトが終了しました。",
-                timestamp=discord.utils.utcnow(),
+                timestamp=datetime.now(),
             )
             await channel.send(embed=embed)
             return

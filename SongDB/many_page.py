@@ -1,12 +1,11 @@
 from discord import Embed, Interaction
-
 from discord.ext.ui import (
+    InteractionProvider,
+    Message,
+    PageView,
+    PaginationView,
     View,
     ViewTracker,
-    Message,
-    PaginationView,
-    InteractionProvider,
-    PageView,
 )
 
 

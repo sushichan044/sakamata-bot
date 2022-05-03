@@ -4,6 +4,9 @@ import discord
 from discord import Option
 from discord.commands import message_command, slash_command
 from discord.ext import commands
+from dotenv import load_dotenv
+
+load_dotenv()
 
 guild_id = int(os.environ["GUILD_ID"])
 

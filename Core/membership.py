@@ -1,17 +1,19 @@
 import asyncio
 import os
 import re
-from datetime import timedelta, timezone
-from typing import Optional
+from datetime import datetime, timedelta, timezone
 
 import discord
 from discord.ext import commands
 from discord.ext.ui import MessageProvider, ViewTracker
+from dotenv import load_dotenv
 
 from Core.confirm import Confirm
 from Core.log_sender import LogSender as LS
 from Core.membership_ui import ConfirmView, RemoveView
 from Core.post_sheet import PostToSheet as Sheet
+
+load_dotenv()
 
 utc = timezone.utc
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
@@ -74,7 +76,7 @@ class Membership(commands.Cog):
                         )
 
                     date = await self.bot.wait_for("message", check=check_date)
-                    status: Optional[str] = Sheet(member, date.content).check_status()
+                    status: str | None = Sheet(member, date.content).check_status()
                     if status is None:
                         await date.reply("シートに反映されました。", mention_author=False)
                         add_role = guild.get_role(yt_membership_role)
@@ -89,7 +91,7 @@ class Membership(commands.Cog):
                             color=3447003,
                             description=msg,
                             url=f"{desc_url}",
-                            timestamp=discord.utils.utcnow(),
+                            timestamp=datetime.utcnow(),
                         )
                         embed.set_author(
                             name=self.bot.user,
@@ -97,9 +99,7 @@ class Membership(commands.Cog):
                         )
                         embed.add_field(
                             name="実行日時",
-                            value=discord.utils.utcnow()
-                            .astimezone(jst)
-                            .strftime("%Y/%m/%d %H:%M:%S"),
+                            value=datetime.now(jst).strftime("%Y/%m/%d %H:%M:%S"),
                         )
                         await log_channel_object.send(embed=embed)
                         return
@@ -136,16 +136,14 @@ class Membership(commands.Cog):
                         color=3447003,
                         description=msg,
                         url=f"{desc_url}",
-                        timestamp=discord.utils.utcnow(),
+                        timestamp=datetime.utcnow(),
                     )
                     embed.set_author(
                         name=self.bot.user, icon_url=self.bot.user.display_avatar.url
                     )
                     embed.add_field(
                         name="実行日時",
-                        value=discord.utils.utcnow()
-                        .astimezone(jst)
-                        .strftime("%Y/%m/%d %H:%M:%S"),
+                        value=datetime.now(jst).strftime("%Y/%m/%d %H:%M:%S"),
                     )
                     await log_channel_object.send(embed=embed)
                     return
@@ -195,16 +193,14 @@ class Membership(commands.Cog):
                     color=3447003,
                     description=msg,
                     url=f"{desc_url}",
-                    timestamp=discord.utils.utcnow(),
+                    timestamp=datetime.utcnow(),
                 )
                 embed.set_author(
                     name=self.bot.user, icon_url=self.bot.user.display_avatar.url
                 )
                 embed.add_field(
                     name="実行日時",
-                    value=discord.utils.utcnow()
-                    .astimezone(jst)
-                    .strftime("%Y/%m/%d %H:%M:%S"),
+                    value=datetime.now(jst).strftime("%Y/%m/%d %H:%M:%S"),
                 )
                 await log_channel_object.send(embed=embed)
                 return

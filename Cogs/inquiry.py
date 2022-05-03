@@ -1,13 +1,16 @@
 import json
 import os
-from datetime import timedelta, timezone
+from datetime import datetime, timedelta, timezone
 
 import discord
 import requests
 from discord.ext import commands
 from discord.ui import InputText, Modal
+from dotenv import load_dotenv
 
 from Cogs.embed_builder import EmbedBuilder as EB
+
+load_dotenv()
 
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
 admin_role = int(os.environ["ADMIN_ROLE"])
@@ -147,7 +150,7 @@ class SurveyModal(Modal):
         with open(path) as f:
             df: dict = json.load(f)
         # print(df)
-        now = discord.utils.utcnow().astimezone(jst).strftime("%Y/%m/%d %H:%M:%S")
+        now = datetime.now(jst).strftime("%Y/%m/%d %H:%M:%S")
         df["embeds"][0]["description"] = self.children[0].value
         df["embeds"][0]["footer"]["text"] = now
         if self.children[1].value:

@@ -4,6 +4,9 @@ from datetime import datetime, timedelta, timezone
 
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
+
+load_dotenv()
 
 error_log_channel = int(os.environ["ERROR_CHANNEL"])
 jst = timezone(timedelta(hours=9), "Asia/Tokyo")
