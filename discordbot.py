@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 from Cogs.inquiry import InquiryView, SuggestionView
 from Core.membership import MemberVerifyButton
-from Event.birth_mishmash import MishMash_View
+from Event.birth_mishmash import Yosetti_View
 
 load_dotenv()
 
@@ -55,6 +55,7 @@ EXTENSION_LIST = [
     "Cogs.member_count",
     "Cogs.ng_word",
     "Cogs.poll",
+    "Cogs.send_button",
     "Cogs.slow",
     "Cogs.starboard",
     "Cogs.stream",
@@ -103,14 +104,14 @@ class MyBot(commands.Bot):
                 print(f"extension for SongDB [{cog}] is loaded!")
 
     async def on_connect(self):
-        await self.sync_commands()
+        await self.sync_commands(force=True)
 
     async def on_ready(self):
         if not self.persistent_views_added:
             self.add_view(MemberVerifyButton())
             self.add_view(InquiryView())
             self.add_view(SuggestionView())
-            self.add_view(MishMash_View())
+            self.add_view(Yosetti_View())
             self.persistent_views_added = True
             print("Set Persistant Views!")
         print("------------------------------------------------------")

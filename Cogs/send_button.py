@@ -2,6 +2,7 @@ import asyncio
 import os
 
 import discord
+from discord import Option
 from discord.commands import slash_command
 from discord.ext import commands
 from discord.ui import InputText, Modal
@@ -17,14 +18,14 @@ class ButtonSender(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash_command(name="send-button")
+    @slash_command(name="send-button", guild_ids=[guild_id])
     async def send_button(
         self,
         ctx: discord.ApplicationContext,
-        channel: discord.Option(discord.TextChannel, required=True),
-        attachment: discord.Option(discord.Attachment, required=False),
+        channel: str,
     ):
         # get content
+        ch = await self.bot.fetch_channel(int(channel))
         content = await self.get_content(ctx.interaction)
         if not content:
             await ctx.respond("メッセージ内容を正しく入力できませんでした。", ephemeral=True)
@@ -32,7 +33,7 @@ class ButtonSender(commands.Cog):
         if (count := len(content)) > 2000:
             await ctx.respond(f"メッセージ内容が長すぎます。\n文字数が{count}文字です。", ephemeral=True)
             return
-        if not isinstance(channel, discord.TextChannel):
+        if not isinstance(ch, discord.TextChannel):
             await ctx.respond("メッセージを送信するチャンネルを正しく指定できませんでした。", ephemeral=True)
             return
         # select button
@@ -40,8 +41,11 @@ class ButtonSender(commands.Cog):
         if not button:
             await ctx.respond("ボタンを正しく指定できませんでした。", ephemeral=True)
         else:
+            button_dict: dict[str, discord.ui.View] = {
+                "1": Yosetti_View(),
+            }
             view = button_dict[button]
-            msg = await channel.send(content=content, view=view)
+            msg = await ch.send(content=content, view=view)
             embed = discord.Embed(
                 title="メッセージを送信しました。",
                 color=15767485,
@@ -55,10 +59,12 @@ class ButtonSender(commands.Cog):
         future = asyncio.Future()
         if interaction.response.is_done():
             await interaction.followup.send(content="入力フォームを送信できません。", ephemeral=True)
+            return None
         await interaction.response.send_modal(MessageInput(future))
+        await future
         if future.done():
             if future.result():
-                content, _interaction = future.result()
+                content = future.result()
                 return content
             else:
                 return None
@@ -74,7 +80,7 @@ class ButtonSender(commands.Cog):
             placeholder="ボタンを選択",
             min_values=1,
             max_values=1,
-            deferred=True,
+            deferred=False,
         )
         if interaction.response.is_done():
             await interaction.followup.send(content=content, view=view)
@@ -84,6 +90,7 @@ class ButtonSender(commands.Cog):
         if future.done():
             if future.result():
                 button, _interaction = future.result()
+                await _interaction.response.send_message(content="ボタンを選択しました。")
                 return button
             else:
                 return None
@@ -106,7 +113,7 @@ class MessageInput(Modal):
         )
 
     async def callback(self, interaction: discord.Interaction):
-        self.future.set_result((self.children[0].value, interaction))
+        self.future.set_result(self.children[0].value)
         await interaction.response.defer(ephemeral=True)
 
 
@@ -135,17 +142,9 @@ class SelectView(discord.ui.View):
         )
         self.add_item(select)
 
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        return False
-
 
 modal_button_dict = {
     "1": "100万人Yosettiボタン",
-}
-
-
-button_dict: dict[str, discord.ui.View] = {
-    "1": Yosetti_View(),
 }
 
 

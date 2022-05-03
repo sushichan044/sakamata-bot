@@ -19,7 +19,7 @@ class MishMash(commands.Cog):
         *,
         text: str,
     ):
-        view = MishMash_View()
+        view = Yosetti_View()
         await target.send(content=text, view=view)
 
 
