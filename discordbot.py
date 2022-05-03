@@ -2,8 +2,7 @@ import logging
 import os
 import re
 import traceback
-from datetime import timedelta, timezone
-from Event.birth_mishmash import MishMash_View
+from datetime import datetime, timedelta, timezone
 
 import discord
 from discord import Member
@@ -11,6 +10,7 @@ from discord.ext import commands
 
 from Cogs.inquiry import InquiryView, SuggestionView
 from Core.membership import MemberVerifyButton
+from Event.birth_mishmash import MishMash_View
 from Genshin.portal import PortalView
 
 logging.basicConfig(level=logging.INFO)
@@ -121,9 +121,9 @@ class MyBot(commands.Bot):
         print(f"Logged in as {self.user} (ID: {self.user.id})")
         print("------------------------------------------------------")
         channel = self.get_channel(log_channel)
-        now = discord.utils.utcnow()
+        now = datetime.now(jst)
         await channel.send(
-            f"起動完了({now.astimezone(jst).strftime('%m/%d %H:%M:%S')})\nBot ID:{self.user.id}"
+            f"起動完了({now.strftime('%m/%d %H:%M:%S')})\nBot ID:{self.user.id}"
         )
         return
 
@@ -163,34 +163,6 @@ stop_list = [stop_role, vc_stop_role]
 
 # other
 env = os.environ["ENV"]  # main or alpha
-
-
-@bot.command(name="user")
-@commands.has_role(mod_role)
-async def _new_user(ctx, member: Member):
-    """ユーザー情報を取得できます。"""
-    guild = ctx.guild
-    member = guild.get_member(member)
-    # この先表示する用
-    avatar_url = member.display_avatar.replace(size=1024, static_format="webp").url
-    if member.avatar is None:
-        avatar_url = "DefaultAvatar"
-    member_reg_date = member.created_at.astimezone(jst)
-    # NickNameあるか？
-    if member.display_name == member.name:
-        member_nickname = "None"
-    else:
-        member_nickname = member.display_name
-    member_join_date = member.joined_at.astimezone(jst)
-    # membermention = member.mention
-    roles = [[x.name, x.id] for x in member.roles]
-    # [[name,id],[name,id]...]
-    x = ["/ID: ".join(str(y) for y in x) for x in roles]
-    z = "\n".join(x)
-    # Message成形-途中
-    user_info_msg = f"```ユーザー名:{member} (ID:{member.id})\nBot?:{member.bot}\nAvatar url:{avatar_url}\nニックネーム:{member_nickname}\nアカウント作成日時:{member_reg_date:%Y/%m/%d %H:%M:%S}\n参加日時:{member_join_date:%Y/%m/%d %H:%M:%S}\n\n所持ロール:\n{z}```"
-    await ctx.reply(user_info_msg, mention_author=False)
-    return
 
 
 # YoutubeAPI

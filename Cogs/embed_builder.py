@@ -6,7 +6,8 @@ class EmbedBuilder:
     def __init__(self) -> None:
         pass
 
-    def _concept_start_parent(self, parent: discord.Member) -> Embed:
+    @staticmethod
+    def _concept_start_parent(parent: discord.Member) -> Embed:
         embed = Embed(
             title="Conceptへようこそ。",
             description=f"{parent.mention}さんは親に選ばれました。\n回答にする単語をこのメッセージに__返信__してください。",
@@ -14,7 +15,8 @@ class EmbedBuilder:
         )
         return embed
 
-    def _concept_start(self, parent: discord.Member) -> Embed:
+    @staticmethod
+    def _concept_start(parent: discord.Member) -> Embed:
         embed = Embed(
             title="Conceptへようこそ。",
             description=f"{parent.mention}さんが親に選ばれました。\n親が回答をセットするまで\nしばらくお待ちくさい。",
@@ -22,8 +24,9 @@ class EmbedBuilder:
         )
         return embed
 
+    @staticmethod
     def _concept_set_answer_embed(
-        self, game_thread: discord.Thread, answer_word: str, master: discord.Member
+        game_thread: discord.Thread, answer_word: str, master: discord.Member
     ) -> Embed:
         embed = Embed(
             title="回答をセットしました。",
@@ -32,7 +35,8 @@ class EmbedBuilder:
         )
         return embed
 
-    def _concept_set_answer_embed_game(self) -> Embed:
+    @staticmethod
+    def _concept_set_answer_embed_game() -> Embed:
         embed = Embed(
             title="親が回答をセットしました。",
             description="親がゲームを開始するまでお待ちください。",
@@ -40,7 +44,8 @@ class EmbedBuilder:
         )
         return embed
 
-    def _inquiry_contact(self, thread: discord.Thread) -> Embed:
+    @staticmethod
+    def _inquiry_contact(thread: discord.Thread) -> Embed:
         embed = Embed(
             title="スレッドが作成されました。",
             description="お問い合わせありがとうございます。\n下のスレッドリンクからスレッドへ移動して、\n内容の投稿をお願いします。",
