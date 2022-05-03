@@ -68,12 +68,15 @@ SONG_DB_EXTENSION_LIST = [
     # "SongDB.main",
 ]
 
+intents = discord.Intents.all()
+intents.typing = False
+
 
 class MyBot(commands.Bot):
     def __init__(self):
         super().__init__(
             command_prefix="//",
-            intents=discord.Intents.all(),
+            intents=intents,
             help_command=JapaneseHelpCommand(),
         )
         self.persistent_views_added = False
@@ -99,10 +102,12 @@ class MyBot(commands.Bot):
             else:
                 print(f"extension for SongDB [{cog}] is loaded!")
 
+    async def on_connect(self):
+        await self.sync_commands()
+
     async def on_ready(self):
         if not self.persistent_views_added:
             self.add_view(MemberVerifyButton())
-            self.add_view(PortalView())
             self.add_view(InquiryView())
             self.add_view(SuggestionView())
             self.add_view(MishMash_View())
