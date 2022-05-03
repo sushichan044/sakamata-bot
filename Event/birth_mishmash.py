@@ -23,6 +23,18 @@ class MishMash(commands.Cog):
         await target.send(content=text, view=view)
 
 
+class Yosetti_View(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        self.add_item(
+            discord.ui.Button(
+                label="Jump to Yosetti",
+                style=discord.ButtonStyle.url,
+                url="https://yosetti.com/mainyosegakis/invite?id=2157485&sc=TMkmS",
+            )
+        )
+
+
 class MishMash_View(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
