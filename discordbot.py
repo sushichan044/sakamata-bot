@@ -8,7 +8,6 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from archive.portal import PortalView
 from Cogs.inquiry import InquiryView, SuggestionView
 from Core.membership import MemberVerifyButton
 from Event.birth_mishmash import MishMash_View
