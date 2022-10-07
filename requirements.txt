@@ -70,7 +70,7 @@ SongDBCore @ git+https://github.com/sushi-chaaaan/song-db-client@02d58f117d35744
 soupsieve==2.3.1
 toml==0.10.2
 tomli==2.0.1
-typing_extensions==4.0.1
+typing_extensions==4.4.0
 uritemplate==4.1.1
 urllib3==1.26.8
 webencodings==0.5.1
