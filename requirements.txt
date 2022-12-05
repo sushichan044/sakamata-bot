@@ -39,7 +39,7 @@ multidict==6.0.2
 mypy-extensions==0.4.3
 newdispanderfixed @ git+https://github.com/sushi-chaaaan/dispanderfixed.git@4c309a09399d98c2d974d53a86982d273fe367e5
 oauthlib==3.2.0
-orjson==3.6.6
+orjson==3.8.3
 packaging==21.3
 pathspec==0.9.0
 pip-autoremove==0.10.0
